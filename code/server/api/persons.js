@@ -1,8 +1,7 @@
 'use strict';
 
 var util = require('util');
-var mapper = require('./mapper.js');
-
+var mapper = require('./mapper');
 var persons_db = require('./db/persons_db');
 
 var persons = {
@@ -10,7 +9,6 @@ var persons = {
 	read: function(req, res) {
 		
 		persons_db.read(req.params.id, function(err, personRow){
-			
 			if(err) {
 				res.status(500).send({status:'error', message: err});
 				return;
@@ -38,9 +36,6 @@ var persons = {
 				var person = mapper.person.mapToJson(personRow);
 				persons.list.push(person);
 			});
-			
-			// console.log("personRows " + util.inspect(personRows));
-			// console.log("persons " + util.inspect(persons));
 			res.send(persons);
 		});
 	},

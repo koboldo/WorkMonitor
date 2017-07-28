@@ -1,6 +1,7 @@
 var sqlite3 = require('sqlite3');
 var async = require('async');
 var util = require('util');
+var logger = require('../../logger').getLogger('monitor'); 
 
 var db = new sqlite3.Database('./work-monitor.db');
 
@@ -37,7 +38,7 @@ var tools = {
 var persons_db = {
 	
 	read: function(personId, cb) {
-		console.log('person read db with id : ' + personId);
+		logger.info('person read db with id : ' + personId);
 				
 		// TODO: validation in middleware
         var getPersonStat = db.prepare(queries.getPerson);
@@ -59,7 +60,7 @@ var persons_db = {
 	},
 	
 	readAll: function(cb) {
-		console.log('person readAll db');
+		logger.info('person readAll db');
 		
 		var getAllPersonsStat = db.prepare(queries.getAllPersons);
 		getAllPersonsStat.all(function(err, rows) {
@@ -83,8 +84,9 @@ var persons_db = {
 			
 			async.parallel(calls, function(err, result) {
 					if (err) {
-						console.log(err);
-						cb(err);
+						// logger.info(err);
+						// cb(err);
+                        logErrAndCall(err,cb);
 					} else {
 						cb(null,rows);
 					}
@@ -126,8 +128,9 @@ var persons_db = {
 
 						db.run('COMMIT',function(err,result) {
 							if(err) {
-								console.log(err);
-								cb(err,0);
+								// console.log(err);
+								// cb(err,0);
+                                logErrAndCall(err,cb);
 							} else {
 								cb(null,1);
 							}

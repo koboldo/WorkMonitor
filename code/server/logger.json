@@ -1,0 +1,17 @@
+{
+	"appenders": {
+		"monitor": {
+			"type": "file",
+			"filename": "monitor.log"
+		},
+        "monitor-con": {
+			"type": "console"
+		}
+	},
+	"categories": {
+        "default": {
+                "appenders": ["monitor", "monitor-con"],
+                "level": "info"
+            }
+	}
+}
