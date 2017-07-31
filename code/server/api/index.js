@@ -4,6 +4,7 @@ var router = express.Router();
 var persons = require('./persons');
 var orders = require('./orders');
 var codes = require('./codes');
+var workTypes = require('./workTypes');
 
 //TODO: validations - for create and update
 router.get('/v1/persons', persons.readAll);
@@ -12,7 +13,13 @@ router.get('/v1/persons/:id', persons.read);
 router.put('/v1/persons/:id', persons.update);
 
 router.get('/v1/orders', orders.readAll);
+router.post('/v1/orders', orders.create);
 router.get('/v1/orders/:id', orders.read);
+router.put('/v1/orders/:id', orders.update);
+
+router.post('/v1/workTypes', workTypes.create);
+router.get('/v1/workTypes/:id', workTypes.read);
+router.put('/v1/workTypes/:id', workTypes.update);
 
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);

@@ -40,6 +40,16 @@ var mappings = {
         sqlToJson: {
             CODE_TABLE: 'codeTable'
         }
+    },
+    workType: {
+        sqlToJson: {
+            ID: 'id',
+            TYPE_CODE: 'typeCode',
+            OFFICE_CODE: 'officeCode',
+            COMPLEXITY_CODE: 'complexityCode',
+            COMPLEXITY: 'complexity',
+            PRICE: 'price'
+        }
     }
 };
 
@@ -104,6 +114,10 @@ var mapper = {
     
     codeTable: {
         mapToJson: toolbox.produceMapper(mappings.codeTable.sqlToJson),
+    },
+    
+    workType: {
+        mapToJson: toolbox.produceMapper(mappings.workType.sqlToJson),
     },
     
     mapList: toolbox.mapListToJson

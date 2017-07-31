@@ -37,7 +37,7 @@ var orders = {
     },
         
     update: function(req, res) {
-        
+        res.status(501).end();
         // var orderId = req.params.id;
         // var orderSql = mapper.order.mapToSql(req.body);
         // orders_db.update(orderId, orderSql,function(err, result){
@@ -53,6 +53,7 @@ var orders = {
     },
     
     create: function(req, res) {
+        res.status(501).end();
     
         // var orderSql = mapper.order.mapToSql(req.body);
         // orders_db.create(orderSql, function(err,result) {
