@@ -6,7 +6,7 @@ var logger = require('../../logger').getLogger('monitor');
 var db = new sqlite3.Database('./work-monitor.db');
 
 var queries = {
-	getAllPersons: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, GRADE_CODE FROM PERSON',
+	getPersons: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, GRADE_CODE FROM PERSON',
 	getPerson: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, GRADE_CODE FROM PERSON WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
 	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID'
@@ -38,12 +38,11 @@ var tools = {
 var persons_db = {
 	
 	read: function(personId, cb) {
-		logger.info('person read db with id : ' + personId);
+		// logger.info('person read db with id : ' + personId);
 				
 		// TODO: validation in middleware
         var getPersonStat = db.prepare(queries.getPerson);
 		getPersonStat.bind(personId).get(function(err, row) {
-			// TODO: logging to file for prod
 			if(err) return logErrAndCall(err,cb);
 			
 			if(row == null) {
@@ -62,8 +61,8 @@ var persons_db = {
 	readAll: function(cb) {
 		logger.info('person readAll db');
 		
-		var getAllPersonsStat = db.prepare(queries.getAllPersons);
-		getAllPersonsStat.all(function(err, rows) {
+		var getPersonsStat = db.prepare(queries.getPersons);
+		getPersonsStat.all(function(err, rows) {
 			
 			if(err) return logErrAndCall(err,cb);
 			
@@ -96,6 +95,7 @@ var persons_db = {
 	
 	update: function(personId, person, cb) {
 
+		// TODO: validation of request body in middleware
 		var selectStr = 'SELECT COUNT(1) AS COUNT FROM PERSON WHERE ID=' + personId;
 		
 		var updateStr = '';
@@ -146,7 +146,7 @@ var persons_db = {
 	},
 	
 	create: function(person, cb) {
-
+        // TODO: validation of request body in middleware
 		db.run('BEGIN', function(err,result){
 			if(err) return logErrAndCall(err,cb);
 			
@@ -166,8 +166,7 @@ var persons_db = {
 					}
 					db.run('COMMIT',function(err,result) {
 						if(err) {
-							console.log(err);
-							cb(err,0);
+							logErrAndCall(err,cb)
 						} else {
 							cb(null, newId);
 						}
@@ -180,7 +179,8 @@ var persons_db = {
 };
 
 function logErrAndCall(err,cb) {
-	console.log(err.message);
+	// console.log(err.message);
+	logger.error(err.message);
 	cb(err.message);
 }
 

@@ -28,7 +28,7 @@ var codes_db = {
 };
 
 function logErrAndCall(err,cb) {
-	logger.info(err.message);
+	logger.error(err.message);
 	cb(err.message);
 }
 

@@ -2,7 +2,8 @@
 	"appenders": {
 		"monitor": {
 			"type": "file",
-			"filename": "monitor.log"
+			"filename": "monitor.log",
+            "format": "%r [%t] %p %c %x - %m%n"
 		},
         "monitor-con": {
 			"type": "console"
