@@ -106,6 +106,7 @@ var mapper = {
     
     order: {
         mapToJson: toolbox.produceMapper(mappings.order.sqlToJson),
+        mapToSql: toolbox.produceMapper(toolbox.swap(mappings.order.sqlToJson)),
     },
     
     code: {

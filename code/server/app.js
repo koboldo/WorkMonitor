@@ -10,7 +10,7 @@ var app = express();
 
 app.use(express.static('public'));
 
-//app.use(morgan('dev')); //TODO: set relevant format & file for prod
+app.use(morgan('dev')); //TODO: set relevant format & file for prod
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

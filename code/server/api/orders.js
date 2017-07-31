@@ -37,34 +37,34 @@ var orders = {
     },
         
     update: function(req, res) {
-        res.status(501).end();
-        // var orderId = req.params.id;
-        // var orderSql = mapper.order.mapToSql(req.body);
-        // orders_db.update(orderId, orderSql,function(err, result){
-            // if(err) {
-                // res.status(500).send({status:'error', message: err});
-                // return;
-            // }
-            // var rv = { updated: result };
-            // if(result == 1) res.status(200);
-            // else res.status(404);
-            // res.send(rv);
-        // });
+        // res.status(501).end();
+        var orderId = req.params.id;
+        var orderSql = mapper.order.mapToSql(req.body);
+        orders_db.update(orderId, orderSql,function(err, result){
+            if(err) {
+                res.status(500).send({status:'error', message: err});
+                return;
+            }
+            var rv = { updated: result };
+            if(result == 1) res.status(200);
+            else res.status(404);
+            res.send(rv);
+        });
     },
     
     create: function(req, res) {
-        res.status(501).end();
+        // res.status(501).end();
     
-        // var orderSql = mapper.order.mapToSql(req.body);
-        // orders_db.create(orderSql, function(err,result) {
-            // if(err) {
-                // res.status(500).send({status:'error', message: err});
-                // return;
-            // }
-            // var rv = { updated: result }
-            // if(result) res.send(rv);
-            // else res.status(404).end();
-        // });
+        var orderSql = mapper.order.mapToSql(req.body);
+        orders_db.create(orderSql, function(err,result) {
+            if(err) {
+                res.status(500).send({status:'error', message: err});
+                return;
+            }
+            var rv = { created: result }
+            if(result) res.send(rv);
+            else res.status(404).end();
+        });
     }
 };
 

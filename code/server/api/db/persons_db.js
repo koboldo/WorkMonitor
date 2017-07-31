@@ -1,6 +1,7 @@
 var sqlite3 = require('sqlite3');
 var async = require('async');
 var util = require('util');
+var db_util = require('./db_util');
 var logger = require('../../logger').getLogger('monitor'); 
 
 var db = new sqlite3.Database('./work-monitor.db');
@@ -23,22 +24,21 @@ var tools = {
 		});
 	},
     
-    prepareInsert: function(personId, person) {
-        var sqlCols = 'ID';
-        var sqlVals = '' + personId;
-        for(var col in person) {
-            sqlCols += ', ' + col;
-            sqlVals += ', "' + person[col] + '"';
-        }
+    // prepareInsert: function(personId, person) {
+        // var sqlCols = 'ID';
+        // var sqlVals = '' + personId;
+        // for(var col in person) {
+            // sqlCols += ', ' + col;
+            // sqlVals += ', "' + person[col] + '"';
+        // }
 
-        return 'INSERT INTO PERSON (' + sqlCols + ') VALUES (' + sqlVals + ')';
-    }
+        // return 'INSERT INTO PERSON (' + sqlCols + ') VALUES (' + sqlVals + ')';
+    // }
 };
 
 var persons_db = {
 	
 	readAll: function(cb) {
-		logger.info('person readAll db');
 		
 		var getPersonsStat = db.prepare(queries.getPersons);
 		getPersonsStat.all(function(err, rows) {
@@ -158,7 +158,7 @@ var persons_db = {
 				
 				var newId = row.MAX_ID + 1;
 				
-				var statementStr = tools.prepareInsert(newId, person);			
+				var statementStr = db_util.prepareInsert(newId, person);			
 				db.run(statementStr,function(err, result){
 					if(err){
 						db.run('ROLLBACK');
