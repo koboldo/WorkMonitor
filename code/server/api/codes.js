@@ -15,12 +15,12 @@ var codes = {
 				return;
 			}
             
-            var codes = {list: []};
-            codeRows.forEach(function(codeRow) {
-                var code = mapper.code.mapToJson(codeRow);
-                codes.list.push(code);
-            });
-            
+            // var codes = {list: []};
+            // codeRows.forEach(function(codeRow) {
+                // var code = mapper.code.mapToJson(codeRow);
+                // codes.list.push(code);
+            // });
+            var codes = mapper.mapList(mapper.code.mapToJson,codeRows);
             res.send(codes);
         });
     },
@@ -33,13 +33,13 @@ var codes = {
 				return;
 			}
             
-            var tables = {list: []};
-            tableRows.forEach(function(tableRow) {
-                var table = mapper.codeTable.mapToJson(tableRow);
-                tables.list.push(table);
-            });
+            // var tables = {list: []};
+            // tableRows.forEach(function(tableRow) {
+                // var table = mapper.codeTable.mapToJson(tableRow);
+                // tables.list.push(table);
+            // });
             
-            
+            var tables = mapper.mapList(mapper.codeTable.mapToJson,tableRows);
             res.send(tables);
         });
     }

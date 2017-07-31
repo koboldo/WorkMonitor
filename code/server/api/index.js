@@ -1,14 +1,18 @@
 var express = require('express');
 var router = express.Router();
 
-var persons = require('./persons.js');
-var codes = require('./codes.js');
+var persons = require('./persons');
+var orders = require('./orders');
+var codes = require('./codes');
 
 //TODO: validations - for create and update
 router.get('/v1/persons', persons.readAll);
 router.post('/v1/persons', persons.create);
 router.get('/v1/persons/:id', persons.read);
 router.put('/v1/persons/:id', persons.update);
+
+router.get('/v1/orders', orders.readAll);
+router.get('/v1/orders/:id', orders.read);
 
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);

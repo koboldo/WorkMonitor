@@ -6,6 +6,25 @@ var persons_db = require('./db/persons_db');
 
 var persons = {
     
+     readAll: function(req,res) {
+        
+        persons_db.readAll(function(err, personRows){
+            if(err) {
+                res.status(500).send({status:'error', message: err});
+                return;
+            }
+            
+            // var persons = {list: []};
+            // personRows.forEach(function(personRow){
+                // var person = mapper.person.mapToJson(personRow);
+                // persons.list.push(person);
+            // });
+            
+            var persons = mapper.mapList(mapper.person.mapToJson, personRows);
+            res.send(persons);
+        });
+    },
+    
     read: function(req, res) {
         
         persons_db.read(req.params.id, function(err, personRow){
@@ -20,23 +39,6 @@ var persons = {
             } else {
                 res.status(404).end();
             }
-        });
-    },
-    
-    readAll: function(req,res) {
-        
-        persons_db.readAll(function(err, personRows){
-            if(err) {
-                res.status(500).send({status:'error', message: err});
-                return;
-            }
-            
-            var persons = {list: []};
-            personRows.forEach(function(personRow){
-                var person = mapper.person.mapToJson(personRow);
-                persons.list.push(person);
-            });
-            res.send(persons);
         });
     },
     
@@ -64,7 +66,7 @@ var persons = {
                 res.status(500).send({status:'error', message: err});
                 return;
             }
-            var rv = { updated: result }
+            var rv = { created: result }
             if(result) res.send(rv);
             else res.status(404).end();
         });

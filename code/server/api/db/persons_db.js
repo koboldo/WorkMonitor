@@ -37,27 +37,6 @@ var tools = {
 
 var persons_db = {
 	
-	read: function(personId, cb) {
-		// logger.info('person read db with id : ' + personId);
-				
-		// TODO: validation in middleware
-        var getPersonStat = db.prepare(queries.getPerson);
-		getPersonStat.bind(personId).get(function(err, row) {
-			if(err) return logErrAndCall(err,cb);
-			
-			if(row == null) {
-				cb(null,null);
-				return;
-			}
-            
-			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds)
-			tools.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
-				row.WORK_ORDERS = ids;
-				cb(null,row);
-			});
-		});
-	},
-	
 	readAll: function(cb) {
 		logger.info('person readAll db');
 		
@@ -81,7 +60,7 @@ var persons_db = {
 				});
 			});
 			
-			async.parallel(calls, function(err, result) {
+			async.parallelLimit(calls, 5, function(err, result) {
 					if (err) {
 						// logger.info(err);
 						// cb(err);
@@ -90,6 +69,27 @@ var persons_db = {
 						cb(null,rows);
 					}
 				});
+		});
+	},
+
+	read: function(personId, cb) {
+		// logger.info('person read db with id : ' + personId);
+				
+		// TODO: validation in middleware
+        var getPersonStat = db.prepare(queries.getPerson);
+		getPersonStat.bind(personId).get(function(err, row) {
+			if(err) return logErrAndCall(err,cb);
+			
+			if(row == null) {
+				cb(null,null);
+				return;
+			}
+            
+			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds)
+			tools.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+				row.WORK_ORDERS = ids;
+				cb(null,row);
+			});
 		});
 	},
 	

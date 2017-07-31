@@ -4,8 +4,8 @@ var logger = require('../../logger').getLogger('monitor');
 var db = new sqlite3.Database('./work-monitor.db');
 
 var queries = {
-	getOrders: 'SELECT ID, WORK_NO, STATUS_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, LAST_MOD FROM WORK_ORDER',
-	getOrder: 'SELECT ID, WORK_NO, STATUS_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, LAST_MOD FROM WORK_ORDER WHERE ID = ?',
+	getOrders: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER',
+	getOrder: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER WHERE ID = ?',
 };
 
 // var filters = {
@@ -45,7 +45,11 @@ var orders_db = {
 				// cb(null,row);
 			// });
 		});
-    }
+    },
+    
+    update: function(orderId, cb) {},
+    
+    create: function(orderId, cb) {}
 };
 
 function logErrAndCall(err,cb) {
@@ -53,15 +57,15 @@ function logErrAndCall(err,cb) {
 	cb(err.message);
 }
 
-// module.exports = orders_db;
-orders_db.readAll(null, function(err, rows) { 
-    rows.forEach(function(row) {
-        logger.info(row);
-    });
-});
+module.exports = orders_db;
+// orders_db.readAll(null, function(err, rows) { 
+    // rows.forEach(function(row) {
+        // logger.info(row);
+    // });
+// });
 
-orders_db.read(1, function(err, row) { 
-    logger.info("-----------");
-    logger.info(row);
-    logger.info("-----------");
-});
+// orders_db.read(1, function(err, row) { 
+    // logger.info("-----------");
+    // logger.info(row);
+    // logger.info("-----------");
+// });
