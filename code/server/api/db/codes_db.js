@@ -1,6 +1,6 @@
 var sqlite3 = require('sqlite3');
 var util = require('util');
-var logger = require('../../logger').getLogger('monitor'); 
+var logger = require('../logger').getLogger('monitor'); 
 var db = new sqlite3.Database('./work-monitor.db');
 
 var queries = {

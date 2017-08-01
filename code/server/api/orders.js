@@ -8,7 +8,7 @@ var orders = {
     
     readAll: function(req,res) {
         
-        orders_db.readAll(null, function(err, orderRows){
+        orders_db.readAll(req.query, function(err, orderRows){
             if(err) {
                 res.status(500).send({status:'error', message: err});
                 return;

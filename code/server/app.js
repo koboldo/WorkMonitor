@@ -4,7 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 
-var logger = require('./logger').getLogger('monitor'); 
+var logger = require('./api/logger').getLogger('monitor'); 
 
 var app = express();
 

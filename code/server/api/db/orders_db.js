@@ -1,9 +1,11 @@
+'use strict';
+
 var sqlite3 = require('sqlite3');
 var util = require('util');
 var local_util = require('../local_util');
 var dbUtil = require('./db_util');
 
-var logger = require('../../logger').getLogger('monitor'); 
+var logger = require('../logger').getLogger('monitor'); 
 var db = new sqlite3.Database('./work-monitor.db');
 
 var queries = {
@@ -12,19 +14,23 @@ var queries = {
     // getMaxOrderId: 'SELECT MAX(ID) AS MAX_ID FROM WORK_ORDER',
 };
 
-// var filters = {
-    // getOrders: {
-        // lastModBefore: 
-    // }
-// };
+var filters = {
+    getOrders: {
+        type: 'TYPE_CODE = "%(type)s"',
+        lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s")',
+        lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s")',
+    }
+};
 
 var orders_db = {
     
     readAll: function(params, cb) {
-        // TODO: filtrowanie
-        // if(params.)
         
-        var getOrdersStat = db.prepare(queries.getOrders);
+        // TODO: filtrowanie
+        var readFilters = dbUtil.prepareFilters(params,filters.getOrders);
+        var query = queries.getOrders + readFilters;
+        
+        var getOrdersStat = db.prepare(query);
         getOrdersStat.all(function(err,rows) {
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,rows)

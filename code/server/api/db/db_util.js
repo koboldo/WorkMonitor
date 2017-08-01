@@ -5,7 +5,8 @@ var util = require('util');
 var local_util = require('../local_util');
 
 var db = new sqlite3.Database('./work-monitor.db');
-var logger = require('../../logger').getLogger('monitor'); 
+var sprintf = require("sprintf-js").sprintf;
+var logger = require('../logger').getLogger('monitor'); 
 
 var db_util = {
     
@@ -26,8 +27,9 @@ var db_util = {
                 
                 var newId = row.MAX_ID + 1;
                 
-                var statementStr = db_util.prepareInsert(newId, object, tableName);         
-                db.run(statementStr,function(err, result){
+                var insertStr = db_util.prepareInsert(newId, object, tableName);
+                var insertStat = db.prepare(insertStr);      
+                insertStat.run(function(err, result){
                     if(err){
                         db.run('ROLLBACK');
                         return local_util.logErrAndCall(err,cb);
@@ -49,7 +51,8 @@ var db_util = {
         
         var selectStr = 'SELECT ID FROM ' + tableName + ' WHERE ID = ' + objectId;
         
-        var updateStr = db_util.prepareUpdate(objectId, object, tableName); 
+        var updateStr = db_util.prepareUpdate(objectId, object, tableName);
+        var updateStat = db.prepare(updateStr);
         
         db.run('BEGIN', function(err,result){
             if(err) {
@@ -64,7 +67,7 @@ var db_util = {
                 }
                 
                 if(row) {
-                    db.run(updateStr,function(err,result) {
+                    updateStat.run(function(err,result) {
                         if(err) {
                             db.run('ROLLBACK');
                             return logErrAndCall(err,cb);
@@ -111,6 +114,24 @@ var db_util = {
         }
     
         return 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ID = ' + objectId; 
+    },
+    
+    prepareFilters: function(params,queryFilters) {
+        if(params == null || Object.getOwnPropertyNames(params).length == 0) {
+            return "";
+        }
+        
+        var filterText = " WHERE ";
+        for(var filter in queryFilters) {
+            if(params[filter]) {
+                if(filterText.length > 7) filterText += " AND "
+                
+                var obj = {};
+                obj[filter] = params[filter];
+                filterText += sprintf(queryFilters[filter], obj);
+            }    
+        }  
+        return filterText;
     }
 };
 

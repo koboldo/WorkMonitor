@@ -1,57 +1,72 @@
 'use strict';
 var util = require('util');
+var fs = require('fs');
+var path  = require('path');
+var logger = require('./logger').getLogger('monitor'); 
 
-var mappings = {
-	person: {
-		sqlToJson: {
-			ID: 'id',
-			FIRST_NAME: 'firstName',
-			LAST_NAME: 'lastName',
-			OFFICE_CODE: 'officeCode',
-			GRADE_CODE: 'gradeCode',
-            VERSION: 'version',
-            LAST_MOD: 'lastMod',
-			WORK_ORDERS: 'workOrders'
-		}
-	},
-    order: {
-        sqlToJson: {
-            ID: 'id',
-            WORK_NO: 'workNo',
-            STATUS_CODE: 'statusCode',
-            TYPE_CODE: 'typeCode',
-            COMPLEXITY_CODE: 'complexityCode',
-            COMPLEXITY: 'complexity',
-            DESCRIPTION:  'description',
-            COMMENT: 'commnet',
-            PRICE: 'price',
-            VERSION: 'version',
-            LAST_MOD: 'lastModDate'
-        }
-    },
-    code: {
-        sqlToJson: {
-            CODE: 'code',
-            PARAM_INTVAL: 'paramInt',
-            PARAM_CHARVAL: 'paramChar'
-        }
-    },
-    codeTable: {
-        sqlToJson: {
-            CODE_TABLE: 'codeTable'
-        }
-    },
-    workType: {
-        sqlToJson: {
-            ID: 'id',
-            TYPE_CODE: 'typeCode',
-            OFFICE_CODE: 'officeCode',
-            COMPLEXITY_CODE: 'complexityCode',
-            COMPLEXITY: 'complexity',
-            PRICE: 'price'
-        }
-    }
-};
+
+var mappings
+
+try {
+    console.log(__dirname);
+    mappings = JSON.parse(fs.readFileSync(path.join(__dirname,'../mappings.json'), 'utf8'));
+} catch(err) {
+    logger.error('Failed to load mappings. ',err.message);
+    process.exit(1);
+}
+
+
+// var mappings = {
+	// person: {
+		// sqlToJson: {
+			// ID: 'id',
+			// FIRST_NAME: 'firstName',
+			// LAST_NAME: 'lastName',
+			// OFFICE_CODE: 'officeCode',
+			// GRADE_CODE: 'gradeCode',
+            // VERSION: 'version',
+            // LAST_MOD: 'lastMod',
+			// WORK_ORDERS: 'workOrders'
+		// }
+	// },
+    // order: {
+        // sqlToJson: {
+            // ID: 'id',
+            // WORK_NO: 'workNo',
+            // STATUS_CODE: 'statusCode',
+            // TYPE_CODE: 'typeCode',
+            // COMPLEXITY_CODE: 'complexityCode',
+            // COMPLEXITY: 'complexity',
+            // DESCRIPTION:  'description',
+            // COMMENT: 'comment',
+            // PRICE: 'price',
+            // VERSION: 'version',
+            // LAST_MOD: 'lastModDate'
+        // }
+    // },
+    // code: {
+        // sqlToJson: {
+            // CODE: 'code',
+            // PARAM_INTVAL: 'paramInt',
+            // PARAM_CHARVAL: 'paramChar'
+        // }
+    // },
+    // codeTable: {
+        // sqlToJson: {
+            // CODE_TABLE: 'codeTable'
+        // }
+    // },
+    // workType: {
+        // sqlToJson: {
+            // ID: 'id',
+            // TYPE_CODE: 'typeCode',
+            // OFFICE_CODE: 'officeCode',
+            // COMPLEXITY_CODE: 'complexityCode',
+            // COMPLEXITY: 'complexity',
+            // PRICE: 'price'
+        // }
+    // }
+// };
 
 var toolbox = {
 	
@@ -80,7 +95,6 @@ var toolbox = {
     },
     
     mapListToJson: function(mapperFunc, rows) {
-        console.log(util.inspect(rows));
         var items = {list: []};
         rows.forEach(function(row){
             var item = mapperFunc(row);
@@ -119,6 +133,7 @@ var mapper = {
     
     workType: {
         mapToJson: toolbox.produceMapper(mappings.workType.sqlToJson),
+        mapToSql: toolbox.produceMapper(toolbox.swap(mappings.workType.sqlToJson)),
     },
     
     mapList: toolbox.mapListToJson

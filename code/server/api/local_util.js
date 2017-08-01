@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util');
-var logger = require('../logger').getLogger('monitor'); 
+var logger = require('./logger').getLogger('monitor'); 
 
 var local_util = {
     logErrAndCall: function(err,cb) {
