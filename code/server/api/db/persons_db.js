@@ -1,3 +1,5 @@
+'use strict';
+
 var sqlite3 = require('sqlite3');
 var async = require('async');
 var util = require('util');
@@ -7,33 +9,10 @@ var logger = require('../logger').getLogger('monitor');
 var db = new sqlite3.Database('./work-monitor.db');
 
 var queries = {
-	getPersons: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, GRADE_CODE FROM PERSON',
-	getPerson: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, GRADE_CODE FROM PERSON WHERE ID = ?',
+	getPersons: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE FROM PERSON',
+	getPerson: 'SELECT ID, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE FROM PERSON WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
 	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID'
-};
-
-var tools = {
-	getRowsIds: function(statement, rowId, cb) {
-		statement.bind(rowId).all(function(err,rows){
-			var ids = [];
-			rows.forEach(function(row){
-				ids.push(row.ID);
-			});
-			cb(ids);
-		});
-	},
-    
-    // prepareInsert: function(personId, person) {
-        // var sqlCols = 'ID';
-        // var sqlVals = '' + personId;
-        // for(var col in person) {
-            // sqlCols += ', ' + col;
-            // sqlVals += ', "' + person[col] + '"';
-        // }
-
-        // return 'INSERT INTO PERSON (' + sqlCols + ') VALUES (' + sqlVals + ')';
-    // }
 };
 
 var persons_db = {
@@ -53,7 +32,7 @@ var persons_db = {
 			rows.forEach(function(row){
 				calls.push(function(async_cb) {
 
-                    tools.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+                    dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
 						row.WORK_ORDERS = ids;
 						async_cb();
 					});
@@ -86,7 +65,7 @@ var persons_db = {
 			}
             
 			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds)
-			tools.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+			dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
 				row.WORK_ORDERS = ids;
 				cb(null,row);
 			});

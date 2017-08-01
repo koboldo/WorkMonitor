@@ -132,7 +132,17 @@ var db_util = {
             }    
         }  
         return filterText;
-    }
+    },
+    
+    getRowsIds: function(statement, rowId, cb) {
+		statement.bind(rowId).all(function(err,rows){
+			var ids = [];
+			rows.forEach(function(row){
+				ids.push(row.ID);
+			});
+			cb(ids);
+		});
+	}
 };
 
 module.exports = db_util;

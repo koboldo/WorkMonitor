@@ -5,7 +5,7 @@
 			"FIRST_NAME": "firstName",
 			"LAST_NAME": "lastName",
 			"OFFICE_CODE": "officeCode",
-			"GRADE_CODE": "gradeCode",
+			"ROLE_CODE": "roleCode",
 			"VERSION": "version",
 			"LAST_MOD": "lastMod",
 			"WORK_ORDERS": "workOrders"
