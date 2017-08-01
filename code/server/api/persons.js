@@ -14,12 +14,6 @@ var persons = {
                 return;
             }
             
-            // var persons = {list: []};
-            // personRows.forEach(function(personRow){
-                // var person = mapper.person.mapToJson(personRow);
-                // persons.list.push(person);
-            // });
-            
             var persons = mapper.mapList(mapper.person.mapToJson, personRows);
             res.send(persons);
         });
