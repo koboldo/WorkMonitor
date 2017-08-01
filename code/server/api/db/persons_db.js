@@ -1,7 +1,7 @@
 var sqlite3 = require('sqlite3');
 var async = require('async');
 var util = require('util');
-var db_util = require('./db_util');
+var dbUtil = require('./db_util');
 var logger = require('../logger').getLogger('monitor'); 
 
 var db = new sqlite3.Database('./work-monitor.db');
@@ -94,87 +94,17 @@ var persons_db = {
 	},
 	
 	update: function(personId, person, cb) {
-
-		// TODO: validation of request body in middleware
-		var selectStr = 'SELECT COUNT(1) AS COUNT FROM PERSON WHERE ID=' + personId;
-		
-		var updateStr = '';
-		for(var col in person) {
-			if(col == 'ID') continue;
-			
-			if(updateStr.length > 0) {
-				updateStr += ', ';
-			}
-			updateStr += col + '="' + person[col] + '"';
-		}
-		updateStr = 'UPDATE PERSON SET ' + updateStr + ' WHERE ID=' + personId; 
-	
-		db.run('BEGIN', function(err,result){
-            if(err) return logErrAndCall(err,cb);
-			
-			var updateStat = db.prepare(queries.getPerson);
-			updateStat.bind(personId).get(function(err, row) {
-				if(err) {
-					db.run('ROLLBACK')
-					return logErrAndCall(err,cb);
-				}
-				
-				if(row) {
-					db.run(updateStr,function(err,result) {
-						if(err) {
-							db.run('ROLLBACK');
-							return logErrAndCall(err,cb);
-						}
-
-						db.run('COMMIT',function(err,result) {
-							if(err) {
-								// console.log(err);
-								// cb(err,0);
-                                logErrAndCall(err,cb);
-							} else {
-								cb(null,1);
-							}
-						});
-					});
-				} else {
-					db.run('END')
-					cb(null,0);
-				}
-			});
-			updateStat.finalize();
-		});
+        dbUtil.performUpdate(personId, person, 'PERSON', function(err,result) {
+            if(err) return local_util.logErrAndCall(err,cb);
+            cb(null,result);
+        });
 	},
 	
 	create: function(person, cb) {
-        // TODO: validation of request body in middleware
-		db.run('BEGIN', function(err,result){
-			if(err) return logErrAndCall(err,cb);
-			
-			var stat = db.prepare(queries.getMaxPersonId);
-			stat.get(function(err,row){
-				// console.log(util.inspect(err));	
-				// console.log(util.inspect(row));	
-				if(err) return logErrAndCall(err,cb);
-				
-				var newId = row.MAX_ID + 1;
-				
-				var statementStr = db_util.prepareInsert(newId, person);			
-				db.run(statementStr,function(err, result){
-					if(err){
-						db.run('ROLLBACK');
-						return logErrAndCall(err,cb);
-					}
-					db.run('COMMIT',function(err,result) {
-						if(err) {
-							logErrAndCall(err,cb)
-						} else {
-							cb(null, newId);
-						}
-					});
-				});
-			});
-			stat.finalize();
-		});
+        dbUtil.performInsert(person, 'PERSON', null, function(err, newId){
+            if(err) return local_util.logErrAndCall(err,cb);
+            cb(null,newId);
+        });
 	} 
 };
 
