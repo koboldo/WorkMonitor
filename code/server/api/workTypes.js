@@ -10,7 +10,7 @@ var workTypes = {
         
         workTypes_db.readAll(function(err, workTypeRows){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             
@@ -23,7 +23,7 @@ var workTypes = {
         
         workTypes_db.read(req.params.id, function(err, workTypeRow){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             
@@ -42,7 +42,7 @@ var workTypes = {
         var workTypeSql = mapper.workType.mapToSql(req.body);
         workTypes_db.update(workTypeId, workTypeSql,function(err, result){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { updated: result };
@@ -58,7 +58,7 @@ var workTypes = {
         var workTypeSql = mapper.workType.mapToSql(req.body);
         workTypes_db.create(workTypeSql, function(err,result) {
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { created: result }

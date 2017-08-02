@@ -10,7 +10,7 @@ var orders = {
         
         orders_db.readAll(req.query, function(err, orderRows){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             
@@ -20,10 +20,11 @@ var orders = {
     },
     
     read: function(req, res) {
-        
-        orders_db.read(req.params.id, function(err, orderRow){
+        var orderId = req.params.id;
+        var orderExtId = req.params.extId;        
+        orders_db.read(orderId, orderExtId, function(err, orderRow){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             
@@ -39,10 +40,11 @@ var orders = {
     update: function(req, res) {
         // res.status(501).end();
         var orderId = req.params.id;
+        var orderExtId = req.params.extId;
         var orderSql = mapper.order.mapToSql(req.body);
-        orders_db.update(orderId, orderSql,function(err, result){
+        orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { updated: result };
@@ -58,7 +60,7 @@ var orders = {
         var orderSql = mapper.order.mapToSql(req.body);
         orders_db.create(orderSql, function(err,result) {
             if(err) {
-                res.status(500).send({status:'error', message: err});
+                res.status(500).send({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { created: result }

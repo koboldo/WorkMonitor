@@ -5,8 +5,10 @@ var logger = require('./logger').getLogger('monitor');
 
 var local_util = {
     logErrAndCall: function(err,cb) {
+        logger.error(util.inspect(err));
         logger.error(err.message);
-        cb(err.message);
+        logger.error(err.stack)
+        cb(err, null);
     }
 };
 

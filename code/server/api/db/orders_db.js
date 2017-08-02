@@ -6,11 +6,13 @@ var local_util = require('../local_util');
 var dbUtil = require('./db_util');
 
 var logger = require('../logger').getLogger('monitor'); 
-var db = new sqlite3.Database('./work-monitor.db');
+// var db = new sqlite3.Database('./work-monitor.db');
+var db = dbUtil.getDatabase();
 
 var queries = {
 	getOrders: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER',
 	getOrder: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER WHERE ID = ?',
+	getOrderByExtId: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER WHERE WORK_NO = ?',
     // getMaxOrderId: 'SELECT MAX(ID) AS MAX_ID FROM WORK_ORDER',
 };
 
@@ -25,22 +27,34 @@ var filters = {
 var orders_db = {
     
     readAll: function(params, cb) {
-        
+        var db = dbUtil.getDatabase();
         // TODO: filtrowanie
         var readFilters = dbUtil.prepareFilters(params,filters.getOrders);
         var query = queries.getOrders + readFilters;
         
         var getOrdersStat = db.prepare(query);
         getOrdersStat.all(function(err,rows) {
+            getOrdersStat.finalize();
+            db.close();
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,rows)
         });
     },
     
-    read: function(orderId, cb) {
+    read: function(orderId, orderExtId, cb) {
         //TODO: parameter validation
-        var getOrderStat = db.prepare(queries.getOrder);
-		getOrderStat.bind(orderId).get(function(err, row) {
+        var getOrderStat;
+        if(orderId != null)  {
+            getOrderStat = db.prepare(queries.getOrder);
+            getOrderStat.bind(orderId);
+        } else if(orderExtId != null) {
+            getOrderStat = db.prepare(queries.getOrderByExtId);
+            getOrderStat.bind(orderExtId);            
+        }
+        
+		getOrderStat.get(function(err, row) {
+            getOrderStat.finalize();
+            db.close();
 			if(err) return local_util.logErrAndCall(err,cb);
 			
 			if(row == null) {
@@ -51,8 +65,20 @@ var orders_db = {
 		});
     },
     
-    update: function(orderId, order, cb) {
-        dbUtil.performUpdate(orderId, order, 'WORK_ORDER', function(err,result) {
+    update: function(orderId, orderExtId, order, cb) {
+
+        var idObj = {};
+        if(orderId != null) {
+            idObj.name = 'ID';
+            idObj.value = orderId;
+        } 
+        if(orderExtId != null) {
+            idObj.name = 'WORK_NO';
+            idObj.value = orderExtId;
+            
+        }
+
+        dbUtil.performUpdate(idObj, order, 'WORK_ORDER', function(err,result) {
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,result);
         });

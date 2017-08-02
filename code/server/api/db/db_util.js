@@ -1,108 +1,69 @@
 'use strict';
 
-var sqlite3 = require('sqlite3');
+var sqlite3 = require('sqlite3').verbose();
 var util = require('util');
-var local_util = require('../local_util');
 
-var db = new sqlite3.Database('./work-monitor.db');
+
 var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
+var logErrAndCall = require('../local_util').logErrAndCall;
 
 var db_util = {
     
-    performInsert: function(object, tableName, maxIdQuery, cb) {
-        db.run('BEGIN', function(err,result){
-            if(err) return local_util.logErrAndCall(err,cb);
-            
-            var idQuery = maxIdQuery;
-            if(idQuery == null) {
-                idQuery = 'SELECT MAX(ID) AS MAX_ID FROM ' + tableName;
-            } 
-
-            var stat = db.prepare(idQuery);
-            stat.get(function(err,row){
-                // console.log(util.inspect(err));  
-                // console.log(util.inspect(row));  
-                if(err) return local_util.logErrAndCall(err,cb);
-                
-                var newId = row.MAX_ID + 1;
-                
-                var insertStr = db_util.prepareInsert(newId, object, tableName);
-                var insertStat = db.prepare(insertStr);      
-                insertStat.run(function(err, result){
-                    if(err){
-                        db.run('ROLLBACK');
-                        return local_util.logErrAndCall(err,cb);
-                    }
-                    db.run('COMMIT',function(err,result) {
-                        if(err) {
-                            local_util.logErrAndCall(err,cb)
-                        } else {
-                            cb(null, newId);
-                        }
-                    });
-                });
-            });
-            stat.finalize();
-        });        
+    getDatabase: function() {
+        var db = new sqlite3.Database('./work-monitor.db');
+        db.serialize(function() {
+            db.run( 'PRAGMA journal_mode = WAL;' );
+            db.run( 'PRAGMA busy_timeout = 1000;' );
+        });
+        return db;
     },
     
-    performUpdate: function(objectId, object, tableName, cb) {
-        
-        var selectStr = 'SELECT ID FROM ' + tableName + ' WHERE ID = ' + objectId;
-        
-        var updateStr = db_util.prepareUpdate(objectId, object, tableName);
-        var updateStat = db.prepare(updateStr);
-        
-        db.run('BEGIN', function(err,result){
-            if(err) {
+    performInsert: function(object, tableName, maxIdQuery, cb) {
+        var db = db_util.getDatabase();
+        var insertStr = db_util.prepareInsert(object, tableName);
+        var insertStat = db.prepare(insertStr);      
+        insertStat.run(function(err, result){
+            insertStat.finalize();
+            db.close();
+            if(err){
                 return logErrAndCall(err,cb);
+            } else {
+                    cb(null, this.lastID);
             }
-            
-            var selectStat = db.prepare(selectStr);
-            selectStat.get(function(err, row) {
-                if(err) {
-                    db.run('ROLLBACK')
-                    return logErrAndCall(err,cb);
-                }
-                
-                if(row) {
-                    updateStat.run(function(err,result) {
-                        if(err) {
-                            db.run('ROLLBACK');
-                            return logErrAndCall(err,cb);
-                        }
-
-                        db.run('COMMIT',function(err,result) {
-                            if(err) {
-
-                                logErrAndCall(err,cb);
-                            } else {
-                                cb(null,1);
-                            }
-                        });
-                    });
-                } else {
-                    db.run('END');
-                    cb(null,0);
-                }
-            });
-            selectStat.finalize();
         });
     },
     
-    prepareInsert: function(objectId, object, tableName) {
-        var sqlCols = 'ID';
-        var sqlVals = '' + objectId;
+    performUpdate: function(idObj, object, tableName, cb) {
+        var db = db_util.getDatabase();
+        var updateStr = db_util.prepareUpdate(idObj, object, tableName);
+        var updateStat = db.prepare(updateStr);   
+        updateStat.run(function(err,result) {
+            updateStat.finalize();
+            db.close();
+            if(err) {
+                logErrAndCall(err,cb);
+            } else {
+                cb(null,this.changes);
+            }
+        });
+    },
+
+    prepareInsert: function(object, tableName) {
+        var sqlCols = '';
+        var sqlVals = '';
         for(var col in object) {
-            sqlCols += ', ' + col;
-            sqlVals += ', "' + object[col] + '"';
+            if(sqlCols.length > 0) sqlCols += ', ';
+            if(sqlVals.length > 0) sqlVals += ', ';
+            sqlCols +=  col;
+            sqlVals += '"' + object[col] + '"';
         }
 
         return 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
     },
     
-    prepareUpdate: function(objectId, object, tableName) {
+    // BEWARE UPDATING WORK_ORDER_HIST TABLE ...
+    prepareUpdate: function(idObj, object, tableName) {
         var updateStr = '';
         for(var col in object) {
             if(col == 'ID') continue;
@@ -113,7 +74,7 @@ var db_util = {
             updateStr += col + '="' + object[col] + '"';
         }
     
-        return 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ID = ' + objectId; 
+        return 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
     },
     
     prepareFilters: function(params,queryFilters) {

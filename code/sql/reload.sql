@@ -1,0 +1,5 @@
+.print 'Recreating db elements ...'
+.read 'C:\MyArea\work\WorkMonitor\code\sql\setup_db.sql'
+.print 'Loading test data ...'
+.read 'C:\MyArea\work\WorkMonitor\code\sql\testdata.sql'
+.print 'Done.'

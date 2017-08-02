@@ -15,7 +15,9 @@ router.put('/v1/persons/:id', persons.update);
 router.get('/v1/orders', orders.readAll);
 router.post('/v1/orders', orders.create);
 router.get('/v1/orders/:id', orders.read);
+router.get('/v1/orders/external/:extId', orders.read);
 router.put('/v1/orders/:id', orders.update);
+router.put('/v1/orders/external/:extId', orders.update);
 
 router.get('/v1/workTypes', workTypes.readAll);
 router.post('/v1/workTypes', workTypes.create);

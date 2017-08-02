@@ -11,15 +11,10 @@ var codes = {
         
         codes_db.readCodes(req.params.codeTable,function(err, codeRows) {
 			if(err) {
-				res.status(500).send({status:'error', message: err});
+				res.status(500).send({status:'error', message: 'request processing failed'});
 				return;
 			}
             
-            // var codes = {list: []};
-            // codeRows.forEach(function(codeRow) {
-                // var code = mapper.code.mapToJson(codeRow);
-                // codes.list.push(code);
-            // });
             var codes = mapper.mapList(mapper.code.mapToJson,codeRows);
             res.send(codes);
         });
@@ -29,16 +24,10 @@ var codes = {
         
         codes_db.readTables(function(err, tableRows) {
             if(err) {
-				res.status(500).send({status:'error', message: err});
+				res.status(500).send({status:'error', message: 'request processing failed'});
 				return;
 			}
-            
-            // var tables = {list: []};
-            // tableRows.forEach(function(tableRow) {
-                // var table = mapper.codeTable.mapToJson(tableRow);
-                // tables.list.push(table);
-            // });
-            
+
             var tables = mapper.mapList(mapper.codeTable.mapToJson,tableRows);
             res.send(tables);
         });
