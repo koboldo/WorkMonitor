@@ -12,7 +12,7 @@
 	"categories": {
         "default": {
                 "appenders": ["monitor", "monitor-con"],
-                "level": "info"
+                "level": "debug"
             }
 	}
 }

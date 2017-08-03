@@ -14,9 +14,11 @@
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
     "log4js": "^2.3.2",
     "morgan": "^1.8.2",
     "nconf": "^0.8.4",
+    "sha1": "^1.1.1",
     "sprintf-js": "^1.1.1",
     "sqlite3": "^3.1.8"
   }

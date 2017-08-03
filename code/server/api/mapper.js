@@ -8,7 +8,6 @@ var logger = require('./logger').getLogger('monitor');
 var mappings;
 
 try {
-    console.log(__dirname);
     mappings = JSON.parse(fs.readFileSync(path.join(__dirname,'../mappings.json'), 'utf8'));
 } catch(err) {
     logger.error('Failed to load mappings. ',err.message);

@@ -4,9 +4,6 @@ var logger = require('../logger').getLogger('monitor');
 var logErrAndCall = require('../local_util').logErrAndCall;
 var dbUtil = require('./db_util');
 
-// var db = new sqlite3.Database('./work-monitor.db');
-var db = dbUtil.getDatabase();
-
 var queries = {
 	getCodes: 'SELECT CODE, PARAM_INTVAL, PARAM_CHARVAL FROM CODE_REFERENCE WHERE CODE_TABLE = ?',
     getTables: 'SELECT DISTINCT CODE_TABLE FROM CODE_REFERENCE'

@@ -6,7 +6,6 @@ var dbUtil = require('./db_util');
 var logger = require('../logger').getLogger('monitor'); 
 var logErrAndCall = require('../local_util').logErrAndCall;
 
-var db = dbUtil.getDatabase();
 
 var queries = {
 	getWorkTypes: 'SELECT ID, TYPE_CODE, OFFICE_CODE, COMPLEXITY_CODE, COMPLEXITY, COMPLEXITY, PRICE FROM WORK_TYPE',

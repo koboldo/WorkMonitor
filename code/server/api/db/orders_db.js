@@ -6,8 +6,6 @@ var local_util = require('../local_util');
 var dbUtil = require('./db_util');
 
 var logger = require('../logger').getLogger('monitor'); 
-// var db = new sqlite3.Database('./work-monitor.db');
-var db = dbUtil.getDatabase();
 
 var queries = {
 	getOrders: 'SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, PRICE, VERSION, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD FROM WORK_ORDER',
@@ -43,6 +41,8 @@ var orders_db = {
     
     read: function(orderId, orderExtId, cb) {
         //TODO: parameter validation
+        var db = dbUtil.getDatabase();
+        
         var getOrderStat;
         if(orderId != null)  {
             getOrderStat = db.prepare(queries.getOrder);
@@ -78,6 +78,8 @@ var orders_db = {
             
         }
 
+        if(logger.isDebugEnabled()) logger.debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));
+        
         dbUtil.performUpdate(idObj, order, 'WORK_ORDER', function(err,result) {
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,result);
@@ -85,6 +87,9 @@ var orders_db = {
     },
     
     create: function(order, cb) {
+        
+        if(logger.isDebugEnabled()) logger.debug('insert order with object: ' + util.inspect(order));
+
         dbUtil.performInsert(order, 'WORK_ORDER', null, function(err, newId){
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,newId);

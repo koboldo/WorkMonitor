@@ -3,7 +3,6 @@
 var sqlite3 = require('sqlite3').verbose();
 var util = require('util');
 
-
 var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
 var logErrAndCall = require('../local_util').logErrAndCall;
@@ -29,7 +28,8 @@ var db_util = {
             if(err){
                 return logErrAndCall(err,cb);
             } else {
-                    cb(null, this.lastID);
+                if(logger.isDebugEnabled()) logger.debug('inserted row id: ' + this.lastID);
+                cb(null, this.lastID);
             }
         });
     },
@@ -44,6 +44,7 @@ var db_util = {
             if(err) {
                 logErrAndCall(err,cb);
             } else {
+                if(logger.isDebugEnabled()) logger.debug('changes caused by update: ' + this.changes);
                 cb(null,this.changes);
             }
         });
@@ -59,7 +60,9 @@ var db_util = {
             sqlVals += '"' + object[col] + '"';
         }
 
-        return 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+        var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+        if(logger.isDebugEnabled()) logger.debug('db insert: ' + insertStr);
+        return insertStr;
     },
     
     // BEWARE UPDATING WORK_ORDER_HIST TABLE ...
@@ -74,7 +77,9 @@ var db_util = {
             updateStr += col + '="' + object[col] + '"';
         }
     
-        return 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
+        var updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
+        if(logger.isDebugEnabled()) logger.debug('db insert: ' + updateStr);
+        return updateStr;
     },
     
     prepareFilters: function(params,queryFilters) {

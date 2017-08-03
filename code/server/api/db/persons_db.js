@@ -86,6 +86,8 @@ var persons_db = {
         idObj.name = 'ID';
         idObj.value = personId;
         
+        if(logger.isDebugEnabled()) logger.debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
+        
         dbUtil.performUpdate(idObj, person, 'PERSON', function(err,result) {
             if(err) return logErrAndCall(err,cb);
             cb(null,result);
@@ -93,6 +95,9 @@ var persons_db = {
 	},
 	
 	create: function(person, cb) {
+        
+        if(logger.isDebugEnabled()) logger.debug('insert person with object: ' + util.inspect(person));
+        
         dbUtil.performInsert(person, 'PERSON', null, function(err, newId){
             if(err) return logErrAndCall(err,cb);
             cb(null,newId);
