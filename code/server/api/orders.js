@@ -10,12 +10,12 @@ var orders = {
         
         orders_db.readAll(req.query, function(err, orderRows){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             var orders = mapper.mapList(mapper.order.mapToJson, orderRows);            
-            res.send(orders);
+            res.json(orders);
         });
     },
     
@@ -24,13 +24,13 @@ var orders = {
         var orderExtId = req.params.extId;        
         orders_db.read(orderId, orderExtId, function(err, orderRow){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             if(orderRow) {
                 var order = mapper.order.mapToJson(orderRow);
-                res.send(order);
+                res.json(order);
             } else {
                 res.status(404).end();
             }
@@ -44,13 +44,13 @@ var orders = {
         var orderSql = mapper.order.mapToSql(req.body);
         orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { updated: result };
             if(result == 1) res.status(200);
             else res.status(404);
-            res.send(rv);
+            res.json(rv);
         });
     },
     
@@ -60,11 +60,11 @@ var orders = {
         var orderSql = mapper.order.mapToSql(req.body);
         orders_db.create(orderSql, function(err,result) {
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { created: result }
-            if(result) res.send(rv);
+            if(result) res.status(201).json(rv);
             else res.status(404).end();
         });
     }

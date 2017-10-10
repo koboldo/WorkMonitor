@@ -10,12 +10,12 @@ var workTypes = {
         
         workTypes_db.readAll(function(err, workTypeRows){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             var workTypes = mapper.mapList(mapper.workType.mapToJson, workTypeRows);            
-            res.send(workTypes);
+            res.json(workTypes);
         });
     },
     
@@ -23,13 +23,13 @@ var workTypes = {
         
         workTypes_db.read(req.params.id, function(err, workTypeRow){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             if(workTypeRow) {
                 var workType = mapper.workType.mapToJson(workTypeRow);
-                res.send(workType);
+                res.json(workType);
             } else {
                 res.status(404).end();
             }
@@ -42,13 +42,13 @@ var workTypes = {
         var workTypeSql = mapper.workType.mapToSql(req.body);
         workTypes_db.update(workTypeId, workTypeSql,function(err, result){
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { updated: result };
             if(result == 1) res.status(200);
             else res.status(404);
-            res.send(rv);
+            res.json(rv);
         });
 
     },
@@ -58,11 +58,11 @@ var workTypes = {
         var workTypeSql = mapper.workType.mapToSql(req.body);
         workTypes_db.create(workTypeSql, function(err,result) {
             if(err) {
-                res.status(500).send({status:'error', message: 'request processing failed'});
+                res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             var rv = { created: result }
-            if(result) res.send(rv);
+            if(result) res.status(201).json(rv);
             else res.status(404).end();
         });
     }

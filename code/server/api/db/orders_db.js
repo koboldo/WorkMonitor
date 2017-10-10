@@ -14,11 +14,14 @@ var queries = {
     // getMaxOrderId: 'SELECT MAX(ID) AS MAX_ID FROM WORK_ORDER',
 };
 
+// js object used by sprintf function to prepare WHERE condition
 var filters = {
     getOrders: {
         type: 'TYPE_CODE = "%(type)s"',
+        status: 'STATUS_CODE = "%(status)s"',
         lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s")',
         lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s")',
+        personId: 'ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
     }
 };
 
@@ -30,6 +33,8 @@ var orders_db = {
         var readFilters = dbUtil.prepareFilters(params,filters.getOrders);
         var query = queries.getOrders + readFilters;
         
+        if(logger.isDebugEnabled()) logger.debug('query for getting orders: ' + query);
+
         var getOrdersStat = db.prepare(query);
         getOrdersStat.all(function(err,rows) {
             getOrdersStat.finalize();

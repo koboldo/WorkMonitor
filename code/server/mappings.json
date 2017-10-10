@@ -6,7 +6,9 @@
 			"LAST_NAME": "lastName",
 			"OFFICE_CODE": "officeCode",
 			"ROLE_CODE": "roleCode",
-			"VERSION": "version",
+			"LOGIN": "login",
+			"PASSWORD": "password",
+			"IS_ACTIVE": "isActive",
 			"LAST_MOD": "lastMod",
 			"WORK_ORDERS": "workOrders"
 		}
