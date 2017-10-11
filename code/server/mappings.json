@@ -24,7 +24,6 @@
 			"DESCRIPTION": "description",
 			"COMMENT": "comment",
 			"PRICE": "price",
-			"VERSION": "version",
 			"LAST_MOD": "lastModDate"
 		}
 	},
