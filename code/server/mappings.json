@@ -23,6 +23,9 @@
 			"COMPLEXITY": "complexity",
 			"DESCRIPTION": "description",
 			"COMMENT": "comment",
+			"MD_CAPEX": "mdCapex",
+			"MD_BUILDING_TYPE": "mdBuildingType", 
+			"MD_CONSTRUCTION_CATEGORY": "mdConstructionCategory",
 			"PRICE": "price",
 			"LAST_MOD": "lastModDate"
 		}
