@@ -10,7 +10,7 @@ var dbUtil = require('./db/db_util');
 
 var logger = require('./logger').getLogger('monitor'); 
 
-var authQuery = 'select LOGIN, IS_ACTIVE, ROLE_CODE from PERSON where LOGIN = ? and PASSWORD = ?';
+var authQuery = 'select LOGIN, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where LOGIN = ? and PASSWORD = ?';
 
 var secret;
 
@@ -25,10 +25,9 @@ try {
 var auth = {
     
     authenticate: function(req, res) {
+    	if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
         var user = req.body.username;
         var passwd = req.body.password;
-        if(logger.isDebugEnabled()) logger.debug('username: ' + user);
-        if(logger.isDebugEnabled()) logger.debug('password: ' + passwd);
         var passwdSha1 = sha1(passwd);
         
         var db = dbUtil.getDatabase();
@@ -60,7 +59,7 @@ var auth = {
                                 secret,
                                 { expiresIn: 60 * 10 });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
-                res.json({token: token});
+                res.json({username: userRow.LOGIN, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
             }
         });
         

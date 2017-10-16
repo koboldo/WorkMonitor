@@ -2,6 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User } from '../_models/index';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class UserService {

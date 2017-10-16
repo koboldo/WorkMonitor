@@ -15,11 +15,14 @@ import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 
+import { DataTableModule, SharedModule, PanelModule,TabViewModule,ButtonModule,TabMenuModule,MenuItem,TreeModule,TreeNode,AccordionModule,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
+
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
+        //DataTableModule,SharedModule,PanelModule,TabViewModule,ButtonModule,TabMenuModule,
         routing
     ],
     declarations: [

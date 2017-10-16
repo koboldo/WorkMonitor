@@ -25,7 +25,8 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
 
             // other libraries
-            'rxjs': 'npm:rxjs'
+            'rxjs': 'npm:rxjs',
+            'primeng': 'node_modules/primeng'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -34,6 +35,9 @@
                 defaultExtension: 'js'
             },
             rxjs: {
+                defaultExtension: 'js'
+            },
+            primeng: {
                 defaultExtension: 'js'
             }
         }
