@@ -1,0 +1,10 @@
+﻿<div>
+    <p>Logged as {{currentUser.firstName}}@{{currentUser.roleCode}}</p>
+    <p><a [routerLink]="['/logme']">Logout</a></p>
+
+
+    <p-tabMenu [model]="items"></p-tabMenu>
+
+    <router-outlet></router-outlet>
+</div>
+
