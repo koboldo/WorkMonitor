@@ -12,6 +12,7 @@ export class AuthenticationService {
 
     private menuItems = new BehaviorSubject<MenuItem[]>(null);
     private user = new BehaviorSubject<User>(null);
+    private authOptions: RequestOptions;
 
     get menuItemsAsObs() : Observable<MenuItem[]> {
         return this.menuItems.asObservable();
@@ -20,6 +21,11 @@ export class AuthenticationService {
     get userAsObs(): Observable<User> {
         return this.user.asObservable();
     }
+
+    public getAuthOptions(): RequestOptions {
+        return this.authOptions;
+    }
+
 
     login(username: string, password: string) {
 
@@ -43,10 +49,18 @@ export class AuthenticationService {
                     localStorage.setItem('currentUser', JSON.stringify(user));
                     this.user.next(user);
                     this.menuItems.next(this.buildMenu(user));
+                    this.initAuthHeaders(user.token);
                 }
 
                 return user;
             });
+    }
+
+    private initAuthHeaders(token: string) {
+        let headers: Headers = new Headers({ 'Content-Type': 'application/json' });
+        headers.append("x-access-token",  token);
+        this.authOptions = new RequestOptions({ headers: headers });
+
     }
 
     logout() {

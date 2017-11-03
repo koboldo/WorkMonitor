@@ -10,13 +10,15 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService } from './_services/index';
+import { AlertService, AuthenticationService, UserService, WOService, DictService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { WoComponent } from './wo/wo.component';
 
 import { DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
-import { WoComponent } from './wo/wo.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
     imports: [
@@ -24,6 +26,8 @@ import { WoComponent } from './wo/wo.component';
         FormsModule,
         HttpModule,
         TabViewModule,TabMenuModule,PanelModule,
+        BrowserAnimationsModule,
+        DataTableModule,
         routing
     ],
     declarations: [
@@ -39,7 +43,9 @@ import { WoComponent } from './wo/wo.component';
         AlertService,
         AuthenticationService,
         UserService,
-        BaseRequestOptions
+        BaseRequestOptions,
+        WOService,
+        DictService
     ],
     bootstrap: [AppComponent]
 })
