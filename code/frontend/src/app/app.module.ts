@@ -16,13 +16,14 @@ import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 
 import { DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
+import { WoComponent } from './wo/wo.component';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
-        TabViewModule,TabMenuModule,
+        TabViewModule,TabMenuModule,PanelModule,
         routing
     ],
     declarations: [
@@ -30,7 +31,8 @@ import { DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,
         AlertComponent,
         HomeComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+        WoComponent
     ],
     providers: [
         AuthGuard,
