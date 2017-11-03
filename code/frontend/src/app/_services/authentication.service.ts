@@ -1,12 +1,25 @@
 ﻿import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import { User } from '../_models/user';
+import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
 @Injectable()
 export class AuthenticationService {
     constructor(private http: Http) { }
+
+    private menuItems = new BehaviorSubject<MenuItem[]>(null);
+    private user = new BehaviorSubject<User>(null);
+
+    get menuItemsAsObs() : Observable<MenuItem[]> {
+        return this.menuItems.asObservable();
+    }
+
+    get userAsObs(): Observable<User> {
+        return this.user.asObservable();
+    }
 
     login(username: string, password: string) {
 
@@ -14,7 +27,6 @@ export class AuthenticationService {
             username: username,
             password: password
         };
-
 
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
@@ -29,6 +41,8 @@ export class AuthenticationService {
                 if (user && user.token) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(user));
+                    this.user.next(user);
+                    this.menuItems.next(this.buildMenu(user));
                 }
 
                 return user;
@@ -36,7 +50,36 @@ export class AuthenticationService {
     }
 
     logout() {
-        // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+        this.menuItems.next(null);
+        this.user.next(null);
+        // remove user from local storage to log user out
+
+    }
+
+    private buildMenu(user:User):any {
+
+        let allItems = [
+            {label: 'Praca z WO', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR"]},
+            {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
+            {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP"]},
+            {label: 'Dodaj osobę', icon: 'fa-address-book', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
+            {label: 'Wyceny niestandardowe', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
+            {label: 'Rozliczenie (protokół)', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},
+            {label: 'Monitoring wydajnosci pracowników', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
+            {label: 'Niezaakceptowane prace', icon: 'fa-exchange', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}
+        ];
+
+        return allItems.filter(item => this.filterItem(item, user));
+
+    }
+
+    private filterItem(item:any, user:User):boolean {
+        if (item.rolesRequired && item.rolesRequired.indexOf(user.roleCode) > -1) {
+            return true;
+        } else {
+            console.log("role "+user.roleCode +" has no access to "+item.label);
+            return false;
+        }
     }
 }

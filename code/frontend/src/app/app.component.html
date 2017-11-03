@@ -1,11 +1,10 @@
 ﻿<!-- main app container -->
 
+<div *ngIf="items">
+    <div style="font-size: small">Logged as {{user.firstName}}@{{user.roleCode}} <a [routerLink]="['/logme']">Logout</a></div>
+    <p-tabMenu [model]="items" ></p-tabMenu>
+</div>
 
-
-<div style="font-size: small">Logged as {{currentUser.firstName}}@{{currentUser.roleCode}} <a [routerLink]="['/logme']">Logout</a></div>
-
-<p-tabMenu [model]="items"></p-tabMenu>
-<router-outlet></router-outlet>
 <div class="jumbotron">
     <div class="container">
         <div>
@@ -14,6 +13,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- credits -->
 <div class="text-center">
