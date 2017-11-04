@@ -1,7 +1,7 @@
 ﻿<!-- main app container -->
 
 <div *ngIf="items">
-    <div style="font-size: small">Logged as {{user.firstName}}@{{user.roleCode}} <a [routerLink]="['/logme']">Logout</a></div>
+    <div style="font-size: small">Logged as {{user.firstName}} ({{role | async}}) <a [routerLink]="['/logme']">Logout</a></div>
     <p-tabMenu [model]="items" ></p-tabMenu>
 </div>
 

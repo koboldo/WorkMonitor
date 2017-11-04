@@ -8,6 +8,7 @@ import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
 @Injectable()
 export class AuthenticationService {
+
     constructor(private http: Http) { }
 
     private menuItems = new BehaviorSubject<MenuItem[]>(null);
@@ -39,14 +40,12 @@ export class AuthenticationService {
 
         console.log("about to login: "+JSON.stringify(data));
 
-        //return this.http.post('http://127.0.0.1:8080/login', data) we are using proxy
+        //proxy!!!
         return this.http.post('/login', JSON.stringify(data), options)
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
                 let user : User = <User> response.json();
                 if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
                     this.user.next(user);
                     this.menuItems.next(this.buildMenu(user));
                     this.initAuthHeaders(user.token);
@@ -64,10 +63,9 @@ export class AuthenticationService {
     }
 
     logout() {
-        localStorage.removeItem('currentUser');
+        console.log("Logging out!");
         this.menuItems.next(null);
         this.user.next(null);
-        // remove user from local storage to log user out
 
     }
 
