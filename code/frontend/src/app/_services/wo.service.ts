@@ -18,12 +18,9 @@ export class WOService {
     }
 
 
-    getOrdersByLastMod() : Observable<Order[]> {
+    getOrdersByLastMod(lastModAfter: string) : Observable<Order[]> {
 
-
-
-        //TODO form to check date
-        return this.http.get('/api/v1/orders?lastModAfter=2017-07-10', this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter, this.authService.getAuthOptions())
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 

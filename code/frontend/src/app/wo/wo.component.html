@@ -1,26 +1,56 @@
 
 
-<p-panel header="Hello World">
-  <p>Start here</p>
+<p-panel header="Zlecenia - WO">
+
+  <p-fieldset legend="Wyszukiwanie - WO">
+    <form #f="ngForm" (submit)="search()">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 20px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-10">
+            <p-calendar name="lastModDate" [(ngModel)]="lastModDate" pTooltip="Data modyfikacji" tooltipPosition="bottom"></p-calendar>
+            <!--<input type="date-local" pInputText pTooltip="Data modyfikacji" tooltipPosition="bottom"
+                   [(ngModel)]="lastModDate" name="lastModDate"  style="width: 80%;">-->
+          </div>
+          <div class="ui-grid-col-1"></div>
+        </div>
+        <div class="ui-grid-row"  style="margin-top: 15px;">
+
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-4">
+            <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
+          </div>
+          <div class="ui-grid-col-7"></div>
+        </div>
+      </div>
+
+    </form>
+  </p-fieldset>
+
+
+  <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+      <p-header>
+        <div>
+          <i class="fa fa-search"></i>
+          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        </div>
+      </p-header>
+      <p-column [sortable]="true" field="id" header="id" [style]="{'width':'40px'}" ></p-column>
+      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="statusCode" header="Status" ></p-column>
+      <p-column [sortable]="true" field="typeCode" header="Typ" ></p-column>
+      <p-column [sortable]="true" field="complexityCode" header="Zlożoność" ></p-column>
+      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
+      <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
+      <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
+      <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
+    </p-dataTable>
+
+    <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+    <br>
+
+  </div>
+
 
 </p-panel>
-
-<div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-  <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1">
-    <p-header>
-      <div>
-        <i class="fa fa-search"></i>
-        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-      </div>
-    </p-header>
-    <p-column [sortable]="true" field="id" header="id" [style]="{'width':'40px'}" ></p-column>
-    <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
-    <p-column [sortable]="true" field="statusCode" header="Status" ></p-column>
-    <p-column [sortable]="true" field="typeCode" header="Typ" ></p-column>
-    <p-column [sortable]="true" field="complexityCode" header="Zlożoność" ></p-column>
-    <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-    <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
-    <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
-    <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
-  </p-dataTable>
-</div>
