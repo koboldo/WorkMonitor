@@ -4,23 +4,27 @@
 
   <p-fieldset legend="Wyszukiwanie - WO">
     <form #f="ngForm" (submit)="search()">
+
       <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
         <div class="ui-grid-row"  style="margin-top: 20px;">
           <div class="ui-grid-col-1"></div>
-          <div class="ui-grid-col-10">
-            <p-calendar name="lastModDate" [(ngModel)]="lastModDate" pTooltip="Data modyfikacji" tooltipPosition="bottom"></p-calendar>
-            <!--<input type="date-local" pInputText pTooltip="Data modyfikacji" tooltipPosition="bottom"
-                   [(ngModel)]="lastModDate" name="lastModDate"  style="width: 80%;">-->
+          <div class="ui-grid-col-5">
+            <label for="lastModAfter">modyfikowano po</label>
+            <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+          </div>
+          <!--<div class="ui-grid-col-1"></div>-->
+          <div class="ui-grid-col-5">
+            <label for="lastModBefore">modyfikowano przed</label>
+            <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
           </div>
           <div class="ui-grid-col-1"></div>
         </div>
         <div class="ui-grid-row"  style="margin-top: 15px;">
-
-          <div class="ui-grid-col-1"></div>
-          <div class="ui-grid-col-4">
+          <div class="ui-grid-col-5"></div>
+          <div class="ui-grid-col-2">
             <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
           </div>
-          <div class="ui-grid-col-7"></div>
+          <div class="ui-grid-col-5"></div>
         </div>
       </div>
 
@@ -29,7 +33,7 @@
 
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -38,19 +42,90 @@
       </p-header>
       <p-column [sortable]="true" field="id" header="id" [style]="{'width':'40px'}" ></p-column>
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
-      <p-column [sortable]="true" field="statusCode" header="Status" ></p-column>
-      <p-column [sortable]="true" field="typeCode" header="Typ" ></p-column>
-      <p-column [sortable]="true" field="complexityCode" header="Zlożoność" ></p-column>
+      <p-column [sortable]="true" field="status" header="Status" ></p-column>
+      <p-column [sortable]="true" field="type" header="Typ" ></p-column>
+      <p-column [sortable]="true" field="complexity" header="Zlożoność" ></p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
       <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
       <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
       <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
+
+      <p-footer>
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-2">
+              <button type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj nowe"></button>
+            </div>
+
+            <div class="ui-grid-col-6"></div>
+
+            <div class="ui-grid-col-2">
+              <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+            </div>
+            <div class="ui-grid-col-1"></div>
+          </div>
+        </div>
+      </p-footer>
+
     </p-dataTable>
 
-    <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
-    <br>
-
+    <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
+
+
+  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" /></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" /></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="mdCapex">Capex</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" /></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="mdBuildingType">Typ budynku</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="mdBuildingType" [(ngModel)]="editedOrder.mdBuildingType" /></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="mdConstructionCategory">Konstrukcja</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="mdConstructionCategory" [(ngModel)]="editedOrder.mdConstructionCategory" /></div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="fa-check" (click)="save()" label="Zapisz"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" disabled="true"/></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/></div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="person" [(ngModel)]="todo" /></div>
+      </div>
+
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="fa-check" (click)="saveAssignment()" label="Przypisz"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
 
 
 </p-panel>

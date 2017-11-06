@@ -18,7 +18,6 @@ export class RegisterComponent {
     roles: SelectItem[] = [];
     offices: SelectItem[] = [];
 
-
     constructor(
         private router: Router,
         private userService: UserService,
@@ -27,20 +26,18 @@ export class RegisterComponent {
 
         this.user.roleCode = "EN";
         this.user.officeCode = "WAW";
+        this.user.isActive = "Y";
 
-        this.dictService.getRolesObs().subscribe((roles:CodeValue[]) => this.mapToSelectItem(roles, this.roles))
-        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToSelectItem(offices, this.offices))
-
-
+        this.dictService.getRolesObs().subscribe((roles:CodeValue[]) => this.mapToSelectItem(roles, this.roles));
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToSelectItem(offices, this.offices));
     }
 
     register() {
         this.loading = true;
-        this.user.isActive = 'Y';
         this.userService.create(this.user)
             .subscribe(
                 data => {
-                    this.alertService.success('Registration successful', true);
+                    this.alertService.success('Pomyślnie dodano nowego użytkownika '+this.user.login, true);
                     this.router.navigate(['']);
                 },
                 error => {

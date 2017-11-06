@@ -22,6 +22,10 @@
             <div *ngIf="f.submitted && !password?.valid" class="help-block">Haslo hmm jeszcze nie wiem</div>
         </div>
         <div class="form-group">
+            <p-radioButton name="groupname" value="Y" [(ngModel)]="user.isActive" label="Aktywny"></p-radioButton>
+            <p-radioButton name="groupname" value="N" [(ngModel)]="user.isActive" label="Nie aktywny"></p-radioButton>
+        </div>
+        <div class="form-group">
             <label for="roleCode">Funkcja w systemie</label>
             <p-selectButton name="roleCode" [options]="roles" [(ngModel)]="user.roleCode" required #roleCode="ngModel"></p-selectButton>
             <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>

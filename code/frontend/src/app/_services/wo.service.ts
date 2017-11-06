@@ -18,9 +18,9 @@ export class WOService {
     }
 
 
-    getOrdersByLastMod(lastModAfter: string) : Observable<Order[]> {
+    getOrdersByDates(lastModAfter: string, lastModBefore: string) : Observable<Order[]> {
 
-        return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter, this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter+"&lastModBefore="+lastModBefore, this.authService.getAuthOptions())
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
@@ -34,8 +34,17 @@ export class WOService {
 
                 if (order.statusCode) {
                     console.log("trying for "+order.statusCode +" from "+JSON.stringify( this.dictService.getWorkStatus(order.statusCode) ) );
-                    order.statusCode = this.dictService.getWorkStatus(order.statusCode);
+                    order.status = this.dictService.getWorkStatus(order.statusCode);
                 }
+
+                if (order.typeCode) {
+                    order.type = this.dictService.getWorkType(order.typeCode);
+                }
+
+                if (order.complexityCode) {
+                    order.complexity = this.dictService.getComplexities(order.complexityCode);
+                }
+
                 orders.push(order);
             }
         }
