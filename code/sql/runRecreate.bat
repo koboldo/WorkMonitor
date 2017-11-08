@@ -1,0 +1,1 @@
+sqlite3 -init reload.sql ..\server\work-monitor.db ".exit"

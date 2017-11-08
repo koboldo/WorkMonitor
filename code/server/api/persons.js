@@ -71,6 +71,42 @@ var persons = {
             if(result != null) res.status(201).json(rv);
             else res.status(404).end();
         });
+    },
+
+    addOrder: function(req, res) {
+        
+        var orderRelation = {};
+        orderRelation.PERSON_ID = req.params.pid;
+        orderRelation.WO_ID = req.params.oid;
+
+        persons_db.addOrder(orderRelation,function(err, result){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+
+            var rv = { created: result }
+            if(result != null) res.status(201).json(rv);
+            else res.status(404).end();
+        });
+    },
+
+    removeOrder: function(req, res) {
+        
+        var orderRelation = {};
+        orderRelation.PERSON_ID = req.params.pid;
+        orderRelation.WO_ID = req.params.oid;
+
+        persons_db.deleteOrder(orderRelation,function(err, result){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+
+            var rv = { deleted: result }
+            if(result != null) res.status(200).json(rv);
+            else res.status(404).end();
+        });
     }
 };
 

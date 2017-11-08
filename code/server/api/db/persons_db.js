@@ -102,7 +102,25 @@ var persons_db = {
             if(err) return logErrAndCall(err,cb);
             cb(null,newId);
         });
-	} 
+	},
+
+	addOrder: function(orderRelation, cb) {
+		if(logger.isDebugEnabled()) logger.debug('insert relation : ' +  util.inspect(orderRelation));
+		
+		dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
+			if(err) return logErrAndCall(err,cb);
+            cb(null,newId);
+		});
+	},
+	
+	deleteOrder: function(orderRelation, cb) {
+		if(logger.isDebugEnabled()) logger.debug('delete relation : ' +  util.inspect(orderRelation));
+
+		dbUtil.performDelete(orderRelation,'PERSON_WO',function(err,newId){
+			if(err) return logErrAndCall(err,cb);
+            cb(null,newId);
+		});
+	}
 };
 
 module.exports = persons_db;

@@ -51,5 +51,12 @@
 			"COMPLEXITY": "complexity",
 			"PRICE": "price"
 		}
+	},
+	"timeSheet": {
+		"sqlToJson": {
+			"PERSON_ID": "personId",
+			"WO_ID": "orderId",
+			"USED_TIME": "usedTime"
+		}
 	}
 }

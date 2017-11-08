@@ -12,7 +12,7 @@ var db_util = {
     getDatabase: function() {
         var db = new sqlite3.Database('./work-monitor.db');
         db.serialize(function() {
-            db.run( 'PRAGMA journal_mode = WAL;' );
+            db.run( 'PRAGMA journal_mode = DELETE;' );
             db.run( 'PRAGMA busy_timeout = 1000;' );
         });
         return db;
@@ -50,6 +50,22 @@ var db_util = {
         });
     },
 
+    performDelete: function(idObj, tableName, cb) {
+        var db = db_util.getDatabase();
+        var deleteStr = db_util.prepareDelete(idObj,'PERSON_WO');
+        var deleteStat = db.prepare(deleteStr);
+        deleteStat.run(function(err, result){
+            deleteStat.finalize();
+            db.close();
+            if(err) {
+                logErrAndCall(err,cb);
+            } else {
+                if(logger.isDebugEnabled()) logger.debug('changes caused by delete: ' + this.changes);
+                cb(null,this.changes);
+            }
+        });
+    },
+    
     prepareInsert: function(object, tableName) {
         var sqlCols = '';
         var sqlVals = '';
@@ -64,7 +80,7 @@ var db_util = {
         if(logger.isDebugEnabled()) logger.debug('db insert: ' + insertStr);
         return insertStr;
     },
-    
+
     // BEWARE UPDATING WORK_ORDER_HIST TABLE ...
     prepareUpdate: function(idObj, object, tableName) {
         var updateStr = '';
@@ -78,10 +94,23 @@ var db_util = {
         }
     
         var updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
-        if(logger.isDebugEnabled()) logger.debug('db insert: ' + updateStr);
+        if(logger.isDebugEnabled()) logger.debug('db update: ' + updateStr);
         return updateStr;
     },
     
+    prepareDelete: function(idObj, tableName) {
+
+        var deleteStr = '';
+        for(var idKey in idObj) {
+            if(deleteStr.length > 0) deleteStr += ' AND ';
+            deleteStr += idKey + ' = ' + idObj[idKey];
+        }
+        
+        deleteStr = 'DELETE FROM ' + tableName + ' WHERE ' + deleteStr;
+        if(logger.isDebugEnabled()) logger.debug('db delete: ' + deleteStr);
+        return deleteStr;
+    },
+
     prepareFilters: function(params,queryFilters) {
         if(params == null || Object.getOwnPropertyNames(params).length == 0) {
             return "";

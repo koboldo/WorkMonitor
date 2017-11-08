@@ -5,12 +5,16 @@ var persons = require('./persons');
 var orders = require('./orders');
 var codes = require('./codes');
 var workTypes = require('./workTypes');
+var timeSheets = require('./timeSheets');
 
 //TODO: validations - for create and update
 router.get('/v1/persons', persons.readAll);
 router.post('/v1/persons', persons.create);
 router.get('/v1/persons/:id', persons.read);
 router.put('/v1/persons/:id', persons.update);
+
+router.post('/v1/persons/:pid/order/:oid', persons.addOrder);
+router.delete('/v1/persons/:pid/order/:oid', persons.removeOrder);
 
 router.get('/v1/orders', orders.readAll);
 router.post('/v1/orders', orders.create);
@@ -26,6 +30,9 @@ router.put('/v1/workTypes/:id', workTypes.update);
 
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);
+
+router.get('/v1/timeSheets/:personId/:orderId', timeSheets.read);
+router.post('/v1/timeSheets/:personId/:orderId', timeSheets.create);
 
 module.exports = router;
 
