@@ -14,38 +14,54 @@ export class DictService {
     private workStatuses: CodeValue[];
     private workTypes: CodeValue[];
     private complexities: CodeValue[];
-
+    private roles: CodeValue[];
+    private offices: CodeValue[];
+    private initialized: boolean = false;
 
     constructor(private http: Http, private authService: AuthenticationService) {
     }
 
     // call after login!
     public init(): void {
-        this.workStatuses = [];
-        this.workTypes = [];
-        this.complexities = [];
+        if (this.initialized === false) {
 
-        this.http.get('/api/v1/codes/WORK_STATUS', this.authService.getAuthOptions())
-            .subscribe((response: Response) => this.setCodes(response.json(), this.workStatuses));
+            console.log("Initializing dictService!");
 
-        this.http.get('/api/v1/codes/WORK_TYPE', this.authService.getAuthOptions())
-            .subscribe((response: Response) => this.setCodes(response.json(), this.workTypes));
+            this.workStatuses = [];
+            this.workTypes = [];
+            this.complexities = [];
+            this.roles = [];
+            this.offices = [];
 
-        this.http.get('/api/v1/codes/COMPLEXITY', this.authService.getAuthOptions())
-            .subscribe((response: Response) => this.setCodes(response.json(), this.complexities));
+            this.http.get('/api/v1/codes/WORK_STATUS', this.authService.getAuthOptions())
+                .subscribe((response:Response) => this.setCodes(response.json(), this.workStatuses));
+
+            this.http.get('/api/v1/codes/WORK_TYPE', this.authService.getAuthOptions())
+                .subscribe((response:Response) => this.setCodes(response.json(), this.workTypes));
+
+            this.http.get('/api/v1/codes/COMPLEXITY', this.authService.getAuthOptions())
+                .subscribe((response:Response) => this.setCodes(response.json(), this.complexities));
+
+            this.http.get('/api/v1/codes/ROLE', this.authService.getAuthOptions())
+                .subscribe((response:Response) => this.setCodes(response.json(), this.roles));
+
+            this.http.get('/api/v1/codes/OFFICE', this.authService.getAuthOptions())
+                .subscribe((response:Response) => this.setCodes(response.json(), this.offices))
+        }
+        this.initialized = true;
 
     }
 
     public getRolesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/ROLE', this.authService.getAuthOptions()).map((response: Response) => this.mapRoles(response.json()))
+        return  this.http.get('/api/v1/codes/ROLE', this.authService.getAuthOptions()).map((response: Response) => this.mapCodeValue(response.json()))
     }
 
     public getOfficesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/OFFICE', this.authService.getAuthOptions()).map((response: Response) => this.mapRoles(response.json()))
+        return  this.http.get('/api/v1/codes/OFFICE', this.authService.getAuthOptions()).map((response: Response) => this.mapCodeValue(response.json()))
     }
 
 
-    private mapRoles(response:any):CodeValue[] {
+    private mapCodeValue(response:any):CodeValue[] {
         let result: CodeValue[] = [];
         if (response.list && response.list.length > 0) {
             for (let code of response.list) {
@@ -66,13 +82,36 @@ export class DictService {
         return this.getValue(key, roles);
     }
 
+    public getRoles(): CodeValue[] {
+        return this.roles;
+    }
+
+    public getRole(key: string): string {
+        return this.getValue(key, this.roles);
+    }
+
+    public getOffices(): CodeValue[] {
+        return this.offices;
+    }
+
+    public getOffice(key: string): string {
+        return this.getValue(key, this.offices);
+    }
 
     public getWorkStatus(key: string): string {
         return this.getValue(key, this.workStatuses);
     }
 
+    public getWorkStatuses(): CodeValue[] {
+        return this.workStatuses;
+    }
+
     public getWorkType(key: string): string {
         return this.getValue(key, this.workTypes);
+    }
+
+    public getWorkTypes(): CodeValue[] {
+        return this.workTypes;
     }
 
     public getComplexities(key: string): string {

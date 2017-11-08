@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/switchMap';
+
+
+
 import { Order } from '../_models/order';
 import { WOService } from '../_services/wo.service';
+import { UserService } from '../_services/user.service';
+import { DictService } from '../_services/dict.service';
 import { MenuItem } from 'primeng/primeng';
+import { User } from '../_models/index';
+import { CodeValue } from '../_models/code';
 
 @Component({
   selector: 'app-wo',
@@ -11,12 +19,13 @@ import { MenuItem } from 'primeng/primeng';
 })
 export class WoComponent implements OnInit {
 
+  /* search and selection */
   lastModAfter: Date;
   lastModBefore: Date;
   orders: Order[];
   selectedOrder: Order;
 
-
+  /* edit */
   editedOrder: Order;
   newOrder: boolean;
   displayEditDialog: boolean;
@@ -24,7 +33,22 @@ export class WoComponent implements OnInit {
   items: MenuItem[];
 
 
-  constructor(private woService: WOService) {
+  /* autocompletion assignedEngineer */
+  engineers: User[] = [];
+  suggestedEngineers: SearchEnginner[];
+  assignedEngineer: SearchEnginner;
+
+  /* autocompletion workType */
+  workTypes: CodeValue[] = [];
+  suggestedTypes: CodeValue[];
+  workType: CodeValue;
+
+  /* autocompletion statuses */
+  statuses: CodeValue[] = [];
+  suggestedStatuses: CodeValue[];
+  status: CodeValue;
+
+  constructor(private woService: WOService, private userService: UserService, private dictService: DictService) {
     this.lastModAfter = this.getCurrentDateDayOperation(-61);
     this.lastModBefore = this.getCurrentDateDayOperation(1);
     this.items = [
@@ -36,6 +60,48 @@ export class WoComponent implements OnInit {
 
   ngOnInit() {
     this.search();
+    this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+
+    this.workTypes = this.dictService.getWorkTypes();
+    this.statuses = this.dictService.getWorkStatuses();
+  }
+
+  suggestStatus(event) {
+    this.suggestedStatuses = [];
+    if (this.statuses && this.statuses.length > 0) {
+      for(let status of this.statuses) {
+        if(status.paramChar.indexOf(event.query) > -1) {
+          this.suggestedStatuses.push(status);
+        }
+      }
+    }
+    console.log("suggestedStatuses: "+JSON.stringify(this.suggestedStatuses));
+  }
+
+  suggestType(event) {
+    this.suggestedTypes = [];
+    if (this.workTypes && this.workTypes.length > 0) {
+      for(let workType of this.workTypes) {
+        if(workType.paramChar.indexOf(event.query) > -1) {
+          this.suggestedTypes.push(workType);
+        }
+      }
+    }
+    console.log("suggestedTypes: "+JSON.stringify(this.suggestedTypes));
+  }
+
+  suggestEngineer(event) {
+    this.suggestedEngineers = [];
+    if (this.engineers && this.engineers.length > 0) {
+      for(let engineer of this.engineers) {
+        let suggestion: string = JSON.stringify(engineer);
+        if(suggestion.indexOf(event.query) > -1) {
+          let displayName: string = engineer.firstName +" "+engineer.lastName+" ("+engineer.role+")";
+          this.suggestedEngineers.push(new SearchEnginner(displayName, engineer));
+        }
+      }
+    }
+    console.log("suggestedEngineers "+JSON.stringify(this.suggestedEngineers));
   }
 
   search() {
@@ -58,14 +124,20 @@ export class WoComponent implements OnInit {
   }
 
   add() {
-    this.editedOrder = new Order(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this.editedOrder = new Order(null, null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null, null, null);
+    this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
     this.newOrder = true;
     this.displayEditDialog = true;
   }
 
   edit(): void {
+
     console.log("editing!" + JSON.stringify(this.selectedOrder));
-    this.editedOrder = this.selectedOrder;
+    //initial values based on selectedOrder for form
+    this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
+    this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
+
+    this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
     this.newOrder = false;
     this.displayEditDialog = true;
   }
@@ -77,25 +149,53 @@ export class WoComponent implements OnInit {
   }
 
   saveAssignment() {
-    console.log("saving assignment!" + JSON.stringify(this.editedOrder));
+    console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for "+JSON.stringify(this.assignedEngineer.engineer));
     this.displayAssignDialog = false;
+    //todo backend
   }
 
-  save() {
-    console.log("saving!" + JSON.stringify(this.editedOrder));
+  saveOrder() {
+
+    this.editedOrder.typeCode = this.newOrder? "OP": this.workType.code;
+    this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
+    this.editedOrder.statusCode = this.status.code;
+    this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
 
     if(this.newOrder) {
-      console.log("This is new order");
-      this.orders.push(this.editedOrder);
+      console.log("saving new!" + JSON.stringify(this.editedOrder));
+      this.woService.addOrder(this.editedOrder).subscribe(created => this.refreshTable(created, this.newOrder))
+
+
     } else {
-      console.log("This is changing order");
-      this.orders[this.findSelectedOrderIndex()] = this.editedOrder;
+      console.log("changing!" + JSON.stringify(this.editedOrder));
+      this.woService.updateOrder(this.editedOrder).subscribe(updated => this.refreshTable(updated, this.newOrder))
+
     }
 
-    this.editedOrder = null;
-    this.displayEditDialog = false;
+
 
     //todo save backend
+  }
+
+  refreshTable(result: number, newOrder: boolean) {
+    if (newOrder && result && result > 0) {
+      this.editedOrder.id = result;
+      this.orders.push(this.editedOrder);
+      this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
+      this.editedOrder = null;
+      this.displayEditDialog = false;
+      return;
+    }
+
+    if (result === 1 && !newOrder) {
+      this.orders[this.findSelectedOrderIndex()] = this.editedOrder;
+      this.orders =  JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
+      this.editedOrder = null;
+      this.displayEditDialog = false;
+      return;
+    }
+
+    console.log("todo show alert something went wrong!");
   }
 
   findSelectedOrderIndex(): number {
@@ -103,3 +203,12 @@ export class WoComponent implements OnInit {
   }
 
 }
+
+export class SearchEnginner {
+  constructor(
+      public displayName: string,
+      public engineer: User
+  ){}
+}
+
+

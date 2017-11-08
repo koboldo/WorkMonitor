@@ -1,4 +1,6 @@
 export class Order {
+	lastModDate: string;
+
 	constructor(
 		public id: number,
 		public workNo: string,
@@ -16,3 +18,4 @@ export class Order {
 		public price: number
 	){}
 }
+
