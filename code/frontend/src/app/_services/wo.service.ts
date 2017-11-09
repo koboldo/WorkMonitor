@@ -24,7 +24,26 @@ export class WOService {
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
+    updateOrder(order: Order) : Observable<number> {
+        return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)), this.authService.getAuthOptions())
+            .map((response: Response) => response.json().updated)
+    }
+
+    addOrder(order: Order) : Observable<number> {
+        return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)), this.authService.getAuthOptions())
+            .map((response: Response) => response.json().created)
+    }
+
     // private helper methods
+
+    private getStrippedOrder(order: Order): Order {
+        let strippedOrder:Order = JSON.parse(JSON.stringify(order));
+        strippedOrder.complexity = undefined;
+        strippedOrder.status = undefined;
+        strippedOrder.type = undefined;
+        strippedOrder.lastModDate = undefined;
+        return strippedOrder;
+    }
 
     private getWorkOrders(response:any):Order[] {
         let orders : Order[] = [];
@@ -41,8 +60,10 @@ export class WOService {
                     order.type = this.dictService.getWorkType(order.typeCode);
                 }
 
-                if (order.complexityCode) {
-                    order.complexity = this.dictService.getComplexities(order.complexityCode);
+                if (order.complexityCode && order.complexityCode === "HDR") {
+                    order.complexity = "fa-life-bouy";
+                } else {
+                    order.complexity = "fa-handshake-o";
                 }
 
                 orders.push(order);

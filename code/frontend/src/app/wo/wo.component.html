@@ -9,12 +9,12 @@
         <div class="ui-grid-row"  style="margin-top: 20px;">
           <div class="ui-grid-col-1"></div>
           <div class="ui-grid-col-5">
-            <label for="lastModAfter">modyfikowano po</label>
+            <label for="lastModAfter">zmodyfikowano od</label>
             <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
           </div>
           <!--<div class="ui-grid-col-1"></div>-->
           <div class="ui-grid-col-5">
-            <label for="lastModBefore">modyfikowano przed</label>
+            <label for="lastModBefore">zmodyfikowano do</label>
             <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
           </div>
           <div class="ui-grid-col-1"></div>
@@ -40,11 +40,15 @@
           <input #gb type="text" pInputText size="50" placeholder="Filtruj">
         </div>
       </p-header>
-      <p-column [sortable]="true" field="id" header="id" [style]="{'width':'40px'}" ></p-column>
+      <p-column [sortable]="true" field="id" header="id" [style]="{'width':'0px'}" ></p-column>
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
-      <p-column [sortable]="true" field="complexity" header="Zlożoność" ></p-column>
+      <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'text-align':'center'}">
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <button type="button" pButton icon="{{order[col.field]}}"></button>
+        </ng-template>
+      </p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
       <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
       <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
@@ -74,51 +78,64 @@
   </div>
 
 
-  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true">
+  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
-      <div class="ui-grid-row">
+      <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
         <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" /></div>
       </div>
-      <div class="ui-grid-row">
+      <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" /></div>
+        <div class="ui-grid-col-8">
+            <p-autoComplete id="type" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" forceSelection="true"></p-autoComplete>
+        </div>
       </div>
-      <div class="ui-grid-row">
+      <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 20px;"><!-- editing status is not allowed for new orders-->
+            <div class="ui-grid-col-4"><label for="status">Status</label></div>
+            <div class="ui-grid-col-8">
+                <p-autoComplete id="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" forceSelection="true"></p-autoComplete>
+            </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="mdCapex">Capex</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" /></div>
       </div>
-      <div class="ui-grid-row">
+      <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="mdBuildingType">Typ budynku</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdBuildingType" [(ngModel)]="editedOrder.mdBuildingType" /></div>
       </div>
-      <div class="ui-grid-row">
+      <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="mdConstructionCategory">Konstrukcja</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdConstructionCategory" [(ngModel)]="editedOrder.mdConstructionCategory" /></div>
       </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="button" pButton icon="fa-check" (click)="save()" label="Zapisz"></button>
+        <button type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
       </div>
     </p-footer>
   </p-dialog>
 
-  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true">
+  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
-      <div class="ui-grid-row">
-        <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" disabled="true"/></div>
+        <div class="ui-grid-row" style="margin-top: 20px;">
+            <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
+            <!--<div class="ui-grid-col-8"><input pInputText id="person" [(ngModel)]="todo" /></div>-->
+            <p-autoComplete id="person" [(ngModel)]="assignedEngineer" [suggestions]="suggestedEngineers" (completeMethod)="suggestEngineer($event)" [dropdown]="true" field="displayName" forceSelection="true"></p-autoComplete>
+        </div>
+        <div class="ui-grid-row" style="margin-top: 20px;">
+            <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" disabled="true"/></div>
+        </div>
+        <div class="ui-grid-row" style="margin-top: 20px;">
+            <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/></div>
+        </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="complexity">Złożoność</label></div>
+        <div class="ui-grid-col-8">
+          <button type="button" id="complexity" pButton icon="{{editedOrder.complexity}}"></button></div>
       </div>
-      <div class="ui-grid-row">
-        <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/></div>
-      </div>
-      <div class="ui-grid-row">
-        <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="person" [(ngModel)]="todo" /></div>
-      </div>
-
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
