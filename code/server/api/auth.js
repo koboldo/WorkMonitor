@@ -10,7 +10,7 @@ var dbUtil = require('./db/db_util');
 
 var logger = require('./logger').getLogger('monitor'); 
 
-var authQuery = 'select ID, LOGIN, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where LOGIN = ? and PASSWORD = ?';
+var authQuery = 'select ID, EMAIL, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where EMAIL = ? and PASSWORD = ?';
 
 var secret;
 
@@ -59,7 +59,7 @@ var auth = {
                                 secret,
                                 { expiresIn: 60 * 10 });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
-                res.json({username: userRow.LOGIN, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
+                res.json({username: userRow.EMAIL, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
             }
         });
         
