@@ -14,7 +14,10 @@ var orders = {
                 return;
             }
             
-            var orders = mapper.mapList(mapper.order.mapToJson, orderRows);            
+            var orders = mapper.mapList(mapper.order.mapToJson, orderRows);
+            for(var i = 0; i < orders.list.length; i++) {
+                if(orders.list[i].assignee) orders.list[i].assignee = orders.list[i].assignee.split("|");
+            }
             res.json(orders);
         });
     },
@@ -30,6 +33,7 @@ var orders = {
             
             if(orderRow) {
                 var order = mapper.order.mapToJson(orderRow);
+                if(order.assignee) order.assignee = order.assignee.split("|");
                 res.json(order);
             } else {
                 res.status(404).end();
