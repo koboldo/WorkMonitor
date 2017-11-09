@@ -31,7 +31,8 @@
 			"PRICE": "price",
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
-			"LAST_ASSIGNMENT": "lastAssignment"
+			"LAST_ASSIGNMENT": "lastAssignment",
+			"ASSIGNEE": "assignee"
 		}
 	},
 	"code": {
