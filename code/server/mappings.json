@@ -6,7 +6,7 @@
 			"LAST_NAME": "lastName",
 			"OFFICE_CODE": "officeCode",
 			"ROLE_CODE": "roleCode",
-			"LOGIN": "login",
+			"EMAIL": "email",
 			"PASSWORD": "password",
 			"IS_ACTIVE": "isActive",
 			"LAST_MOD": "lastMod",
@@ -26,8 +26,12 @@
 			"MD_CAPEX": "mdCapex",
 			"MD_BUILDING_TYPE": "mdBuildingType", 
 			"MD_CONSTRUCTION_CATEGORY": "mdConstructionCategory",
+			"ADDRESS": "address",
+			"PROTOCOL_NO": "protocolNo",
 			"PRICE": "price",
-			"LAST_MOD": "lastModDate"
+			"LAST_MOD": "lastModDate",
+			"CREATED": "creationDate",
+			"LAST_ASSIGNMENT": "lastAssignment"
 		}
 	},
 	"code": {
