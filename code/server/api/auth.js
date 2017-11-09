@@ -26,7 +26,7 @@ var auth = {
     
     authenticate: function(req, res) {
     	if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
-        var user = req.body.username;
+        var user = req.body.email;
         var passwd = req.body.password;
         var passwdSha1 = sha1(passwd);
         
@@ -59,7 +59,7 @@ var auth = {
                                 secret,
                                 { expiresIn: 60 * 10 });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
-                res.json({username: userRow.EMAIL, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
+                res.json({email: userRow.EMAIL, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
             }
         });
         
