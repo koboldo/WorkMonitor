@@ -28,10 +28,10 @@ export class AuthenticationService {
     }
 
 
-    login(username: string, password: string) {
+    login(email: string, password: string) {
 
         let data : User = <User> {
-            username: username,
+            email: email,
             password: password
         };
 

@@ -28,8 +28,10 @@ export class WoComponent implements OnInit {
   /* edit */
   editedOrder: Order;
   newOrder: boolean;
+  isNewOrderOwner: boolean
   displayEditDialog: boolean;
   displayAssignDialog: boolean;
+  displayWrongStateForAssingmentDialog: boolean
   items: MenuItem[];
 
 
@@ -52,9 +54,10 @@ export class WoComponent implements OnInit {
     this.lastModAfter = this.getCurrentDateDayOperation(-61);
     this.lastModBefore = this.getCurrentDateDayOperation(1);
     this.items = [
-      {label: 'Przypisz', icon: 'fa-share', command: (event) => this.assign()},
-      {label: 'Dodaj', icon: 'fa-plus', command: (event) => this.add()},
-      {label: 'Edycja', icon: 'fa-pencil-square-o', command: (event) => this.edit()}
+      {label: 'Przypisz wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
+      {label: 'Dopisz wykonawce', icon: 'fa-share', command: (event) => this.assign(false)},
+      {label: 'Edycja zlecenia', icon: 'fa-pencil-square-o', command: (event) => this.edit()},
+      {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', command: (event) => this.add()}
     ];
   }
 
@@ -64,6 +67,13 @@ export class WoComponent implements OnInit {
 
     this.workTypes = this.dictService.getWorkTypes();
     this.statuses = this.dictService.getWorkStatuses();
+  }
+
+  search() {
+    this.woService.getOrdersByDates(
+        this.lastModAfter.toISOString().substring(0, 10),
+        this.lastModBefore.toISOString().substring(0, 10)
+    ).subscribe(orders => this.orders = orders);
   }
 
   suggestStatus(event) {
@@ -104,27 +114,29 @@ export class WoComponent implements OnInit {
     console.log("suggestedEngineers "+JSON.stringify(this.suggestedEngineers));
   }
 
-  search() {
-    this.woService.getOrdersByDates(
-        this.lastModAfter.toISOString().substring(0, 10),
-        this.lastModBefore.toISOString().substring(0, 10)
-    ).subscribe(orders => this.orders = orders);
-  }
-
   onRowSelect(event) {
     console.log("selected row!" + JSON.stringify(this.selectedOrder));
     //this.activites = this.processService.fetchProcess(this.selectedProcess);
   }
 
-  assign(): void {
+  assign(isNewOrderOwner: boolean): void {
     console.log("assigning!" + JSON.stringify(this.selectedOrder));
-    this.newOrder = false;
-    this.editedOrder = this.selectedOrder;
-    this.displayAssignDialog = true;
+    if (this.selectedOrder.statusCode === "CO" && isNewOrderOwner) {
+      this.displayWrongStateForAssingmentDialog = true;
+    } else {
+      this.isNewOrderOwner = isNewOrderOwner;
+      this.newOrder = false;
+      this.editedOrder = this.selectedOrder;
+      this.displayAssignDialog = true;
+    }
+  }
+
+  closeWrongStateForAssignment() {
+    this.displayWrongStateForAssingmentDialog = false;
   }
 
   add() {
-    this.editedOrder = new Order(null, null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null, null, null);
+    this.editedOrder = new Order(null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null, null, null, null);
     this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
     this.newOrder = true;
     this.displayEditDialog = true;
@@ -151,7 +163,20 @@ export class WoComponent implements OnInit {
   saveAssignment() {
     console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for "+JSON.stringify(this.assignedEngineer.engineer));
     this.displayAssignDialog = false;
-    //todo backend
+    this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner)
+        .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder));
+  }
+
+  private updateOrderStatus(created: number, isNewOrderOwner:boolean, order: Order):any {
+    if (!created) {
+      console.log("Assignment problem! "+created);
+    }
+    else if (isNewOrderOwner && order.statusCode != "AS") { //update status
+      console.log("Setting status to AS, current "+order.statusCode);
+      order.statusCode = "AS";
+      order.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
+      this.woService.updateOrder(order).subscribe(updated => this.refreshTable(updated, false));
+    }
   }
 
   saveOrder() {
@@ -164,17 +189,10 @@ export class WoComponent implements OnInit {
     if(this.newOrder) {
       console.log("saving new!" + JSON.stringify(this.editedOrder));
       this.woService.addOrder(this.editedOrder).subscribe(created => this.refreshTable(created, this.newOrder))
-
-
     } else {
       console.log("changing!" + JSON.stringify(this.editedOrder));
       this.woService.updateOrder(this.editedOrder).subscribe(updated => this.refreshTable(updated, this.newOrder))
-
     }
-
-
-
-    //todo save backend
   }
 
   refreshTable(result: number, newOrder: boolean) {
@@ -201,7 +219,6 @@ export class WoComponent implements OnInit {
   findSelectedOrderIndex(): number {
     return this.orders.indexOf(this.selectedOrder);
   }
-
 }
 
 export class SearchEnginner {

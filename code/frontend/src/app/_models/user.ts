@@ -1,7 +1,6 @@
 ﻿export class User {
     public id: number;
-    public login: string;    //person
-    public username: string; //login
+    public email: string;    //person
     public password: string;
     public firstName: string;
     public lastName: string;
@@ -20,7 +19,7 @@
  "lastName": "Freeman",
  "officeCode": "GDA",
  "roleCode": "EN",
- "login": "mfreeman",
+ "email": "mfreeman@gmail.com",
  "isActive": "Y"
  }
 

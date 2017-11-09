@@ -1,8 +1,11 @@
 export class Order {
+	id: number;
 	lastModDate: string;
+	creationDate: string;
+	protocolNo: string;
+
 
 	constructor(
-		public id: number,
 		public workNo: string,
 		public statusCode: string,
 		public status: string,
@@ -15,7 +18,8 @@ export class Order {
 		public mdCapex: string,
 		public mdBuildingType: string,
 		public mdConstructionCategory: string,
-		public price: number
+		public price: number,
+		public address: string
 	){}
 }
 

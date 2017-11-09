@@ -52,8 +52,13 @@
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
       <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
       <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
+      <p-column [sortable]="true" field="price" header="Wartość"></p-column>
+      <p-column [sortable]="true" field="address" header="Adres"></p-column>
+      <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
+      <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
+      <p-column [sortable]="true" field="description" header="Opis"></p-column>
       <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
-
+      <p-column [sortable]="true" field="creationDate" header="Data utworzenia"></p-column>
       <p-footer>
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
           <div class="ui-grid-row"  style="margin-top: 15px;">
@@ -108,12 +113,38 @@
         <div class="ui-grid-col-4"><label for="mdConstructionCategory">Konstrukcja</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdConstructionCategory" [(ngModel)]="editedOrder.mdConstructionCategory" /></div>
       </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="address">Adres</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="address" [(ngModel)]="editedOrder.address" /></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="comment" [(ngModel)]="editedOrder.comment" /></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="description">Opis</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="editedOrder.description" /></div>
+      </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
       </div>
     </p-footer>
+  </p-dialog>
+
+  <p-dialog header="Błąd przypisania" [(visible)]="displayWrongStateForAssingmentDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        Nie można przypisac zlecenia w stanie {{selectedOrder?.status}}!
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="fa-check" (click)="closeWrongStateForAssignment()" label="Zamknij"></button>
+      </div>
+    </p-footer>
+
   </p-dialog>
 
   <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
