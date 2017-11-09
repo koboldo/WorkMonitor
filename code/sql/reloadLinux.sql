@@ -1,0 +1,5 @@
+.print 'Recreating db elements ...'
+.read './setup_db.sql'
+.print 'Loading test data ...'
+.read './testdata.sql'
+.print 'Done.'
