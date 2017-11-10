@@ -3,7 +3,7 @@ export class Order {
 	lastModDate: string;
 	creationDate: string;
 	protocolNo: string;
-
+	assignee: string[];
 
 	constructor(
 		public workNo: string,

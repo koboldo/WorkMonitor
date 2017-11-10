@@ -121,7 +121,7 @@ export class WoComponent implements OnInit {
 
   assign(isNewOrderOwner: boolean): void {
     console.log("assigning!" + JSON.stringify(this.selectedOrder));
-    if (this.selectedOrder.statusCode === "CO" && isNewOrderOwner) {
+    if (isNewOrderOwner && this.selectedOrder.statusCode === "CO") {
       this.displayWrongStateForAssingmentDialog = true;
     } else {
       this.isNewOrderOwner = isNewOrderOwner;
@@ -164,19 +164,20 @@ export class WoComponent implements OnInit {
     console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for "+JSON.stringify(this.assignedEngineer.engineer));
     this.displayAssignDialog = false;
     this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner)
-        .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder));
+        .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.engineer));
   }
 
-  private updateOrderStatus(created: number, isNewOrderOwner:boolean, order: Order):any {
+  private updateOrderStatus(created: number, isNewOrderOwner:boolean, order: Order, engineer: User):void {
     if (!created) {
-      console.log("Assignment problem! "+created);
+      console.log("Assignment problem! "+created); //todo show dialog in notification service
+      return;
     }
     else if (isNewOrderOwner && order.statusCode != "AS") { //update status
       console.log("Setting status to AS, current "+order.statusCode);
       order.statusCode = "AS";
-      order.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
-      this.woService.updateOrder(order).subscribe(updated => this.refreshTable(updated, false));
     }
+
+    this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
   }
 
   saveOrder() {
@@ -188,27 +189,28 @@ export class WoComponent implements OnInit {
 
     if(this.newOrder) {
       console.log("saving new!" + JSON.stringify(this.editedOrder));
-      this.woService.addOrder(this.editedOrder).subscribe(created => this.refreshTable(created, this.newOrder))
+      this.woService.addOrder(this.editedOrder).subscribe(createdOrder => this.refreshTable(createdOrder, this.newOrder))
     } else {
       console.log("changing!" + JSON.stringify(this.editedOrder));
-      this.woService.updateOrder(this.editedOrder).subscribe(updated => this.refreshTable(updated, this.newOrder))
+      this.woService.updateOrder(this.editedOrder).subscribe(updatedOrder => this.refreshTable(updatedOrder, this.newOrder))
     }
   }
 
-  refreshTable(result: number, newOrder: boolean) {
-    if (newOrder && result && result > 0) {
-      this.editedOrder.id = result;
-      this.orders.push(this.editedOrder);
+  refreshTable(order: Order, newOrder: boolean) {
+    console.log("Refreshing table with order "+JSON.stringify(order));
+
+    if (newOrder && order && order.id > 0) {
+      this.orders.push(order);
       this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
-      this.editedOrder = null;
       this.displayEditDialog = false;
       return;
     }
 
-    if (result === 1 && !newOrder) {
-      this.orders[this.findSelectedOrderIndex()] = this.editedOrder;
+    if (!newOrder && order.id > 0) {
+      let index: number = this.findSelectedOrderIndex(order);
+      console.log("refresh index: "+index);
+      this.orders[index] = order;
       this.orders =  JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
-      this.editedOrder = null;
       this.displayEditDialog = false;
       return;
     }
@@ -216,8 +218,15 @@ export class WoComponent implements OnInit {
     console.log("todo show alert something went wrong!");
   }
 
-  findSelectedOrderIndex(): number {
-    return this.orders.indexOf(this.selectedOrder);
+  findSelectedOrderIndex(order: Order): number {
+    let index: number = 0;
+    for (let tabOrder of this.orders) {
+      if (order.id === tabOrder.id) {
+        return index;
+      }
+      index++;
+    }
+    return -1;
   }
 }
 
