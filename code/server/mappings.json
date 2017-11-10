@@ -60,7 +60,7 @@
 	"timeSheet": {
 		"sqlToJson": {
 			"PERSON_ID": "personId",
-			"WO_ID": "orderId",
+			"WORK_DATE": "workDate",
 			"USED_TIME": "usedTime"
 		}
 	}

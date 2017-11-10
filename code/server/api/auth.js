@@ -10,7 +10,7 @@ var dbUtil = require('./db/db_util');
 
 var logger = require('./logger').getLogger('monitor'); 
 
-var authQuery = 'select ID, EMAIL, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where EMAIL = ? and PASSWORD = ?';
+var authQuery = 'select ID, EMAIL, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where EMAIL = ? and PASSWORD = ? and IS_ACTIVE = "Y"';
 
 var secret;
 

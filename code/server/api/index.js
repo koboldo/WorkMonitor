@@ -31,8 +31,9 @@ router.put('/v1/workTypes/:id', workTypes.update);
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);
 
-router.get('/v1/timeSheets/:personId/:orderId', timeSheets.read);
-router.post('/v1/timeSheets/:personId/:orderId', timeSheets.create);
+router.post('/v1/timeSheets/:personId', timeSheets.create);
+router.get('/v1/timeSheets/:personId', timeSheets.read);
+router.get('/v1/timeSheets', timeSheets.read);
 
 module.exports = router;
 

@@ -7,6 +7,9 @@ var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
 var logErrAndCall = require('../local_util').logErrAndCall;
 
+var columnsToSkip = ['ID','LAST_MOD','CREATED'];
+var columnsWithoutQuote = ['WORK_DATE'];
+
 var db_util = {
     
     getDatabase: function() {
@@ -70,10 +73,16 @@ var db_util = {
         var sqlCols = '';
         var sqlVals = '';
         for(var col in object) {
+            if(columnsToSkip.indexOf(col) > -1 ) continue;
+
             if(sqlCols.length > 0) sqlCols += ', ';
             if(sqlVals.length > 0) sqlVals += ', ';
             sqlCols +=  col;
-            sqlVals += '"' + object[col] + '"';
+
+
+            // sqlVals += '"' + object[col] + '"';
+            if(columnsWithoutQuote.indexOf(col) > -1) sqlVals += object[col];
+            else sqlVals += '"' + object[col] + '"';
         }
 
         var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
@@ -85,15 +94,19 @@ var db_util = {
     prepareUpdate: function(idObj, object, tableName) {
         var updateStr = '';
         for(var col in object) {
-            if(col == 'ID') continue;
+            if(columnsToSkip.indexOf(col) > -1 ) continue;
             
             if(updateStr.length > 0) {
                 updateStr += ', ';
             }
-            updateStr += col + '="' + object[col] + '"';
+
+            // updateStr += col + '="' + object[col] + '"';
+            updateStr += col + '=';
+            if(columnsWithoutQuote.indexOf(col) > -1) updateStr += object[col];
+            else updateStr += '"' + object[col] + '"';
         }
     
-        var updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
+        updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
         if(logger.isDebugEnabled()) logger.debug('db update: ' + updateStr);
         return updateStr;
     },
@@ -119,7 +132,7 @@ var db_util = {
         var filterText = " WHERE ";
         for(var filter in queryFilters) {
             if(params[filter]) {
-                if(filterText.length > 7) filterText += " AND "
+                if(filterText.length > 7) filterText += " AND ";
                 
                 var obj = {};
                 obj[filter] = params[filter];
@@ -129,6 +142,22 @@ var db_util = {
         return filterText;
     },
     
+    prepareFiltersByInsertion: function(query,params,queryFilters) {
+        var filterInserts = {};
+        for(var filter in queryFilters) {
+            var filterVal = '';
+            if(params[filter]) {
+                var obj = {};
+                obj[filter] = params[filter];
+                filterVal = sprintf(queryFilters[filter], obj);
+            }
+            filterInserts[filter] = filterVal;
+        }
+        console.log(JSON.stringify(filterInserts));
+        var rv = sprintf(query,filterInserts);
+        return rv;
+    },
+
     getRowsIds: function(statement, rowId, cb) {
 		statement.bind(rowId).all(function(err,rows){
 			var ids = [];

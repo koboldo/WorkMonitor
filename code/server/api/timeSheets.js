@@ -4,17 +4,23 @@ var timeSheets_db = require('./db/timeSheets_db');
 var timeSheets = {
 	
 	read: function(req, res) {
-        var personId = req.params.personId;
-        var orderId = req.params.orderId;        
-        timeSheets_db.readAggregatedTime(personId, orderId, function(err, timeSheetRow){
+        
+        var params = req.query;
+        if(req.params.personId) params.personId = req.params.personId;
+
+        timeSheets_db.readAggregatedTime(params, function(err, timeSheetResultDb){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
-            if(timeSheetRow) {
-                var timeSheet = mapper.timeSheet.mapToJson(timeSheetRow);
-                res.json(timeSheet);
+            if(timeSheetResultDb) {
+                var timeSheetResult;
+                console.log('type ' + typeof timeSheetResultDb);
+                if(params.personId) timeSheetResult = mapper.timeSheet.mapToJson(timeSheetResultDb[0]);
+                else timeSheetResult = mapper.mapList(mapper.timeSheet.mapToJson, timeSheetResultDb);
+                
+                res.json(timeSheetResult);
             } else {
                 res.status(404).end();
             }
@@ -24,7 +30,6 @@ var timeSheets = {
 	create: function(req, res) {
 		
 		req.body['personId'] = req.params.personId
-		req.body['orderId'] = req.params.orderId;
 		
         var timeSheetSql = mapper.timeSheet.mapToSql(req.body);
         timeSheets_db.create(timeSheetSql, function(err,result) {
