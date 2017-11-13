@@ -79,7 +79,7 @@ var persons = {
         orderRelation.PERSON_ID = req.params.pid;
         orderRelation.WO_ID = req.params.oid;
 
-        persons_db.addOrder(orderRelation,function(err, result){
+        persons_db.addOrder(orderRelation,JSON.parse(req.query.detach), function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;

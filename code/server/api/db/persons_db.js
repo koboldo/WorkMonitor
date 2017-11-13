@@ -33,7 +33,7 @@ var persons_db = {
 			rows.forEach(function(row){
 				calls.push(function(async_cb) {
 
-                    var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds)
+                    var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
                     dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
 						row.WORK_ORDERS = ids;
                         getPersonOrderIdsStat.finalize();
@@ -46,8 +46,6 @@ var persons_db = {
                     getPersonsStat.finalize();
                     db.close();
 					if (err) {
-						// logger.info(err);
-						// cb(err);
                         logErrAndCall(err,cb);
 					} else {
 						cb(null,rows);
@@ -104,13 +102,53 @@ var persons_db = {
         });
 	},
 
-	addOrder: function(orderRelation, cb) {
+	addOrder: function(orderRelation, detachExistingRelation, cb) {
 		if(logger.isDebugEnabled()) logger.debug('insert relation : ' +  util.inspect(orderRelation));
 		
-		dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
-			if(err) return logErrAndCall(err,cb);
-            cb(null,newId);
+		var mydb = dbUtil.getDatabase();
+
+		var newRelationId;
+		async.series([
+			function(_cb) {
+				dbUtil.startTx(mydb,function(err, result){
+					if(err) _cb(err);
+					else _cb(null,result)
+				});
+			},
+
+			function(_cb) {
+				if(detachExistingRelation == true) {
+					var obj = {};
+					obj.WO_ID = orderRelation.WO_ID;
+					dbUtil.performDelete(obj,'PERSON_WO',function(err,result){
+						if(err) return logErrAndCall(err,_cb);
+						_cb(null,result);						
+					});
+				} else {
+					_cb(null,true);
+				}
+			},
+
+			function(_cb) {
+				dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
+					if(err) return logErrAndCall(err,_cb);
+					newRelationId = newId;
+				    _cb(null,newId);
+				});				
+			}],
+
+			function(err, results) {
+				if(err) dbUtil.rollbackTx(mydb);
+				else {
+					dbUtil.commitTx(mydb);
+					cb(null,newRelationId);
+				}
 		});
+
+		// dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
+		// 	if(err) return logErrAndCall(err,cb);
+        //     cb(null,newId);
+		// });
 	},
 	
 	deleteOrder: function(orderRelation, cb) {

@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 'use strict';
 
 var sqlite3 = require('sqlite3').verbose();
@@ -21,13 +22,13 @@ var db_util = {
         return db;
     },
     
-    performInsert: function(object, tableName, maxIdQuery, cb) {
-        var db = db_util.getDatabase();
+    performInsert: function(object, tableName, maxIdQuery, cb, db) {
+        var myDB = (db == null) ? db_util.getDatabase() : db;
         var insertStr = db_util.prepareInsert(object, tableName);
-        var insertStat = db.prepare(insertStr);      
+        var insertStat = myDB.prepare(insertStr);      
         insertStat.run(function(err, result){
             insertStat.finalize();
-            db.close();
+            if(db == null) myDB.close();
             if(err){
                 return logErrAndCall(err,cb);
             } else {
@@ -37,13 +38,13 @@ var db_util = {
         });
     },
     
-    performUpdate: function(idObj, object, tableName, cb) {
-        var db = db_util.getDatabase();
+    performUpdate: function(idObj, object, tableName, cb, db) {
+        var myDB = (db == null) ? db_util.getDatabase() : db;
         var updateStr = db_util.prepareUpdate(idObj, object, tableName);
-        var updateStat = db.prepare(updateStr);   
+        var updateStat = myDB.prepare(updateStr);   
         updateStat.run(function(err,result) {
             updateStat.finalize();
-            db.close();
+            if(db == null) myDB.close();
             if(err) {
                 logErrAndCall(err,cb);
             } else {
@@ -53,13 +54,13 @@ var db_util = {
         });
     },
 
-    performDelete: function(idObj, tableName, cb) {
-        var db = db_util.getDatabase();
+    performDelete: function(idObj, tableName, cb, db) {
+        var myDB = (db == null) ? db_util.getDatabase() : db;
         var deleteStr = db_util.prepareDelete(idObj,'PERSON_WO');
-        var deleteStat = db.prepare(deleteStr);
+        var deleteStat = myDB.prepare(deleteStr);
         deleteStat.run(function(err, result){
             deleteStat.finalize();
-            db.close();
+            if(db == null) myDB.close();
             if(err) {
                 logErrAndCall(err,cb);
             } else {
@@ -69,6 +70,39 @@ var db_util = {
         });
     },
     
+    startTx: function(db,cb) {
+        db.run('BEGIN',(err, result)=>{
+            if(err) {
+                logErrAndCall(err,cb);
+            } else {
+                if(logger.isDebugEnabled()) logger.debug('transaction started');
+                cb(null,'success');
+            }
+        });
+    },
+
+    commitTx: function(db,cb) {
+        db.run('COMMIT',(err, result)=>{
+            if(err) {
+                logErrAndCall(err,cb);
+            } else {
+                if(logger.isDebugEnabled()) logger.debug('transaction committed');
+                if(cb != null) cb(null,'success');
+            }
+        });
+    },
+
+    rollbackTx: function(db,cb) {
+        db.run('ROLLBACK',(err, result)=>{
+            if(err) {
+                logErrAndCall(err,cb);
+            } else {
+                if(logger.isDebugEnabled()) logger.debug('transaction has been rollback');
+                if(cb != null) cb(null,'success');
+            }
+        });
+    },
+
     prepareInsert: function(object, tableName) {
         var sqlCols = '';
         var sqlVals = '';
