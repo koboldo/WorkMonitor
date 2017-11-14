@@ -32,6 +32,7 @@
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
+			"ITEM_ID": "itemId",
 			"ASSIGNEE": "assignee"
 		}
 	},
@@ -62,6 +63,17 @@
 			"PERSON_ID": "personId",
 			"WORK_DATE": "workDate",
 			"USED_TIME": "usedTime"
+		}
+	},
+	"relatedItem": {
+		"sqlToJson": {
+			"ID": "id",
+			"ITEM_NO": "itemNo",
+			"DESCRIPTION": "description",
+			"MD_BUILDING_TYPE": "mdBuildingType", 
+			"MD_CONSTRUCTION_CATEGORY": "mdConstructionCategory",
+			"ADDRESS": "address",
+			"CREATED": "creationDate"
 		}
 	}
 }

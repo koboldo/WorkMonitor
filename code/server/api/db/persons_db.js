@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 var sqlite3 = require('sqlite3');
@@ -68,7 +69,7 @@ var persons_db = {
 				return;
 			}
             
-			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds)
+			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
 			dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
 				row.WORK_ORDERS = ids;
                 getPersonOrderIdsStat.finalize();
@@ -112,7 +113,7 @@ var persons_db = {
 			function(_cb) {
 				dbUtil.startTx(mydb,function(err, result){
 					if(err) _cb(err);
-					else _cb(null,result)
+					else _cb(null,result);
 				});
 			},
 

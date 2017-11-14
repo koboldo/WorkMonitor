@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 var express = require('express');
@@ -24,7 +25,7 @@ app.use(function(req, res){
     res.status(404).json({
                         "success": false,
                         "message": "resource not found"
-                        });;
+                        });
 });
 
 app.disable('etag'); // TODO: investigate why

@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 var util = require('util');
@@ -20,7 +21,6 @@ var persons = {
     },
     
     read: function(req, res) {
-        
         persons_db.read(req.params.id, function(err, personRow){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
@@ -67,7 +67,7 @@ var persons = {
                 return;
             }
 
-            var rv = { created: result }
+            var rv = { created: result };
             if(result != null) res.status(201).json(rv);
             else res.status(404).end();
         });
@@ -79,13 +79,15 @@ var persons = {
         orderRelation.PERSON_ID = req.params.pid;
         orderRelation.WO_ID = req.params.oid;
 
-        persons_db.addOrder(orderRelation,JSON.parse(req.query.detach), function(err, result){
+        var detach = (req.query.detach != null) ? JSON.parse(req.query.detach) : false;
+
+        persons_db.addOrder(orderRelation, detach, function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var rv = { created: result }
+            var rv = { created: result };
             if(result != null) res.status(201).json(rv);
             else res.status(404).end();
         });
@@ -103,7 +105,7 @@ var persons = {
                 return;
             }
 
-            var rv = { deleted: result }
+            var rv = { deleted: result };
             if(result != null) res.status(200).json(rv);
             else res.status(404).end();
         });

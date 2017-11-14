@@ -6,6 +6,7 @@ var orders = require('./orders');
 var codes = require('./codes');
 var workTypes = require('./workTypes');
 var timeSheets = require('./timeSheets');
+var relatedItems = require('./reletedItems');
 
 //TODO: validations - for create and update
 router.get('/v1/persons', persons.readAll);
@@ -34,6 +35,10 @@ router.get('/v1/codes/:codeTable', codes.readCodes);
 router.post('/v1/timeSheets/:personId', timeSheets.create);
 router.get('/v1/timeSheets/:personId', timeSheets.read);
 router.get('/v1/timeSheets', timeSheets.read);
+
+router.get('/v1/relatedItems/:id', relatedItems.read);
+router.post('/v1/relatedItems', relatedItems.create);
+router.put('/v1/relatedItems/:id', relatedItems.update);
 
 module.exports = router;
 

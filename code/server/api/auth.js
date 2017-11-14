@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 var jwt = require('jsonwebtoken');
@@ -25,7 +26,7 @@ try {
 var auth = {
     
     authenticate: function(req, res) {
-    	if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
+    	// if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
         var user = req.body.email;
         var passwd = req.body.password;
         var passwdSha1 = sha1(passwd);
@@ -55,7 +56,7 @@ var auth = {
             }
             if(userRow.IS_ACTIVE == "Y") {
                 var token = jwt.sign(
-                                {user:user, role: userRow.ROLE_CODE},
+                                {email:userRow.EMAIL, id: userRow.ID, role: userRow.ROLE_CODE},
                                 secret,
                                 { expiresIn: 60 * 10 });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
@@ -77,7 +78,9 @@ var auth = {
             try {
                 var decoded = jwt.verify(token, secret);
                 if(logger.isDebugEnabled()) logger.debug('decoded token data: ' + util.inspect(decoded));
-
+                req.context = {};
+                req.context.id = decoded.id;
+                req.context.role = decoded.role;
             } catch(err) {
                 logger.error(err);
                 return res.status(403).json({

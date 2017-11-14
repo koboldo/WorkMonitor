@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 var util = require('util');
 var fs = require('fs');
@@ -37,7 +38,7 @@ var toolbox = {
             var outJson = {};
             toolbox.map(inSql,outJson,map);
 			return outJson;
-        }
+        };
     },
     
     mapListToJson: function(mapperFunc, rows) {
@@ -87,6 +88,11 @@ var mapper = {
 		mapToSql: toolbox.produceMapper(toolbox.swap(mappings.timeSheet.sqlToJson)),
 	},
     
+    relatedItem: {
+        mapToJson: toolbox.produceMapper(mappings.relatedItem.sqlToJson),
+        mapToSql: toolbox.produceMapper(toolbox.swap(mappings.relatedItem.sqlToJson)),
+    },
+
     mapList: toolbox.mapListToJson
 };
 

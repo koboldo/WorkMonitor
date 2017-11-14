@@ -1,4 +1,6 @@
-/*jshint esversion: 6 */
+
+/* jshint esversion: 6 */
+/* jshint node: true */
 'use strict';
 
 var sqlite3 = require('sqlite3').verbose();
