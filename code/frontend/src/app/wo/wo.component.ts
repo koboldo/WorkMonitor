@@ -8,6 +8,7 @@ import { Order } from '../_models/order';
 import { WOService } from '../_services/wo.service';
 import { UserService } from '../_services/user.service';
 import { DictService } from '../_services/dict.service';
+import { AlertService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 import { User } from '../_models/index';
 import { CodeValue } from '../_models/code';
@@ -31,8 +32,8 @@ export class WoComponent implements OnInit {
   isNewOrderOwner: boolean
   displayEditDialog: boolean;
   displayAssignDialog: boolean;
-  displayWrongStateForAssingmentDialog: boolean
-  items: MenuItem[];
+  allItems: MenuItem[];
+  items: MenuItem[] = [];
 
 
   /* autocompletion assignedEngineer */
@@ -50,7 +51,7 @@ export class WoComponent implements OnInit {
   suggestedStatuses: CodeValue[];
   status: CodeValue;
 
-  constructor(private woService: WOService, private userService: UserService, private dictService: DictService) {
+  constructor(private woService: WOService, private userService: UserService, private dictService: DictService, private alertService: AlertService) {
     this.lastModAfter = this.getCurrentDateDayOperation(-61);
     this.lastModBefore = this.getCurrentDateDayOperation(1);
     this.items = [
@@ -74,6 +75,10 @@ export class WoComponent implements OnInit {
         this.lastModAfter.toISOString().substring(0, 10),
         this.lastModBefore.toISOString().substring(0, 10)
     ).subscribe(orders => this.orders = orders);
+  }
+
+  showContextMenu(event) {
+    console.log("About to show context menu"+event);
   }
 
   suggestStatus(event) {
@@ -105,7 +110,8 @@ export class WoComponent implements OnInit {
     if (this.engineers && this.engineers.length > 0) {
       for(let engineer of this.engineers) {
         let suggestion: string = JSON.stringify(engineer);
-        if(suggestion.indexOf(event.query) > -1) {
+        console.log("suggestEngineer "+suggestion+" for "+JSON.stringify(event));
+        if(suggestion.indexOf(event.query) > -1 && (this.editedOrder.assignee === undefined || this.editedOrder.assignee.indexOf(engineer.email) === -1)) {
           let displayName: string = engineer.firstName +" "+engineer.lastName+" ("+engineer.role+")";
           this.suggestedEngineers.push(new SearchEnginner(displayName, engineer));
         }
@@ -122,7 +128,9 @@ export class WoComponent implements OnInit {
   assign(isNewOrderOwner: boolean): void {
     console.log("assigning!" + JSON.stringify(this.selectedOrder));
     if (isNewOrderOwner && this.selectedOrder.statusCode === "CO") {
-      this.displayWrongStateForAssingmentDialog = true;
+      this.alertService.error("Nie można przypisac zlecenia w stanie " + this.selectedOrder.status);
+    } if (!isNewOrderOwner && this.selectedOrder.assignee === undefined) {
+      this.alertService.error("Nie można DOPISAĆ do zlecenia gdyż nie ma jeszcze pierwszego wykonawcy!");
     } else {
       this.isNewOrderOwner = isNewOrderOwner;
       this.newOrder = false;
@@ -131,12 +139,10 @@ export class WoComponent implements OnInit {
     }
   }
 
-  closeWrongStateForAssignment() {
-    this.displayWrongStateForAssingmentDialog = false;
-  }
 
   add() {
-    this.editedOrder = new Order(null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null, null, null, null);
+
+    this.editedOrder = new Order(null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
     this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
     this.newOrder = true;
     this.displayEditDialog = true;
@@ -168,8 +174,9 @@ export class WoComponent implements OnInit {
   }
 
   private updateOrderStatus(created: number, isNewOrderOwner:boolean, order: Order, engineer: User):void {
-    if (!created) {
-      console.log("Assignment problem! "+created); //todo show dialog in notification service
+    if (!created || created === -1) {
+      console.log("Assignment problem! "+created);
+      this.alertService.error("Blad przypisania zlecenia "+order.workNo+" do "+engineer.email);
       return;
     }
     else if (isNewOrderOwner && order.statusCode != "AS") { //update status
@@ -203,19 +210,19 @@ export class WoComponent implements OnInit {
       this.orders.push(order);
       this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
       this.displayEditDialog = false;
-      return;
-    }
-
-    if (!newOrder && order.id > 0) {
+      this.alertService.success("Pomyślnie dodano zlecenie "+order.workNo);
+    } else if (!newOrder && order.id > 0) {
       let index: number = this.findSelectedOrderIndex(order);
       console.log("refresh index: "+index);
       this.orders[index] = order;
       this.orders =  JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
       this.displayEditDialog = false;
+      this.alertService.success("Pomyślnie zmieniono zlecenie "+order.workNo);
       return;
+    } else {
+      this.alertService.error("Nie można bylo odświeżyć tabeli wyników, szukaj jeszcze raz");
     }
 
-    console.log("todo show alert something went wrong!");
   }
 
   findSelectedOrderIndex(order: Order): number {

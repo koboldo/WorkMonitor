@@ -1,8 +1,17 @@
 export class Order {
+	//internal backend fields not set by the constuctor
 	id: number;
 	lastModDate: string;
 	creationDate: string;
 	protocolNo: string;
+
+	//relater item fields
+	itemNo: string;
+	itemBuildingType: string;
+	itemConstructionCategory: string;
+	itemAddress: string;
+	itemDescription: string;
+
 	assignee: string[];
 
 	constructor(
@@ -16,10 +25,7 @@ export class Order {
 		public description: string,
 		public comment: string,
 		public mdCapex: string,
-		public mdBuildingType: string,
-		public mdConstructionCategory: string,
-		public price: number,
-		public address: string
+		public price: number
 	){}
 }
 

@@ -2,35 +2,58 @@
 
 <p-panel header="Zlecenia - WO">
 
-  <p-fieldset legend="Wyszukiwanie - WO">
-    <form #f="ngForm" (submit)="search()">
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-5">
+      <p-fieldset legend="Wyszukiwanie - WO">
+        <form #f="ngForm" (submit)="search()">
 
-      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-        <div class="ui-grid-row"  style="margin-top: 20px;">
-          <div class="ui-grid-col-1"></div>
-          <div class="ui-grid-col-5">
-            <label for="lastModAfter">zmodyfikowano od</label>
-            <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+          <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            <div class="ui-grid-row"  style="margin-top: 20px;">
+              <div class="ui-grid-col-1"></div>
+              <div class="ui-grid-col-5">
+                <label for="lastModAfter">zmodyfikowano od</label>
+                <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+              </div>
+              <!--<div class="ui-grid-col-1"></div>-->
+              <div class="ui-grid-col-5">
+                <label for="lastModBefore">zmodyfikowano do</label>
+                <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+              </div>
+              <div class="ui-grid-col-1"></div>
+            </div>
+            <div class="ui-grid-row"  style="margin-top: 15px;">
+              <div class="ui-grid-col-5"></div>
+              <div class="ui-grid-col-2">
+                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
+              </div>
+              <div class="ui-grid-col-5"></div>
+            </div>
           </div>
-          <!--<div class="ui-grid-col-1"></div>-->
-          <div class="ui-grid-col-5">
-            <label for="lastModBefore">zmodyfikowano do</label>
-            <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
-          </div>
-          <div class="ui-grid-col-1"></div>
+
+        </form>
+      </p-fieldset>
+    </div>
+    <div class="ui-grid-col-4">
+      <p-fieldset legend="Obiekt" *ngIf="selectedOrder?.itemNo || selectedOrder?.itemAddress || selectedOrder?.itemBuildingType || selectedOrder?.itemDescription || selectedOrder?.itemConstructionCategory">
+
+          <!--<h4>Obiekt</h4>-->
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemNo" class="ui-grid-col-4">Numer:</div><div class="ui-grid-col-8">{{selectedOrder?.itemNo}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemAddress" class="ui-grid-col-4">Adres:</div><div class="ui-grid-col-8">{{selectedOrder?.itemAddress}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemBuildingType" class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.itemBuildingType}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemConstructionCategory" class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.itemConstructionCategory}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemDescription" class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.itemDescription}}</div></div>
+
+      </p-fieldset>
+    </div>
+    <div class="ui-grid-col-3">
+      <p-fieldset legend="Wykonawcy" *ngIf="selectedOrder?.assignee">
+        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assignee">
+          <!--<h4>Wykonawcy</h4>-->
+          <div class="ui-grid-col-12">{{a}}</div>
         </div>
-        <div class="ui-grid-row"  style="margin-top: 15px;">
-          <div class="ui-grid-col-5"></div>
-          <div class="ui-grid-col-2">
-            <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
-          </div>
-          <div class="ui-grid-col-5"></div>
-        </div>
-      </div>
-
-    </form>
-  </p-fieldset>
-
+      </p-fieldset>
+    </div>
+  </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
@@ -50,16 +73,31 @@
         </ng-template>
       </p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="mdBuildingType" header="Typ budynku" ></p-column>
-      <p-column [sortable]="true" field="mdConstructionCategory" header="Konstukcja" ></p-column>
       <p-column [sortable]="true" field="price" header="Wartość [PLN]"></p-column>
-      <p-column [sortable]="true" field="address" header="Adres"></p-column>
+
       <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
       <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
       <p-column [sortable]="true" field="description" header="Opis"></p-column>
       <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
       <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
       <p-column [sortable]="true" field="creationDate" header="Data utworzenia"></p-column>
+
+      <!-- search by invisible colums, display in one row -->
+      <p-column [sortable]="true" header="Obiekt" [style]="{'text-align':'center','width':'300px'}">
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <span *ngIf="order.itemNo">{{order.itemNo}}<br></span>
+          <span *ngIf="order.itemAddress">{{order.itemAddress}}<br></span>
+          <span *ngIf="order.itemBuildingType">{{order.itemBuildingType}}<br></span>
+          <span *ngIf="order.itemConstructionCategory">{{order.itemConstructionCategory}}<br></span>
+          <span *ngIf="order.itemDescription">{{order.itemDescription}}<br></span>
+        </ng-template>
+      </p-column>
+      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'0px'}"></p-column>
+      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu"  [style]="{'width':'0px'}"></p-column>
+      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja"  [style]="{'width':'0px'}"></p-column>
+      <p-column [sortable]="true" field="itemAddress" header="Adres" [style]="{'width':'0px'}"></p-column>
+      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu" [style]="{'width':'0px'}"></p-column>
+
       <p-footer>
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
           <div class="ui-grid-row"  style="margin-top: 15px;">
@@ -84,7 +122,7 @@
   </div>
 
 
-  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
+  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
@@ -106,18 +144,19 @@
         <div class="ui-grid-col-4"><label for="mdCapex">Capex</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" /></div>
       </div>
+      <!-- this is RELATED_ITEM
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="mdBuildingType">Typ budynku</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="mdBuildingType" [(ngModel)]="editedOrder.mdBuildingType" /></div>
+        <div class="ui-grid-col-4"><label for="itemBuildingType">Typ budynku</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemBuildingType" [(ngModel)]="editedOrder.itemBuildingType" /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="mdConstructionCategory">Konstrukcja</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="mdConstructionCategory" [(ngModel)]="editedOrder.mdConstructionCategory" /></div>
+        <div class="ui-grid-col-4"><label for="itemConstructionCategory">Konstrukcja</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemConstructionCategory" [(ngModel)]="editedOrder.itemConstructionCategory" /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="address">Adres</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="address" [(ngModel)]="editedOrder.address" /></div>
-      </div>
+        <div class="ui-grid-col-4"><label for="itemAddress">Adres</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemAddress" [(ngModel)]="editedOrder.itemAddress" /></div>
+      </div>-->
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
         <div class="ui-grid-col-8"><input pInputText id="comment" [(ngModel)]="editedOrder.comment" /></div>
@@ -129,26 +168,13 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
+        <button width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
       </div>
     </p-footer>
   </p-dialog>
 
-  <p-dialog header="Błąd przypisania" [(visible)]="displayWrongStateForAssingmentDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
-    <div class="ui-grid ui-grid-responsive ui-fluid">
-      <div class="ui-grid-row" style="margin-top: 20px;">
-        Nie można przypisac zlecenia w stanie {{selectedOrder?.status}}!
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="button" pButton icon="fa-check" (click)="closeWrongStateForAssignment()" label="Zamknij"></button>
-      </div>
-    </p-footer>
 
-  </p-dialog>
-
-  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="300">
+  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
         <div class="ui-grid-row" style="margin-top: 20px;">
             <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
@@ -164,14 +190,15 @@
             <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/></div>
         </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="complexity">Złożoność</label></div>
+        <div class="ui-grid-col-4"><label for="status">Status</label></div>
         <div class="ui-grid-col-8">
-          <button type="button" id="complexity" pButton icon="{{editedOrder.complexity}}"></button></div>
+          <div class="ui-grid-col-8"><input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true"/></div>
+        </div>
       </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="button" pButton icon="fa-check" (click)="saveAssignment()" label="Przypisz"></button>
+        <button width="200px" type="button" pButton icon="fa-check" (click)="saveAssignment()" label="Przypisz"></button>
       </div>
     </p-footer>
   </p-dialog>

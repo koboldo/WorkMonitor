@@ -64,11 +64,11 @@ export class UserService {
         return new EmptyObservable();
     }
 
-    private addRelation(deleteResult:number, user:User, order:Order):any {
+    private addRelation(deleteResult:number, user:User, order:Order):Observable<any> {
         if (deleteResult === 1) {
             return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id, order, this.authService.getAuthOptions()).map((response:Response) => response.json());
         } else {
-            console.log("Cannot add due to deleteResult="+deleteResult);
+            return new EmptyObservable();
         }
 
     }
