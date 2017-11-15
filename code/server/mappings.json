@@ -24,15 +24,19 @@
 			"DESCRIPTION": "description",
 			"COMMENT": "comment",
 			"MD_CAPEX": "mdCapex",
-			"MD_BUILDING_TYPE": "mdBuildingType", 
-			"MD_CONSTRUCTION_CATEGORY": "mdConstructionCategory",
-			"ADDRESS": "address",
 			"PROTOCOL_NO": "protocolNo",
 			"PRICE": "price",
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
+			
 			"ITEM_ID": "itemId",
+			"ITEM_NO": "itemNo",
+			"RI_DESC": "itemDescription",
+			"MD_BUILDING_TYPE": "itemBuildingType", 
+			"MD_CONSTRUCTION_CATEGORY": "itemConstructionCategory",
+			"ADDRESS": "itemAddress",
+			
 			"ASSIGNEE": "assignee"
 		}
 	},
