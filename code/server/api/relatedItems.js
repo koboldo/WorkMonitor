@@ -21,6 +21,18 @@ var relatedItems = {
             }
         });
     },
+    
+    readAll: function(req, res) {
+    	relatedItems_db.readAll(function(err, itemRows){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            
+            var orders = mapper.mapList(mapper.relatedItem.mapToJson, itemRows);
+            res.json(orders);
+        });
+    },
 
     create: function(req, res) {
 

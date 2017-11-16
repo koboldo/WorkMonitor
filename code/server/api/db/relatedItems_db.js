@@ -8,7 +8,8 @@ var dbUtil = require('./db_util');
 var logger = require('../logger').getLogger('monitor'); 
 
 var queries = {
-    getItem: 'SELECT ID, DESCRIPTION, ADDRESS, MD_BUILDING_TYPE, MD_CONSTRUCTION_CATEGORY, DATETIME(CREATED,"unixepoch") AS CREATED FROM RELATED_ITEM WHERE ID = ?'
+    getItem: 'SELECT ID, ITEM_NO, DESCRIPTION, ADDRESS, MD_BUILDING_TYPE, MD_CONSTRUCTION_CATEGORY, DATETIME(CREATED,"unixepoch") AS CREATED FROM RELATED_ITEM WHERE ID = ?',
+    getItems: 'SELECT ID, ITEM_NO, DESCRIPTION, ADDRESS, MD_BUILDING_TYPE, MD_CONSTRUCTION_CATEGORY, DATETIME(CREATED,"unixepoch") AS CREATED FROM RELATED_ITEM'
 };
 
 var relatedItems_db = {
@@ -27,6 +28,21 @@ var relatedItems_db = {
 			}
             cb(null,row);
         });
+    },
+    
+    readAll: function(cb) {
+        var db = dbUtil.getDatabase();
+
+        if(logger.isDebugEnabled()) logger.debug('query for getting related items: ' + queries.getItems);
+
+        var getItemsStat = db.prepare(queries.getItems);
+        getItemsStat.all(function(err,rows) {
+        	getItemsStat.finalize();
+            db.close();
+            if(err) return local_util.logErrAndCall(err,cb);
+            cb(null,rows);
+        });
+
     },
 
     update: function(itemId, relatedItem, cb) {
