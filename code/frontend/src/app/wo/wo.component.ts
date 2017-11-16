@@ -120,6 +120,18 @@ export class WoComponent implements OnInit {
     console.log("suggestedEngineers "+JSON.stringify(this.suggestedEngineers));
   }
 
+  private getEngineersId(emails: string[]): number[] {
+    let ids: number[] = [];
+    for(let email of emails) {
+      for (let engineer of this.engineers) {
+        if (engineer.email === email) {
+          ids.push(engineer.id);
+        }
+      }
+    }
+    return ids;
+  }
+
   onRowSelect(event) {
     console.log("selected row!" + JSON.stringify(this.selectedOrder));
     //this.activites = this.processService.fetchProcess(this.selectedProcess);
@@ -127,9 +139,12 @@ export class WoComponent implements OnInit {
 
   assign(isNewOrderOwner: boolean): void {
     console.log("assigning!" + JSON.stringify(this.selectedOrder));
+    if (isNewOrderOwner && this.selectedOrder.assignee !== undefined) {
+      this.alertService.warn("Zmiana wykonawcy zlecenia " + this.selectedOrder.workNo + ", bieżący wykonawca/y" + this.selectedOrder.assignee);
+    }
     if (isNewOrderOwner && this.selectedOrder.statusCode === "CO") {
       this.alertService.error("Nie można przypisac zlecenia w stanie " + this.selectedOrder.status);
-    } if (!isNewOrderOwner && this.selectedOrder.assignee === undefined) {
+    } else if (!isNewOrderOwner && this.selectedOrder.assignee === undefined) {
       this.alertService.error("Nie można DOPISAĆ do zlecenia gdyż nie ma jeszcze pierwszego wykonawcy!");
     } else {
       this.isNewOrderOwner = isNewOrderOwner;
@@ -169,9 +184,11 @@ export class WoComponent implements OnInit {
   saveAssignment() {
     console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for "+JSON.stringify(this.assignedEngineer.engineer));
     this.displayAssignDialog = false;
-    this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner)
+    this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner, this.getEngineersId(this.editedOrder.assignee))
         .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.engineer));
   }
+
+
 
   private updateOrderStatus(created: number, isNewOrderOwner:boolean, order: Order, engineer: User):void {
     if (!created || created === -1) {

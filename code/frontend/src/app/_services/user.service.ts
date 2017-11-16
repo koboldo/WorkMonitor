@@ -8,6 +8,7 @@ import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class UserService {
@@ -31,16 +32,30 @@ export class UserService {
         return this.http.put('/api/v1/persons' + user.id, user, this.authService.getAuthOptions()).map((response: Response) => response.json());
     }
 
-    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
-        if (isNewOrderOwner) {
-            return this.http.delete('/api/v1/persons/' + user.id + '/order/'+order.id, this.authService.getAuthOptions())
-                .map((response:Response) => this.getRelationDeleteResult(response.json()))
-                //.catch(this.handleError)
-                .mergeMap( deleteResult => this.addRelation(deleteResult, user, order) );
+    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean, assigneeIds: number[]):any {
+        if (isNewOrderOwner && order.assignee !== undefined && order.assignee.length > 0) {
+
+
+            return  this.deleteAllAssignees(assigneeIds, order.id)
+                .mergeMap( deleteResults => this.addRelation(deleteResults, user, order) );
+
 
         } else {
             return this.addRelation(1, user, order);
         }
+    }
+
+    private deleteAllAssignees(assigneeIds: number[], orderId: number) {
+        let observableBatch = [];
+
+        for(let assigneeId of assigneeIds) {
+            observableBatch.push(
+                this.http.delete('/api/v1/persons/' + assigneeId + '/order/'+orderId, this.authService.getAuthOptions()).
+                map((response:Response) => this.getRelationDeleteResult(response.json()))
+            );
+        }
+
+        return Observable.forkJoin(observableBatch);
     }
 
     getRelationDeleteResult(response: any) : number {
@@ -64,12 +79,15 @@ export class UserService {
         return new EmptyObservable();
     }
 
-    private addRelation(deleteResult:number, user:User, order:Order):Observable<any> {
-        if (deleteResult === 1) {
-            return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id, order, this.authService.getAuthOptions()).map((response:Response) => response.json());
-        } else {
-            return new EmptyObservable();
-        }
+    private addRelation(deleteResults, user:User, order:Order):Observable<any> {
+        console.log("deleteResults "+JSON.stringify(deleteResults));
+        /*for(let deleteResult of deleteResults) {
+            if (deleteResult != 1) {
+                return new EmptyObservable();
+            }
+        }*/
+
+        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id, order, this.authService.getAuthOptions()).map((response:Response) => response.json());
 
     }
 

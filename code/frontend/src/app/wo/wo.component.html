@@ -73,7 +73,7 @@
         </ng-template>
       </p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="price" header="Wartość [PLN]"></p-column>
+      <p-column [sortable]="true" field="price" header="Wartość"></p-column>
 
       <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
       <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
@@ -83,7 +83,7 @@
       <p-column [sortable]="true" field="creationDate" header="Data utworzenia"></p-column>
 
       <!-- search by invisible colums, display in one row -->
-      <p-column [sortable]="true" header="Obiekt" [style]="{'text-align':'center','width':'300px'}">
+      <p-column [sortable]="true" header="Obiekt"><!-- [style]="{'text-align':'center','width':'300px'}"> -->
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span *ngIf="order.itemNo">{{order.itemNo}}<br></span>
           <span *ngIf="order.itemAddress">{{order.itemAddress}}<br></span>
