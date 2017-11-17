@@ -36,6 +36,7 @@
 			"MD_BUILDING_TYPE": "itemBuildingType", 
 			"MD_CONSTRUCTION_CATEGORY": "itemConstructionCategory",
 			"ADDRESS": "itemAddress",
+			"ITEM_CREATED": "itemCreationDate",
 			
 			"ASSIGNEE": "assignee"
 		}
