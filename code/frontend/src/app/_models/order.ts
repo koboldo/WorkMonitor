@@ -1,3 +1,5 @@
+import { User, RelatedItem } from '../_models/index';
+
 export class Order {
 	//internal backend fields not set by the constuctor
 	id: number;
@@ -5,14 +7,17 @@ export class Order {
 	creationDate: string;
 	protocolNo: string;
 
-	//relater item fields
+	//related item fields used with GET
+	itemId: number;
 	itemNo: string;
 	itemBuildingType: string;
 	itemConstructionCategory: string;
 	itemAddress: string;
 	itemDescription: string;
+	itemCreationDate: string;
 
 	assignee: string[];
+	assigneeFull: User[]; //filled by front
 
 	constructor(
 		public workNo: string,

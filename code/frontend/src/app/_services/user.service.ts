@@ -32,19 +32,15 @@ export class UserService {
         return this.http.put('/api/v1/persons' + user.id, user, this.authService.getAuthOptions()).map((response: Response) => response.json());
     }
 
-    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean, assigneeIds: number[]):any {
+    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
         if (isNewOrderOwner && order.assignee !== undefined && order.assignee.length > 0) {
-
-
-            return  this.deleteAllAssignees(assigneeIds, order.id)
-                .mergeMap( deleteResults => this.addRelation(deleteResults, user, order) );
-
-
+            return this.addRelation(true, user, order);
         } else {
-            return this.addRelation(1, user, order);
+            return this.addRelation(false, user, order);
         }
     }
 
+    /* sqlite could not handle
     private deleteAllAssignees(assigneeIds: number[], orderId: number) {
         let observableBatch = [];
 
@@ -57,6 +53,7 @@ export class UserService {
 
         return Observable.forkJoin(observableBatch);
     }
+
 
     getRelationDeleteResult(response: any) : number {
         console.log("delete result= "+JSON.stringify(response));
@@ -73,22 +70,15 @@ export class UserService {
         }
 
     }
+     */
 
     private handleError(error: any): Observable<any> {
         console.error('An error occurred: ', error); // for demo purposes only
         return new EmptyObservable();
     }
 
-    private addRelation(deleteResults, user:User, order:Order):Observable<any> {
-        console.log("deleteResults "+JSON.stringify(deleteResults));
-        /*for(let deleteResult of deleteResults) {
-            if (deleteResult != 1) {
-                return new EmptyObservable();
-            }
-        }*/
-
-        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id, order, this.authService.getAuthOptions()).map((response:Response) => response.json());
-
+    private addRelation(detach: boolean, user:User, order:Order):Observable<any> {
+        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order, this.authService.getAuthOptions()).map((response:Response) => response.json());
     }
 
     delete(id: number) {

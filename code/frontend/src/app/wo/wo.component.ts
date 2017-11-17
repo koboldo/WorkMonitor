@@ -6,11 +6,12 @@ import 'rxjs/add/operator/switchMap';
 
 import { Order } from '../_models/order';
 import { WOService } from '../_services/wo.service';
+import { RelatedItemService } from '../_services/relateditem.service';
 import { UserService } from '../_services/user.service';
 import { DictService } from '../_services/dict.service';
 import { AlertService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
-import { User } from '../_models/index';
+import { User, RelatedItem } from '../_models/index';
 import { CodeValue } from '../_models/code';
 
 @Component({
@@ -32,9 +33,7 @@ export class WoComponent implements OnInit {
   isNewOrderOwner: boolean
   displayEditDialog: boolean;
   displayAssignDialog: boolean;
-  allItems: MenuItem[];
   items: MenuItem[] = [];
-
 
   /* autocompletion assignedEngineer */
   engineers: User[] = [];
@@ -51,20 +50,27 @@ export class WoComponent implements OnInit {
   suggestedStatuses: CodeValue[];
   status: CodeValue;
 
-  constructor(private woService: WOService, private userService: UserService, private dictService: DictService, private alertService: AlertService) {
+  /* autocompletion relatedItem */
+  relatedItems: RelatedItem[];
+  suggestedRelatedItems: RelatedItem[];
+  relatedItem: RelatedItem;
+
+  constructor(private woService: WOService, private userService: UserService, private itemService: RelatedItemService ,private dictService: DictService, private alertService: AlertService) {
     this.lastModAfter = this.getCurrentDateDayOperation(-61);
     this.lastModBefore = this.getCurrentDateDayOperation(1);
     this.items = [
-      {label: 'Przypisz wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
+      {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
       {label: 'Dopisz wykonawce', icon: 'fa-share', command: (event) => this.assign(false)},
       {label: 'Edycja zlecenia', icon: 'fa-pencil-square-o', command: (event) => this.edit()},
       {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', command: (event) => this.add()}
     ];
+    this.relatedItem = <RelatedItem>{};
   }
 
   ngOnInit() {
     this.search();
     this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+    this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
 
     this.workTypes = this.dictService.getWorkTypes();
     this.statuses = this.dictService.getWorkStatuses();
@@ -77,8 +83,22 @@ export class WoComponent implements OnInit {
     ).subscribe(orders => this.orders = orders);
   }
 
-  showContextMenu(event) {
-    console.log("About to show context menu"+event);
+  updateRelatedItem() {
+    console.log("updateRelatedItem "+JSON.stringify(this.relatedItem));
+  }
+
+  suggestRelatedItem(event) {
+    console.log("all "+JSON.stringify(this.relatedItems));
+
+    this.suggestedRelatedItems = [];
+    if (this.relatedItems && this.relatedItems.length > 0) {
+      for(let item of this.relatedItems) {
+        if(item.itemNo.indexOf(event.query) > -1) {
+          this.suggestedRelatedItems.push(item);
+        }
+      }
+    }
+    console.log("suggestedRelatedItems: "+JSON.stringify(this.suggestedRelatedItems));
   }
 
   suggestStatus(event) {
@@ -120,20 +140,9 @@ export class WoComponent implements OnInit {
     console.log("suggestedEngineers "+JSON.stringify(this.suggestedEngineers));
   }
 
-  private getEngineersId(emails: string[]): number[] {
-    let ids: number[] = [];
-    for(let email of emails) {
-      for (let engineer of this.engineers) {
-        if (engineer.email === email) {
-          ids.push(engineer.id);
-        }
-      }
-    }
-    return ids;
-  }
-
   onRowSelect(event) {
     console.log("selected row!" + JSON.stringify(this.selectedOrder));
+    this.selectedOrder.assigneeFull = this.getEngineers(this.selectedOrder.assignee);
     //this.activites = this.processService.fetchProcess(this.selectedProcess);
   }
 
@@ -169,6 +178,15 @@ export class WoComponent implements OnInit {
     //initial values based on selectedOrder for form
     this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
     this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
+    this.relatedItem = new RelatedItem(
+        this.selectedOrder.itemId,
+        this.selectedOrder.itemNo,
+        this.selectedOrder.itemDescription,
+        this.selectedOrder.itemBuildingType,
+        this.selectedOrder.itemConstructionCategory,
+        this.selectedOrder.itemAddress,
+        this.selectedOrder.itemCreationDate
+    );
 
     this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
     this.newOrder = false;
@@ -184,7 +202,7 @@ export class WoComponent implements OnInit {
   saveAssignment() {
     console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for "+JSON.stringify(this.assignedEngineer.engineer));
     this.displayAssignDialog = false;
-    this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner, this.getEngineersId(this.editedOrder.assignee))
+    this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner)
         .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.engineer));
   }
 
@@ -195,13 +213,25 @@ export class WoComponent implements OnInit {
       console.log("Assignment problem! "+created);
       this.alertService.error("Blad przypisania zlecenia "+order.workNo+" do "+engineer.email);
       return;
-    }
-    else if (isNewOrderOwner && order.statusCode != "AS") { //update status
+    } else if (isNewOrderOwner && order.statusCode != "AS") { //update status
       console.log("Setting status to AS, current "+order.statusCode);
       order.statusCode = "AS";
     }
+    this.alertService.error("Pomyślnie przypisano zlecenie "+order.workNo+" do "+engineer.email);
 
     this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
+  }
+
+
+  private getEngineers(emails: string[]): User[] {
+    return this.engineers.filter(engineer => this.filterEnginner(engineer, emails));
+  }
+
+  private filterEnginner(engineer:User, emails:String[]):boolean {
+    if (emails === undefined || emails.length < 1) {
+      return false;
+    }
+    return emails.indexOf(engineer.email) > -1;
   }
 
   saveOrder() {
@@ -210,6 +240,28 @@ export class WoComponent implements OnInit {
     this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
     this.editedOrder.statusCode = this.status.code;
     this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
+
+    //TODO consider how to optimize all actions newOrder-newRelatedItem(noId), changeOrder-newRelatedItem(noId), newOrder-changeRelatedItem(Id), changeOrder-changeRelatedItem(Id)
+
+    if(this.relatedItem.itemNo !== undefined && this.relatedItem.id !== undefined) {
+      if (this.isRelatedItemChanged(this.relatedItem)) {
+        console.log("changing existing relatedItem itemNo:" + this.relatedItem.itemNo + ", id:" + this.relatedItem.id);
+        //todo updateRelatedItem and change this.relatedItems
+      } else {
+        console.log("no action on relatedItem but could be reassignment");
+      }
+    } else if(this.relatedItem.itemNo !== undefined && this.relatedItem.id === undefined) {
+      console.log("adding new relatedItem itemNo:"+this.relatedItem.itemNo+", id:"+this.relatedItem.id);
+      //todo addRelatedItem wait for id and change this.relatedItems
+    } else {
+      console.log("no action on relatedItem itemNo:"+this.relatedItem.itemNo+", id:"+this.relatedItem.id);
+    }
+
+    //todo after above actions change (add to get id)
+    if (this.relatedItem.id !== this.editedOrder.itemId) {
+      console.log("changing order related item to " + this.relatedItem.id);
+      this.editedOrder.itemId = this.relatedItem.id;
+    }
 
     if(this.newOrder) {
       console.log("saving new!" + JSON.stringify(this.editedOrder));
@@ -251,6 +303,25 @@ export class WoComponent implements OnInit {
       index++;
     }
     return -1;
+  }
+
+  private isRelatedItemChanged(relatedItem:RelatedItem):boolean {
+    let originalItem: RelatedItem = this.getOriginalRelatedItemById(relatedItem.id);
+
+    if (JSON.stringify(originalItem) === JSON.stringify(relatedItem)) {
+      return false;
+    }
+    console.log("differs: original="+JSON.stringify(originalItem)+"\n changed="+JSON.stringify(relatedItem));
+    return true;
+  }
+
+  private getOriginalRelatedItemById(id:number):RelatedItem {
+    for(let item of this.relatedItems) {
+      if (item.id === id) {
+        return item;
+      }
+    }
+    return null;
   }
 }
 

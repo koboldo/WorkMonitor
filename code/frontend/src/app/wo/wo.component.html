@@ -22,11 +22,11 @@
               <div class="ui-grid-col-1"></div>
             </div>
             <div class="ui-grid-row"  style="margin-top: 15px;">
-              <div class="ui-grid-col-5"></div>
-              <div class="ui-grid-col-2">
+              <div class="ui-grid-col-4"></div>
+              <div class="ui-grid-col-4">
                 <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
               </div>
-              <div class="ui-grid-col-5"></div>
+              <div class="ui-grid-col-4"></div>
             </div>
           </div>
 
@@ -46,10 +46,12 @@
       </p-fieldset>
     </div>
     <div class="ui-grid-col-3">
-      <p-fieldset legend="Wykonawcy" *ngIf="selectedOrder?.assignee">
-        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assignee">
-          <!--<h4>Wykonawcy</h4>-->
-          <div class="ui-grid-col-12">{{a}}</div>
+      <p-fieldset legend="Wykonawcy" *ngIf="selectedOrder?.assigneeFull">
+        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+          <hr>
+          <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+          <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+          <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
         </div>
       </p-fieldset>
     </div>
@@ -122,11 +124,11 @@
   </div>
 
 
-  <p-dialog header="Zlecenie" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
+  <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" /></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
@@ -144,27 +146,51 @@
         <div class="ui-grid-col-4"><label for="mdCapex">Capex</label></div>
         <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" /></div>
       </div>
-      <!-- this is RELATED_ITEM
-      <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="itemBuildingType">Typ budynku</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemBuildingType" [(ngModel)]="editedOrder.itemBuildingType" /></div>
-      </div>
-      <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="itemConstructionCategory">Konstrukcja</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemConstructionCategory" [(ngModel)]="editedOrder.itemConstructionCategory" /></div>
-      </div>
-      <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="itemAddress">Adres</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemAddress" [(ngModel)]="editedOrder.itemAddress" /></div>
-      </div>-->
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="comment" [(ngModel)]="editedOrder.comment" /></div>
+        <div class="ui-grid-col-8">
+          <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
+          <textarea pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="5" [cols]="30"  autoResize="autoResize"></textarea>
+        </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="description">Opis</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="editedOrder.description" /></div>
+        <div class="ui-grid-col-8">
+          <!--<input pInputText id="description" [(ngModel)]="editedOrder.description" />-->
+          <textarea pInputTextarea id="description" [(ngModel)]="editedOrder.description" [rows]="5" [cols]="30"  autoResize="autoResize"></textarea>
+        </div>
       </div>
+      <hr>
+      <!-- related item -->
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemNo">Numer obiektu</label></div>
+        <div class="ui-grid-col-8">
+          <!--<input pInputText id="itemNo" [(ngModel)]="editedOrder.itemNo" />-->
+          <p-autoComplete id="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onSelect)="updateRelatedItem" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" forceSelection="false"></p-autoComplete>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemAddress">Adres</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemAddress" [(ngModel)]="relatedItem.address" /></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemBuildingType">Typ budynku</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemBuildingType" [(ngModel)]="relatedItem.mdBuildingType" /></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemConstructionCategory">Konstrukcja</label></div>
+        <div class="ui-grid-col-8"><input pInputText id="itemConstructionCategory" [(ngModel)]="relatedItem.mdConstructionCategory" /></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemDescription">Opis obiektu</label></div>
+        <textarea pInputTextarea id="itemDescription" [(ngModel)]="relatedItem.description" [rows]="5" [cols]="30"  autoResize="autoResize"></textarea>
+      </div>
+
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="itemCreationDate">Data utworzenia</label></div>
+        <input pInputText id="itemCreationDate" disabled="true" [(ngModel)]="relatedItem.creationDate"/>
+      </div>
+
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
@@ -174,7 +200,7 @@
   </p-dialog>
 
 
-  <p-dialog header="Przypisywanie zlecenia" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
+  <p-dialog [header]="isNewOrderOwner ? 'Przypisywanie/przepisywanie zlecenia': 'Dopisywanie do zlecenia'" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
         <div class="ui-grid-row" style="margin-top: 20px;">
             <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
