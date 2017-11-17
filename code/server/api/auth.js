@@ -11,7 +11,7 @@ var dbUtil = require('./db/db_util');
 
 var logger = require('./logger').getLogger('monitor'); 
 
-var authQuery = 'select ID, EMAIL, IS_ACTIVE, ROLE_CODE, FIRST_NAME, LAST_NAME from PERSON where EMAIL = ? and PASSWORD = ? and IS_ACTIVE = "Y"';
+var authQuery = 'select ID, EMAIL, IS_ACTIVE, ROLE_CODE, OFFICE_CODE, FIRST_NAME, LAST_NAME from PERSON where EMAIL = ? and PASSWORD = ? and IS_ACTIVE = "Y"';
 
 var secret;
 
@@ -60,7 +60,7 @@ var auth = {
                                 secret,
                                 { expiresIn: 60 * 10 });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
-                res.json({email: userRow.EMAIL, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE});
+                res.json({email: userRow.EMAIL, userId: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE, officeCode: userRow.OFFICE_CODE});
             }
         });
         
