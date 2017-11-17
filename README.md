@@ -1,4 +1,2 @@
-# TaskMonitor
-App for monitoring progress of assigned tasks.
-
-Just for test.
+# WorkMonitor
+App for progress monitoring of assigned tasks.
