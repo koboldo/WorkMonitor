@@ -63,7 +63,7 @@ export class WoComponent implements OnInit {
                 private dictService:DictService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService) {
-        this.lastModAfter = this.getCurrentDateDayOperation(-61);
+        this.lastModAfter = this.getCurrentDateDayOperation(-161); //TODO change
         this.lastModBefore = this.getCurrentDateDayOperation(1);
         this.items = [
             {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
@@ -189,7 +189,6 @@ export class WoComponent implements OnInit {
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedOrder));
         this.selectedOrder.assigneeFull = this.getEngineers(this.selectedOrder.assignee);
-        //this.activites = this.processService.fetchProcess(this.selectedProcess);
     }
 
     assign(isNewOrderOwner:boolean):void {
