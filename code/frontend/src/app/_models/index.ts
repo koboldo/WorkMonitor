@@ -2,3 +2,4 @@
 export * from './order';
 export * from './code';
 export * from './relatedItem';
+export * from './workType';

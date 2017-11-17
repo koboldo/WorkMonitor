@@ -21,7 +21,22 @@ export class RelatedItemService {
             .map((response: Response) => response.json().list);
     }
 
+    updateItem(item: RelatedItem) : Observable<RelatedItem> {
+        return this.http.put('/api/v1/relatedItems/'+item.id, JSON.stringify(item), this.authService.getAuthOptions())
+            .map((response: Response) => response.json().updated)
+            .mergeMap(updatedId => this.getItemById(item.id));
+    }
+
+    addItem(item: RelatedItem) : Observable<RelatedItem> {
+        return this.http.post('/api/v1/relatedItems', JSON.stringify(item), this.authService.getAuthOptions())
+            .map((response: Response) => response.json().created)
+            .mergeMap(createdId => this.getItemById(createdId));
+    }
 
     // private helper methods
 
+    private getItemById(id:number):Observable<RelatedItem> {
+        return this.http.get('/api/v1/relatedItems/'+id, this.authService.getAuthOptions())
+            .map((response: Response) => response.json());
+    }
 }

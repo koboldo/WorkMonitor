@@ -57,6 +57,7 @@ export class WOService {
         strippedOrder.itemBuildingType = undefined;
         strippedOrder.itemConstructionCategory = undefined;
         strippedOrder.itemAddress = undefined;
+        strippedOrder.itemCreationDate = undefined;
 
         return strippedOrder;
     }
