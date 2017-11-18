@@ -10,7 +10,8 @@
 			"PASSWORD": "password",
 			"IS_ACTIVE": "isActive",
 			"LAST_MOD": "lastMod",
-			"WORK_ORDERS": "workOrders"
+			"WORK_ORDERS": "workOrders",
+			"COMPANY": "company"
 		}
 	},
 	"order": {
@@ -31,6 +32,7 @@
 			"LAST_ASSIGNMENT": "lastAssignment",
 			"RELATED_ITEMS": "relatedItems",
 			"ITEM_ID": "itemId",
+			"VENTURE_ID": "ventureId",
 			"ASSIGNEE": "assignee"
 		}
 	},

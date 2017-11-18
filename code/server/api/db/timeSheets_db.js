@@ -9,14 +9,14 @@ var logger = require('../logger').getLogger('monitor');
 
 var queries = {
 	// getAggregatedTime: 'SELECT PERSON_ID, COALESCE( SUM(USED_TIME), 0) AS USED_TIME FROM TIME_SHEET %(filter)s GROUP BY PERSON_ID',
-    getAggregatedTime: 'SELECT P.ID AS PERSON_ID, (SELECT COALESCE( SUM(USED_TIME), 0) AS USED_TIME FROM TIME_SHEET AS TS WHERE TS.PERSON_ID = P.ID %(workDateBefore)s %(workDateAfter)s) AS USED_TIME FROM PERSON AS P WHERE 1=1 %(personId)s'
+    getAggregatedTime: 'SELECT P.ID AS PERSON_ID, (SELECT COALESCE( SUM(USED_TIME), 0) AS USED_TIME FROM TIME_SHEET AS TS WHERE TS.PERSON_ID = P.ID %(workDateBefore)s %(workDateAfter)s) AS USED_TIME FROM PERSON AS P'
 };
 
 var filters = {
     getTimesheets: {
-        workDateBefore: 'AND WORK_DATE <= STRFTIME("%%s","%(workDateBefore)s")',
-        workDateAfter: 'AND WORK_DATE >= STRFTIME("%%s","%(workDateAfter)s")',
-        personId: 'AND P.ID = %(personId)s',
+        workDateBefore: 'AND (WORK_DATE/86400) <= (STRFTIME("%%s","%(workDateBefore)s")/86400)',
+        workDateAfter: 'AND (WORK_DATE/86400) >= (STRFTIME("%%s","%(workDateAfter)s")/86400)',
+        personId: ' WHERE P.ID = %(personId)s',
     }
 };
 
