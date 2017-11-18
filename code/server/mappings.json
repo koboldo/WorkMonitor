@@ -30,6 +30,7 @@
 			"CREATED": "creationDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
 			"RELATED_ITEMS": "relatedItems",
+			"ITEM_ID": "itemId",
 			"ASSIGNEE": "assignee"
 		}
 	},
