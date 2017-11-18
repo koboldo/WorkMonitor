@@ -22,7 +22,7 @@ var filters = {
         status: 'STATUS_CODE = "%(status)s"',
         lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s")',
         lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s")',
-        personId: 'WORK_ORDER.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
+        personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
     }
 };
 
