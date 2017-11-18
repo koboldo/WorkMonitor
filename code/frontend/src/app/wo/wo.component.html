@@ -42,7 +42,7 @@
         <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemBuildingType" class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.itemBuildingType}}</div></div>
         <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemConstructionCategory" class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.itemConstructionCategory}}</div></div>
         <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemDescription" class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.itemDescription}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemDescription" class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.itemCreationDate}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemCreationDate" class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.itemCreationDate}}</div></div>
 
       </p-fieldset>
     </div>
@@ -71,9 +71,9 @@
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
-      <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'text-align':'center'}">
+      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
         <ng-template let-col let-order="rowData" pTemplate="body">
-          <button type="button" pButton icon="{{order[col.field]}}"></button>
+          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>

@@ -25,6 +25,12 @@ export class WOService {
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
+    getAssignedOrders(personId: number) : Observable<Order[]> {
+
+        return this.http.get('/api/v1/orders?personId='+personId+"&status=AS", this.authService.getAuthOptions())
+            .map((response: Response) => this.getWorkOrders(response.json()))
+    }
+
     updateOrder(order: Order) : Observable<Order> {
         return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)), this.authService.getAuthOptions())
             .map((response: Response) => response.json().updated)
@@ -87,10 +93,8 @@ export class WOService {
             order.type = this.dictService.getWorkType(order.typeCode);
         }
 
-        if (order.complexityCode && order.complexityCode === "HDR") {
-            order.complexity = "fa-life-bouy";
-        } else {
-            order.complexity = "fa-handshake-o";
+        if (order.complexityCode) {
+            order.complexity = this.dictService.getComplexities(order.complexityCode)
         }
         return order;
     }
