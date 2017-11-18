@@ -29,15 +29,7 @@
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
-			
-			"ITEM_ID": "itemId",
-			"ITEM_NO": "itemNo",
-			"RI_DESC": "itemDescription",
-			"MD_BUILDING_TYPE": "itemBuildingType", 
-			"MD_CONSTRUCTION_CATEGORY": "itemConstructionCategory",
-			"ADDRESS": "itemAddress",
-			"ITEM_CREATED": "itemCreationDate",
-			
+			"RELATED_ITEMS": "relatedItems",
 			"ASSIGNEE": "assignee"
 		}
 	},

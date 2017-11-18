@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* jshint node: true, esversion: 6 */
 'use strict';
 
 var sqlite3 = require('sqlite3');
@@ -29,7 +29,6 @@ var persons_db = {
 			
 			// we need to group async funcs in order to deal in the same thread
 			var calls = [];
-			var persons = {list: []};
 			
 			rows.forEach(function(row){
 				calls.push(function(async_cb) {

@@ -1,3 +1,4 @@
+/* jshint node: true, esversion: 6 */
 'use strict';
 
 var util = require('util');
@@ -15,9 +16,14 @@ var orders = {
             }
             
             var orders = mapper.mapList(mapper.order.mapToJson, orderRows);
-            for(var i = 0; i < orders.list.length; i++) {
-                if(orders.list[i].assignee) orders.list[i].assignee = orders.list[i].assignee.split("|");
-            }
+            orders.list.forEach((order) => {
+                var mappedItems = [];
+                order.relatedItems.forEach((relatedItem) => {
+                    var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
+                    mappedItems.push(mappedItem);
+                });
+                order.relatedItems = mappedItems;
+            });
             res.json(orders);
         });
     },
@@ -34,6 +40,14 @@ var orders = {
             if(orderRow) {
                 var order = mapper.order.mapToJson(orderRow);
                 if(order.assignee) order.assignee = order.assignee.split("|");
+
+                var mappedItems = [];
+                order.relatedItems.forEach((relatedItem) => {
+                    var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
+                    mappedItems.push(mappedItem);
+                });
+                order.relatedItems = mappedItems;
+
                 res.json(order);
             } else {
                 res.status(404).end();

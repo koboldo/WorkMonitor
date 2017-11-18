@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* jshint node: true, esversion: 6 */
 'use strict';
 
 var jwt = require('jsonwebtoken');
@@ -28,7 +28,7 @@ var auth = {
     authenticate: function(req, res) {
     	// if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
         var user = req.body.email;
-        var passwd = req.body.password;
+        var passwd = (req.body.password) ? req.body.password : '';
         var passwdSha1 = sha1(passwd);
         
         var db = dbUtil.getDatabase();
