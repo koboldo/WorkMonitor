@@ -20,7 +20,6 @@ var orders = {
                 var mappedItems = [];
                 order.relatedItems.forEach((relatedItem) => {
                     var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
-                    console.log('mapped '+ JSON.stringify(mappedItem));
                     mappedItems.push(mappedItem);
                 });
                 order.relatedItems = mappedItems;
@@ -41,6 +40,14 @@ var orders = {
             if(orderRow) {
                 var order = mapper.order.mapToJson(orderRow);
                 if(order.assignee) order.assignee = order.assignee.split("|");
+
+                var mappedItems = [];
+                order.relatedItems.forEach((relatedItem) => {
+                    var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
+                    mappedItems.push(mappedItem);
+                });
+                order.relatedItems = mappedItems;
+
                 res.json(order);
             } else {
                 res.status(404).end();
