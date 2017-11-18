@@ -91,6 +91,8 @@ var orders_db = {
 				return;
 			}
 
+            if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
+            
             var getOrderItemsStat = db.prepare(queries.getOrderItems);
             getOrderItemsStat.bind(row.ITEM_ID).all((err, rows) => {
                 getOrderItemsStat.finalize();

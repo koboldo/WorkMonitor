@@ -46,7 +46,7 @@ var timeSheets_db = {
         
         if(logger.isDebugEnabled()) logger.debug('insert timeSheet with object: ' + util.inspect(timeSheet));
 
-        if(timeSheet['WORK_DATE']) timeSheet['WORK_DATE'] = 'STRFTIME("%s","' + timeSheet['WORK_DATE'] + '")';
+        if(timeSheet.WORK_DATE) timeSheet.WORK_DATE = 'STRFTIME("%s","' + timeSheet.WORK_DATE + '")';
 
         dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, function(err, newId){
             if(err) return local_util.logErrAndCall(err,cb);

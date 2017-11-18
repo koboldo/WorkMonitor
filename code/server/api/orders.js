@@ -17,12 +17,8 @@ var orders = {
             
             var orders = mapper.mapList(mapper.order.mapToJson, orderRows);
             orders.list.forEach((order) => {
-                var mappedItems = [];
-                order.relatedItems.forEach((relatedItem) => {
-                    var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
-                    mappedItems.push(mappedItem);
-                });
-                order.relatedItems = mappedItems;
+                mapOrderItems(order);
+                filterOrderPrice(req.context, order);
             });
             res.json(orders);
         });
@@ -39,15 +35,8 @@ var orders = {
             
             if(orderRow) {
                 var order = mapper.order.mapToJson(orderRow);
-                if(order.assignee) order.assignee = order.assignee.split("|");
-
-                var mappedItems = [];
-                order.relatedItems.forEach((relatedItem) => {
-                    var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
-                    mappedItems.push(mappedItem);
-                });
-                order.relatedItems = mappedItems;
-
+                mapOrderItems(order);
+                filterOrderPrice(req.context, order);
                 res.json(order);
             } else {
                 res.status(404).end();
@@ -81,11 +70,25 @@ var orders = {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = { created: result }
+            var rv = { created: result };
             if(result) res.status(201).json(rv);
             else res.status(404).end();
         });
     }
+};
+
+function mapOrderItems(order) {
+    var mappedItems = [];
+    order.relatedItems.forEach((relatedItem) => {
+        var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
+        mappedItems.push(mappedItem);
+    });
+    order.relatedItems = mappedItems;
+};
+
+function filterOrderPrice(context, order) {
+    if(order.typeCode == 'OT' && context.role != 'PR')
+        order.price = -13;
 };
 
 module.exports = orders;
