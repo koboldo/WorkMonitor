@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
-import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService } from '../_services/index';
+import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
 import { MenuItem } from 'primeng/primeng';
 
@@ -62,9 +62,10 @@ export class WoComponent implements OnInit {
                 private workService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
-                private authSerice:AuthenticationService) {
-        this.lastModAfter = this.getCurrentDateDayOperation(-161); //TODO change
-        this.lastModBefore = this.getCurrentDateDayOperation(1);
+                private authSerice:AuthenticationService,
+                private toolsService: ToolsService) {
+        this.lastModAfter = toolsService.getCurrentDateDayOperation(-161); //TODO change
+        this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
         this.items = [
             {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
             {label: 'Dopisz wykonawce', icon: 'fa-share', command: (event) => this.assign(false)},
@@ -188,7 +189,7 @@ export class WoComponent implements OnInit {
 
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedOrder));
-        this.selectedOrder.assigneeFull = this.getEngineers(this.selectedOrder.assignee);
+        this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
     }
 
     assign(isNewOrderOwner:boolean):void {
@@ -246,11 +247,7 @@ export class WoComponent implements OnInit {
         this.displayEditDialog = true;
     }
 
-    getCurrentDateDayOperation(day:number):Date {
-        let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + day);
-        return currentDate;
-    }
+
 
     saveAssignment() {
         console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for " + JSON.stringify(this.assignedEngineer.engineer));
@@ -274,18 +271,6 @@ export class WoComponent implements OnInit {
         this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
     }
 
-
-    private getEngineers(emails:string[]):User[] {
-        return this.engineers.filter(engineer => this.filterEnginner(engineer, emails));
-    }
-
-    private filterEnginner(engineer:User, emails:String[]):boolean {
-        if (emails === undefined || emails.length < 1) {
-            return false;
-        }
-        return emails.indexOf(engineer.email) > -1;
-    }
-
     saveOrder() {
 
         this.editedOrder.statusCode = this.newOrder ? "OP" : this.status.code;
@@ -293,7 +278,7 @@ export class WoComponent implements OnInit {
         this.editedOrder.typeCode = this.workType.code;
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
 
-        this.editedOrder.price = (this.price != undefined && this.price.code !== undefined) ? <number> +this.price.code : this.parsePrice(JSON.stringify(this.price), this.editedOrder.workNo);
+        this.editedOrder.price = (this.price != undefined && this.price.code !== undefined) ? <number> +this.price.code : this.toolsService.parsePrice(JSON.stringify(this.price), this.editedOrder.workNo);
         console.log("price " + this.editedOrder.price);
 
         //trying to optimize all actions newOrder-newRelatedItem(noId), changeOrder-newRelatedItem(noId), newOrder-changeRelatedItem(Id), changeOrder-changeRelatedItem(Id)
@@ -334,7 +319,7 @@ export class WoComponent implements OnInit {
         }
     }
 
-    refreshTable(order:Order, newOrder:boolean) {
+    private refreshTable(order:Order, newOrder:boolean) {
         console.log("Refreshing table with order " + JSON.stringify(order));
 
         if (newOrder && order && order.id > 0) {
@@ -342,7 +327,7 @@ export class WoComponent implements OnInit {
             this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
             this.alertService.success("Pomyślnie dodano zlecenie " + order.workNo);
         } else if (!newOrder && order.id > 0) {
-            let index:number = this.findSelectedOrderIndex(order);
+            let index:number = this.toolsService.findSelectedOrderIndex(order, this.orders);
             console.log("refresh index: " + index);
             this.orders[index] = order;
             this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
@@ -353,16 +338,7 @@ export class WoComponent implements OnInit {
         }
     }
 
-    findSelectedOrderIndex(order:Order):number {
-        let index:number = 0;
-        for (let tabOrder of this.orders) {
-            if (order.id === tabOrder.id) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
-    }
+
 
     private isRelatedItemChanged(relatedItem:RelatedItem):boolean {
         console.log("isRelatedItemChanged");
@@ -384,20 +360,6 @@ export class WoComponent implements OnInit {
         return null;
     }
 
-    private parsePrice(price:string, workNo: string):number {
-        console.log("parsing price " + price);
-        if (price === undefined || price === "" || price === "\"\"" || price === "{}") {
-            this.alertService.warn("Nie ustawiono ceny dla zlecenia "+workNo+"...");
-            return undefined;
-        }
-
-        try {
-            return +price.replace(/\D/g, '');
-        } catch (e) {
-            this.alertService.warn("Nie ustawiono ceny dla zlecenia "+workNo+"...");
-            return undefined;
-        }
-    }
 
     private refreshItems(item:RelatedItem, newItem: boolean):void {
         if (newItem) {

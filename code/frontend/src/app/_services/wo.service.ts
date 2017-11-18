@@ -93,10 +93,8 @@ export class WOService {
             order.type = this.dictService.getWorkType(order.typeCode);
         }
 
-        if (order.complexityCode && order.complexityCode === "HDR") {
-            order.complexity = "fa-life-bouy";
-        } else {
-            order.complexity = "fa-handshake-o";
+        if (order.complexityCode) {
+            order.complexity = this.dictService.getComplexities(order.complexityCode)
         }
         return order;
     }

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
-import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService } from '../_services/index';
+import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 
 @Component({
@@ -22,24 +22,23 @@ export class MyWoComponent implements OnInit {
 
     items:MenuItem[] = [];
 
-        displayFinishDialog: boolean;
+    displayFinishDialog: boolean;
 
-    /* statuses dict or autocompletion statuses */
-    statuses:CodeValue[] = [];
 
     constructor(private woService:WOService,
                 private userService:UserService,
                 private workService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
-                private authSerice:AuthenticationService) {
+                private authSerice:AuthenticationService,
+                private toolsService: ToolsService
+    ) {
 
     }
 
     ngOnInit() {
         this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
-        this.statuses = this.dictService.getWorkStatuses();
 
         this.items = [
             {label: 'Zakończ zlecenie', icon: 'fa-check', command: (event) => this.finishWork()}
@@ -57,7 +56,7 @@ export class MyWoComponent implements OnInit {
 
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedOrder));
-        this.selectedOrder.assigneeFull = this.getEngineers(this.selectedOrder.assignee);
+        this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
     }
 
     private saveAndSearch(user:User):void {
@@ -107,15 +106,4 @@ export class MyWoComponent implements OnInit {
         }
     }
 
-
-    private getEngineers(emails:string[]):User[] {
-        return this.engineers.filter(engineer => this.filterEnginner(engineer, emails));
-    }
-
-    private filterEnginner(engineer:User, emails:String[]):boolean {
-        if (emails === undefined || emails.length < 1) {
-            return false;
-        }
-        return emails.indexOf(engineer.email) > -1;
-    }
 }

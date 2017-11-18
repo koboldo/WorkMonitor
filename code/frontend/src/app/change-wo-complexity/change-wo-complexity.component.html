@@ -1,3 +1,152 @@
-<p>
-  change-wo-complexity works!
-</p>
+
+
+<p-panel header="Zlecenia - WO">
+
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-5">
+      <p-fieldset legend="Wyszukiwanie zleceń">
+        <form #f="ngForm" (submit)="search()">
+
+          <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            <div class="ui-grid-row"  style="margin-top: 20px;">
+              <div class="ui-grid-col-1"></div>
+              <div class="ui-grid-col-5">
+                <label for="lastModAfter">zmodyfikowano od</label>
+                <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+              </div>
+              <!--<div class="ui-grid-col-1"></div>-->
+              <div class="ui-grid-col-5">
+                <label for="lastModBefore">zmodyfikowano do</label>
+                <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy"></p-calendar>
+              </div>
+              <div class="ui-grid-col-1"></div>
+            </div>
+            <div class="ui-grid-row"  style="margin-top: 15px;">
+              <div class="ui-grid-col-4"></div>
+              <div class="ui-grid-col-4">
+                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 80px;" [disabled]="!f?.valid"></button>
+              </div>
+              <div class="ui-grid-col-4"></div>
+            </div>
+          </div>
+
+        </form>
+      </p-fieldset>
+    </div>
+    <div class="ui-grid-col-4">
+      <p-fieldset legend="Obiekt" *ngIf="selectedOrder?.itemNo || selectedOrder?.itemAddress || selectedOrder?.itemBuildingType || selectedOrder?.itemDescription || selectedOrder?.itemConstructionCategory">
+
+        <!--<h4>Obiekt</h4>-->
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemNo" class="ui-grid-col-4">Numer:</div><div class="ui-grid-col-8">{{selectedOrder?.itemNo}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemAddress" class="ui-grid-col-4">Adres:</div><div class="ui-grid-col-8">{{selectedOrder?.itemAddress}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemBuildingType" class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.itemBuildingType}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemConstructionCategory" class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.itemConstructionCategory}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemDescription" class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.itemDescription}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.itemCreationDate" class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.itemCreationDate}}</div></div>
+
+      </p-fieldset>
+    </div>
+    <div class="ui-grid-col-3">
+      <p-fieldset legend="Wykonawcy" *ngIf="selectedOrder?.assigneeFull?.length > 0">
+        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+          <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+          <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+          <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+        </div>
+        <hr>
+        <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
+          <div class="ui-grid-col-12"><i>{{selectedOrder?.comment}}</i></div>
+        </div>
+      </p-fieldset>
+
+    </div>
+  </div>
+
+  <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+      <p-header>
+        <div>
+          <i class="fa fa-search"></i>
+          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        </div>
+      </p-header>
+      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="status" header="Status" ></p-column>
+      <p-column [sortable]="true" field="type" header="Typ" ></p-column>
+      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+        </ng-template>
+      </p-column>
+      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
+      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
+
+      <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
+      <p-column [sortable]="true" field="description" header="Opis"></p-column>
+      <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
+      <p-column [sortable]="true" field="lastModDate" header="Ostatnia modyfikacja"></p-column>
+      <p-column [sortable]="true" field="creationDate" header="Data utworzenia"></p-column>
+
+      <!-- search by invisible colums, display in one row -->
+      <p-column [sortable]="true" field="itemNo" header="Numer obiektu"  hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu"   hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja"   hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemAddress" header="Adres"  hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
+
+      <p-footer>
+      </p-footer>
+
+    </p-dataTable>
+
+    <p-contextMenu #cm [model]="items"></p-contextMenu>
+  </div>
+
+
+  <p-dialog [header]="complexityIncrease? 'Zwiększenie trudność' : 'Zmniejszenie trudności'" [(visible)]="displayChangeComplexityDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" disabled="true"/></div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
+        <div class="ui-grid-col-8">
+          <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="status">Status</label></div>
+        <div class="ui-grid-col-8">
+          <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true"/>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="complexity">Trudność*</label></div>
+        <div class="ui-grid-col-8">
+          <input pInputText id="complexity" [(ngModel)]="editedOrder.complexity" disabled="true"/>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="comment">Komentarz*</label></div>
+        <div class="ui-grid-col-8">
+          <textarea disabled="true" pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="8" [cols]="30"></textarea>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-4"><label for="justification">Uzasadnienie*</label></div>
+        <div class="ui-grid-col-8">
+          <textarea pInputTextarea id="justification" [(ngModel)]="justification" [rows]="2" [cols]="30" required autoResize="autoResize"></textarea>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button width="200px" type="button" pButton [icon]="complexityIncrease? 'fa-arrow-circle-up' : 'fa-arrow-circle-down'" (click)="saveOrder()" label="Zaakceptuj"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+
+</p-panel>

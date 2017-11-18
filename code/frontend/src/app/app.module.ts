@@ -10,7 +10,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService, WOService, DictService, RelatedItemService, WorkTypeService } from './_services/index';
+import { AlertService, AuthenticationService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
@@ -58,7 +58,8 @@ import { ReportMonitorEngineersComponent } from './report-monitor-engineers/repo
         WOService,
         DictService,
         RelatedItemService,
-        WorkTypeService
+        WorkTypeService,
+        ToolsService
     ],
     bootstrap: [AppComponent]
 })

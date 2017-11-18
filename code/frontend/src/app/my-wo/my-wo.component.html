@@ -38,9 +38,9 @@
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
-      <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'text-align':'center'}">
+      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
         <ng-template let-col let-order="rowData" pTemplate="body">
-          <button type="button" pButton icon="{{order[col.field]}}"></button>
+          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
@@ -82,7 +82,7 @@
           <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/>
         </div>
       </div>
-      <div class="ui-grid-row" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
+      <div class="ui-grid-row" style="margin-top: 10px;"><!-- editing status is not allowed -->
         <div class="ui-grid-col-4"><label for="status">Status</label></div>
         <div class="ui-grid-col-8">
           <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true"/>
