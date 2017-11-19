@@ -18,6 +18,11 @@ export class WOService {
         this.dictService.init();
     }
 
+    getOrdersByStatus(status: string) {
+
+        return this.http.get('/api/v1/orders?status='+status, this.authService.getAuthOptions())
+            .map((response: Response) => this.getWorkOrders(response.json()))
+    }
 
     getOrdersByDates(lastModAfter: string, lastModBefore: string) : Observable<Order[]> {
 
