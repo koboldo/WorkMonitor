@@ -27,9 +27,12 @@ export class ToolsService {
     }
 
     public getCurrentDateDayOperation(day:number):Date {
-        let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + day);
-        return currentDate;
+        return this.getDateDayOperation(day, new Date());
+    }
+
+    public getDateDayOperation(day:number, date: Date):Date {
+        date.setDate(date.getDate() + day);
+        return date;
     }
 
     public findSelectedOrderIndex(order:Order, orders:Order[]):number {

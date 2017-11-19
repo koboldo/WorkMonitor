@@ -89,6 +89,10 @@ export class UserService {
         return this.http.get('/api/v1/persons', this.authService.getAuthOptions()).map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
     }
 
+    public getVentureRepresentatives(): Observable<User[]> {
+        return this.http.get('/api/v1/persons', this.authService.getAuthOptions()).map((response: Response) => this.getAllByRole(response.json(), ["VE"]));
+    }
+
     // private helper methods
     private getAllByRole(response:any, roleCodes:string[]):User[] {
         let users : User[] = [];

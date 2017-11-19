@@ -11,6 +11,7 @@
     public office: string;
     public isActive: string;
     public workOrders: number[];
+    public company: string;
 }
 
 /*

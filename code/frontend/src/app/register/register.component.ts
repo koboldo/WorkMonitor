@@ -14,7 +14,8 @@ import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Val
     templateUrl: 'register.component.html'
 })
 
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
+
 
 
     user: User = new User;
@@ -26,6 +27,10 @@ export class RegisterComponent {
     showRoles: boolean = false;
     showOffices: boolean = false;
 
+    representatives: User[];
+    suggestedCompanies: string[];
+    company: string;
+
     constructor(
         private router: Router,
         private userService: UserService,
@@ -36,14 +41,23 @@ export class RegisterComponent {
         this.user.officeCode = "WAW";
         this.user.isActive = "Y";
 
-        this.dictService.getRolesObs().subscribe((roles:CodeValue[]) => this.mapToRoles(roles));
-        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
 
 
     }
 
+    ngOnInit():void {
+        this.dictService.init();
+        this.dictService.getRolesObs().subscribe((roles:CodeValue[]) => this.mapToRoles(roles));
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
+        this.userService.getVentureRepresentatives().subscribe(representatives => this.representatives = representatives);
+    }
+
     register() {
         this.loading = true;
+
+        this.user.isActive = this.user.roleCode === 'VE'? "N" : "Y";
+        this.user.company = this.company;
+
         this.userService.create(this.user)
             .subscribe(
                 data => {
@@ -51,7 +65,7 @@ export class RegisterComponent {
                     this.router.navigate(['']); //navigate home
                 },
                 error => {
-                    this.alertService.error(error);
+                    this.alertService.error('Nie udalo się dodać użytkownika' +error);
                     this.loading = false;
                 });
     }
@@ -71,5 +85,17 @@ export class RegisterComponent {
         return true;
     }
 
+    suggestCompany(event) {
+        console.log("all " + JSON.stringify(this.representatives));
 
+        this.suggestedCompanies = <string[]> [];
+        if (this.representatives && this.representatives.length > 0) {
+            for (let r of this.representatives) {
+                if (r.company.indexOf(event.query) > -1) {
+                    this.suggestedCompanies.push(r.company);
+                }
+            }
+        }
+        console.log("suggestedCompanies: " + JSON.stringify(this.suggestedCompanies));
+    }
 }

@@ -76,9 +76,11 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     private changeComplexity(increase:boolean):void {
         if (increase && this.selectedOrder.complexityCode !== "STD") {
-            this.alertService.error("To zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
+            this.alertService.error("Zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
+            return;
         } else if (!increase && this.selectedOrder.complexityCode === "STD") {
-            this.alertService.error("To zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
+            this.alertService.error("Zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
+            return;
         }
 
         this.justification = "";

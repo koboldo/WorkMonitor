@@ -1,3 +1,80 @@
-<p>
-  timesheets works!
-</p>
+
+
+<p-panel header="Deklaracje czasu pracy">
+
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-12">
+      <p-fieldset legend="Listy obecności">
+        <form #f="ngForm" (submit)="search()">
+
+          <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            <div class="ui-grid-row"  style="margin-top: 20px;">
+              <div class="ui-grid-col-4"><label for="date">Data</label></div>
+              <div class="ui-grid-col-4">
+                <p-calendar id="date" name="reportDate" (onSelect)="search()" [(ngModel)]="reportDate" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </p-fieldset>
+    </div>
+  </div>
+
+  <div class="ui-grid-row" *ngIf="engineersWithSheets">
+    <p-dataTable [editable]="true" [value]="engineersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastName" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+      <p-header>
+        <div>
+          <i class="fa fa-search"></i>
+          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        </div>
+      </p-header>
+
+      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+      <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
+      <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
+      <p-column [sortable]="true" field="email" header="Email" ></p-column>
+      <p-column [sortable]="true" field="role" header="Rola"></p-column>
+      <p-column [sortable]="true" field="office" header="Biuro"></p-column>
+
+      <p-column [editable]="true" [sortable]="true" field="timesheetUsedTime" header="Godziny"></p-column>
+
+      <p-footer>
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-col-5"></div>
+            <div class="ui-grid-col-2">
+              <!--<button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>-->
+              <button type="button" pButton icon="fa-check" iconPos="left" label="Zapisz" (click)="showConfirmDialog()"></button>
+            </div>
+            <div class="ui-grid-col-5"></div>
+          </div>
+        </div>
+      </p-footer>
+
+    </p-dataTable>
+  </div>
+
+
+  <p-dialog header="Modyfikacja zadeklarowanego czasu pracy" [(visible)]="displayConfirmationDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
+    <!--<div class="ui-grid ui-grid-responsive ui-fluid">
+      <div class="ui-grid-row" style="margin-top: 10px;">
+        <div class="ui-grid-col-4"><label for="ventureRepresentative">Zleceniodawca</label></div>
+        <div class="ui-grid-col-8">
+          <p-autoComplete id="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" [forceSelection]="true"></p-autoComplete>
+        </div>
+      </div>
+
+
+    </div>-->
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button width="200px" type="button" pButton icon="fa-check" (click)="saveSheets()" label="Zapisz"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+
+
+
+</p-panel>

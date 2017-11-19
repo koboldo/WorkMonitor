@@ -58,6 +58,7 @@ export class WOService {
         strippedOrder.lastModDate = undefined;
         strippedOrder.assignee = undefined;
 
+        strippedOrder.relatedItems = undefined;
         strippedOrder.itemNo = undefined;
         strippedOrder.itemDescription = undefined;
         strippedOrder.itemBuildingType = undefined;
@@ -96,6 +97,17 @@ export class WOService {
         if (order.complexityCode) {
             order.complexity = this.dictService.getComplexities(order.complexityCode)
         }
+
+        // flat structure to enable filtering in p-datatable
+        if (order.relatedItems[0] !== undefined) {
+            order.itemNo = order.relatedItems[0].itemNo;
+            order.itemDescription = order.relatedItems[0].description;
+            order.itemBuildingType = order.relatedItems[0].mdBuildingType;
+            order.itemConstructionCategory = order.relatedItems[0].mdConstructionCategory;
+            order.itemAddress = order.relatedItems[0].address;
+            order.itemCreationDate = order.relatedItems[0].creationDate;
+        }
+
         return order;
     }
 }

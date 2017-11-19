@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/mergeMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
@@ -30,8 +31,13 @@ export class WoComponent implements OnInit {
 
     /* autocompletion assignedEngineer */
     engineers:User[] = [];
-    suggestedEngineers:SearchEnginner[];
-    assignedEngineer:SearchEnginner;
+    suggestedEngineers:SearchUser[];
+    assignedEngineer:SearchUser;
+
+    /* autocompletion ventureRepresentatives */
+    ventureRepresentatives:User[] = [];
+    suggestedVentureRepresentatives:SearchUser[];
+    assignedVentureRepresentative:SearchUser;
 
     /* autocompletion workType */
     workTypes:CodeValue[] = [];
@@ -77,6 +83,7 @@ export class WoComponent implements OnInit {
 
     ngOnInit() {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+        this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
         this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
         this.workService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
         this.authSerice.userAsObs.subscribe(user => this.operator = user);
@@ -91,7 +98,26 @@ export class WoComponent implements OnInit {
         this.woService.getOrdersByDates(
             this.lastModAfter.toISOString().substring(0, 10),
             this.lastModBefore.toISOString().substring(0, 10)
-        ).subscribe(orders => this.orders = orders);
+        )
+        .mergeMap(orders => this.callVentures(orders))
+        .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
+    }
+
+    private callVentures(orders: Order[]):Observable<User[]> {
+        this.orders = orders;
+        return this.userService.getVentureRepresentatives();
+    }
+
+    private mapVentureRepresentative(orders: Order[], vrs:User[]):void {
+        for(let order of orders) {
+            for(let vr of vrs) {
+                if (order.ventureId === vr.id) {
+                    order.ventureDisplay = vr.firstName+" "+vr.lastName;
+                    order.ventureCompany = vr.company;
+                    order.ventureFull = vr;
+                }
+            }
+        }
     }
 
     copyRelatedItem(value: any) {
@@ -180,12 +206,28 @@ export class WoComponent implements OnInit {
                 console.log("suggestEngineer " + suggestion + " for " + JSON.stringify(event));
                 if (suggestion.indexOf(event.query) > -1 && (this.editedOrder.assignee === undefined || this.editedOrder.assignee.indexOf(engineer.email) === -1)) {
                     let displayName:string = engineer.firstName + " " + engineer.lastName + " (" + engineer.role + ")";
-                    this.suggestedEngineers.push(new SearchEnginner(displayName, engineer));
+                    this.suggestedEngineers.push(new SearchUser(displayName, engineer));
                 }
             }
         }
         console.log("suggestedEngineers " + JSON.stringify(this.suggestedEngineers));
     }
+
+    suggestVentureRepresentative(event) {
+        this.suggestedVentureRepresentatives = [];
+        if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
+            for (let v of this.ventureRepresentatives) {
+                let suggestion:string = JSON.stringify(v);
+                console.log("suggestVentureRepresentative " + suggestion + " for " + JSON.stringify(event));
+                if (suggestion.indexOf(event.query) > -1) {
+                    let displayName:string = v.firstName + " " + v.lastName + " (" + v.company + ")";
+                    this.suggestedVentureRepresentatives.push(new SearchUser(displayName, v));
+                }
+            }
+        }
+        console.log("suggestedVentureRepresentatives " + JSON.stringify(this.suggestedVentureRepresentatives));
+    }
+
 
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedOrder));
@@ -228,19 +270,17 @@ export class WoComponent implements OnInit {
     edit():void {
 
         console.log("editing!" + JSON.stringify(this.selectedOrder));
+
         //initial values based on selectedOrder for form preparation
-        this.price = new CodeValue(""+this.selectedOrder.price, ""+this.selectedOrder.price);
+        let price: string = this.selectedOrder.price !== undefined? ""+this.selectedOrder.price : "";
+        this.price = new CodeValue(price, price);
+
         this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
         this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
-        this.relatedItem = new RelatedItem(
-            this.selectedOrder.itemId,
-            this.selectedOrder.itemNo,
-            this.selectedOrder.itemDescription,
-            this.selectedOrder.itemBuildingType,
-            this.selectedOrder.itemConstructionCategory,
-            this.selectedOrder.itemAddress,
-            this.selectedOrder.itemCreationDate
-        );
+        this.relatedItem = (this.selectedOrder.relatedItems[0] === undefined ? <RelatedItem> {} : this.selectedOrder.relatedItems[0]);
+        if (this.selectedOrder.ventureFull !== undefined && this.selectedOrder.ventureFull !== undefined) {
+            this.assignedVentureRepresentative = new SearchUser(this.selectedOrder.ventureDisplay, this.selectedOrder.ventureFull);
+        }
 
         this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
         this.newOrder = false;
@@ -250,10 +290,10 @@ export class WoComponent implements OnInit {
 
 
     saveAssignment() {
-        console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for " + JSON.stringify(this.assignedEngineer.engineer));
+        console.log("saving assignment!" + JSON.stringify(this.editedOrder) + " for " + JSON.stringify(this.assignedEngineer.user));
         this.displayAssignDialog = false;
-        this.userService.assignWorkOrder(this.assignedEngineer.engineer, this.editedOrder, this.isNewOrderOwner)
-            .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.engineer));
+        this.userService.assignWorkOrder(this.assignedEngineer.user, this.editedOrder, this.isNewOrderOwner)
+            .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user));
     }
 
 
@@ -277,6 +317,7 @@ export class WoComponent implements OnInit {
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         this.editedOrder.typeCode = this.workType.code;
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
+        this.editedOrder.ventureId = this.assignedVentureRepresentative.user.id;
 
         this.editedOrder.price = (this.price != undefined && this.price.code !== undefined) ? <number> +this.price.code : this.toolsService.parsePrice(JSON.stringify(this.price), this.editedOrder.workNo);
         console.log("price " + this.editedOrder.price);
@@ -305,10 +346,8 @@ export class WoComponent implements OnInit {
 
         this.refreshItems(item, newItem);
 
-        if (item.id !== order.itemId) {
-            console.log("changing order related item to " + item.id);
-            order.itemId = item.id;
-        }
+        console.log("changing order related item to " + item.id);
+        order.itemId = item.id;
 
         if (newOrder) {
             console.log("saving new!" + JSON.stringify(order));
@@ -383,9 +422,9 @@ export class WoComponent implements OnInit {
 
 }
 
-export class SearchEnginner {
+export class SearchUser {
     constructor(public displayName:string,
-                public engineer:User) {
+                public user:User) {
     }
 }
 
