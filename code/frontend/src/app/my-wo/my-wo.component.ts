@@ -60,6 +60,11 @@ export class MyWoComponent implements OnInit {
     }
 
     private saveAndSearch(user:User):void {
+        if (user === null) {
+            console.log("Probably logged out");
+            return;
+        }
+
         console.log("Logged as "+JSON.stringify(user));
         this.engineer = user;
         this.search();

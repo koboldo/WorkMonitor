@@ -69,6 +69,11 @@ export class ChangeWoComplexityComponent implements OnInit {
     }
 
     private saveAndSearch(user:User):void {
+        if (user === null) {
+            console.log("Probably logged out");
+            return;
+        }
+
         console.log("Logged as " + JSON.stringify(user));
         this.leader = user;
         this.search();
