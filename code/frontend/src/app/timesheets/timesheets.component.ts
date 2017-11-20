@@ -10,8 +10,9 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 
 
 export class UserWithSheet extends User {
+    tabid: number;
     timesheet: Timesheet;
-    timesheetUsedTime: number; //flat property for p-dataTable
+    timesheetUsedTime: string; //flat property for p-dataTable
     timesheetWorkDate: string; //flat property for p-dataTable
 }
 
@@ -25,8 +26,11 @@ export class TimesheetsComponent implements OnInit {
     engineers:User[];
     engineersWithSheets:UserWithSheet[] = <UserWithSheet[]> [];
     emptySheet: number = -1;
+    sEmptySheet: string = "BRAK";
+    warns: string[];
 
-    reportDate:Date;
+    afterDate:Date;
+    beforeDate:Date;
     displayConfirmationDialog:boolean;
 
     constructor(private userService:UserService,
@@ -35,7 +39,8 @@ export class TimesheetsComponent implements OnInit {
                 private alertService:AlertService,
                 private toolsService:ToolsService) {
 
-        this.reportDate = toolsService.getCurrentDateDayOperation(-1);
+        this.afterDate = toolsService.getCurrentDateDayOperation(-1);
+        this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.dictService.init();
     }
 
@@ -43,16 +48,14 @@ export class TimesheetsComponent implements OnInit {
         this.search();
     }
 
-    testSelect(value:any) {
-        console.log("Date has been selected"+JSON.stringify(value));
-    }
 
     search() {
-        let sReportDate: string = this.reportDate.toISOString().substring(0, 10);
-        console.log("Searching for "+this.reportDate+"="+sReportDate);
+        let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
+        let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
+        console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
         this.userService.getEngineers()
-            .mergeMap(engineers => this.callTimesheets(engineers, sReportDate, sReportDate))
+            .mergeMap(engineers => this.callTimesheets(engineers, sAfterDate, sBeforeDate))
             .subscribe(timesheets => this.combine(timesheets, this.engineers));
     }
 
@@ -62,44 +65,88 @@ export class TimesheetsComponent implements OnInit {
         return this.timesheetService.getByDates(after, before);
     }
 
+    private getUsedTimeAsString(usedTime: number) {
+        return ""+(usedTime !== this.emptySheet? usedTime : this.sEmptySheet);
+    }
+
     private combine(timesheets:Timesheet[], engineers:User[]):void {
         console.log("combine "+JSON.stringify(timesheets) +"\n"+JSON.stringify(engineers));
 
-        this.engineersWithSheets = [];
-        if (engineers && engineers.length > 0 && timesheets) {
-
-            for (let engineer of engineers) {
-                let engineerWithSheet : UserWithSheet = <UserWithSheet> engineer;
-                engineerWithSheet.timesheet = new Timesheet(engineer.id, this.reportDate.toISOString().substring(0, 10), this.emptySheet);
-                engineerWithSheet.timesheetUsedTime = engineerWithSheet.timesheet.usedTime;
-                engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
-                for (let timesheet of timesheets) {
-                    if (timesheet.personId === engineerWithSheet.id) {
-                        engineerWithSheet.timesheet = timesheet;
-                        engineerWithSheet.timesheetUsedTime = timesheet.usedTime;
-                        engineerWithSheet.timesheetWorkDate = timesheet.workDate;
-                        if (timesheet.workDate === undefined) {
-                            timesheet.workDate = this.reportDate.toISOString().substring(0, 10);
-                            engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
-                        }
-                    }
-                }
-                this.engineersWithSheets.push(engineerWithSheet);
+        if (engineers && engineers.length > 0) {
+            this.engineersWithSheets = [];
+            let d: Date = new Date(this.afterDate.getTime())
+            while (d <= this.beforeDate) {
+                let sDate: string = d.toISOString().substring(0, 10);
+                console.log("interating over date "+sDate);
+                this.calculateTimesheetsForDate(engineers, sDate, timesheets);
+                d.setDate(d.getDate() + 1);
             }
         } else {
-            this.alertService.error("Bląd systemu - brak inżynierów");
+            this.alertService.error("Bląd systemu - nie znaleziono inżynierów");
+        }
+
+        console.log("all "+JSON.stringify(this.engineersWithSheets));
+
+    }
+
+    private calculateTimesheetsForDate(engineers, sDate, timesheets) {
+        for (let engineer of engineers) {
+            let engineerWithSheet:UserWithSheet = <UserWithSheet> JSON.parse(JSON.stringify(engineer));
+            engineerWithSheet.tabid = this.engineersWithSheets.length;
+            console.log("interating over engineer " + engineerWithSheet.email);
+
+            engineerWithSheet.timesheet = new Timesheet(engineer.id, sDate, this.emptySheet);
+            engineerWithSheet.timesheetUsedTime = this.getUsedTimeAsString(engineerWithSheet.timesheet.usedTime);
+            engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
+
+            this.updateTimesheetWithBackendValues(timesheets, engineerWithSheet, sDate);
+            console.log("pushing " + JSON.stringify(engineerWithSheet) + "\n--to " + JSON.stringify(this.engineersWithSheets));
+            this.engineersWithSheets.push(engineerWithSheet);
+        }
+    }
+
+    private updateTimesheetWithBackendValues(timesheets, engineerWithSheet, sDate) {
+        if (timesheets && timesheets.length > 0) {
+            for (let timesheet of timesheets) {
+                if (timesheet.personId === engineerWithSheet.id && timesheet.workDate === sDate) {
+                    console.log("Found timesheet for " + engineerWithSheet.email + " and date=" + sDate + " with usedTime=" + timesheet.usedTime);
+                    engineerWithSheet.timesheet = timesheet;
+                    engineerWithSheet.timesheetUsedTime = this.getUsedTimeAsString(timesheet.usedTime);
+                    engineerWithSheet.timesheetWorkDate = timesheet.workDate;
+
+                }
+            }
         }
     }
 
     engineerWithChangedSheet: UserWithSheet[];
 
+    private warn(msg: string): void {
+        this.alertService.warn(msg);
+        this.warns.push(msg);
+    }
+
     showConfirmDialog():void {
+        this.warns = [];
         this.engineerWithChangedSheet = <UserWithSheet[]> [];
         for (let engineerWithSheet of this.engineersWithSheets){
-            if (engineerWithSheet.timesheet.usedTime != engineerWithSheet.timesheetUsedTime) { //value has changed
-                console.log("Zmieniam deklaracje godzin dla "+engineerWithSheet.firstName+" "+engineerWithSheet.lastName);
-                engineerWithSheet.timesheet.usedTime = engineerWithSheet.timesheetUsedTime;
-                this.engineerWithChangedSheet.push(engineerWithSheet);
+            if (engineerWithSheet.timesheetUsedTime !== this.sEmptySheet) {
+
+                console.log("about to formUsedTime for "+engineerWithSheet.timesheetUsedTime);
+                let formUsedTime: number = Number(engineerWithSheet.timesheetUsedTime);
+                console.log("formUsedTime "+formUsedTime);
+                if (formUsedTime === undefined || formUsedTime == null ) {
+                    this.warn("Nie dodano raportu dla " + engineerWithSheet.email + " ze względu na brak wartości");
+                } else if (isNaN(formUsedTime) || formUsedTime < 0 || formUsedTime > 24) {
+                    this.warn("Nie dodano raportu dla " + engineerWithSheet.email + " ze względu na wartość "+engineerWithSheet.timesheetUsedTime+" spoza zakresu 0-24!");
+                } else {
+                    if (engineerWithSheet.timesheet.usedTime != formUsedTime) { //value has changed
+                        console.log("Zmieniam deklaracje godzin dla "+engineerWithSheet.firstName+" "+engineerWithSheet.lastName);
+                        engineerWithSheet.timesheet.usedTime = formUsedTime;
+                        this.engineerWithChangedSheet.push(engineerWithSheet);
+                    }
+                }
+
             }
         }
 
@@ -114,16 +161,9 @@ export class TimesheetsComponent implements OnInit {
             timesheetsToUpdate.push(engineer.timesheet);
         }
 
-        this.timesheetService.update(timesheetsToUpdate
-            //).subscribe(updated => this.add(updated, timesheetsToAdd)
-        );
+        this.timesheetService.upsert(timesheetsToUpdate)
+            .subscribe(created => this.alertService.success("Pomyślnie zaktualizowano "+timesheetsToUpdate.length+" dzienników obecności."));
 
-    }
-
-    private add(updated:any, timesheetsToUpdate:Timesheet[]):void {
-        this.timesheetService.add(timesheetsToUpdate).subscribe(
-                updated => this.alertService.success("Pomyślnie zaktualizowano obecności na dzień "+this.reportDate.toISOString().substring(0, 10))
-        );
     }
 }
 

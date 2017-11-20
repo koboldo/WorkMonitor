@@ -17,32 +17,19 @@ export class TimesheetService {
     }
 
 
-    add(sheets: Timesheet[]): Observable<number> {
-        console.log("Adding "+JSON.stringify(sheets));
-        if (1 === 1) return new EmptyObservable();
-
-        if (sheets.length > 0) {
-            return this.http.post('/api/v1/timeSheets/', sheets).map((response: Response) => response.json());
-        } else {
-            return new EmptyObservable();
-        }
-
-    }
-
-    update(sheets: Timesheet[]): Observable<number> {
-        console.log("Updating "+JSON.stringify(sheets));
-        if (1 === 1) return new EmptyObservable();
-
-        if (sheets.length > 0) {
-            return this.http.post('/api/v1/timeSheets/', sheets).map((response: Response) => response.json());
-        } else {
-            return new EmptyObservable();
-        }
-    }
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
-        return this.http.get('/api/v1/timeSheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)
+        return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)
             .map((response: Response) => this.getTimesheets(response.json()))
+    }
+
+    upsert(sheets: Timesheet[]): Observable<number> {
+        console.log("upserting "+JSON.stringify(sheets));
+        if (sheets.length > 0) {
+            return this.http.put('/api/v1/timesheets', sheets).map((response: Response) => response.json());
+        } else {
+            return new EmptyObservable();
+        }
     }
 
 
