@@ -16,8 +16,6 @@ import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Val
 
 export class RegisterComponent implements OnInit {
 
-
-
     user: User = new User;
     loading: boolean = false;
 

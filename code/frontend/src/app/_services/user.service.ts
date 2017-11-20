@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order } from '../_models/index';
-import { AuthenticationService } from '../_services/authentication.service';
+import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -12,24 +12,24 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class UserService {
-    constructor(private http: Http, private authService: AuthenticationService, private dictService: DictService) {
-        console.log("WOService options: " + JSON.stringify(this.authService.getAuthOptions()));
+    constructor(private http: HttpInterceptor, private dictService: DictService) {
+        console.log("created UserService");
     }
 
     getAll() {
-        return this.http.get('/api/v1/persons', this.authService.getAuthOptions()).map((response: Response) => response.json());
+        return this.http.get('/api/v1/persons').map((response: Response) => response.json());
     }
 
     getById(id: number) {
-        return this.http.get('/api/v1/persons' + id, this.authService.getAuthOptions()).map((response: Response) => response.json());
+        return this.http.get('/api/v1/persons' + id).map((response: Response) => response.json());
     }
 
     create(user: User) {
-        return this.http.post('/api/v1/persons', user, this.authService.getAuthOptions()).map((response: Response) => response.json());
+        return this.http.post('/api/v1/persons', user).map((response: Response) => response.json());
     }
 
     update(user: User) {
-        return this.http.put('/api/v1/persons' + user.id, user, this.authService.getAuthOptions()).map((response: Response) => response.json());
+        return this.http.put('/api/v1/persons' + user.id, user).map((response: Response) => response.json());
     }
 
     assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
@@ -78,19 +78,19 @@ export class UserService {
     }
 
     private addRelation(detach: boolean, user:User, order:Order):Observable<any> {
-        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order, this.authService.getAuthOptions()).map((response:Response) => response.json());
+        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order).map((response:Response) => response.json());
     }
 
     delete(id: number) {
-        return this.http.delete('/api/v1/persons' + id, this.authService.getAuthOptions()).map((response: Response) => response.json());
+        return this.http.delete('/api/v1/persons' + id).map((response: Response) => response.json());
     }
 
     public getEngineers(): Observable<User[]> {
-        return this.http.get('/api/v1/persons', this.authService.getAuthOptions()).map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
     }
 
     public getVentureRepresentatives(): Observable<User[]> {
-        return this.http.get('/api/v1/persons', this.authService.getAuthOptions()).map((response: Response) => this.getAllByRole(response.json(), ["VE"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["VE"]));
     }
 
     // private helper methods

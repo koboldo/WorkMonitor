@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order, Timesheet } from '../_models/index';
-import { AuthenticationService } from '../_services/authentication.service';
+import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -12,8 +12,8 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class TimesheetService {
-    constructor(private http: Http, private authService: AuthenticationService, private dictService: DictService) {
-        console.log("TimesheetService options: " + JSON.stringify(this.authService.getAuthOptions()));
+    constructor(private http: HttpInterceptor, private dictService: DictService) {
+        console.log("TimesheetService created");
     }
 
 
@@ -22,7 +22,7 @@ export class TimesheetService {
         if (1 === 1) return new EmptyObservable();
 
         if (sheets.length > 0) {
-            return this.http.post('/api/v1/timeSheets/', sheets, this.authService.getAuthOptions()).map((response: Response) => response.json());
+            return this.http.post('/api/v1/timeSheets/', sheets).map((response: Response) => response.json());
         } else {
             return new EmptyObservable();
         }
@@ -34,14 +34,14 @@ export class TimesheetService {
         if (1 === 1) return new EmptyObservable();
 
         if (sheets.length > 0) {
-            return this.http.post('/api/v1/timeSheets/', sheets, this.authService.getAuthOptions()).map((response: Response) => response.json());
+            return this.http.post('/api/v1/timeSheets/', sheets).map((response: Response) => response.json());
         } else {
             return new EmptyObservable();
         }
     }
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
-        return this.http.get('/api/v1/timeSheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore, this.authService.getAuthOptions())
+        return this.http.get('/api/v1/timeSheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)
             .map((response: Response) => this.getTimesheets(response.json()))
     }
 

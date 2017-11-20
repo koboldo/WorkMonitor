@@ -6,49 +6,49 @@ import 'rxjs/add/operator/map';
 
 import { Order } from '../_models/order';
 import { User } from '../_models/user';
-import { AuthenticationService } from '../_services/authentication.service';
+import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class WOService {
 
-    constructor(private http: Http, private authService: AuthenticationService, private dictService: DictService) {
-        console.log("WOService options: " + JSON.stringify(this.authService.getAuthOptions()));
+    constructor(private http: HttpInterceptor, private dictService: DictService) {
+        console.log("WOService created");
         this.dictService.init();
     }
 
     getOrdersByStatus(status: string) {
 
-        return this.http.get('/api/v1/orders?status='+status, this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders?status='+status)
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
     getOrdersByDates(lastModAfter: string, lastModBefore: string) : Observable<Order[]> {
 
-        return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter+"&lastModBefore="+lastModBefore, this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter+"&lastModBefore="+lastModBefore)
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
     getAssignedOrders(personId: number) : Observable<Order[]> {
 
-        return this.http.get('/api/v1/orders?personId='+personId+"&status=AS", this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders?personId='+personId+"&status=AS")
             .map((response: Response) => this.getWorkOrders(response.json()))
     }
 
     updateOrder(order: Order) : Observable<Order> {
-        return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)), this.authService.getAuthOptions())
+        return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)))
             .map((response: Response) => response.json().updated)
             .mergeMap(updatedId => this.getOrderById(order.id));
     }
 
     private getOrderById(id:number):Observable<Order> {
-        return this.http.get('/api/v1/orders/'+id, this.authService.getAuthOptions())
+        return this.http.get('/api/v1/orders/'+id)
             .map((response: Response) => this.getWorkOrder(response.json()));
     }
 
     addOrder(order: Order) : Observable<Order> {
-        return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)), this.authService.getAuthOptions())
+        return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)))
             .map((response: Response) => response.json().created)
             .mergeMap(createdId => this.getOrderById(createdId));
     }
@@ -101,6 +101,10 @@ export class WOService {
 
         if (order.complexityCode) {
             order.complexity = this.dictService.getComplexities(order.complexityCode)
+        }
+
+        if (order.price === -13) {
+            order.price = undefined;
         }
 
         // flat structure to enable filtering in p-datatable

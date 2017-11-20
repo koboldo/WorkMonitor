@@ -168,7 +168,7 @@
             <p-autoComplete id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
         </div>
       </div>
-      <div class="ui-grid-row" style="margin-top: 10px;">
+      <div *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'" class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="price">Wartość zlecenia (PLN)</label></div>
         <div class="ui-grid-col-8">
           <p-autoComplete id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" placeholder="Można zmienić cenę (podaj liczbę)"></p-autoComplete>
