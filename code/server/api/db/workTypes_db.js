@@ -45,8 +45,9 @@ var workTypes_db = {
     
     update: function(workTypeId, workType, cb) {
         var idObj = {};
-        idObj.name = 'ID';
-        idObj.value = workTypeId;
+        // idObj.name = 'ID';
+        // idObj.value = workTypeId;
+        idObj.ID = workTypeId;
         
         dbUtil.performUpdate(idObj, workType, 'WORK_TYPE', function(err,result) {
             if(err) return logErrAndCall(err,cb);

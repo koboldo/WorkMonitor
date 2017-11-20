@@ -110,13 +110,14 @@ var orders_db = {
 
         var idObj = {};
         if(orderId != null) {
-            idObj.name = 'ID';
-            idObj.value = orderId;
+            // idObj.name = 'ID';
+            // idObj.value = orderId;
+            idObj.ID = orderId;
         } 
         if(orderExtId != null) {
-            idObj.name = 'WORK_NO';
-            idObj.value = orderExtId;
-            
+            // idObj.name = 'WORK_NO';
+            // idObj.value = orderExtId;
+            idObj.WORK_NO = '"' + orderExtId + '"';
         }
 
         if(logger.isDebugEnabled()) logger.debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));

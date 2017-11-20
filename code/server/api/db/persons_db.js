@@ -81,8 +81,10 @@ var persons_db = {
 	
 	update: function(personId, person, cb) {
         var idObj = {};
-        idObj.name = 'ID';
-        idObj.value = personId;
+        // idObj.name = 'ID';
+		// idObj.value = personId;
+		idObj.ID = personId;
+		
         
         if(logger.isDebugEnabled()) logger.debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
         
@@ -121,9 +123,9 @@ var persons_db = {
 					var obj = {};
 					obj.WO_ID = orderRelation.WO_ID;
 					dbUtil.performDelete(obj,'PERSON_WO',function(err,result){
-						if(err) return logErrAndCall(err,_cb);
+						if(err) _cb(err);
 						_cb(null,result);						
-					});
+					}, mydb);
 				} else {
 					_cb(null,true);
 				}
@@ -131,15 +133,17 @@ var persons_db = {
 
 			function(_cb) {
 				dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
-					if(err) return logErrAndCall(err,_cb);
+					if(err) _cb(err);
 					newRelationId = newId;
 				    _cb(null,newId);
-				});				
+				}, mydb);				
 			}],
 
 			function(err, results) {
-				if(err) dbUtil.rollbackTx(mydb);
-				else {
+				if(err) {
+					dbUtil.rollbackTx(mydb);
+					return logErrAndCall(err,cb);
+				} else {
 					dbUtil.commitTx(mydb);
 					cb(null,newRelationId);
 				}

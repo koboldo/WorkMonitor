@@ -17,7 +17,8 @@ var db_util = {
         var db = new sqlite3.Database('./work-monitor.db');
         db.serialize(function() {
             db.run( 'PRAGMA journal_mode = DELETE;' );
-            db.run( 'PRAGMA busy_timeout = 1000;' );
+            db.run( 'PRAGMA busy_timeout = 10000;' );
+            db.run( 'PRAGMA foreign_keys = ON;' );
         });
         return db;
     },
@@ -139,8 +140,14 @@ var db_util = {
             if(columnsWithoutQuote.indexOf(col) > -1) updateStr += object[col];
             else updateStr += '"' + object[col] + '"';
         }
-    
-        updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idObj.name + ' = "' + idObj.value + '"';
+
+        var idStr = '';
+        for(var idKey in idObj) {
+            if(idStr.length > 0) idStr += ' AND ';
+            idStr += idKey + ' = ' + idObj[idKey];
+        }        
+
+        updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idStr;
         if(logger.isDebugEnabled()) logger.debug('db update: ' + updateStr);
         return updateStr;
     },
@@ -187,7 +194,8 @@ var db_util = {
             }
             filterInserts[filter] = filterVal;
         }
-        console.log(JSON.stringify(filterInserts));
+
+        if(logger.isDebugEnabled()) logger.debug('filterInserts: ' + JSON.stringify(filterInserts));
         var rv = sprintf(query,filterInserts);
         return rv;
     },
