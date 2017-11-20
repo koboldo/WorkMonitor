@@ -110,8 +110,10 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     private getComment(increase: boolean, order: Order, leader: User) : string {
         let assigners: string = "";
-        for(let email of order.assignee) {
-            assigners += email+",";
+        if (order && order.assignee) {
+            for(let email of order.assignee) {
+                assigners += email+",";
+            }
         }
 
         let text: string =
@@ -119,7 +121,8 @@ export class ChangeWoComplexityComponent implements OnInit {
             "W dniu "+new Date().toLocaleString()+" "+
             leader.firstName+" "+leader.lastName+
             (increase? " zwiększył(a)": " zmniejszył(a)")+
-            " trudność zlecenia przypisanego do "+ assigners+
+            " trudność zlecenia "+
+            (assigners.length > 0 ? "przypisanego do "+ assigners : "nieprzypisanego") +
             " będącego w statusie "+order.status;
         return text;
 

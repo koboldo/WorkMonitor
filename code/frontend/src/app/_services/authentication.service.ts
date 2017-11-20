@@ -77,8 +77,9 @@ export class AuthenticationService {
             {label: 'Dodaj osobę', icon: 'fa-address-book', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Wyceny niestandardowe', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Protokół', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},
-            {label: 'Wydajnosć zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
-            {label: 'WO do akceptacji', icon: 'fa-exchange', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}
+            {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
+            {label: 'WO do akceptacji', icon: 'fa-exchange', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]},
+            {label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}
         ];
 
         return allItems.filter(item => this.filterItem(item, user));
