@@ -24,6 +24,7 @@ import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ChangeWoComplexityComponent } from './change-wo-complexity/change-wo-complexity.component';
 import { ReportUnacceptedOrdersComponent } from './report-unaccepted-orders/report-unaccepted-orders.component';
 import { ReportMonitorEngineersComponent } from './report-monitor-engineers/report-monitor-engineers.component';
+import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 
 @NgModule({
     imports: [
@@ -47,7 +48,8 @@ import { ReportMonitorEngineersComponent } from './report-monitor-engineers/repo
         TimesheetsComponent,
         ChangeWoComplexityComponent,
         ReportUnacceptedOrdersComponent,
-        ReportMonitorEngineersComponent
+        ReportMonitorEngineersComponent,
+        WoClearingComponent
     ],
     providers: [
         AuthGuard,

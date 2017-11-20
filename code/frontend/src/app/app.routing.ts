@@ -12,6 +12,7 @@ import { TimesheetsComponent } from './timesheets/timesheets.component';
 import { ChangeWoComplexityComponent } from './change-wo-complexity/change-wo-complexity.component';
 import { ReportUnacceptedOrdersComponent } from './report-unaccepted-orders/report-unaccepted-orders.component';
 import { ReportMonitorEngineersComponent } from './report-monitor-engineers/report-monitor-engineers.component';
+import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
@@ -21,7 +22,7 @@ const appRoutes: Routes = [
     { path: 'myWorkOrders',             component: MyWoComponent,     canActivate: [AuthGuard] },
     { path: 'addTimesheet',             component: TimesheetsComponent, canActivate: [AuthGuard] },
     { path: 'workOrderComplexity',      component: ChangeWoComplexityComponent, canActivate: [AuthGuard] },
-    { path: 'clearing',                 component: RegisterComponent, canActivate: [AuthGuard] },
+    { path: 'clearing',                 component: WoClearingComponent, canActivate: [AuthGuard] },
     { path: 'workMonitor',              component: ReportMonitorEngineersComponent, canActivate: [AuthGuard] },
     { path: 'unacceptedWork',           component: ReportUnacceptedOrdersComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '', canActivate: [AuthGuard] }

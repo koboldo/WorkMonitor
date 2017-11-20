@@ -12,6 +12,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 export class UserWithSheet extends User {
     timesheet: Timesheet;
     timesheetUsedTime: number; //flat property for p-dataTable
+    timesheetWorkDate: string; //flat property for p-dataTable
 }
 
 @Component({
@@ -70,14 +71,17 @@ export class TimesheetsComponent implements OnInit {
             for (let engineer of engineers) {
                 let engineerWithSheet : UserWithSheet = <UserWithSheet> engineer;
                 engineerWithSheet.timesheet = new Timesheet(engineer.id, this.reportDate.toISOString().substring(0, 10), this.emptySheet);
-                engineerWithSheet.timesheetUsedTime = this.emptySheet;
+                engineerWithSheet.timesheetUsedTime = engineerWithSheet.timesheet.usedTime;
+                engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
                 for (let timesheet of timesheets) {
                     if (timesheet.personId === engineerWithSheet.id) {
                         engineerWithSheet.timesheet = timesheet;
+                        engineerWithSheet.timesheetUsedTime = timesheet.usedTime;
+                        engineerWithSheet.timesheetWorkDate = timesheet.workDate;
                         if (timesheet.workDate === undefined) {
                             timesheet.workDate = this.reportDate.toISOString().substring(0, 10);
+                            engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
                         }
-                        engineerWithSheet.timesheetUsedTime = timesheet.usedTime;
                     }
                 }
                 this.engineersWithSheets.push(engineerWithSheet);
@@ -87,26 +91,32 @@ export class TimesheetsComponent implements OnInit {
         }
     }
 
+    engineerWithChangedSheet: UserWithSheet[];
+
     showConfirmDialog():void {
-        this.displayConfirmationDialog = true;
-    }
-
-    saveSheets(): void {
-        let timesheetsToAdd: Timesheet[] = [];
-        let timesheetsToUpdate: Timesheet[] = [];
-
+        this.engineerWithChangedSheet = <UserWithSheet[]> [];
         for (let engineerWithSheet of this.engineersWithSheets){
             if (engineerWithSheet.timesheet.usedTime != engineerWithSheet.timesheetUsedTime) { //value has changed
                 console.log("Zmieniam deklaracje godzin dla "+engineerWithSheet.firstName+" "+engineerWithSheet.lastName);
                 engineerWithSheet.timesheet.usedTime = engineerWithSheet.timesheetUsedTime;
-                timesheetsToUpdate.push(engineerWithSheet.timesheet);
+                this.engineerWithChangedSheet.push(engineerWithSheet);
             }
         }
 
-        this.timesheetService.update(timesheetsToUpdate).subscribe(
-            updated => this.add(updated, timesheetsToAdd)
-        );
+        this.displayConfirmationDialog = true;
+    }
+
+    saveSheets(): void {
         this.displayConfirmationDialog = false;
+
+        let timesheetsToUpdate: Timesheet[] = [];
+        for (let engineer of this.engineerWithChangedSheet) {
+            timesheetsToUpdate.push(engineer.timesheet);
+        }
+
+        this.timesheetService.update(timesheetsToUpdate
+            //).subscribe(updated => this.add(updated, timesheetsToAdd)
+        );
 
     }
 

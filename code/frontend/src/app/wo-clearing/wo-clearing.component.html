@@ -1,0 +1,149 @@
+
+
+<p-panel header="Nadawanie nr protokołu">
+
+  <div class="ui-grid-row">
+    <div class="ui-grid-col-12">
+      <p-fieldset legend="Wyszukiwanie zleceń do rozliczenia">
+        <form #f="ngForm" (submit)="search()">
+
+          <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            <div class="ui-grid-row"  style="margin-top: 20px;">
+              <div class="ui-grid-col-1"></div>
+              <div class="ui-grid-col-5">
+                <label for="lastModAfter">zmodyfikowano od</label>
+                <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+              </div>
+              <!--<div class="ui-grid-col-1"></div>-->
+              <div class="ui-grid-col-5">
+                <label for="lastModBefore">zmodyfikowano do</label>
+                <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+              </div>
+              <div class="ui-grid-col-1"></div>
+            </div>
+            <div class="ui-grid-row"  style="margin-top: 15px;">
+              <div class="ui-grid-col-4"></div>
+              <div class="ui-grid-col-4">
+                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+              </div>
+              <div class="ui-grid-col-4"></div>
+            </div>
+          </div>
+
+        </form>
+      </p-fieldset>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
+
+    <p-dataTable [value]="orders" [headerCheckboxToggleAllPages]="true" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="multiple" [(selection)]="selectedOrders" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+      <p-header>
+        <div>
+          <i class="fa fa-search"></i>
+          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        </div>
+      </p-header>
+      <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="status" header="Status" ></p-column>
+      <p-column [sortable]="true" field="type" header="Typ" ></p-column>
+      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+        </ng-template>
+      </p-column>
+      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
+      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
+
+      <p-column [sortable]="true" field="comment" header="Komentarz" hidden="true"></p-column>
+      <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
+
+      <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
+      <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
+      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja"></p-column>
+      <p-column [sortable]="true" field="creationDate" header="Utworzenie"></p-column>
+
+      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
+      <!-- search by invisible colums flatten into order by wo.service -->
+      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu" hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja" hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemAddress" header="Adres" hidden="true"></p-column>
+      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu" hidden="true"></p-column>
+
+      <p-column [sortable]="true" field="ventureCompany" header="Inwestor" ></p-column>
+      <p-column [sortable]="true" field="ventureDisplay" header="Przedstawiciel" ></p-column>
+
+      <p-footer>
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-col-5"></div>
+            <div class="ui-grid-col-2">
+              <button [disabled]="!(selectedOrders?.length > 0)" type="button" pButton icon="fa-check" style="float:left" (click)="showDialog()" label="Rozliczenie"></button>
+            </div>
+            <div class="ui-grid-col-5"></div>
+          </div>
+        </div>
+      </p-footer>
+
+    </p-dataTable>
+  </div>
+
+
+  <p-dialog header="Modyfikacja zleceń" [(visible)]="displayClearingDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+
+
+      <div class="ui-grid-row" style="margin-top: 10px;">
+        <div class="ui-grid-col-4"><label for="workNo">Numer Protokołu*</label></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="protocolNo" [(ngModel)]="protocolNo" width="auto" required placeholder="Wpisz numer protokołu..."/></div>
+      </div>
+
+      <hr>
+
+      <div class="ui-grid-row" style="margin-top: 10px;">
+        <div class="ui-grid-col-12">
+      <!--<div *ngFor="let order of selectedOrders" class="ui-grid-row" style="margin-top: 10px;">
+        <span>{{order?.workNo}}, {{order?.type}}, {{order?.price}}, {{order?.ventureDisplay}}, {{order?.ventureCompany}}</span>
+      </div>-->
+
+          <p-dataTable [value]="selectedOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+            <p-header>
+              <div>
+                <i class="fa fa-search"></i>
+                <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+              </div>
+            </p-header>
+            <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+            <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+            <p-column [sortable]="true" field="type" header="Typ" ></p-column>
+            <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
+            <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
+
+            <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
+            <!-- search by invisible colums flatten into order by wo.service -->
+
+            <p-column [sortable]="true" field="ventureCompany" header="Inwestor" ></p-column>
+            <p-column [sortable]="true" field="ventureDisplay" header="Przedstawiciel" ></p-column>
+
+            <p-footer>
+
+            </p-footer>
+
+          </p-dataTable>
+        </div>
+      </div>
+
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button width="200px" type="button" pButton icon="fa-check" [disabled]="protocolNo === undefined || protocolNo.length < 1" (click)="saveOrders()" label="Zapisz"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+
+
+</p-panel>

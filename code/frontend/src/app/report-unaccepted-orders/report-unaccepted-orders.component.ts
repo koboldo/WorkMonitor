@@ -23,10 +23,7 @@ export class ReportUnacceptedOrdersComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private workService:WorkTypeService,
                 private dictService:DictService,
-                private alertService:AlertService,
-                private authSerice:AuthenticationService,
                 private toolsService:ToolsService) {
     }
 
@@ -34,9 +31,8 @@ export class ReportUnacceptedOrdersComponent implements OnInit {
         this.dictService.init();
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
-
         this.items = [
-            {label: 'Brak opcji', icon: 'fa-arrow-circle-up', command: (event) => this.doNothing()}
+            {label: 'Usuń z raportu', icon: 'fa-minus-circle', command: (event) => this.remove()}
         ];
 
         this.search();
@@ -52,7 +48,14 @@ export class ReportUnacceptedOrdersComponent implements OnInit {
         this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
     }
 
-    private doNothing():void {
-        console.log("Nothing to do");
+    private remove():void {
+        let newOrders: Order[] = [];
+        console.log("Removing");
+        for (let order of this.orders) {
+            if (order.id != this.selectedOrder.id) {
+                newOrders.push(order);
+            }
+        }
+        this.orders = newOrders;
     }
 }
