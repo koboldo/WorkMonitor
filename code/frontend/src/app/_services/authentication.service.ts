@@ -66,7 +66,6 @@ export class AuthenticationService {
         console.log("Logging out!");
         this.menuItems.next(null);
         this.user.next(null);
-
     }
 
     private buildMenu(user:User):any {
@@ -77,8 +76,8 @@ export class AuthenticationService {
             {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP"]},
             {label: 'Dodaj osobę', icon: 'fa-address-book', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Wyceny niestandardowe', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
-            {label: 'Rozliczenie (protokół)', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},
-            {label: 'Monitoring wydajnosci', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
+            {label: 'Protokół', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},
+            {label: 'Wydajnosć zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
             {label: 'WO do akceptacji', icon: 'fa-exchange', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}
         ];
 
