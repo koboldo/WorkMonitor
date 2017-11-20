@@ -47,8 +47,9 @@ var relatedItems_db = {
 
     update: function(itemId, relatedItem, cb) {
         var idObj = {};
-        idObj.name = 'ID';
-        idObj.value = itemId;
+        // idObj.name = 'ID';
+        // idObj.value = itemId;
+        idObj.ID = itemId;
         
         if(logger.isDebugEnabled()) logger.debug('update related item of id ' + itemId + ' with object: ' + util.inspect(relatedItem));
         

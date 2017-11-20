@@ -16,7 +16,6 @@ var timeSheets = {
             
             if(timeSheetResultDb) {
                 var timeSheetResult;
-                console.log('type ' + typeof timeSheetResultDb);
                 if(params.personId) timeSheetResult = mapper.timeSheet.mapToJson(timeSheetResultDb[0]);
                 else timeSheetResult = mapper.mapList(mapper.timeSheet.mapToJson, timeSheetResultDb);
                 
@@ -26,10 +25,21 @@ var timeSheets = {
             }
         });
     }, 
+
+    readAll: function(req, res) {
+        timeSheets_db.readAll(req.query, function(err, timeSheetRows){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            var timeSheets = mapper.mapList(mapper.timeSheet.mapToJson,timeSheetRows);
+            res.json(timeSheets);
+        });
+    },
 	
 	create: function(req, res) {
 		
-		req.body['personId'] = req.params.personId
+		req.body.personId = req.params.personId;
 		
         var timeSheetSql = mapper.timeSheet.mapToSql(req.body);
         timeSheets_db.create(timeSheetSql, function(err,result) {
@@ -38,8 +48,20 @@ var timeSheets = {
                 return;
             }
             var rv = { created: result }
-            if(result) res.status(201).json(rv);
-            else res.status(404).end();
+            res.status(201).json(rv);
+        });
+    },
+
+    bulkCreate: function(req, res) {
+        var timeSheets = mapper.mapList(mapper.timeSheet.mapToSql, req.body).list;
+        console.log(timeSheets);
+        timeSheets_db.bulkCreate(timeSheets, function(err, result){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            var rv = { created: result }
+            res.status(201).json(rv);
         });
     }
 };

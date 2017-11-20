@@ -32,9 +32,11 @@ router.put('/v1/workTypes/:id', workTypes.update);
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);
 
-router.post('/v1/timeSheets/:personId', timeSheets.create);
-router.get('/v1/timeSheets/:personId', timeSheets.read);
-router.get('/v1/timeSheets', timeSheets.read);
+// router.post('/v1/timeSheets/:personId', timeSheets.create);
+router.put('/v1/timeSheets', timeSheets.bulkCreate);
+// router.get('/v1/timeSheets/:personId', timeSheets.read);
+router.get('/v1/timeSheets', timeSheets.readAll);
+
 
 router.get('/v1/relatedItems/:id', relatedItems.read);
 router.get('/v1/relatedItems', relatedItems.readAll);
