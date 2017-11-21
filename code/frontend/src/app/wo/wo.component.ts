@@ -403,7 +403,7 @@ export class WoComponent implements OnInit {
     private refreshItems(item:RelatedItem, newItem: boolean):void {
         if (newItem) {
             this.relatedItems.push(item);
-            this.alertService.success("Pomyślnie dodano nowy obiekt: " + item.itemNo);
+            if (item && item.itemNo) this.alertService.success("Pomyślnie dodano nowy obiekt: " + item.itemNo);
         } else {
 
             let index:number = 0;
@@ -416,7 +416,7 @@ export class WoComponent implements OnInit {
                 index++;
             }
             this.search();
-            this.alertService.success("Pomyślnie zaktualizowano obiekt: " + item.itemNo);
+            if (item && item.itemNo) this.alertService.success("Pomyślnie zaktualizowano obiekt: " + item.itemNo);
         }
     }
 
