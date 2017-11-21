@@ -33,7 +33,9 @@
 			"RELATED_ITEMS": "relatedItems",
 			"ITEM_ID": "itemId",
 			"VENTURE_ID": "ventureId",
-			"ASSIGNEE": "assignee"
+			"ASSIGNEE": "assignee",
+			"DONE_DATE": "doneDate",
+			"ASSIGNED_DATE": "assignedDate"			
 		}
 	},
 	"code": {

@@ -4,6 +4,7 @@
 var util = require('util');
 var mapper = require('./mapper');
 var persons_db = require('./db/persons_db');
+var dateformat = require('dateformat');
 
 var persons = {
     
@@ -36,6 +37,29 @@ var persons = {
         });
     },
     
+    readOrders: function(req,res) {
+
+        if(req.query.dateAfter == null) req.query.dateAfter = dateformat(
+            new Date(new Date().getFullYear(), new Date().getMonth(),1)
+            ,'yyyy-mm-dd');
+        if(req.query.dateBefore == null) req.query.dateBefore = dateformat(
+            new Date(new Date().getFullYear(), new Date().getMonth()+1,0)
+            ,'yyyy-mm-dd');
+
+        persons_db.readOrders(req.query, function(err, personRows){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            var persons = mapper.mapList(mapper.person.mapToJson, personRows);
+            persons.list.forEach((person) => {
+                var orders = mapper.mapList(mapper.order.mapToJson, person.workOrders);
+                person.workOrders = orders.list;
+            });
+            res.json(persons);
+        });
+    },
+
     update: function(req, res) {
         
         var personId = req.params.id;

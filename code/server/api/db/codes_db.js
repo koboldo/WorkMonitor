@@ -18,7 +18,7 @@ var codes_db = {
             getCodesStat.finalize();
             db.close();
             if(err) return logErrAndCall(err,cb);
-            cb(null,rows)
+            cb(null,rows);
         });
     },
     

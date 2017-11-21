@@ -15,11 +15,45 @@ var queries = {
 	getPersons: 'SELECT ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, COMPANY FROM PERSON',
 	getPerson: 'SELECT ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, COMPANY FROM PERSON WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
-	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID'
+	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID',
+	getPersonOrderStats:
+	`WITH PARAMS AS (SELECT STRFTIME('%%s','%(dateAfter)s') AS AFTER_DATE, STRFTIME('%%s','%(dateBefore)s') AS BEFORE_DATE)
+	SELECT WOS.ID AS WO_ID, WOS.WORK_NO AS WO_WORK_NO, WOS.DONE_DATE AS WO_DONE_DATE, WOS.ASSIGNED_DATE AS WO_ASSIGNED_DATE, WOS.STATUS_CODE AS WO_STATUS_CODE,
+	P.ID AS PERSON_ID, P.EMAIL AS PERSON_EMAIL, P.FIRST_NAME AS PERSON_FIRST_NAME, P.LAST_NAME AS PERSON_LAST_NAME, P.OFFICE_CODE AS PERSON_OFFICE_CODE, P.ROLE_CODE AS PERSON_ROLE_CODE
+	FROM
+	(SELECT ID, WORK_NO, CASE STATUS_CODE WHEN 'CO' THEN DATETIME(LAST_MOD,'unixepoch') ELSE null END AS DONE_DATE, STATUS_CODE, DATETIME(PWO.CREATED,'unixepoch') AS ASSIGNED_DATE, PWO.PERSON_ID
+	FROM WORK_ORDER AS WO JOIN PERSON_WO AS PWO ON WO.ID = PWO.WO_ID 
+	WHERE (STATUS_CODE = 'CO' AND LAST_MOD/86400 BETWEEN (SELECT AFTER_DATE/86400 FROM PARAMS) AND (SELECT BEFORE_DATE/86400 FROM PARAMS))
+		OR (WO.STATUS_CODE IN ('AS') AND PWO.CREATED/86400 BETWEEN (SELECT AFTER_DATE/86400 FROM PARAMS) AND (SELECT BEFORE_DATE/86400 FROM PARAMS) )
+	UNION
+	SELECT ID, WORK_NO, CASE STATUS_CODE WHEN 'CO' THEN DATETIME(LAST_MOD,'unixepoch') ELSE null END AS DONE_DATE, STATUS_CODE, DATETIME(PWO.CREATED,'unixepoch') AS ASSIGNED_DATE, PWO.PERSON_ID
+	FROM WORK_ORDER_HIST AS WO JOIN PERSON_WO AS PWO ON WO.ID = PWO.WO_ID
+	WHERE (STATUS_CODE = 'CO' AND LAST_MOD/86400 BETWEEN (SELECT AFTER_DATE/86400 FROM PARAMS) AND (SELECT BEFORE_DATE/86400 FROM PARAMS))
+		) AS WOS JOIN PERSON AS P WHERE WOS.PERSON_ID = P.ID`
+};
+
+// ??
+var filters = {
+    getPersonOrdersReport: {
+        dateAfter: '%(dateAfter)s',
+        dateBefore: '%(dateBefore)s'
+    }
 };
 
 var persons_db = {
 	
+	readOrders: function(params,cb){
+		var db = dbUtil.getDatabase();
+		var query = dbUtil.prepareFiltersByInsertion(queries.getPersonOrderStats,params,filters.getPersonOrdersReport);
+		var getPersonOrdersReportStat = db.prepare(query);
+		getPersonOrdersReportStat.all(function(err, rows) {
+			
+			if(err) return logErrAndCall(err,cb);
+			let persons = transformReportRows(rows);
+			cb(null,persons);
+		});
+	},
+
 	readAll: function(cb) {
 		var db = dbUtil.getDatabase();
 		var getPersonsStat = db.prepare(queries.getPersons);
@@ -33,12 +67,31 @@ var persons_db = {
 			rows.forEach(function(row){
 				calls.push(function(async_cb) {
 
-                    var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
-                    dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+					var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
+					getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+						getPersonOrderIdsStat.finalize();
+
+						var ids = [];
+						idRows.forEach((idRow) => { ids.push(idRow.ID) });
 						row.WORK_ORDERS = ids;
-                        getPersonOrderIdsStat.finalize();
 						async_cb();
 					});
+					// getRowsIds: function(statement, rowId, cb) {
+					// 	statement.bind(rowId).all(function(err,rows){
+					// 		var ids = [];
+					// 		rows.forEach(function(row){
+					// 			ids.push(row.ID);
+					// 		});
+					// 		cb(ids);
+					// 	});
+					// }
+
+
+                    // dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+					// 	row.WORK_ORDERS = ids;
+                    //     getPersonOrderIdsStat.finalize();
+					// 	async_cb();
+					// });
 				});
 			});
 			
@@ -60,22 +113,30 @@ var persons_db = {
 		// TODO: validation in middleware
         var getPersonStat = db.prepare(queries.getPerson);
 		getPersonStat.bind(personId).get(function(err, row) {
+			getPersonStat.finalize();
 			if(err) return logErrAndCall(err,cb);
 			
 			if(row == null) {
-                getPersonStat.finalize();
 				cb(null,null);
 				return;
 			}
             
 			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
-			dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+			getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+				getPersonOrderIdsStat.finalize();
+				
+				var ids = [];
+				idRows.forEach((idRow) => { ids.push(idRow.ID) });
 				row.WORK_ORDERS = ids;
-                getPersonOrderIdsStat.finalize();
-                getPersonStat.finalize();
-                db.close();
 				cb(null,row);
 			});
+			// dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
+			// 	row.WORK_ORDERS = ids;
+            //     getPersonOrderIdsStat.finalize();
+            //     getPersonStat.finalize();
+            //     db.close();
+			// 	cb(null,row);
+			// });
 		});
 	},
 	
@@ -164,5 +225,34 @@ var persons_db = {
 		});
 	}
 };
+
+function transformReportRows(rows) {
+	let personsMap = {};
+	rows.forEach((row)=>{
+		let pid = row.PERSON_ID;
+		let personTransformed = (personsMap[pid]) ? true : false;
+
+		let person = {};
+		let order = {}
+		for(var field in row) {
+			if(!personTransformed && field.startsWith('PERSON_')) {
+				let newField = field.slice(7);
+				person[newField] = row[field];
+			}
+			if(field.startsWith('WO_')) {
+				let newField = field.slice(3);
+				order[newField] = row[field];
+			}
+		}
+		person.WORK_ORDERS = [];
+		if(!personTransformed) {
+			personsMap[pid] = person;
+		}
+		personsMap[pid].WORK_ORDERS.push(order);
+	});
+	let persons = [];
+	for(let id in personsMap) persons.push(personsMap[id]);
+	return persons;
+}
 
 module.exports = persons_db;

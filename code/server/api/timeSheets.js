@@ -47,20 +47,19 @@ var timeSheets = {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = { created: result }
+            var rv = { created: result };
             res.status(201).json(rv);
         });
     },
 
     bulkCreate: function(req, res) {
         var timeSheets = mapper.mapList(mapper.timeSheet.mapToSql, req.body).list;
-        console.log(timeSheets);
         timeSheets_db.bulkCreate(timeSheets, function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = { created: result }
+            var rv = { created: result };
             res.status(201).json(rv);
         });
     }
