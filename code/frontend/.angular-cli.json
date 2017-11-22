@@ -25,9 +25,11 @@
         "../node_modules/bootstrap/dist/css/bootstrap.min.css"
       ],
       "scripts": [
+        "../node_modules/chart.js/dist/Chart.js",
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/moment/min/moment.min.js",
         "../node_modules/fullcalendar/dist/fullcalendar.min.js",
+        "../node_modules/fullcalendar/dist/locale/pl.js",
         "../node_modules/fullcalendar/dist/gcal.min.js"
       ],
       "environmentSource": "environments/environment.ts",

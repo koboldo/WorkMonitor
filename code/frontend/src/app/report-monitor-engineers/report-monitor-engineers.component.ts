@@ -36,6 +36,10 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     workTypes: WorkType[];
 
+    chartUtilizationData: any;
+    chartShareData: any;
+    chartsReady: boolean;
+
     constructor(private woService:WOService,
                 private userService:UserService,
                 private workService:WorkTypeService,
@@ -125,6 +129,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
         let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
+        this.chartsReady = false;
+        this.chartUtilizationData = {labels: ['Obciążenie'], datasets: []};
+        this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
+        this.reports = [];
+
         this.userService.getUtilizationReportData(sAfterDate, sBeforeDate)
             .mergeMap(reportData => this.mapEngineersCallTimesheets(reportData, sAfterDate, sBeforeDate))
             .subscribe(timesheets => this.fillTimesheets(timesheets));
@@ -170,6 +179,10 @@ export class ReportMonitorEngineersComponent implements OnInit {
             this.calculateUtilization(report);
         }
         console.log("all done: "+JSON.stringify(reports));
+        console.log("all done: "+JSON.stringify(this.chartUtilizationData));
+        console.log("all done: "+JSON.stringify(this.chartShareData));
+        
+        this.chartsReady = true;
     }
 
     
@@ -188,6 +201,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                     console.log("Order "+order.workNo +" has not been completed yet, thus is not taken into account!");
                 }
             }
+
 
             if (userData.declaredTime === 0) {
                 this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
@@ -224,6 +238,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         return 0;
     }
 
+
     private setMark(userData: UserReport, utilization: number): void {
         if (utilization > 100) {
             this.setIcon(userData, "fa fa-trophy", "green");
@@ -239,6 +254,16 @@ export class ReportMonitorEngineersComponent implements OnInit {
             this.setIcon(userData, "fa fa-hotel", "green");
         } else if (utilization == this.noTimesheets) {
             this.setIcon(userData, "fa fa-question-circle", "darkgrey");
+        }
+
+        if (utilization != this.holidays && utilization != this.noTimesheets) {
+            this.chartUtilizationData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [utilization] });
+        }
+
+        if (userData.expectedTime > 0) {
+            this.chartShareData.datasets[0].data.push(userData.expectedTime);
+            this.chartShareData.datasets[0].backgroundColor.push(userData.iconColor);
+            this.chartShareData.labels.push(userData.lastName);
         }
 
     }

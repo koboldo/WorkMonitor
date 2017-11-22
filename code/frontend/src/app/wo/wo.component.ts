@@ -234,6 +234,11 @@ export class WoComponent implements OnInit {
         this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
     }
 
+    onRowDblclick(event) {
+        console.log("onRowDblclick row!" + JSON.stringify(this.selectedOrder));
+        this.edit();
+    }
+
     assign(isNewOrderOwner:boolean):void {
         console.log("assigning!" + JSON.stringify(this.selectedOrder));
         if (isNewOrderOwner && this.selectedOrder.assignee !== undefined) {
