@@ -156,22 +156,22 @@ INSERT INTO RELATED_ITEM(ITEM_NO, DESCRIPTION, ADDRESS, MD_BUILDING_TYPE, MD_CON
 INSERT INTO WORK_ORDER
 (WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY, COMPLEXITY_CODE, PRICE, VENTURE_ID, MD_CAPEX, PROTOCOL_NO, DESCRIPTION, COMMENT, ITEM_ID) 
 VALUES 
-("WAW2", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 1", "To jest to zamownienie zamku obronnego", 3);
+("WAW21", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 1", "To jest to zamownienie zamku obronnego", 3);
 
 INSERT INTO WORK_ORDER
 (WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY, COMPLEXITY_CODE, PRICE, VENTURE_ID, MD_CAPEX, PROTOCOL_NO, DESCRIPTION, COMMENT, ITEM_ID) 
 VALUES 
-("WAW2", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 2", "To jest to zamownienie zamku obronnego", 4);
+("WAW22", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 2", "To jest to zamownienie zamku obronnego", 4);
 
 INSERT INTO WORK_ORDER
 (WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY, COMPLEXITY_CODE, PRICE, VENTURE_ID, MD_CAPEX, PROTOCOL_NO, DESCRIPTION, COMMENT, ITEM_ID) 
 VALUES 
-("WAW2", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 3", "To jest to zamownienie zamku obronnego", 5);
+("WAW23", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 3", "To jest to zamownienie zamku obronnego", 5);
 
 INSERT INTO WORK_ORDER
 (WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY, COMPLEXITY_CODE, PRICE, VENTURE_ID, MD_CAPEX, PROTOCOL_NO, DESCRIPTION, COMMENT, ITEM_ID) 
 VALUES 
-("WAW2", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 4", "To jest to zamownienie zamku obronnego", 6);
+("WAW24", "OP", 			"OT", 		8, 		"HRD", 				1000, 7, 			"CAPEX1", "PRO332211", "Zamek warowny 4", "To jest to zamownienie zamku obronnego", 6);
 
 INSERT INTO PERSON_WO (PERSON_ID, WO_ID) VALUES (3,19);
 INSERT INTO PERSON_WO (PERSON_ID, WO_ID) VALUES (3,20);
