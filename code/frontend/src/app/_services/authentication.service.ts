@@ -73,7 +73,7 @@ export class AuthenticationService {
         let allItems = [
             {label: 'Praca z WO', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR"]},
             {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
-            {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP"]},
+            {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR"]},
             {label: 'Dodaj osobę', icon: 'fa-address-book', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Wyceny niestandardowe', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Protokół', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},

@@ -1,3 +1,92 @@
-<p>
-  report-monitor-engineers works!
-</p>
+
+<p-panel header="Raport utylizacji zespołu">
+
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+
+                <form #f="ngForm" (submit)="search()">
+
+                    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                        <div class="ui-grid-row"  style="margin-top: 20px;">
+                            <div class="ui-grid-col-1"></div>
+                            <div class="ui-grid-col-5">
+                                <label for="afterDate">od</label>
+                                <p-calendar name="afterDate" [(ngModel)]="afterDate" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                            </div>
+                            <!--<div class="ui-grid-col-1"></div>-->
+                            <div class="ui-grid-col-5">
+                                <label for="beforeDate">do</label>
+                                <p-calendar name="beforeDate" [(ngModel)]="beforeDate" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                            </div>
+                            <div class="ui-grid-col-1"></div>
+                        </div>
+                        <div class="ui-grid-row"  style="margin-top: 15px;">
+                            <div class="ui-grid-col-5"></div>
+                            <div class="ui-grid-col-2">
+                                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!f?.valid"></button>
+                            </div>
+                            <div class="ui-grid-col-5"></div>
+                        </div>
+                    </div>
+
+                </form>
+        </div>
+    </div>
+</p-panel>
+
+
+
+<div style="margin-top: 5px" *ngIf="reports" class="ui-g">
+    <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedReport" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+        <p-header>
+            <div>
+                <i class="fa fa-search"></i>
+                <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+            </div>
+        </p-header>
+        <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+
+        <p-column [sortable]="true" field="icon" header="Ocena" [style]="{'text-align':'center', 'width':'50px'}">
+            <ng-template let-col let-report="rowData" pTemplate="body">
+                <span *ngIf="report[col.field] == 'fa fa-thumbs-up'"   class="ui-inputgroup-addon" style="color: #000088"><i [class]="report[col.field]"></i></span>
+                <span *ngIf="report[col.field] == 'fa fa-bell'"        class="ui-inputgroup-addon" style="color: orange"><i [class]="report[col.field]"></i></span>
+                <span *ngIf="report[col.field] == 'fa fa-thumbs-down'" class="ui-inputgroup-addon" style="color: darkred"><i [class]="report[col.field]"></i></span>
+                <span *ngIf="report[col.field] == 'fa fa fa-trophy'"   class="ui-inputgroup-addon" style="color: green"><i [class]="report[col.field]"></i></span>
+                <span *ngIf="report[col.field] == 'fa fa-exclamation'" class="ui-inputgroup-addon" style="color: red"><i [class]="report[col.field]"></i></span>
+            </ng-template>
+        </p-column>
+        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Zaangażowanie" [style]="{'text-align':'right'}"></p-column>
+
+
+        <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
+        <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
+        <p-column [sortable]="true" field="role" header="Rola" ></p-column>
+        <p-column [sortable]="true" field="office" header="Biuro" ></p-column>
+
+        <p-column [sortable]="true" field="declaredTime" header="Zadeklarowano h"  [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="expectedTime" header="Zakładano h" [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="noOrdersDone" header="Ukończono" [style]="{'text-align':'right'}"></p-column>
+
+
+
+        <ng-template pTemplate="emptymessage">
+            Brak raportów w zakresie dat...
+        </ng-template>
+
+        <p-footer>
+        </p-footer>
+
+    </p-dataTable>
+
+</div>
+
+
+<!-- defaultDate="2017-11-01" -->
+
+<p-dialog *ngIf="selectedReport" [header]="selectedReport.lastName" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+        <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="4" [editable]="false" (onEventClick)="handleOrderClick($event)" locale="pl"></p-schedule>
+    </div>
+</p-dialog>
+
+

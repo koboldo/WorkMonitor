@@ -22,12 +22,15 @@ export class Order {
     itemCreationDate:string;
 
     ventureId: number;
-    ventureDisplay:   string;//filled by front used in table
-    ventureCompany:   string;//filled by front used in table
-    ventureFull:      User;//filled by front used in edit
+    ventureDisplay:   string;   //filled by front used in table
+    ventureCompany:   string;   //filled by front used in table
+    ventureFull:      User;     //filled by front used in edit
 
     assignee:string[];
     assigneeFull:User[]; //filled by front
+
+    assignedDate: string;   //utilization report
+    doneDate: string;       //utilization report
 
     constructor(public workNo:string,
                 public statusCode:string,

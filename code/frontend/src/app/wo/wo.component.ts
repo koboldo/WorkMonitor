@@ -317,7 +317,7 @@ export class WoComponent implements OnInit {
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         this.editedOrder.typeCode = this.workType.code;
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
-        this.editedOrder.ventureId = this.assignedVentureRepresentative.user.id;
+        this.editedOrder.ventureId = this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id ? this.assignedVentureRepresentative.user.id : undefined;
 
         this.editedOrder.price = (this.price != undefined && this.price.code !== undefined) ? <number> +this.price.code : this.toolsService.parsePrice(JSON.stringify(this.price), this.editedOrder.workNo);
         console.log("price " + this.editedOrder.price);

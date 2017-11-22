@@ -9,13 +9,6 @@ import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_mo
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 
 
-export class UserWithSheet extends User {
-    tabid: number;
-    timesheet: Timesheet;
-    timesheetUsedTime: string; //flat property for p-dataTable
-    timesheetWorkDate: string; //flat property for p-dataTable
-}
-
 @Component({
     selector: 'app-timesheets',
     templateUrl: './timesheets.component.html',
@@ -74,7 +67,7 @@ export class TimesheetsComponent implements OnInit {
 
         if (engineers && engineers.length > 0) {
             this.engineersWithSheets = [];
-            let d: Date = new Date(this.afterDate.getTime())
+            let d: Date = new Date(this.afterDate.getTime());
             while (d <= this.beforeDate) {
                 let sDate: string = d.toISOString().substring(0, 10);
                 console.log("interating over date "+sDate);
@@ -85,7 +78,6 @@ export class TimesheetsComponent implements OnInit {
             this.alertService.error("Bląd systemu - nie znaleziono inżynierów");
         }
 
-        console.log("all "+JSON.stringify(this.engineersWithSheets));
 
     }
 
@@ -95,12 +87,15 @@ export class TimesheetsComponent implements OnInit {
             engineerWithSheet.tabid = this.engineersWithSheets.length;
             console.log("interating over engineer " + engineerWithSheet.email);
 
+            //create with default values
             engineerWithSheet.timesheet = new Timesheet(engineer.id, sDate, this.emptySheet);
             engineerWithSheet.timesheetUsedTime = this.getUsedTimeAsString(engineerWithSheet.timesheet.usedTime);
             engineerWithSheet.timesheetWorkDate = engineerWithSheet.timesheet.workDate;
 
+            //update with backend values if exist
             this.updateTimesheetWithBackendValues(timesheets, engineerWithSheet, sDate);
-            console.log("pushing " + JSON.stringify(engineerWithSheet) + "\n--to " + JSON.stringify(this.engineersWithSheets));
+
+            console.log("pushing " + JSON.stringify(engineerWithSheet));
             this.engineersWithSheets.push(engineerWithSheet);
         }
     }
@@ -162,8 +157,16 @@ export class TimesheetsComponent implements OnInit {
         }
 
         this.timesheetService.upsert(timesheetsToUpdate)
-            .subscribe(created => this.alertService.success("Pomyślnie zaktualizowano "+timesheetsToUpdate.length+" dzienników obecności."));
+            .subscribe(created => this.alertService.success("Pomyślnie wprowadzono "+timesheetsToUpdate.length+" deklaracji czasu pracy."));
 
     }
+}
+
+
+export class UserWithSheet extends User {
+    tabid: number;
+    timesheet: Timesheet;
+    timesheetUsedTime: string; //flat property for p-dataTable
+    timesheetWorkDate: string; //flat property for p-dataTable
 }
 

@@ -1,7 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
-import { User, Order } from '../_models/index';
+import { User, Order, UserReport } from '../_models/index';
 import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
@@ -83,6 +83,10 @@ export class UserService {
 
     delete(id: number) {
         return this.http.delete('/api/v1/persons' + id).map((response: Response) => response.json());
+    }
+
+    public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<UserReport[]> {
+        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Response) => (response.json().list));
     }
 
     public getEngineers(): Observable<User[]> {
