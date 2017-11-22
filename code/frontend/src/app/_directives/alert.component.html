@@ -1,3 +1,6 @@
 ﻿<p-growl [(value)]="growlMsgs"></p-growl>
 
-<div *ngIf="message" [ngClass]="{ 'alert': message, 'alert-success': message.type === 'success', 'alert-danger': message.type === 'error' }">{{message.text}}</div>
+<p-messages [(value)]="lastMessage"></p-messages>
+<!--
+
+<div *ngIf="message" [ngClass]="{ 'alert': message, 'alert-success': message.type === 'success', 'alert-danger': message.type === 'error' }">{{message.text}}</div>-->

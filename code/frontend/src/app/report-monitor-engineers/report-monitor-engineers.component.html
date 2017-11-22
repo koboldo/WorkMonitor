@@ -85,7 +85,7 @@
     </div>
 </p-dialog>
 
-<p-dialog [header]="selectedOrder?.workNo" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400" [width]="500">
+<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400" [width]="500">
     <div *ngIf="selectedOrder?.workNo" class="ui-grid ui-grid-responsive ui-fluid">
         <p-fieldset legend="Detale zamówienia" *ngIf="selectedOrder">
             <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedOrder">
@@ -111,16 +111,28 @@
                     <div class="ui-grid-col-4">Capex</div>
                     <div class="ui-grid-col-8">{{selectedOrder.mdCapex}}</div>
                 </div>
+
                 <div class="ui-grid-row" style="margin-top: 10px;">
-                    <div class="ui-grid-col-4">>Komentarz</div>
+                    <div class="ui-grid-col-4">Przypisano</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.assignedDate}}</div>
+                </div>
+
+                <div class="ui-grid-row" style="margin-top: 10px;" *ngIf="selectedOrder?.doneDate">
+                    <div class="ui-grid-col-4">Wykonano</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.doneDate}}</div>
+                </div>
+
+
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Komentarz</div>
                     <div class="ui-grid-col-8">
-                        <textarea pInputTextarea id="comment" [(ngModel)]="selectedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Nieskomentowano"></textarea>
+                        <textarea pInputTextarea id="comment" disabled="true" [(ngModel)]="selectedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Nieskomentowano"></textarea>
                     </div>
                 </div>
                 <div class="ui-grid-row" style="margin-top: 10px;">
                     <div class="ui-grid-col-4">Opis</div>
                     <div class="ui-grid-col-8">
-                        <textarea pInputTextarea id="description" [(ngModel)]="selectedOrder.description"  placeholder="Brak opisu" [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
+                        <textarea pInputTextarea id="description" disabled="true"  [(ngModel)]="selectedOrder.description"  placeholder="Brak opisu" [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
                     </div>
                 </div>
 

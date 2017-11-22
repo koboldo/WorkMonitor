@@ -152,7 +152,7 @@ export class WoComponent implements OnInit {
         if (this.workTypesDetails && this.workTypesDetails.length > 0) {
             for (let workTypeDetails of this.workTypesDetails) {
                 let sPrice:string = <string> "" + workTypeDetails.price;
-                if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === this.workType.code || this.workType.code === undefined) && workTypeDetails.officeCode === this.operator.officeCode) {
+                if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === this.workType.code || this.workType.code === undefined) && workTypeDetails.officeCode === this.operator.officeCode && workTypeDetails.complexityCode === 'STD') {
                     this.suggestedPrice.push(new CodeValue(sPrice, sPrice + " PLN (" + this.workType.paramChar + " realizacja " + this.dictService.getOffice(workTypeDetails.officeCode) + ")"));
                 }
             }
@@ -306,7 +306,7 @@ export class WoComponent implements OnInit {
             console.log("Setting status to AS, current " + order.statusCode);
             order.statusCode = "AS";
         }
-        this.alertService.error("Pomyślnie przypisano zlecenie " + order.workNo + " do " + engineer.email);
+        this.alertService.info("Pomyślnie przypisano zlecenie " + order.workNo + " do " + engineer.email);
 
         this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
     }

@@ -1,6 +1,6 @@
 ﻿import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import {Message} from 'primeng/primeng';
+import { Message } from 'primeng/primeng';
 
 import { AlertService } from '../_services/index';
 
@@ -11,8 +11,9 @@ import { AlertService } from '../_services/index';
 
 export class AlertComponent implements OnDestroy {
     private subscription: Subscription;
-    message: any;
+
     growlMsgs: Message[] = [];
+    lastMessage: Message[];
 
     constructor(private alertService: AlertService) { 
         // subscribe to alert messages
@@ -24,23 +25,17 @@ export class AlertComponent implements OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    private handleMessage(message:any):void {
-        this.message = message;
+    private handleMessage(message: Message):void {
         if (message !== undefined) {
-            let summary: string = "Informacja";
-            if (this.message['type'] === "warn") {
-                summary = "Ostrzeżenie"
-            } else if (this.message['type'] === "error") {
-                summary = "Błąd!"
-            } else if (this.message['type'] === "success") {
-                summary = "Sukces!"
-            }
-            let growlMessage: Message = <Message> {severity:this.message['type'], summary:'Info Message', detail:this.message['text']};
-            this.growlMsgs.push(growlMessage);
+
+            console.log("growl: "+JSON.stringify(message)  );
+            this.growlMsgs.push(message);
+            this.lastMessage = [];
+            this.lastMessage.push(message);
 
             setTimeout(() =>
                 {
-                    this.removeGrowl(growlMessage);
+                    this.removeGrowl(message);
                 },
                 10000);
         }

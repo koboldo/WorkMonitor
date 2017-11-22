@@ -152,14 +152,14 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="ventureRepresentative">Zleceniodawca</label></div>
         <div class="ui-grid-col-8">
-          <p-autoComplete id="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" [forceSelection]="true"></p-autoComplete>
+          <p-autoComplete id="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" ></p-autoComplete> <!-- [forceSelection]="true" -->
         </div>
       </div>
       <hr>
 
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO*</label></div>
-        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" required placeholder="Wpisz numer zlecenia..."/></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" placeholder="Wpisz numer zlecenia..."/></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="orderType">Typ WO*</label></div>
@@ -249,7 +249,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
+        <button [disabled]="!(editedOrder?.workNo && editedOrder?.workNo.length > 2 && workType?.paramChar && workType?.paramChar?.length > 1)" width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
       </div>
     </p-footer>
   </p-dialog>

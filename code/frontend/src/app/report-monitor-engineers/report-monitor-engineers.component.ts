@@ -21,6 +21,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     /* search and selection */
     afterDate:Date;
     beforeDate:Date;
+    future: string;
 
     reports: UserReport[];
     selectedReport: UserReport;
@@ -46,6 +47,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.dictService.init();
         this.afterDate = toolsService.getCurrentDateDayOperation(-31);
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
+        this.future = toolsService.getCurrentDateDayOperation(+10).toISOString().substring(0, 10);
     }
 
     ngOnInit() {
@@ -62,15 +64,25 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.search();
     }
 
+
+
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedReport));
         this.schedulerEvents = [];
         if (this.selectedReport.workOrders && this.selectedReport.workOrders.length > 0) {
             for(let order of this.selectedReport.workOrders) {
                 let event: any = {};
-                event.title = order.workNo;
+
                 event.start = order.assignedDate;
-                event.end = order.doneDate? order.doneDate: this.beforeDate.toISOString().substring(0, 10);
+                if (order.doneDate) {
+                    event.title = order.workNo;
+                    event.end = order.doneDate;
+                } else {
+                    event.title = order.workNo+"?";
+                    event.end = this.future;
+                }
+
+                console.log(event.title + "doneDate = "+order.doneDate + " => event.end = "+event.end +", event.start="+event.start);
 
                 this.schedulerEvents.push(event);
             }
@@ -84,7 +96,9 @@ export class ReportMonitorEngineersComponent implements OnInit {
     handleOrderClick(e: any) {
         console.log("order clicked :"+e.calEvent.title);
         loop: for(let order of this.selectedReport.workOrders) {
-            if (order.workNo === e.calEvent.title) {
+            let title = e.calEvent.title;
+            let workNo = title.indexOf("?") > -1 ? title.substring(0, title.length-1) : title;
+            if (order.workNo === workNo) {
                 this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
                 break loop;
             }
@@ -94,6 +108,15 @@ export class ReportMonitorEngineersComponent implements OnInit {
     private showOrder(order:Order):void {
         console.log(JSON.stringify(order));
         this.selectedOrder = order;
+
+        for (let o of this.selectedReport.workOrders) {
+            if (o.id === this.selectedOrder.id) {
+                this.selectedOrder.assignedDate = o.assignedDate;
+                this.selectedOrder.doneDate = o.doneDate;
+            }
+        }
+
+        console.log("show "+JSON.stringify(this.selectedOrder));
         this.orderDialogDisplay = true;
     }
 

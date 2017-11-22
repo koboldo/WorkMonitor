@@ -41,6 +41,12 @@ export class TimesheetsComponent implements OnInit {
         this.search();
     }
 
+    onEditInit(event) {
+        console.log("edit !" + JSON.stringify(event));
+        if (event.data.timesheetUsedTime === this.sEmptySheet) {
+            event.data.timesheetUsedTime = "";
+        }
+    }
 
     search() {
         let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);

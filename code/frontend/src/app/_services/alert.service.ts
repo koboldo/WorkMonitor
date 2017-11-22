@@ -2,6 +2,7 @@
 import { Router, NavigationStart } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import {Message} from 'primeng/primeng';
 
 @Injectable()
 export class AlertService {
@@ -23,24 +24,27 @@ export class AlertService {
         });
     }
 
+    
+
     success(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'success', text: message });
+        this.subject.next({ severity: 'success', detail: message, summary: 'Sukces!' });
+
     }
 
     error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'error', text: message });
+        this.subject.next({ severity: 'error', detail: message, summary: 'Błąd!' });
     }
 
     warn(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'warn', text: message });
+        this.subject.next({ severity: 'warn', detail: message, summary: 'Ostrzeżenie' });
     }
 
     info(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'info', text: message });
+        this.subject.next({ severity: 'info', detail: message, summary: 'Informacja' });
     }
 
     getMessage(): Observable<any> {
