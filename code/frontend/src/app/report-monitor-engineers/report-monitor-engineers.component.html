@@ -48,11 +48,7 @@
 
         <p-column [sortable]="true" field="icon" header="Ocena" [style]="{'text-align':'center', 'width':'50px'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
-                <span *ngIf="report[col.field] == 'fa fa-thumbs-up'"   class="ui-inputgroup-addon" style="color: #000088"><i [class]="report[col.field]"></i></span>
-                <span *ngIf="report[col.field] == 'fa fa-bell'"        class="ui-inputgroup-addon" style="color: orange"><i [class]="report[col.field]"></i></span>
-                <span *ngIf="report[col.field] == 'fa fa-thumbs-down'" class="ui-inputgroup-addon" style="color: darkred"><i [class]="report[col.field]"></i></span>
-                <span *ngIf="report[col.field] == 'fa fa fa-trophy'"   class="ui-inputgroup-addon" style="color: green"><i [class]="report[col.field]"></i></span>
-                <span *ngIf="report[col.field] == 'fa fa-exclamation'" class="ui-inputgroup-addon" style="color: red"><i [class]="report[col.field]"></i></span>
+                <span class="ui-inputgroup-addon" [style.color]="report['iconColor']"><i [class]="report[col.field]"></i></span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="timeUtilizationPercentage" header="Zaangażowanie" [style]="{'text-align':'right'}"></p-column>
@@ -83,9 +79,98 @@
 
 <!-- defaultDate="2017-11-01" -->
 
-<p-dialog *ngIf="selectedReport" [header]="selectedReport.lastName" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
+<p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
         <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="4" [editable]="false" (onEventClick)="handleOrderClick($event)" locale="pl"></p-schedule>
+    </div>
+</p-dialog>
+
+<p-dialog [header]="selectedOrder?.workNo" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400" [width]="500">
+    <div *ngIf="selectedOrder?.workNo" class="ui-grid ui-grid-responsive ui-fluid">
+        <p-fieldset legend="Detale zamówienia" *ngIf="selectedOrder">
+            <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedOrder">
+
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Numer WO</div>
+                    <div class="ui-grid-col-8 ui-fluid">{{selectedOrder.workNo}}</div>
+                </div>
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Typ WO</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.type}}</div>
+                </div>
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Wartość zlecenia</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.price}} PLN</div>
+                </div>
+
+                <div class="ui-grid-row" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
+                    <div class="ui-grid-col-4">Status</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.status}}</div>
+                </div>
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Capex</div>
+                    <div class="ui-grid-col-8">{{selectedOrder.mdCapex}}</div>
+                </div>
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">>Komentarz</div>
+                    <div class="ui-grid-col-8">
+                        <textarea pInputTextarea id="comment" [(ngModel)]="selectedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Nieskomentowano"></textarea>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top: 10px;">
+                    <div class="ui-grid-col-4">Opis</div>
+                    <div class="ui-grid-col-8">
+                        <textarea pInputTextarea id="description" [(ngModel)]="selectedOrder.description"  placeholder="Brak opisu" [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
+                    </div>
+                </div>
+
+                <hr>
+                <!-- related item -->
+
+                <div *ngIf="selectedOrder?.relatedItems?.length > 0">
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Numer obiektu</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.itemNo}}
+                        </div>
+                    </div>
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Opis obiektu</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.description}}
+                        </div>
+                    </div>
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Adres</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.address}}
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Typ budynku</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.mdBuildingType}}
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Konstrukcja</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row" style="margin-top: 10px;">
+                        <div class="ui-grid-col-4">Data utworzenia</div>
+                        <div class="ui-grid-col-8">
+                            {{selectedOrder?.relatedItems[0]?.creationDate}}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </p-fieldset>
     </div>
 </p-dialog>
 

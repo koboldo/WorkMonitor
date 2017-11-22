@@ -30,6 +30,9 @@ export class ReportMonitorEngineersComponent implements OnInit {
     schedulerEvents: any[];
     schedulerHeader: any;
 
+    selectedOrder: Order;
+    orderDialogDisplay:boolean;
+
     workTypes: WorkType[];
 
     constructor(private woService:WOService,
@@ -76,12 +79,22 @@ export class ReportMonitorEngineersComponent implements OnInit {
         } else {
             this.alertService.info("Nie ma żadnych prac do pokazania dla "+this.selectedReport.firstName+ " "+this.selectedReport.lastName);
         }
-
-
     }
 
     handleOrderClick(e: any) {
         console.log("order clicked :"+e.calEvent.title);
+        loop: for(let order of this.selectedReport.workOrders) {
+            if (order.workNo === e.calEvent.title) {
+                this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
+                break loop;
+            }
+        }
+    }
+
+    private showOrder(order:Order):void {
+        console.log(JSON.stringify(order));
+        this.selectedOrder = order;
+        this.orderDialogDisplay = true;
     }
 
     search() {
@@ -136,6 +149,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         console.log("all done: "+JSON.stringify(reports));
     }
 
+    
     private calculateUtilization(userData: UserReport): void {
         if (userData.workOrders && userData.workOrders.length > 0) {
             userData.expectedTime = 0;
@@ -154,34 +168,27 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
             if (userData.declaredTime === 0) {
                 this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
-                userData.icon = "fa fa-question-circle";
+                this.setMark(userData, this.noTimesheets);
                 userData.timeUtilizationPercentage = "brak deklaracji czasu!";
             } else {
                 let utilization: number = Math.round(((100 * userData.expectedTime) / userData.declaredTime));
                 userData.timeUtilizationPercentage = ""+utilization+"%";
-                if (utilization > 100) {
-                    userData.icon = "fa fa-trophy";
-                } else if (utilization >= 80) {
-                    userData.icon = "fa fa-thumbs-up";
-                } else if (utilization > 40 && utilization < 80) {
-                    userData.icon = "fa fa-bell";
-                } else {
-                    userData.icon = "fa fa-thumbs-down";
-                }
+                this.setMark(userData, utilization);
             }
 
 
         } else if (!userData.declaredTime || userData.declaredTime === 0) {
             userData.timeUtilizationPercentage = "nieobecność"; //holidays
             userData.expectedTime = 0;
-            userData.icon = "fa fa-hotel";
+            this.setMark(userData, this.holidays);
             userData.noOrdersDone = 0;
         } else {
             userData.timeUtilizationPercentage = "0%"; //nothing done
-            userData.icon = "fa fa-exclamation";
+            this.setMark(userData, 0);
             userData.expectedTime = 0;
             userData.noOrdersDone = 0;
         }
+
     }
 
     private getEffort(officeCode: string, typeCode: string, complexityCode: string): number {
@@ -192,6 +199,33 @@ export class ReportMonitorEngineersComponent implements OnInit {
         }
         this.alertService.error("Nie można wyliczyć raportu - nie znaleziono w bazie wyceny dla zadania o parametrach "+officeCode+","+typeCode+","+complexityCode);
         return 0;
+    }
+
+    private setMark(userData: UserReport, utilization: number): void {
+        if (utilization > 100) {
+            this.setIcon(userData, "fa fa-trophy", "green");
+        } else if (utilization >= 80) {
+            this.setIcon(userData, "fa fa-thumbs-up", "green");
+        } else if (utilization > 40 && utilization < 80) {
+            this.setIcon(userData, "fa fa-bell", "orange");
+        } else if (utilization > 0) {
+            this.setIcon(userData, "fa fa-thumbs-down", "red");
+        } else if (utilization == 0) {
+            this.setIcon(userData, "fa fa-exclamation", "darkred");
+        } else if (utilization == this.holidays) {
+            this.setIcon(userData, "fa fa-hotel", "green");
+        } else if (utilization == this.noTimesheets) {
+            this.setIcon(userData, "fa fa-question-circle", "darkgrey");
+        }
+
+    }
+
+    holidays: number = -1;
+    noTimesheets: number = -2;
+
+    private setIcon(userData: UserReport, icon: string, iconColor: string): void {
+        userData.icon = icon;
+        userData.iconColor = iconColor;
     }
 
 }

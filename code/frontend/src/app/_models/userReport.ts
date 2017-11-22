@@ -38,7 +38,6 @@ export class UserReport {
     role: string;
     email: string;
 
-
     //timesheet
     declaredTime: number;
 
@@ -47,6 +46,8 @@ export class UserReport {
     expectedTime: number;
     timeUtilizationPercentage: string;
     icon: string;
+    iconColor: string;
 
     workOrders: Order[];
+
 }

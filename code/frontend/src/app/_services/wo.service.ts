@@ -18,7 +18,13 @@ export class WOService {
         this.dictService.init();
     }
 
-    getOrdersByStatus(status: string) {
+    getOrdersByWorkNo(workNo: string):Observable<Order> {
+
+        return this.http.get('/api/v1/orders/external/'+workNo)
+            .map((response: Response) => this.getWorkOrder(<Order> response.json()))
+    }
+
+    getOrdersByStatus(status: string):Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?status='+status)
             .map((response: Response) => this.getWorkOrders(response.json()))
