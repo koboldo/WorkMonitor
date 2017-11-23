@@ -27,6 +27,7 @@ export class WoComponent implements OnInit {
     isNewOrderOwner:boolean
     displayEditDialog:boolean;
     displayAssignDialog:boolean;
+    displayDetailsDialog: boolean;
     items:MenuItem[] = [];
 
     /* autocompletion assignedEngineer */

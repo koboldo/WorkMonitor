@@ -64,7 +64,10 @@
 		"sqlToJson": {
 			"PERSON_ID": "personId",
 			"WORK_DATE": "workDate",
-			"USED_TIME": "usedTime"
+			"USED_TIME": "usedTime",
+			"FROM_DATE": "from",
+			"TO_DATE": 	 "to",
+			"BREAK_IN_MINUTES": "breakInMinutes"
 		}
 	},
 	"relatedItem": {

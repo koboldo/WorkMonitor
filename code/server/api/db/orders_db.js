@@ -20,8 +20,8 @@ var filters = {
     getOrders: {
         type: 'TYPE_CODE = "%(type)s"',
         status: 'STATUS_CODE = "%(status)s"',
-        lastModBefore: '(LAST_MOD/86400)*86400 <= STRFTIME("%%s","%(lastModBefore)s")',
-        lastModAfter: '(LAST_MOD/86400)*86400 >= STRFTIME("%%s","%(lastModAfter)s")',
+        lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s")',
+        lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s")',
         personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
     }
 };

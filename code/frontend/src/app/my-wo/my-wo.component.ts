@@ -23,6 +23,7 @@ export class MyWoComponent implements OnInit {
     items:MenuItem[] = [];
 
     displayFinishDialog: boolean;
+    displayDetailsDialog: boolean;
 
 
     constructor(private woService:WOService,
@@ -102,6 +103,7 @@ export class MyWoComponent implements OnInit {
             for(let anOrder of this.orders) {
                 if (anOrder.id === order.id) {
                     this.orders.splice(index, 1);
+                    this.orders = JSON.parse(JSON.stringify(this.orders));
                 }
                 index++;
             }

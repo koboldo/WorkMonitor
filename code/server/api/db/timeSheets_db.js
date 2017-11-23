@@ -9,7 +9,7 @@ var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
 
 var queries = {
-    getAllTimesheets: 'SELECT PERSON_ID, USED_TIME, STRFTIME("%%Y-%%m-%%d",DATETIME(WORK_DATE,"unixepoch")) AS WORK_DATE FROM TIME_SHEET WHERE 1=1 %(workDateBefore)s %(workDateAfter)s',
+    getAllTimesheets: 'SELECT PERSON_ID, USED_TIME, BREAK_IN_MINUTES, STRFTIME("%%Y-%%m-%%d",DATETIME(WORK_DATE,"unixepoch")) AS WORK_DATE, STRFTIME("%%H:%%M",DATETIME(FROM_DATE,"unixepoch")) AS FROM_DATE, STRFTIME("%%H:%%M",DATETIME(TO_DATE,"unixepoch")) AS TO_DATE FROM TIME_SHEET WHERE 1=1 %(workDateBefore)s %(workDateAfter)s',
     // getAggregatedTime: 'SELECT PERSON_ID, COALESCE( SUM(USED_TIME), 0) AS USED_TIME FROM TIME_SHEET %(filter)s GROUP BY PERSON_ID',
     // getAggregatedTime: 'SELECT P.ID AS PERSON_ID, (SELECT COALESCE( SUM(USED_TIME), 0) AS USED_TIME FROM TIME_SHEET AS TS WHERE TS.PERSON_ID = P.ID %(workDateBefore)s %(workDateAfter)s) AS USED_TIME FROM PERSON AS P %(personId)s'
 };
@@ -65,6 +65,8 @@ var timeSheets_db = {
         if(logger.isDebugEnabled()) logger.debug('insert timeSheet with object: ' + util.inspect(timeSheet));
 
         if(timeSheet.WORK_DATE) timeSheet.WORK_DATE = 'STRFTIME("%s","' + timeSheet.WORK_DATE + '")';
+        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
+        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
 
         dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, function(err, newId){
             if(err) return local_util.logErrAndCall(err,cb);
@@ -88,6 +90,8 @@ var timeSheets_db = {
         
         timeSheets.forEach((timeSheet) => {
             if(timeSheet.WORK_DATE) timeSheet.WORK_DATE = '(STRFTIME("%s","' + timeSheet.WORK_DATE + '")/86400)*86400';
+            if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
+            if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
             calls.push(
                 function(_cb) {
                     dbUtil.performInsert(timeSheet,'TIME_SHEET',null,function(err,singleResult){
@@ -100,6 +104,9 @@ var timeSheets_db = {
                     var idObj = {};
                     idObj.PERSON_ID = timeSheet.PERSON_ID;
                     idObj.WORK_DATE = timeSheet.WORK_DATE;
+                    idObj.TO_DATE = timeSheet.TO_DATE;
+                    idObj.FROM_DATE = timeSheet.FROM_DATE;
+                    idObj.BREAK_IN_MINUTES = timeSheet.BREAK_IN_MINUTES;
                     dbUtil.performUpdate(idObj, timeSheet, 'TIME_SHEET', function(err,singleResult){
                         if(err) _cb(err);
                         _cb(null,singleResult);

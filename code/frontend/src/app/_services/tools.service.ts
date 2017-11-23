@@ -46,6 +46,13 @@ export class ToolsService {
         return -1;
     }
 
+    /*YYYY-MM-DD hh:mm:ss*/
+    public parseDate(dateAsString: string): Date {
+        let d: Date =  new Date(dateAsString.replace(/-/g, '/'));
+        d.setTime( d.getTime() - d.getTimezoneOffset()*60*1000 );
+        return d;
+
+    }
 
     public parsePrice(price:string, workNo: string):number {
         console.log("parsing price " + price);

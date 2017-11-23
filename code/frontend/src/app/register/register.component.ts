@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AlertService, UserService, DictService } from '../_services/index';
+import { AlertService, UserService, DictService, AuthenticationService } from '../_services/index';
 import { User, CodeValue } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
 import 'rxjs/add/operator/map';
@@ -28,24 +28,23 @@ export class RegisterComponent implements OnInit {
     representatives: User[];
     suggestedCompanies: string[];
     company: string;
+    operator: User;
 
     constructor(
         private router: Router,
         private userService: UserService,
         private alertService: AlertService,
-        private dictService: DictService) {
+        private dictService: DictService,
+        private authService: AuthenticationService) {
 
         this.user.roleCode = "EN";
         this.user.officeCode = "WAW";
-        this.user.isActive = "Y";
-
-
-
     }
 
     ngOnInit():void {
         this.dictService.init();
-        this.dictService.getRolesObs().subscribe((roles:CodeValue[]) => this.mapToRoles(roles));
+        this.authService.userAsObs.subscribe(user => this.removeRoles(user));
+
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
         this.userService.getVentureRepresentatives().subscribe(representatives => this.representatives = representatives);
     }
@@ -95,5 +94,23 @@ export class RegisterComponent implements OnInit {
             }
         }
         console.log("suggestedCompanies: " + JSON.stringify(this.suggestedCompanies));
+    }
+
+    private removeRoles(user:User):void {
+        this.operator = user;
+        console.log("Operator "+JSON.stringify(this.operator));
+        if (this.operator.roleCode !== 'PR') {
+            let roles: CodeValue[] = this.dictService.getRoles();
+            let allowedRoles: CodeValue[] = [];
+            for (let role of roles) {
+                if (role.code !== 'PR') {
+                    allowedRoles.push(role);
+                }
+            }
+            this.mapToRoles(allowedRoles);
+
+        } else {
+            this.mapToRoles(this.dictService.getRoles());
+        }
     }
 }

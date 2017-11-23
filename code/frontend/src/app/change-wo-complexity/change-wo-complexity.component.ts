@@ -26,7 +26,9 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     items:MenuItem[] = [];
 
-    displayChangeComplexityDialog:boolean;
+    displayDetailsDialog: boolean;
+    displayReassignDialog: boolean;
+    displayChangeComplexityDialog: boolean;
     complexityIncrease: boolean;
     justification: string;
 
@@ -51,7 +53,8 @@ export class ChangeWoComplexityComponent implements OnInit {
 
         this.items = [
             {label: 'Zwiększ trudność', icon: 'fa-arrow-circle-up', command: (event) => this.changeComplexity(true)},
-            {label: 'Zmniejsz trudność', icon: 'fa-arrow-circle-down', command: (event) => this.changeComplexity(false)}
+            {label: 'Zmniejsz trudność', icon: 'fa-arrow-circle-down', command: (event) => this.changeComplexity(false)},
+            {label: 'Poprawa', icon: 'fa-bell', command: (event) => this.reassign()}
         ];
 
     }
@@ -77,6 +80,19 @@ export class ChangeWoComplexityComponent implements OnInit {
         console.log("Logged as " + JSON.stringify(user));
         this.leader = user;
         this.search();
+    }
+
+    private reassign(): void {
+        this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
+
+        this.editedOrder.comment ?
+            this.editedOrder.comment += this.getCommentReassign(this.editedOrder, this.leader):
+            this.editedOrder.comment = this.getCommentReassign(this.editedOrder, this.leader);
+
+        this.editedOrder.status = this.dictService.getWorkStatus("AS");
+        this.editedOrder.statusCode = "AS";
+
+        this.displayReassignDialog = true;
     }
 
     private changeComplexity(increase:boolean):void {
@@ -128,16 +144,36 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     }
 
+    private getCommentReassign(order: Order, leader: User) : string {
+        let assigners: string = "";
+        if (order && order.assignee) {
+            for(let email of order.assignee) {
+                assigners += email+",";
+            }
+        }
+
+        let text: string =
+            "\n----------------\n"+
+            "W dniu "+new Date().toLocaleString()+" "+
+            leader.firstName+" "+leader.lastName+
+            " zdecydował o poprawie zlecenia "+
+            (assigners.length > 0 ? "przypisanego do "+ assigners : "nieprzypisanego") +
+            " będącego w statusie "+order.status;
+        return text;
+
+    }
+
     saveOrder() {
 
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
 
-        this.editedOrder.comment += "\n---------------- Uzasadnienie: "+this.justification;
+        this.editedOrder.comment += this.justification ? " ---------------- Uzasadnienie: "+this.justification : " BRAK uzasadnienia!";
 
         this.storeOrder(this.editedOrder);
 
         this.displayChangeComplexityDialog = false;
+        this.displayReassignDialog = false;
     }
 
     private storeOrder(order:Order):void {

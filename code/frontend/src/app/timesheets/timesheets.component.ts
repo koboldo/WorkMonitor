@@ -85,7 +85,7 @@ export class TimesheetsComponent implements OnInit {
         }
 
         else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)) {
-            let workTime: number = this.calculateWorkTime(event.data.timesheetFrom, event.data.timesheetTo, event.data.timesheetBreakInMinutes);
+            let workTime: number = this.calculateWorkTime(event.data.timesheetWorkDate, event.data.timesheetFrom, event.data.timesheetTo, event.data.timesheetBreakInMinutes);
             if (workTime >= 0) {
                 event.data.timesheetUsedTime = ""+workTime;
             } else {
@@ -172,9 +172,9 @@ export class TimesheetsComponent implements OnInit {
                     engineerWithSheet.timesheetWorkDate = timesheet.workDate;
 
                     //Todo remove backend mock
-                    engineerWithSheet.timesheetFrom = "08:00";
-                    engineerWithSheet.timesheetTo = "17:23";
-                    engineerWithSheet.timesheetBreakInMinutes = 10;
+                    engineerWithSheet.timesheetFrom = timesheet.from;
+                    engineerWithSheet.timesheetTo = timesheet.to;
+                    engineerWithSheet.timesheetBreakInMinutes = timesheet.breakInMinutes;
 
                 }
             }
@@ -187,20 +187,19 @@ export class TimesheetsComponent implements OnInit {
         this.warns.push(msg);
     }
 
-    private calculateWorkTime(from: string, to: string, workBreakMinutes: number): number {
+    private calculateWorkTime(workDate: string, from: string, to: string, workBreakMinutes: number): number {
         if (from.indexOf(":") > -1 && to.indexOf(":") > -1) {
 
-            let t1: string[] = from.split(':');
-            let t2: string[] = to​​​​​​​.split(':');
-            let dateFrom: Date = new​ Date(0, 0, 0, +t1[0], +t1[1]);
-            let dateTo: Date = new Date(0, 0, 0, +t2[0], +t2[1]);
-            let diff: number = dateTo.getTime() - dateFrom.getTime();
 
-            let workHours: number = (diff / 1000 / 3600) - (workBreakMinutes/60) - 0.25; //-15min
+            let dateFrom: number = this.toolsService.parseDate(workDate+ " "+ from + ":00" ).getTime();
+            let dateTo: number = this.toolsService.parseDate(workDate+ " "+ to + ":00" ).getTime();
+            let diffMillis: number = dateTo - dateFrom;
+
+            let workHours: number = ((diffMillis / 3600) - (1000*workBreakMinutes/60))/1000 - 0.25; //-15min
             console.log("For from="+from +" to=" +to +" interval="+workHours);
 
             if (workHours < 0 || workHours > 24) {
-                console.log("Hours "+(diff / 1000 / 3600)+" breaks "+((workBreakMinutes/60) - 0.25));
+                console.log("1000xHours "+((diffMillis / 3600) +" breaks "+((1000*workBreakMinutes/60))/1000 + 0.25));
                 return -1;
             }
 
@@ -223,9 +222,8 @@ export class TimesheetsComponent implements OnInit {
                     console.log("Zmieniam deklaracje godzin dla "+engineerWithSheet.firstName+" "+engineerWithSheet.lastName);
                     copy.timesheet.usedTime = usedTime;
                     copy.timesheet.breakInMinutes = engineerWithSheet.timesheetBreakInMinutes;
-                    copy.timesheet.from = engineerWithSheet.timesheetFrom;
-                    copy.timesheet.to = engineerWithSheet.timesheetTo;
-
+                    copy.timesheet.from = this.toolsService.parseDate(engineerWithSheet.timesheetWorkDate+ " "+ engineerWithSheet.timesheetFrom + ":00" ).getTime();
+                    copy.timesheet.to = this.toolsService.parseDate(engineerWithSheet.timesheetWorkDate+ " "+ engineerWithSheet.timesheetTo + ":00" ).getTime();
                     this.engineerWithChangedSheet.push(copy);
                 }
 

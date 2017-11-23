@@ -3,7 +3,7 @@
 <p-panel header="Zlecenia - WO">
 
   <div class="ui-grid-row">
-    <div class="ui-grid-col-5">
+    <div class="ui-grid-col-6">
       <p-fieldset legend="Wyszukiwanie zleceń">
         <form #f="ngForm" (submit)="search()">
 
@@ -33,45 +33,7 @@
         </form>
       </p-fieldset>
     </div>
-    <div class="ui-grid-col-4">
-      <p-fieldset legend="Obiekt" *ngIf="selectedOrder?.relatedItems[0]?.itemNo || selectedOrder?.relatedItems[0]?.address || selectedOrder?.relatedItems[0]?.mdBuildingType || selectedOrder?.relatedItems[0]?.description || selectedOrder?.relatedItems[0]?.mdConstructionCategory">
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.itemNo" class="ui-grid-col-4">Numer:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.itemNo}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.address" class="ui-grid-col-4">Adres:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.address}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.mdBuildingType" class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdBuildingType}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.mdConstructionCategory" class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.description" class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.description}}</div></div>
-        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.creationDate" class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.creationDate}}</div></div>
-      </p-fieldset>
-    </div>
-    <div class="ui-grid-col-3">
-      <p-fieldset legend="Detale zamówienia" *ngIf="selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
-        <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
-          <div class="ui-grid-col-12">Dodano: <u>{{selectedOrder?.creationDate}}</u></div>
-        </div>
-        <div class="ui-grid-row" *ngIf="selectedOrder?.lastModDate">
-          <div class="ui-grid-col-12">Modyfikacja: <u>{{selectedOrder?.lastModDate}}</u></div>
-        </div>
 
-        <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
-        <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row"><strong>Wykonawcy</strong></div>
-        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
-          <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
-          <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
-          <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
-        </div>
-        <hr *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0">
-
-        <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
-          <div class="ui-grid-col-12">
-            <textarea style="width: 100%; color: darkblue;" pInputTextarea disabled [(ngModel)]="selectedOrder.comment" [rows]="3" [cols]="30"></textarea>
-          </div>
-        </div>
-        <div class="ui-grid-row" *ngIf="selectedOrder?.description">
-          <div class="ui-grid-col-12">
-            <textarea style="width: 100%; color: darkblue;" pInputTextarea disabled [(ngModel)]="selectedOrder.description" [rows]="3" [cols]="30"></textarea></div>
-        </div>
-      </p-fieldset>
-    </div>
   </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
@@ -124,6 +86,11 @@
       </p-column>-->
       <p-column [sortable]="true" field="ventureCompany" header="Inwestor" ></p-column>
       <p-column [sortable]="true" field="ventureDisplay" header="Przedstawiciel" ></p-column>
+      <p-column [style]="{'width':'40px','text-align':'center'}">
+        <ng-template let-order="rowData" pTemplate="body">
+          <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
+        </ng-template>
+      </p-column>
 
       <p-footer>
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
@@ -145,6 +112,49 @@
 
     </p-dataTable>
   </div>
+
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid-col-6">
+      <p-fieldset legend="Obiekt" *ngIf="selectedOrder?.relatedItems[0]?.itemNo || selectedOrder?.relatedItems[0]?.address || selectedOrder?.relatedItems[0]?.mdBuildingType || selectedOrder?.relatedItems[0]?.description || selectedOrder?.relatedItems[0]?.mdConstructionCategory">
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.itemNo" class="ui-grid-col-4">Numer:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.itemNo}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.address" class="ui-grid-col-4">Adres:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.address}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.mdBuildingType" class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdBuildingType}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.mdConstructionCategory" class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.description" class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.description}}</div></div>
+        <div class="ui-grid-row"><div *ngIf="selectedOrder?.relatedItems[0]?.creationDate" class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.creationDate}}</div></div>
+      </p-fieldset>
+    </div>
+    <div class="ui-grid-col-6">
+      <p-fieldset legend="Detale zamówienia" *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
+        <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
+          <div class="ui-grid-col-12">Dodano: <u>{{selectedOrder?.creationDate}}</u></div>
+        </div>
+        <div class="ui-grid-row" *ngIf="selectedOrder?.lastModDate">
+          <div class="ui-grid-col-12">Modyfikacja: <u>{{selectedOrder?.lastModDate}}</u></div>
+        </div>
+
+        <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
+        <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row"><strong>Wykonawcy</strong></div>
+        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+          <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+          <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+          <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+        </div>
+        <hr *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0">
+
+        <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
+          <div class="ui-grid-col-12">
+            <p>{{selectedOrder.comment}}</p>
+          </div>
+        </div>
+        <div class="ui-grid-row" *ngIf="selectedOrder?.description">
+          <div class="ui-grid-col-12">
+            <p>{{selectedOrder.description}}</p>
+            </div>
+        </div>
+      </p-fieldset>
+    </div>
+  </p-dialog>
 
 
   <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">

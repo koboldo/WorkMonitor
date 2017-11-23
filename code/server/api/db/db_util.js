@@ -9,7 +9,7 @@ var logger = require('../logger').getLogger('monitor');
 var logErrAndCall = require('../local_util').logErrAndCall;
 
 var columnsToSkip = ['ID','LAST_MOD','CREATED'];
-var columnsWithoutQuote = ['WORK_DATE'];
+var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE'];
 
 var db_util = {
     

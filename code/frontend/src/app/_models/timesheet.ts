@@ -5,8 +5,8 @@ export class Timesheet {
                 public usedTime:number) {
     }
 
-    public from: string;
-    public to: string;
+    public from: number;
+    public to: number;
     public breakInMinutes: number;
 }
 
