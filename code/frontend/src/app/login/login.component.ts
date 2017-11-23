@@ -38,7 +38,12 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['/']);
                 },
                 error => {
-                    this.alertService.error(error);
+                    if (error.status === 403) {
+                        this.alertService.error("Brak dostępu - sprawdź użykownika i hasło!");
+                    } else {
+                        this.alertService.error(error);
+                    }
+                    console.log(JSON.stringify(error));
                     this.loading = false;
                 });
     }

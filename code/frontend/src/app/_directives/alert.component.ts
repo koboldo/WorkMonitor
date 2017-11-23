@@ -2,7 +2,8 @@
 import { Subscription } from 'rxjs/Subscription';
 import { Message } from 'primeng/primeng';
 
-import { AlertService } from '../_services/index';
+import { AlertService, AuthenticationService } from '../_services/index';
+import { User } from '../_models/user';
 
 @Component({
     selector: 'alert',
@@ -11,18 +12,27 @@ import { AlertService } from '../_services/index';
 
 export class AlertComponent implements OnDestroy {
     private subscription: Subscription;
+    private subLogin: Subscription;
 
     growlMsgs: Message[] = [];
     lastMessage: Message[];
 
-    constructor(private alertService: AlertService) { 
+    constructor(private alertService: AlertService, private authService: AuthenticationService) {
         // subscribe to alert messages
         this.subscription = alertService.getMessage().subscribe(message => this.handleMessage(message));
+        this.subLogin = this.authService.userAsObs.subscribe(user => this.clean(user));
     }
 
     ngOnDestroy(): void {
         // unsubscribe on destroy to prevent memory leaks
         this.subscription.unsubscribe();
+        this.subLogin.unsubscribe();
+        this.clean(null);
+    }
+
+    public clean(user: User):void {
+        console.log("Cleaning message cause user has changed!" + JSON.stringify(user));
+        this.lastMessage = [];
     }
 
     private handleMessage(message: Message):void {

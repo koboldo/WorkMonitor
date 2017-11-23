@@ -31,7 +31,7 @@
   </div>
 
   <div class="ui-grid-row" *ngIf="engineersWithSheets">
-    <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" [value]="engineersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+    <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" (onEditCancel)="onEditCancel($event)" (onEditComplete)="onEditComplete($event)" [value]="engineersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -40,14 +40,19 @@
       </p-header>
 
       <p-column [sortable]="true" field="tabid" header="tabid" hidden="true" ></p-column>
+      <p-column [sortable]="true" field="office" header="Biuro"></p-column>
+      <p-column [sortable]="true" field="role" header="Rola"></p-column>
+      <p-column [sortable]="true" field="email" header="Email" ></p-column>
       <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
       <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
-      <p-column [sortable]="true" field="email" header="Email" ></p-column>
-      <p-column [sortable]="true" field="role" header="Rola"></p-column>
-      <p-column [sortable]="true" field="office" header="Biuro"></p-column>
 
-      <p-column [sortable]="true" field="timesheetWorkDate" header="Data"></p-column>
-      <p-column [editable]="true" [sortable]="true" field="timesheetUsedTime" header="Godziny (edycja)"></p-column>
+      <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetFrom" header="Obecny od" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetTo" header="Obecny do" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetBreakInMinutes" header="Przerwa [minuty]" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+
 
       <ng-template pTemplate="emptymessage">
         Brak danych...

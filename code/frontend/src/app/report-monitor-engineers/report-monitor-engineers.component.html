@@ -37,14 +37,16 @@
 
 
 <div *ngIf="chartsReady">
-    <div class="ui-grid-row">
-        <div class="ui-grid-col-6">
-            <p-chart type="bar" [data]="chartUtilizationData" ></p-chart>
+    <p-panel header="Utylizacja i udziały">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-6">
+                <p-chart type="bar" [data]="chartUtilizationData" ></p-chart>
+            </div>
+            <div class="ui-grid-col-6">
+                <p-chart type="polarArea" [data]="chartShareData"></p-chart>
+            </div>
         </div>
-        <div class="ui-grid-col-6">
-            <p-chart type="polarArea" [data]="chartShareData"></p-chart>
-        </div>
-    </div>
+    </p-panel>
 </div>
 
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
@@ -62,7 +64,7 @@
                 <span class="ui-inputgroup-addon" [style.color]="report['iconColor']"><i [class]="report[col.field]"></i></span>
             </ng-template>
         </p-column>
-        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Zaangażowanie" [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Obciążenie" [style]="{'text-align':'right'}"></p-column>
 
 
         <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>

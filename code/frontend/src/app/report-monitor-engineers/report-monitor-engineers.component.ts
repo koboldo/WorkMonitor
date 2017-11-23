@@ -130,7 +130,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
         this.chartsReady = false;
-        this.chartUtilizationData = {labels: ['Obciążenie'], datasets: []};
+        this.chartUtilizationData = {labels: ['Obciążenie %'], datasets: []};
         this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
         this.reports = [];
 
@@ -170,7 +170,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
             this.calculateUtilizationForAll(this.reports);
         } else {
-            this.alertService.error("Nie znaleziono timesheetów w tym zakresie dat!");
+            this.alertService.warn("Nie znaleziono timesheetów w tym zakresie dat!");
         }
     }
 
@@ -181,7 +181,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         console.log("all done: "+JSON.stringify(reports));
         console.log("all done: "+JSON.stringify(this.chartUtilizationData));
         console.log("all done: "+JSON.stringify(this.chartShareData));
-        
+
         this.chartsReady = true;
     }
 
@@ -209,7 +209,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 userData.timeUtilizationPercentage = "brak deklaracji czasu!";
             } else {
                 let utilization: number = Math.round(((100 * userData.expectedTime) / userData.declaredTime));
-                userData.timeUtilizationPercentage = ""+utilization+"%";
+                userData.timeUtilizationPercentage = ""+utilization;
                 this.setMark(userData, utilization);
             }
 
@@ -263,7 +263,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         if (userData.expectedTime > 0) {
             this.chartShareData.datasets[0].data.push(userData.expectedTime);
             this.chartShareData.datasets[0].backgroundColor.push(userData.iconColor);
-            this.chartShareData.labels.push(userData.lastName);
+            this.chartShareData.labels.push(userData.firstName + " " + userData.lastName);
         }
 
     }
