@@ -16,7 +16,7 @@ import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { WoComponent } from './wo/wo.component';
 
-import { ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
+import { ProgressBarModule, ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
@@ -27,6 +27,7 @@ import { ReportMonitorEngineersComponent } from './report-monitor-engineers/repo
 import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 
 import 'chart.js/dist/Chart.min.js';
+import { ProgressComponent } from './progress/progress.component';
 
 @NgModule({
     imports: [
@@ -34,7 +35,7 @@ import 'chart.js/dist/Chart.min.js';
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,
+        ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,
         BrowserAnimationsModule,
         DataTableModule,
         routing
@@ -51,7 +52,8 @@ import 'chart.js/dist/Chart.min.js';
         ChangeWoComplexityComponent,
         ReportUnacceptedOrdersComponent,
         ReportMonitorEngineersComponent,
-        WoClearingComponent
+        WoClearingComponent,
+        ProgressComponent
     ],
     providers: [
         AuthGuard,

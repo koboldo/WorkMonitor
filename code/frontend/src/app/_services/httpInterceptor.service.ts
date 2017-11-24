@@ -1,6 +1,7 @@
 import { Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from "@angular/http"
 import { Injectable } from "@angular/core"
 import { Observable } from "rxjs/Rx"
+import { Subject } from 'rxjs/Subject';
 import { AlertService, AuthenticationService } from '../_services/index';
 import { Router } from '@angular/router';
 
@@ -9,8 +10,10 @@ import "rxjs/add/operator/catch"
 import "rxjs/add/observable/throw"
 import "rxjs/add/operator/map"
 
+
 @Injectable()
 export class HttpInterceptor {
+
 
     constructor(
         backend: XHRBackend,
@@ -22,24 +25,74 @@ export class HttpInterceptor {
     ) {
     }
 
+    progress: Map<string, number> = new Map<string, number>();
+    subject = new Subject<Map<string, number>>();
+
+    public getProgress(): Observable<Map<string, number>> {
+        return this.subject.asObservable();
+    }
+
+    public cleanProgress(): void {
+        this.progress = new Map<string, number>();
+        this.subject.next(this.progress);
+    }
+
+    private getProgressKey(url: string):string {
+        return url;
+    }
+
+
+    private incrementProgress(key: string): void {
+        let value: number = this.progress.get(key);
+        if (value === undefined) {
+            this.progress.set(key, 1);
+            console.log("progress for "+key +"=1 has been added!");
+        } else {
+            this.progress.set(key, ++value);
+            console.log("progress for "+key +" incremented to "+value);
+        }
+        this.subject.next(this.progress);
+    }
+
+    private decrementProgress(key: string): void {
+        let value: number = this.progress.get(key);
+        if (value !== undefined) {
+            if (value === 1) {
+                this.progress.delete(key);
+                console.log("progress for "+key +" has been removed!");
+            } else {
+                this.progress.set(key, --value);
+                console.log("progress for "+key +" decremented to "+value);
+            }
+        } else {
+            console.log("key="+key +" not found in "+JSON.stringify(this.progress));
+        }
+        this.subject.next(this.progress);
+    }
+
     public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        console.log("HttpInterceptor get" + url);
+        this.incrementProgress(this.getProgressKey(url));
+
         return this.http.get(url, this.authSerivce.getAuthOptions())
+            .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(this.handleError)
     }
 
     public post(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.post(url, object, this.authSerivce.getAuthOptions())
+            .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(this.handleError)
     }
 
     public put(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.put(url, object, this.authSerivce.getAuthOptions())
+            .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(this.handleError)
     }
 
     public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.delete(url, this.authSerivce.getAuthOptions())
+            .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(this.handleError)
     }
 
@@ -62,4 +115,5 @@ export class HttpInterceptor {
 
         return Observable.throw(error)
     }
+
 }

@@ -57,19 +57,14 @@ export class TimesheetsComponent implements OnInit {
         }
 
         if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet) {
+            //cleaning BRAK values
             event.data.timesheetFrom = "";
             event.data.timesheetTo = "";
-            event.data.timesheetUsedTime = "";
-            event.data.timesheetBreakInMinutes = 0;
         }
     }
 
     onEditCancel(event) {
-        console.log("edit cancelled !" + JSON.stringify(event));
-        event.data.timesheetFrom = this.copy.timesheetFrom;
-        event.data.timesheetTo = this.copy.timesheetTo;
-        event.data.timesheetUsedTime = this.copy.timesheetUsedTime;
-        event.data.timesheetBreakInMinutes = this.copy.timesheetBreakInMinutes;
+        this.onEditComplete(event);
     }
 
     onEditComplete(event) {
@@ -84,16 +79,19 @@ export class TimesheetsComponent implements OnInit {
             this.onEditCancel(event);
         }
 
-        else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)) {
+        if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)) {
             let workTime: number = this.calculateWorkTime(event.data.timesheetWorkDate, event.data.timesheetFrom, event.data.timesheetTo, event.data.timesheetBreakInMinutes);
             if (workTime >= 0) {
                 event.data.timesheetUsedTime = ""+workTime;
             } else {
                 this.alertService.warn("Nie zmieniono deklaracji ze względu na czas pracy mniejszy niż zero!");
-                this.onEditCancel(event);
+                event.data.timesheetFrom = this.copy.timesheetFrom;
+                event.data.timesheetTo = this.copy.timesheetTo;
+                event.data.timesheetUsedTime = this.copy.timesheetUsedTime;
+                event.data.timesheetBreakInMinutes = this.copy.timesheetBreakInMinutes;
             }
         } else {
-            console.log("Prawdopodobnie nie skonczono wypelniac timesheet");
+            console.log("Prawdopodobnie nie skonczono wypelniac timesheet "+JSON.stringify(event.data));
         }
     }
 
