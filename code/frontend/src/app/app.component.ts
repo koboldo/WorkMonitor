@@ -32,8 +32,8 @@ export class AppComponent {
 
 
     private setUser(user:User):void {
+        this.user = user;
         if (user) {
-            this.user = user;
             this.role = this.dictService.getRoleObs(user.roleCode);
             this.office = this.dictService.getOfficeObs(user.officeCode);
         }

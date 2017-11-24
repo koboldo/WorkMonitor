@@ -23,7 +23,7 @@ export class ProgressComponent implements OnInit {
 
 
     ngOnInit() {
-        this.subscription = this.httpInterceptor.getProgress().subscribe(progress => this.handleProgress(progress));
+        this.subscription = this.httpInterceptor.getProgress().subscribe(progress => setTimeout(() => this.handleProgress(progress)));
         this.subLogin = this.authService.userAsObs.subscribe(user => this.clean(user));
     }
 

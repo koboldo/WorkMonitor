@@ -97,20 +97,22 @@ export class RegisterComponent implements OnInit {
     }
 
     private removeRoles(user:User):void {
-        this.operator = user;
-        console.log("Operator "+JSON.stringify(this.operator));
-        if (this.operator.roleCode !== 'PR') {
-            let roles: CodeValue[] = this.dictService.getRoles();
-            let allowedRoles: CodeValue[] = [];
-            for (let role of roles) {
-                if (role.code !== 'PR') {
-                    allowedRoles.push(role);
+        if (user) {
+            this.operator = user;
+            console.log("Operator "+JSON.stringify(this.operator));
+            if (this.operator.roleCode !== 'PR') {
+                let roles: CodeValue[] = this.dictService.getRoles();
+                let allowedRoles: CodeValue[] = [];
+                for (let role of roles) {
+                    if (role.code !== 'PR') {
+                        allowedRoles.push(role);
+                    }
                 }
-            }
-            this.mapToRoles(allowedRoles);
+                this.mapToRoles(allowedRoles);
 
-        } else {
-            this.mapToRoles(this.dictService.getRoles());
+            } else {
+                this.mapToRoles(this.dictService.getRoles());
+            }
         }
     }
 }
