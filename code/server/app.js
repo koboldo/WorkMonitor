@@ -4,6 +4,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+
 
 var logger = require('./api/logger').getLogger('monitor'); 
 
@@ -32,6 +36,16 @@ app.use(function(req, res){
 
 app.disable('etag'); // TODO: investigate why
 
-var server = app.listen(process.env.PORT || '8080', function(){
-	logger.info('NodeJs server started %s',server.address().port);
-});
+// var server = app.listen(process.env.PORT || '8080', function(){
+// 	logger.info('NodeJs server started %s',server.address().port);
+// });
+
+var privateKey  = fs.readFileSync('ssl/work_monitor.key.pem', 'utf8');
+var certificate = fs.readFileSync('ssl/work_monitor.cert.pem', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(8080);
+httpsServer.listen(8443);
