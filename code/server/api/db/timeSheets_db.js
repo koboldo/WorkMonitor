@@ -65,8 +65,10 @@ var timeSheets_db = {
         if(logger.isDebugEnabled()) logger.debug('insert timeSheet with object: ' + util.inspect(timeSheet));
 
         if(timeSheet.WORK_DATE) timeSheet.WORK_DATE = 'STRFTIME("%s","' + timeSheet.WORK_DATE + '")';
-        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
-        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
+        // if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
+        // if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
+        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = 'STRFTIME("%s","' + timeSheet.FROM_DATE + '")'; 
+        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = 'STRFTIME("%s","' + timeSheet.TO_DATE + '")';
 
         dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, function(err, newId){
             if(err) return local_util.logErrAndCall(err,cb);
@@ -90,13 +92,15 @@ var timeSheets_db = {
         
         timeSheets.forEach((timeSheet) => {
             if(timeSheet.WORK_DATE) timeSheet.WORK_DATE = '(STRFTIME("%s","' + timeSheet.WORK_DATE + '")/86400)*86400';
-            if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
-            if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
+            // if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = timeSheet.FROM_DATE/1000; 
+            // if(timeSheet.TO_DATE)   timeSheet.TO_DATE = timeSheet.TO_DATE/1000;
+            if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = 'STRFTIME("%s","' + timeSheet.FROM_DATE + '")'; 
+            if(timeSheet.TO_DATE)   timeSheet.TO_DATE = 'STRFTIME("%s","' + timeSheet.TO_DATE + '")';
             calls.push(
                 function(_cb) {
                     dbUtil.performInsert(timeSheet,'TIME_SHEET',null,function(err,singleResult){
                         if(err) _cb(err);
-                        _cb(null,singleResult);
+                        else _cb(null,singleResult);
                     }, mydb);	
                 });
             calls.push(
@@ -109,7 +113,7 @@ var timeSheets_db = {
                     idObj.BREAK_IN_MINUTES = timeSheet.BREAK_IN_MINUTES;
                     dbUtil.performUpdate(idObj, timeSheet, 'TIME_SHEET', function(err,singleResult){
                         if(err) _cb(err);
-                        _cb(null,singleResult);
+                        else _cb(null,singleResult);
                     }, mydb);
                 }
             );

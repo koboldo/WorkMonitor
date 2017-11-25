@@ -48,7 +48,10 @@ var orders = {
         // res.status(501).end();
         var orderId = req.params.id;
         var orderExtId = req.params.extId;
-        var orderSql = mapper.order.mapToSql(req.body);
+        // console.log(JSON.stringify(req.body, null, 3));
+        var re = filterOrderPrice(req.context, req.body, true);
+        console.log('filterred ' + JSON.stringify(re));
+        var orderSql = mapper.order.mapToSql(re);
         orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
@@ -86,9 +89,11 @@ function mapOrderItems(order) {
     order.relatedItems = mappedItems;
 };
 
-function filterOrderPrice(context, order) {
+function filterOrderPrice(context, order, doRemove = false) {
     if(order.typeCode == 'OT' && context.role != 'PR')
-        order.price = -13;
+        if(doRemove == true) delete order.price;
+        else order.price = -13;
+    return order;
 };
 
 module.exports = orders;

@@ -116,6 +116,7 @@ var db_util = {
 
 
             // sqlVals += '"' + object[col] + '"';
+            // let val = db_util.changeEmptyToNull(object[col]);
             if(columnsWithoutQuote.indexOf(col) > -1) sqlVals += object[col];
             else sqlVals += '"' + object[col] + '"';
         }
@@ -137,8 +138,9 @@ var db_util = {
 
             // updateStr += col + '="' + object[col] + '"';
             updateStr += col + '=';
-            if(columnsWithoutQuote.indexOf(col) > -1) updateStr += object[col];
-            else updateStr += '"' + object[col] + '"';
+            let val = db_util.changeEmptyToNull(object[col]);
+            if(columnsWithoutQuote.indexOf(col) > -1 || val == null ) updateStr += val;
+            else updateStr += '"' + val + '"';
         }
 
         var idStr = '';
@@ -198,6 +200,10 @@ var db_util = {
         if(logger.isDebugEnabled()) logger.debug('filterInserts: ' + JSON.stringify(filterInserts));
         var rv = sprintf(query,filterInserts);
         return rv;
+    },
+
+    changeEmptyToNull: function(sqlValue) {
+        return (sqlValue != '') ? sqlValue : null; 
     },
 
     getRowsIds: function(statement, rowId, cb) {
