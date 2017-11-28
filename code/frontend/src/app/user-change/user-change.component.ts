@@ -51,6 +51,7 @@ export class UserChangeComponent implements OnInit {
     }
 
     suggestUser(event) {
+        this.selectedUser = undefined;
         this.suggestedUsers = [];
         if (this.users && this.users.length > 0) {
             for (let user of this.users) {

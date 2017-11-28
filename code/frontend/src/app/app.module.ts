@@ -29,6 +29,7 @@ import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 
 import 'chart.js/dist/Chart.min.js';
 import { ProgressComponent } from './progress/progress.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
     imports: [
@@ -55,7 +56,8 @@ import { ProgressComponent } from './progress/progress.component';
         ReportUnacceptedOrdersComponent,
         ReportMonitorEngineersComponent,
         WoClearingComponent,
-        ProgressComponent
+        ProgressComponent,
+        ResetPasswordComponent
     ],
     providers: [
         AuthGuard,

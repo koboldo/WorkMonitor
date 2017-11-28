@@ -7,7 +7,8 @@
   </div>
 
   <div *ngIf="selectedUser?.user" class="container">
-    <h2>Zmodyfikuj użytkownika</h2>
+    <hr>
+    <h2>Modyfikacja {{selectedUser?.user?.firstName}} {{selectedUser?.user?.lastName}}</h2>
     <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm">
       <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
         <label for="firstName">Imie</label>

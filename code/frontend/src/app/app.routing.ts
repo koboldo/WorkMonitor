@@ -4,6 +4,7 @@ import { AppComponent }  from './app.component';
 import { HomeComponent } from './home/index';
 import { WoComponent } from './wo/wo.component';
 import { LoginComponent } from './login/index';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { UserRegisterComponent } from './user-register/register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { AuthGuard } from './_guards/index';
@@ -18,6 +19,7 @@ import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'logme',                    component: LoginComponent },
+    { path: 'resetPassword',            component: ResetPasswordComponent },
     { path: 'addPerson',                component: UserRegisterComponent, canActivate: [AuthGuard] },
     { path: 'changePerson',             component: UserChangeComponent, canActivate: [AuthGuard] },
     { path: 'workOrders',               component: WoComponent,       canActivate: [AuthGuard] },
