@@ -1,0 +1,49 @@
+<div class="jumbotron">
+  <div class="container">
+    <h2>Wybierz użytkownika do modyfikacji</h2>
+    <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
+            id="person" [(ngModel)]="selectedUser" [suggestions]="suggestedUsers" (completeMethod)="suggestUser($event)" [dropdown]="true" field="displayName"></p-autoComplete>
+      <!-- does not work  [forceSelection]="true" -->
+  </div>
+
+  <div *ngIf="selectedUser?.user" class="container">
+    <h2>Zmodyfikuj użytkownika</h2>
+    <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm">
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
+        <label for="firstName">Imie</label>
+        <input id="firstName" type="text" class="form-control" name="firstName" [(ngModel)]="selectedUser.user.firstName" #firstName="ngModel" required minlength="3" />
+        <div *ngIf="f.submitted && !firstName?.valid" class="help-block">Imie jest wymagane</div>
+      </div>
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !lastName?.valid }">
+        <label for="lastName">Nazwisko</label>
+        <input id="lastName" type="text" class="form-control" name="lastName" [(ngModel)]="selectedUser.user.lastName" #lastName="ngModel" required minlength="3"/>
+        <div *ngIf="f.submitted && !lastName?.valid" class="help-block">Nazwisko jest wymagane</div>
+      </div>
+      <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email?.valid }">
+        <label for="newemail">Email</label>
+        <input id="newemail" type="email" class="form-control" name="newemail" [(ngModel)]="selectedUser.user.email" #newemail="ngModel" required email />
+        <div *ngIf="f.submitted && !newemail?.valid" class="help-block">wymagany jest poprawny adres email</div>
+      </div>
+
+      <div class="form-group" *ngIf="showRoles">
+        <label for="roleCode">Funkcja w systemie</label>
+        <p-selectButton id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required #roleCode="ngModel"></p-selectButton>
+        <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
+      </div>
+
+
+      <div class="form-group" *ngIf="showOffices">
+        <label for="officeCode">Biuro macierzyste</label>
+        <p-selectButton id="officeCode" name="officeCode" [options]="offices" [(ngModel)]="selectedUser.user.officeCode" required #officeCode="ngModel"></p-selectButton>
+        <!--<p-dropdown name="officeCode" [options]="offices | async" [(ngModel)]="user.officeCode" required autoWidth="false" ></p-dropdown>-->
+        <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
+      </div>
+
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">Modyfikuj</button>
+        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        <a [routerLink]="['']" class="btn btn-link">Anuluj</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
-import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
+import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
 import { MenuItem } from 'primeng/primeng';
@@ -428,10 +428,6 @@ export class WoComponent implements OnInit {
 
 }
 
-export class SearchUser {
-    constructor(public displayName:string,
-                public user:User) {
-    }
-}
+
 
 

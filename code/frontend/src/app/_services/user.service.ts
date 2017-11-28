@@ -21,7 +21,7 @@ export class UserService {
     }
 
     getById(id: number) {
-        return this.http.get('/api/v1/persons' + id).map((response: Response) => response.json());
+        return this.http.get('/api/v1/persons/' + id).map((response: Response) => response.json());
     }
 
     create(user: User) {
@@ -29,7 +29,9 @@ export class UserService {
     }
 
     update(user: User) {
-        return this.http.put('/api/v1/persons' + user.id, user).map((response: Response) => response.json());
+        let strippedUser: User = JSON.parse(JSON.stringify(user));
+        strippedUser.workOrders = undefined;
+        return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).map((response: Response) => response.json());
     }
 
     assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
@@ -91,6 +93,14 @@ export class UserService {
 
     public getEngineers(): Observable<User[]> {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
+    }
+
+    public getManagedUsers(role: string): Observable<User[]> {
+        if (role && role === 'PR') {
+            return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
+        } else {
+            return this.getEngineers();
+        }
     }
 
     public getVentureRepresentatives(): Observable<User[]> {

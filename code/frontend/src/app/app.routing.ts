@@ -4,7 +4,8 @@ import { AppComponent }  from './app.component';
 import { HomeComponent } from './home/index';
 import { WoComponent } from './wo/wo.component';
 import { LoginComponent } from './login/index';
-import { RegisterComponent } from './register/index';
+import { UserRegisterComponent } from './user-register/register.component';
+import { UserChangeComponent } from './user-change/user-change.component';
 import { AuthGuard } from './_guards/index';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
@@ -17,7 +18,8 @@ import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'logme',                    component: LoginComponent },
-    { path: 'addPerson',                component: RegisterComponent, canActivate: [AuthGuard] },
+    { path: 'addPerson',                component: UserRegisterComponent, canActivate: [AuthGuard] },
+    { path: 'changePerson',             component: UserChangeComponent, canActivate: [AuthGuard] },
     { path: 'workOrders',               component: WoComponent,       canActivate: [AuthGuard] },
     { path: 'myWorkOrders',             component: MyWoComponent,     canActivate: [AuthGuard] },
     { path: 'addTimesheet',             component: TimesheetsComponent, canActivate: [AuthGuard] },
