@@ -18,15 +18,6 @@ var authQuery = 'SELECT ID, EMAIL, IS_ACTIVE, ROLE_CODE, OFFICE_CODE, FIRST_NAME
 var resetQuery = 'SELECT ID, EMAIL, IS_ACTIVE FROM PERSON WHERE ID = ?';
 var resetTokenQuery = 'SELECT PWD_TOKEN FROM PERSON WHERE ID = ?';
 
-var secret;
-try {
-    secret = fs.readFileSync(path.join(__dirname,'../secret'), 'utf8');
-    if(logger.isDebugEnabled()) logger.debug('secret has been read');
-} catch(err) {
-    logger.error('Failed to load secret. ', err.message);
-    process.exit(1);
-}
-
 var conf;
 try {
     conf = JSON.parse(fs.readFileSync(path.join(__dirname,'../conf.json'), 'utf8'));
@@ -85,7 +76,7 @@ var auth = {
             if(logger.isDebugEnabled()) logger.debug('token found in request: ' + token);
             
             try {
-                var decoded = jwt.verify(token, secret);
+                var decoded = jwt.verify(token, conf.secret);
                 if(logger.isDebugEnabled()) logger.debug('decoded token data: ' + util.inspect(decoded));
                 req.context = {};
                 req.context.id = decoded.id;
@@ -124,7 +115,7 @@ var auth = {
                 return;
             }
 
-            let hash = crypto.createHmac('sha256',secret).update('I need your account ' + userRow.EMAIL).digest('hex');
+            let hash = crypto.createHmac('sha256',conf.secret).update('I need your account ' + userRow.EMAIL).digest('hex');
 
             let idObj = {ID: userRow.ID};
             let userObj = {PWD_TOKEN: hash};

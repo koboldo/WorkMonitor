@@ -4,8 +4,8 @@
         "host": "smtp.gmail.com",
         "port": "465",
         "secure": "true",
-        "username": "koboldo@gmail.com",
-        "password": "00warhound00",
+        "username": "bot.mailer.srv@gmail.com",
+        "password": "XXXX",
         "from": "koboldo@gmail.com"
     }
 }
