@@ -22,6 +22,9 @@ app.use(bodyParser.json());
 var auth = require('./api/auth');
 var validator = require('./api/validator');
 app.post('/login', auth.authenticate);
+app.post('/pwdreset/:id', auth.sendHash);
+app.put('/pwdreset/:id', auth.validateHash);
+
 app.all('/api/v1/*', auth.validateToken);
 app.all('/api/v1/*', validator.validateIncoming);
 
@@ -48,4 +51,6 @@ var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080);
+logger.info('HTTP server started at %s',httpServer.address().port);
 httpsServer.listen(8443);
+logger.info('HTTPS server started at %s',httpsServer.address().port);
