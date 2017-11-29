@@ -5,3 +5,4 @@ export * from './code';
 export * from './relatedItem';
 export * from './workType';
 export * from './timesheet';
+export * from './searchedUser';

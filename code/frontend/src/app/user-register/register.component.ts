@@ -14,7 +14,7 @@ import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Val
     templateUrl: 'register.component.html'
 })
 
-export class RegisterComponent implements OnInit {
+export class UserRegisterComponent implements OnInit {
 
     user: User = new User;
     loading: boolean = false;
@@ -52,8 +52,13 @@ export class RegisterComponent implements OnInit {
     register() {
         this.loading = true;
 
-        this.user.isActive = this.user.roleCode === 'VE'? "N" : "Y";
-        this.user.company = this.company;
+        if ( this.user.roleCode === 'VE' ) {
+            this.user.isActive = "N";
+            this.user.company = this.company;
+        } else {
+            this.user.isActive = "Y";
+            this.user.company = "BOT";
+        }
 
         this.userService.create(this.user)
             .subscribe(

@@ -13,7 +13,8 @@ import { AuthGuard } from './_guards/index';
 import { AlertService, AuthenticationService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, HttpInterceptor } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
-import { RegisterComponent } from './register/index';
+import { UserRegisterComponent } from './user-register/register.component';
+import { UserChangeComponent } from './user-change/user-change.component';
 import { WoComponent } from './wo/wo.component';
 
 import { ProgressBarModule, ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
@@ -28,6 +29,7 @@ import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 
 import 'chart.js/dist/Chart.min.js';
 import { ProgressComponent } from './progress/progress.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
     imports: [
@@ -45,7 +47,8 @@ import { ProgressComponent } from './progress/progress.component';
         AlertComponent,
         HomeComponent,
         LoginComponent,
-        RegisterComponent,
+        UserRegisterComponent,
+        UserChangeComponent,
         WoComponent,
         MyWoComponent,
         TimesheetsComponent,
@@ -53,7 +56,8 @@ import { ProgressComponent } from './progress/progress.component';
         ReportUnacceptedOrdersComponent,
         ReportMonitorEngineersComponent,
         WoClearingComponent,
-        ProgressComponent
+        ProgressComponent,
+        ResetPasswordComponent
     ],
     providers: [
         AuthGuard,
