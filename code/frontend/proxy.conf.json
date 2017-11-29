@@ -3,6 +3,10 @@
     "target": "https://localhost:8443",
     "secure": false
   },
+  "/pwdreset": {
+    "target": "https://localhost:8443",
+    "secure": false
+  },
   "/api": {
     "target": "https://localhost:8443",
     "secure": false

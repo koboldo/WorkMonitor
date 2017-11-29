@@ -34,6 +34,18 @@ export class UserService {
         return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).map((response: Response) => response.json());
     }
 
+    sendResetEmail(email: string): Observable<any> {
+        let msg: any = {};
+        msg.email = email;
+        return this.http.post('/pwdreset', msg).map((response: Response) => response.json());
+    }
+
+
+    resetPassword(userId:string, hash:string, newPassword:string):any {
+        let msg: any = {id: userId, password: newPassword, hash: hash};
+        return this.http.put('/pwdreset', msg).map((response: Response) => response.json());
+    }
+
     assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
         if (isNewOrderOwner && order.assignee !== undefined && order.assignee.length > 0) {
             return this.addRelation(true, user, order);
