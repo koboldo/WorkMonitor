@@ -8,6 +8,7 @@ var util = require('util');
 var fs = require('fs');
 var path  = require('path');
 var nodemailer = require('nodemailer');
+var sprintf = require("sprintf-js").sprintf;
 
 var persons_db = require('./db/persons_db');
 var dbUtil = require('./db/db_util');
@@ -128,7 +129,7 @@ var auth = {
                     return;
                 }
 
-                sendMailWithLink(userRow.EMAIL,hash,(err, info) => {
+                sendMailWithLink(userRow.EMAIL,userRow.ID,hash,(err, info) => {
                     db.close();
                     if (err) {
                         logger.error(err);
@@ -182,13 +183,23 @@ var auth = {
 };
 
 
-function sendMailWithLink(email, hash, cb) {
+function sendMailWithLink(email,id, hash, cb) {
+
+    let mailTemplate;
+    try {
+        mailTemplate = fs.readFileSync(path.join(__dirname,'../template/mail_reset_passwd.html'), 'utf8');
+        mailTemplate = sprintf(mailTemplate, {hash: hash, id: id});
+    } catch(err) {
+        logger.error(err);
+        cb(err);
+        return;
+    }
 
     let mailOpts = {
         from: conf.smtp.from,
         to: email, 
-        subject: 'Hello ✔',
-        html: '<b>Hello world?</b>Hash is: ' + hash
+        subject: 'BOT: ustaw hasło',
+        html: mailTemplate
     };
     
     let transporter = nodemailer.createTransport({
