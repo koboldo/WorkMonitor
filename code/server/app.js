@@ -22,8 +22,8 @@ app.use(bodyParser.json());
 var auth = require('./api/auth');
 var validator = require('./api/validator');
 app.post('/login', auth.authenticate);
-app.post('/pwdreset/:id', auth.sendHash);
-app.put('/pwdreset/:id', auth.validateHash);
+app.post('/pwdreset', auth.sendHash);
+app.put('/pwdreset', auth.validateHash);
 
 app.all('/api/v1/*', auth.validateToken);
 app.all('/api/v1/*', validator.validateIncoming);
