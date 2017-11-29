@@ -109,7 +109,7 @@
         <span>{{order?.workNo}}, {{order?.type}}, {{order?.price}}, {{order?.ventureDisplay}}, {{order?.ventureCompany}}</span>
       </div>-->
 
-          <p-dataTable [value]="selectedOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+          <p-dataTable [value]="selectedOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" loadingIcon="fa-spinner">
             <p-header>
               <div>
                 <i class="fa fa-search"></i>

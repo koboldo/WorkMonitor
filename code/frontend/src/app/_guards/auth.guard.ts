@@ -9,6 +9,7 @@ export class AuthGuard implements CanActivate {
     constructor(private router: Router, private authService:AuthenticationService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        console.log("AuthGuard canActivate...");
         return this.authService.userAsObs
             .map((user: User) => {
                 if (user && user.token){

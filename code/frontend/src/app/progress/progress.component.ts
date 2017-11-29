@@ -35,7 +35,7 @@ export class ProgressComponent implements OnInit {
     }
 
     public clean(user: User):void {
-        console.log("Cleaning message cause user has changed!" + JSON.stringify(user));
+        console.log("Cleaning progress cause user has changed!" + JSON.stringify(user));
         this.isInProgress = false;
         this.httpInterceptor.cleanProgress();
     }
