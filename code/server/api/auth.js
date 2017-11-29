@@ -16,7 +16,7 @@ var dbUtil = require('./db/db_util');
 var logger = require('./logger').getLogger('monitor'); 
 
 var authQuery = 'SELECT ID, EMAIL, IS_ACTIVE, ROLE_CODE, OFFICE_CODE, FIRST_NAME, LAST_NAME FROM PERSON WHERE EMAIL = ? AND PASSWORD = ? AND IS_ACTIVE = "Y"';
-var resetQuery = 'SELECT ID, EMAIL, IS_ACTIVE FROM PERSON WHERE ID = ?';
+var resetQuery = 'SELECT ID, EMAIL, IS_ACTIVE FROM PERSON WHERE EMAIL = ?';
 var resetTokenQuery = 'SELECT PWD_TOKEN FROM PERSON WHERE ID = ?';
 
 var conf;
@@ -101,13 +101,18 @@ var auth = {
 
     sendHash: function(req, res) {
         
-        var userId = req.params.id;
+        var userEmail = req.body.email;
 
         var db = dbUtil.getDatabase();
-        var authStat = db.prepare(resetQuery).bind(userId).get(function(err,userRow) {
+        var authStat = db.prepare(resetQuery).bind(userEmail).get(function(err,userRow) {
             authStat.finalize();
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+
+            if(userRow == null) {
+                res.status(404).json({status:'error', message: 'email address not found'});
                 return;
             }
 
@@ -145,7 +150,7 @@ var auth = {
     },
 
     validateHash: function(req, res) {
-        var userId = req.params.id;
+        var userId = req.body.id;
         var hash = req.body.hash;
         var passwd = (req.body.password) ? req.body.password : '';
         var passwdSha1 = sha1(passwd);
