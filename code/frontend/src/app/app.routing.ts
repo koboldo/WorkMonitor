@@ -5,7 +5,7 @@ import { HomeComponent } from './home/index';
 import { WoComponent } from './wo/wo.component';
 import { LoginComponent } from './login/index';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { UserRegisterComponent } from './user-register/register.component';
+import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { AuthGuard } from './_guards/index';
 

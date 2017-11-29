@@ -13,7 +13,7 @@ import { AuthGuard } from './_guards/index';
 import { AlertService, AuthenticationService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, HttpInterceptor } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
-import { UserRegisterComponent } from './user-register/register.component';
+import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { WoComponent } from './wo/wo.component';
 

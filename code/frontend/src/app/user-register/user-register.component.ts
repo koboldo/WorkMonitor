@@ -11,7 +11,7 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 
 @Component({
-    templateUrl: 'register.component.html'
+    templateUrl: 'user-register.component.html'
 })
 
 export class UserRegisterComponent implements OnInit {
