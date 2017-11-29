@@ -85,6 +85,8 @@ var persons = {
     create: function(req, res) {
     
         var personSql = mapper.person.mapToSql(req.body);
+        personSql.PASSWORD = 'justASimpleText';
+        
         persons_db.create(personSql, function(err,result) {
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
