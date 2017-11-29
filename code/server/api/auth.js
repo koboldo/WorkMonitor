@@ -111,6 +111,11 @@ var auth = {
                 return;
             }
 
+            if(userRow == null) {
+                res.status(404).json({status:'error', message: 'email address not found'});
+                return;
+            }
+
             if(userRow.IS_ACTIVE != 'Y') {
                 res.status(406).json({status:'error', message: 'user account is locked'});
                 return;
