@@ -7,6 +7,6 @@ export class Timesheet {
 
     public from: number;
     public to: number;
-    public breakInMinutes: number;
+    public breakInMinutes: string;
 }
 

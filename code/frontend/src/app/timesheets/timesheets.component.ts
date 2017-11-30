@@ -169,10 +169,9 @@ export class TimesheetsComponent implements OnInit {
                     engineerWithSheet.timesheetUsedTime = this.getUsedTimeAsString(timesheet.usedTime);
                     engineerWithSheet.timesheetWorkDate = timesheet.workDate;
 
-                    //Todo remove backend mock
                     engineerWithSheet.timesheetFrom = timesheet.from;
                     engineerWithSheet.timesheetTo = timesheet.to;
-                    engineerWithSheet.timesheetBreakInMinutes = timesheet.breakInMinutes;
+                    engineerWithSheet.timesheetBreakInMinutes = timesheet.timesheetBreakInMinutes;
 
                 }
             }
@@ -219,9 +218,10 @@ export class TimesheetsComponent implements OnInit {
 
                     console.log("Zmieniam deklaracje godzin dla "+engineerWithSheet.firstName+" "+engineerWithSheet.lastName);
                     copy.timesheet.usedTime = usedTime;
-                    copy.timesheet.breakInMinutes = engineerWithSheet.timesheetBreakInMinutes;
+                    copy.timesheet.breakInMinutes = engineerWithSheet.timesheetBreakInMinutes ? ""+engineerWithSheet.timesheetBreakInMinutes: "0";
                     copy.timesheet.from = this.toolsService.parseDate(engineerWithSheet.timesheetWorkDate+ " "+ engineerWithSheet.timesheetFrom + ":00" ).getTime();
                     copy.timesheet.to = this.toolsService.parseDate(engineerWithSheet.timesheetWorkDate+ " "+ engineerWithSheet.timesheetTo + ":00" ).getTime();
+                    console.log("new timesheet "+JSON.stringify(copy.timesheet));
                     this.engineerWithChangedSheet.push(copy);
                 }
 
