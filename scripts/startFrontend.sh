@@ -1,9 +1,8 @@
 #!/bin/bash
 
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-#echo nginx -c /home/botconsole/WorkMonitor/code/frontend/nginx.conf
-nginx -c /home/botconsole/WorkMonitor/code/frontend/nginx.conf
+nginx -c ${SCRIPTPATH}/../code/frontend/nginx.conf
 
-#sleep 1
-#echo nginx pid `cat /tmp/nginx.pid`
+
 
