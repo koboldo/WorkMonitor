@@ -8,6 +8,11 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 
+var mask = process.umask(0);
+var socket = '/tmp/nginx2node';
+if (fs.existsSync(socket)) {
+    fs.unlinkSync(socket);
+}
 
 var logger = require('./api/logger').getLogger('monitor'); 
 
@@ -39,18 +44,15 @@ app.use(function(req, res){
 
 app.disable('etag'); // TODO: investigate why
 
-// var server = app.listen(process.env.PORT || '8080', function(){
-// 	logger.info('NodeJs server started %s',server.address().port);
-// });
 
-var privateKey  = fs.readFileSync('ssl/work_monitor.key.pem', 'utf8');
-var certificate = fs.readFileSync('ssl/work_monitor.cert.pem', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
+var socketServer = http.createServer(app);
 
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(8080);
-logger.info('HTTP server started at %s',httpServer.address().port);
-httpsServer.listen(8443);
-logger.info('HTTPS server started at %s',httpsServer.address().port);
+socketServer.listen(socket, function() {
+    if (mask) {
+        process.umask(mask);
+        mask = null;
+    }
+});
+logger.info('socket server started at %s', socket);
+
