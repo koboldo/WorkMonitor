@@ -10,8 +10,8 @@ echo "Working in $PWD"...
 echo ==================
 echo
 
-ng build -prod &&
-tar zcvf /tmp/botdist_${TS?}.tar.gz dist &&
+ng build --base-href . -prod &&
+tar zcvf /tmp/botdist_${TS?}.tar.gz bot &&
 scp /tmp/botdist_${TS?}.tar.gz botconsole@bot:/tmp &&
 
 echo ==================
