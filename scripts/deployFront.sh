@@ -19,7 +19,7 @@ echo Working at botconsole@jdmiddleware.pl...
 echo ==================
 
 ssh botconsole@jdmiddleware.pl << EOF
-  cd /var/www/html/botconsole
+  cd /var/www/html/jdmiddleware.pl
   tar zxvf "/tmp/botdist_${TS?}.tar.gz"
   
   echo ==================
