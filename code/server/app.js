@@ -9,6 +9,8 @@ var http = require('http');
 
 var logger = require('./api/logger').getLogger('monitor'); 
 
+if(!process.env.WM_CONF_DIR) throw new Error('Env variable WM_CONF_DIR not set! Aborting...');
+
 var app = express();
 
 app.use(express.static('public'));

@@ -1,10 +1,12 @@
+/* jshint node: true, esversion: 6 */
 'use strict';
 var log4js = require('log4js');
 var fs = require('fs');
 var path  = require('path');
 
 try {
-    var data = fs.readFileSync(path.join(__dirname,'../logger.json'), 'utf8');
+    var loggerConfPath = path.join(process.env.WM_CONF_DIR, 'logger.json');
+    var data = fs.readFileSync(loggerConfPath, 'utf8');
     log4js.configure(JSON.parse(data));
 } catch(err) {
     console.log(err);

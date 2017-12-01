@@ -5,7 +5,7 @@
         "port": "465",
         "secure": "true",
         "username": "bot.mailer.srv@gmail.com",
-        "password": "XXXX",
+        "password": "xxxxx",
         "from": "koboldo@gmail.com"
     }
 }

@@ -2,7 +2,8 @@
 'use strict';
 
 var sqlite3 = require('sqlite3').verbose();
-var util = require('util');
+// var util = require('util');
+var path = require('path');
 
 var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
@@ -14,7 +15,10 @@ var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE'];
 var db_util = {
     
     getDatabase: function() {
-        var db = new sqlite3.Database('./work-monitor.db');
+        var dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db') 
+
+        // var db = new sqlite3.Database('./work-monitor.db');
+        var db = new sqlite3.Database(dbPath);
         db.serialize(function() {
             db.run( 'PRAGMA journal_mode = DELETE;' );
             db.run( 'PRAGMA busy_timeout = 10000;' );

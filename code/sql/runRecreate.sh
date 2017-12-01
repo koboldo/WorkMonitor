@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sqlite3 -init reloadLinux.sql ../server/work-monitor.db ".exit"
+sqlite3 -init reloadLinux.sql ../env_specific/work-monitor.db ".exit"

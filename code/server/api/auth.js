@@ -21,7 +21,8 @@ var resetTokenQuery = 'SELECT PWD_TOKEN FROM PERSON WHERE ID = ?';
 
 var conf;
 try {
-    conf = JSON.parse(fs.readFileSync(path.join(__dirname,'../conf.json'), 'utf8'));
+    var confPath = path.join(process.env.WM_CONF_DIR, 'conf.json');
+    conf = JSON.parse(fs.readFileSync(confPath, 'utf8'));
 } catch(err) {
     logger.error('Failed to load configuration. ',err.message);
     process.exit(1);
