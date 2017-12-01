@@ -112,7 +112,7 @@ var auth = {
             }
 
             if(userRow == null) {
-                res.status(404).json({status:'error', message: 'email address not found'});
+                res.status(404).json({status:'error', message: 'adres email nie został odnaleziony'});
                 return;
             }
 

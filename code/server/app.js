@@ -6,13 +6,6 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var fs = require('fs');
 var http = require('http');
-var https = require('https');
-
-var mask = process.umask(0);
-var socket = '/tmp/nginx2node';
-if (fs.existsSync(socket)) {
-    fs.unlinkSync(socket);
-}
 
 var logger = require('./api/logger').getLogger('monitor'); 
 
@@ -45,14 +38,23 @@ app.use(function(req, res){
 app.disable('etag'); // TODO: investigate why
 
 
-var socketServer = http.createServer(app);
-
-
-socketServer.listen(socket, function() {
-    if (mask) {
-        process.umask(mask);
-        mask = null;
+if(process.env.NODE_ENV == 'dev') {
+    var server = app.listen(process.env.PORT || '8080', function(){
+        logger.info('http server started at %s',server.address().port);
+    });
+} else {
+    var mask = process.umask(0);
+    var socket = '/tmp/nginx2node';
+    if (fs.existsSync(socket)) {
+        fs.unlinkSync(socket);
     }
-});
-logger.info('socket server started at %s', socket);
 
+    var socketServer = http.createServer(app);
+    socketServer.listen(socket, function() {
+        if (mask) {
+            process.umask(mask);
+            mask = null;
+        }
+    });
+    logger.info('socket server started at %s', socket);
+}
