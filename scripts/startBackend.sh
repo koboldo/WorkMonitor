@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WM_CONF_DIR=/home/botconsole/env_specific
+export WM_CONF_DIR=/home/botconsole/env_specific
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 (cd ${SCRIPTPATH}/../code/server && node app.js)
