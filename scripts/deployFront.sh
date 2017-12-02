@@ -21,13 +21,14 @@ echo ==================
 ssh botconsole@jdmiddleware.pl << EOF
   cd /var/www/html/jdmiddleware.pl
   tar zxvf "/tmp/botdist_${TS?}.tar.gz"
-  
+EOF
+
+ssh root@jdmiddleware.pl << EOF
   echo ==================
-  echo service botfrontend restart
+  echo service nginx restart
   echo ==================
   
-  sudo service botfrontend restart
-  
+  sudo service nginx restart
 EOF
 
 cd -
