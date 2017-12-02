@@ -25,10 +25,10 @@ EOF
 
 ssh root@jdmiddleware.pl << EOF
   echo ==================
-  echo service nginx restart
+  echo service botfrontend restart
   echo ==================
   
-  sudo service nginx restart
+  sudo service botfrontend restart
 EOF
 
 cd -
