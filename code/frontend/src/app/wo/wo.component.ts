@@ -24,7 +24,7 @@ export class WoComponent implements OnInit {
     /* edit */
     editedOrder:Order;
     newOrder:boolean;
-    isNewOrderOwner:boolean
+    isNewOrderOwner:boolean;
     displayEditDialog:boolean;
     displayAssignDialog:boolean;
     displayDetailsDialog: boolean;
