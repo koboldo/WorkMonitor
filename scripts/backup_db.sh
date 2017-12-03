@@ -47,12 +47,14 @@ rm -f /tmp/$BASE_FILE
 	exit 3
 }
 
-tar -xjf $TARGET_DIR/$LASTEST_ARCHIVE -C /tmp $BASE_FILE
-SIZE_OUT=$(stat --printf="%s" /tmp/$BASE_FILE)
+[[ "$LASTEST_ARCHIVE" != "" ]] && {
+	tar -xjf $TARGET_DIR/$LASTEST_ARCHIVE -C /tmp $BASE_FILE
+	SIZE_OUT=$(stat --printf="%s" /tmp/$BASE_FILE)
 
-(( SIZE_OUT > SIZE_IN )) && {
-	echo "Current source file smaller then previous one! Aborting ..."
-	exit 4
+	(( SIZE_OUT > SIZE_IN )) && {
+		echo "Current source file smaller then previous one! Aborting ..."
+		exit 4
+	}
 }
 
 echo "Removing old backups:"

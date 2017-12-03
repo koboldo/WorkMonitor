@@ -63,7 +63,7 @@ var auth = {
                 var token = jwt.sign(
                                 {email:userRow.EMAIL, id: userRow.ID, role: userRow.ROLE_CODE},
                                 conf.secret,
-                                { expiresIn: 60 * 10 });
+                                { expiresIn: 60 * parseInt(conf.session.timeout) });
                 if(logger.isDebugEnabled()) logger.debug('authentication token ' + token);
                 res.json({email: userRow.EMAIL, id: userRow.ID, token: token, firstName: userRow.FIRST_NAME, lastName: userRow.LAST_NAME, roleCode: userRow.ROLE_CODE, officeCode: userRow.OFFICE_CODE});
             }
