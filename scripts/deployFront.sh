@@ -24,11 +24,7 @@ ssh botconsole@jdmiddleware.pl << EOF
 EOF
 
 ssh root@jdmiddleware.pl << EOF
-  echo ==================
-  echo service nginx restart
-  echo ==================
-  
-  sudo service nginx restart
+  service nginx restart
 EOF
 
 cd -
