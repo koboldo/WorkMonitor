@@ -1,11 +1,14 @@
 {
-    "secret" :"thisIsVerySecretPhrase",
+    "session": {
+		"timeout": "30"
+	},
+	"secret" :"thisIsVerySecretPhrase",
     "smtp": {
-        "host": "smtp.gmail.com",
+        "host": "poczta.int.pl",
         "port": "465",
         "secure": "true",
-        "username": "bot.mailer.srv@gmail.com",
-        "password": "xxxxx",
-        "from": "koboldo@gmail.com"
+        "username": "xxxxxx",
+        "password": "xxxxxx",
+        "from": "koboldo@int.pl"
     }
 }
