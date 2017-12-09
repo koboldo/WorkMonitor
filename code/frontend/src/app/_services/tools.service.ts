@@ -69,6 +69,73 @@ export class ToolsService {
         }
     }
 
+    public getOrderColor(typeCode :string) :string {
+
+        if (typeCode === "OT")
+            return "grey";
+        else if (typeCode.startsWith("0."))
+            return "#d1e0e0";
+        else if (typeCode.startsWith("1."))
+            return "#ffffcc";
+        else if (typeCode.startsWith("2."))
+            return "yellow";
+        else if (typeCode.startsWith("3."))
+            return "orange";
+        else if (typeCode.startsWith("4."))
+            return "#b3ffff";
+        else if (typeCode.startsWith("5."))
+            return "#99ddff";
+        else if (typeCode.startsWith("6."))
+            return "#b3ffff";
+        else if (typeCode.startsWith("7."))
+            return "#0066ff";
+        else if (typeCode.startsWith("8."))
+            return "#ffccff";
+        else if (typeCode.startsWith("9."))
+            return "#d9b3ff";
+        else if (typeCode.startsWith("10."))
+            return "#800080";
+        else if (typeCode.startsWith("11."))
+            return "#88cc00";
+
+        console.log("Return default color for "+typeCode+"!");
+
+        return "black";
+
+    }
+
+    /*
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","OP","Otwarte");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AS","Przypisane");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CO","Zakończone");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","IS","Wydane");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AC","Zaakceptowane");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CL","Zamknięte");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","SU","Zawieszone");
+     */
+
+    public getStatusIcon(statusCode: string) {
+        if (statusCode === "OP")
+            return "fa fa-battery-0";
+        else if (statusCode === "AS")
+            return "fa fa-user";
+        else if (statusCode === "CO")
+            return "fa fa-battery-1";
+        else if (statusCode === "IS")
+            return "fa fa-battery-2";
+        else if (statusCode === "AC")
+            return "fa fa-battery-3";
+        /*else if (statusCode === "CL")
+            return "fa fa-battery-4";*/
+        else if (statusCode === "CL")
+            return "fa fa-object-ungroup";
+        else if (statusCode === "SU")
+            return "fa fa-ban";
+
+        console.log("Return default status icon for "+statusCode+"!");
+        return "fa fa-trash-o";
+    }
+
     // private helper methods
 
 }

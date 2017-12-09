@@ -31,6 +31,7 @@ import 'chart.js/dist/Chart.min.js';
 import { ProgressComponent } from './progress/progress.component';
 import { UserResetPasswordComponent } from './user-reset-password/user-reset-password.component';
 import { WoDetailsComponent } from './wo-details/wo-details.component';
+import { StatusDetailsComponent } from './status-details/status-details.component';
 
 @NgModule({
     imports: [
@@ -59,7 +60,8 @@ import { WoDetailsComponent } from './wo-details/wo-details.component';
         WoClearingComponent,
         ProgressComponent,
         UserResetPasswordComponent,
-        WoDetailsComponent
+        WoDetailsComponent,
+        StatusDetailsComponent
     ],
     providers: [
         AuthGuard,
