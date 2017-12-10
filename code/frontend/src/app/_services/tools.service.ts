@@ -76,7 +76,7 @@ export class ToolsService {
         else if (typeCode.startsWith("0."))
             return "#d1e0e0";
         else if (typeCode.startsWith("1."))
-            return "#ffffcc";
+            return "#ffffaa";
         else if (typeCode.startsWith("2."))
             return "yellow";
         else if (typeCode.startsWith("3."))
@@ -84,9 +84,9 @@ export class ToolsService {
         else if (typeCode.startsWith("4."))
             return "#b3ffff";
         else if (typeCode.startsWith("5."))
-            return "#99ddff";
+            return "#66a3ff";
         else if (typeCode.startsWith("6."))
-            return "#b3ffff";
+            return "#00cccc";
         else if (typeCode.startsWith("7."))
             return "#0066ff";
         else if (typeCode.startsWith("8."))
@@ -116,19 +116,19 @@ export class ToolsService {
 
     public getStatusIcon(statusCode: string) {
         if (statusCode === "OP")
-            return "fa fa-battery-0";
+            return "fa fa-keyboard-o";
         else if (statusCode === "AS")
             return "fa fa-user";
         else if (statusCode === "CO")
-            return "fa fa-battery-1";
+            return "fa fa-child";
         else if (statusCode === "IS")
-            return "fa fa-battery-2";
+            return "fa fa-paperclip";
         else if (statusCode === "AC")
-            return "fa fa-battery-3";
+            return "fa fa-envelope-open-o";
         /*else if (statusCode === "CL")
             return "fa fa-battery-4";*/
         else if (statusCode === "CL")
-            return "fa fa-object-ungroup";
+            return "fa fa-envelope-o";
         else if (statusCode === "SU")
             return "fa fa-ban";
 

@@ -11,7 +11,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 })
 export class StatusDetailsComponent implements OnInit {
 
-  constructor(private toolsService: ToolsService) { }
+  constructor(private toolsService: ToolsService, public dictService: DictService) { }
 
   ngOnInit() {
   }

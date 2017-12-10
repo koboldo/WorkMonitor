@@ -53,15 +53,15 @@
       <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
 
-      <p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
-      <p-column [sortable]="true" field="statusCode" header="Status" >
+      <p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column><!-- search -->
+      <p-column [sortable]="true" field="statusCode" header="Status" [style]="{'width':'135px'}">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="type" header="typeSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
+      <p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}"></p-column><!-- search -->
       <p-column [sortable]="true" field="typeCode" header="Typ">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
@@ -69,22 +69,22 @@
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
+      <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
+      <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}"></p-column>
 
       <p-column [sortable]="true" field="comment" header="Komentarz" hidden="true"></p-column>
       <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
 
       <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
       <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
-      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Utworzenie"></p-column>
+      <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}"></p-column>
+      <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}"></p-column>
 
       <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
       <!-- search by invisible colums flatten into order by wo.service -->
