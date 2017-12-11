@@ -6,8 +6,8 @@ var fs = require('fs');
 var dbUtil = require('./api/db/db_util');
 
 
-var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\Zeszyt4.csv';
-var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zeszyt.sql';
+var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.csv';
+var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.sql';
 
 // var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.csv';
 // var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.sql';
@@ -15,6 +15,7 @@ var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zeszyt.sql';
 var fieldMap = [
     { sourceName: 'FIRST_NAME', targetName: 'FIRST_NAME', mod: null },
     { sourceName: 'LAST_NAME', targetName: 'LAST_NAME', mod: null },
+    { sourceName: 'INITIALS', targetName: 'INITIALS', mod: null },
     { sourceName: 'EMAIL', targetName: 'EMAIL', mod: mapEmail },
     { sourceName: 'LAST_NAME', targetName: 'LAST_NAME', mod: null },
     { sourceName: 'OFFICE', targetName: 'OFFICE_CODE', mod: mapOffice },
@@ -24,14 +25,14 @@ var fieldMap = [
     { sourceName: 'ADDRESS_STREET', targetName: 'ADDRESS_STREET', mod: null },
     { sourceName: 'ADDRESS_POST', targetName: 'ADDRESS_POST', mod: null },
     { sourceName: 'ACCOUNT', targetName: 'ACCOUNT', mod: null },
-    { sourceName: 'PROJECT_FACTOR', targetName: 'PROJECT_FACTOR', mod: null },
+    { sourceName: 'PROJECT_FACTOR', targetName: 'PROJECT_FACTOR', mod: convertFactor },
     { sourceName: 'IS_ACTIVE', targetName: 'IS_ACTIVE', mod: mapIsActive },
     { sourceName: 'IS_ACTIVE', targetName: 'PASSWORD', mod: mapPassword },
 ];
 
 function mapEmail(record) {
     if(record.EMAIL != null && record.EMAIL != '') return record.EMAIL;
-    else return 'fake.' + record.FIRST_NAME + '.' + record.LAST_NAME + '@botproject.pl';
+    else return 'fake.' + record.FIRST_NAME.trim() + '.' + record.LAST_NAME.trim() + '@botproject.pl';
 };
 
 function mapRole(record) {
@@ -56,6 +57,10 @@ function mapIsActive(record){
 function mapPassword(record) {
     return 'thisIsIt';
 };
+
+function convertFactor(record) {
+    return (record.PROJECT_FACTOR != '') ? parseFloat(record.PROJECT_FACTOR.replace(',','.')) : 0;
+}
 
 var officeMap = [ 
     { office: 'Warszawa', code: 'WAW' },
@@ -96,22 +101,17 @@ fs.readFile(inFilename, 'utf8', (err,data) => {
 
         var sqls = [];
         // var db = dbUtil.getDatabase();
+        console.log('records ' + records.length);
         for(var i = 0; i < records.length; i++) {
             if(records[i].LAST_NAME == null || records[i].LAST_NAME == '') continue;
             // console.log(JSON.stringify(records[i]));
             var nrec = mapRecord(records[i]);
-           
-            // console.log(JSON.stringify(nrec));
-            
-            // dbUtil.performInsert(nrec, 'PERSON', null, (err, newId) => {
-            //     if(err) console.log(err);
-            //     else console.log('new id ' + newId);
-            // });
+
             var sql = dbUtil.prepareInsert(nrec, 'PERSON');
             sqls.push(sql);
         }
 
-        fs.writeFile(outFilename, sqls.join(';\n'), (err) => {  
+        fs.writeFile(outFilename, sqls.join(';\n')+';', (err) => {  
             if(err) {
                 console.log('writign failed');
                 return console.log(err);           

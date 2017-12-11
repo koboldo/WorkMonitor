@@ -71,7 +71,7 @@ var auth = {
     },
     
     validateToken: function(req, res, next) {
-        logger.info('validating ' + req.path);
+        if(logger.isDebugEnabled()) logger.debug('validating ' + req.path);
         var token = req.body.token || req.query.token || req.headers['x-access-token'];
         
         if(token) {

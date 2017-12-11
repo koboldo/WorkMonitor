@@ -4,7 +4,7 @@
   "description": "App for monitoring of work progress.",
   "main": "app.js",
   "scripts": {
-	"pmstart": "pm2 start app.js --name work_monitor",
+    "pmstart": "pm2 start app.js --name work_monitor",
     "start": "node app.js",
     "deploy": "gcloud app deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,5 +23,9 @@
     "sha1": "^1.1.1",
     "sprintf-js": "^1.1.1",
     "sqlite3": "^3.1.8"
+  },
+  "devDependencies": {
+    "csv-parse": "^2.0.0",
+    "xml2js": "^0.4.19"
   }
 }
