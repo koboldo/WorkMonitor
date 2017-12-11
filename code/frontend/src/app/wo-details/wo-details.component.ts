@@ -12,7 +12,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 })
 export class WoDetailsComponent implements OnInit {
 
-    constructor() {
+    constructor(private toolsService: ToolsService) {
     }
 
     ngOnInit() {
@@ -20,6 +20,12 @@ export class WoDetailsComponent implements OnInit {
 
     @Input() selectedOrder: Order;
 
+    public getColor() :string {
+        return this.toolsService.getOrderColor(this.selectedOrder.typeCode);
+    }
 
+    public getStatusIcon(): string {
+        return this.toolsService.getStatusIcon(this.selectedOrder.statusCode);
+    }
 
 }

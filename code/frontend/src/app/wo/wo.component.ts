@@ -260,7 +260,7 @@ export class WoComponent implements OnInit {
 
     add() {
 
-        this.editedOrder = new Order(null, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
+        this.editedOrder = new Order("XXXXX", "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
         this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
 
         this.relatedItem = <RelatedItem> {};
@@ -425,6 +425,7 @@ export class WoComponent implements OnInit {
             if (item && item.itemNo) this.alertService.success("Pomyślnie zaktualizowano obiekt: " + item.itemNo);
         }
     }
+
 
 }
 

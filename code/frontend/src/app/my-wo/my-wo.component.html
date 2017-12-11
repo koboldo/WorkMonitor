@@ -11,8 +11,23 @@
         </div>
       </p-header>
       <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
-      <p-column [sortable]="true" field="status" header="Status" ></p-column>
-      <p-column [sortable]="true" field="type" header="Typ" ></p-column>
+
+      <p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
+      <p-column [sortable]="true" field="statusCode" header="Status" >
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
+          <span style="padding: 3px">{{order.status}}</span>
+        </ng-template>
+      </p-column>
+
+      <p-column [sortable]="true" field="type" header="typeSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
+      <p-column [sortable]="true" field="typeCode" header="Typ">
+        <ng-template let-col let-order="rowData" pTemplate="body">
+          <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px">{{order.type}}</span>
+        </ng-template>
+      </p-column>
+
       <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>

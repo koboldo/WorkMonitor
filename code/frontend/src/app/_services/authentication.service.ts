@@ -75,7 +75,7 @@ export class AuthenticationService {
             {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
             {label: 'Kierownica', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
-            {label: 'Protokół', icon: 'fa-object-ungroup', routerLink: ['/clearing'], "rolesRequired":["PR"]},
+            {label: 'Protokół', icon: 'fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR"]},
             {label: 'WO do akceptacji', icon: 'fa-exchange', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]},
             {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
             {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},

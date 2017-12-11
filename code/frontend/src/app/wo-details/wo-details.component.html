@@ -10,13 +10,43 @@
         </div>
           <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
 
-          <div class="ui-grid-row" *ngIf="selectedOrder?.type">
-              <div class="ui-grid-col-4">Typ:</div><div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.type}}</span></div>
+          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
+              <div class="ui-grid-col-4">Typ:</div>
+              <div class="ui-grid-col-8">
+                  <span [style.color]="getColor()" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                  <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
+              </div>
           </div>
-          <div class="ui-grid-row" *ngIf="selectedOrder?.complexity">
-              <div class="ui-grid-col-4">Złożoność:</div><div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.complexity}}</span></div>
+          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
+              <div class="ui-grid-col-4">Złożoność:</div>
+              <div class="ui-grid-col-8">
+                  <span class="ui-inputgroup-addon"><i [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                  <span style="padding: 3px; font-style: italic;">{{selectedOrder?.complexity}}</span>
+              </div>
           </div>
-          <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity">
+          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+              <div class="ui-grid-col-4">Status:</div>
+              <div class="ui-grid-col-8">
+                <span class="ui-inputgroup-addon"><i [class]="getStatusIcon()"></i></span>
+                <span style="padding: 3px; font-style: italic;">{{selectedOrder?.status}}</span>
+              </div>
+          </div>
+
+          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+              <div class="ui-grid-col-4">Wartość zamówienia:</div>
+              <div class="ui-grid-col-8">
+                  <span style="font-style: italic;">{{selectedOrder?.price}} PLN</span>
+              </div>
+          </div>
+
+          <div class="ui-grid-row" *ngIf="selectedOrder?.status">
+              <div class="ui-grid-col-4">Numer protokołu:</div>
+              <div class="ui-grid-col-8">
+                  <span style="font-style: italic;">{{selectedOrder?.protocolNo}} PLN</span>
+              </div>
+          </div>
+
+          <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
 
         <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row"><strong>Wykonawcy</strong></div>
         <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
