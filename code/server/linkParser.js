@@ -3,7 +3,6 @@
 
 const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
-const dbUtil = require('./api/db/db_util');
 
 let inFilename = 'C:/MyArea/work/WorkMonitor/data/2017_RAPORT_1.csv';
 let outFilename = 'C:/MyArea/work/WorkMonitor/data/2017_RAPORT_1.sql';
@@ -29,25 +28,25 @@ let nameReplace = [
 ];
 
 
-function formatInsert(object, tableName, mappings) {
-    let sqlCols = '';
-    let sqlVals = '';
-    for(let col in object) {
+// function formatInsert(object, tableName, mappings) {
+//     let sqlCols = '';
+//     let sqlVals = '';
+//     for(let col in object) {
 
-        if(sqlCols.length > 0) sqlCols += ', ';
-        if(sqlVals.length > 0) sqlVals += ', ';
-        sqlCols +=  col;
+//         if(sqlCols.length > 0) sqlCols += ', ';
+//         if(sqlVals.length > 0) sqlVals += ', ';
+//         sqlCols +=  col;
 
-        let mapping = mappings.filter((mapping)=>{ 
-                return (mapping.targetName == col); 
-            })[0];
-        if(mapping && mapping.format) sqlVals += mapping.format(object[col], object);
-        else sqlVals += '"' + object[col] + '"';
-    }
+//         let mapping = mappings.filter((mapping)=>{ 
+//                 return (mapping.targetName == col); 
+//             })[0];
+//         if(mapping && mapping.format) sqlVals += mapping.format(object[col], object);
+//         else sqlVals += '"' + object[col] + '"';
+//     }
 
-    let insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
-    return insertStr;
-}
+//     let insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+//     return insertStr;
+// }
 
 function toTitleCase(record) {
     let person = record.PERSON.trim();
@@ -92,13 +91,34 @@ function formatLinks() {
         let PRICE = link.PRICE;
         let HANDOVER = link.HANDOVER;
 
+        sqls.push( `INSERT INTO PERSON_WO (PERSON_ID, WO_ID, CREATED)
+        SELECT (
+            SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
+        ),(
+            SELECT ID FROM WORK_ORDER 
+            WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
+                AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1  
+                AND ( ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7
+                OR ABS(CREATED - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7 )
+        ), STRFTIME("%s","now")
+        WHERE
+            EXISTS(
+                SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
+            ) AND
+            EXISTS(
+                SELECT ID FROM WORK_ORDER 
+                WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
+                AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1 AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7    
+            )`);
+
+
         // sqls.push( `INSERT INTO PERSON_WO (PERSON_ID, WO_ID, CREATED)
         // SELECT (
         //     SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
         // ),(
         //     SELECT ID FROM WORK_ORDER 
         //     WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-        //         AND PRICE = ${PRICE} AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) < 432000
+        //         AND TOTAL_PRICE = ${PRICE} AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7
         // ), STRFTIME("%s","now")
         // WHERE
         //     EXISTS(
@@ -107,23 +127,45 @@ function formatLinks() {
         //     EXISTS(
         //         SELECT ID FROM WORK_ORDER 
         //         WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-        //         AND PRICE = ${PRICE} AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) < 432000    
+        //         AND TOTAL_PRICE = ${PRICE} AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7    
         //     )`);
 
         sqls.push(`INSERT INTO IMPORT_LOG (TXT)
-        SELECT "CANNOT IMPORT " ||  "${PERSON}" || " " || "${ITEM_NO}" || " " || "${PRICE}" || " " || "${HANDOVER}" || " NO PERSON"
-        WHERE
-            NOT EXISTS(
-                SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
-            )`);
+            SELECT "NO PERSON;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
+            WHERE
+                NOT EXISTS(
+                    SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
+                )`);
+
         sqls.push(`INSERT INTO IMPORT_LOG (TXT)
-            SELECT "CANNOT IMPORT " ||  "${PERSON}" || " " || "${ITEM_NO}" || " " || "${PRICE}" || " " || "${HANDOVER}" || " NO WO"
+            SELECT "NO WO WITH GIVEN DATE;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
             WHERE
                 NOT EXISTS(
                     SELECT ID FROM WORK_ORDER 
                     WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                    AND PRICE = ${PRICE} AND ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) < 432000    
+                    AND ( ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7
+                        OR ABS(CREATED - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7 )
                 )`);
+
+        sqls.push(`INSERT INTO IMPORT_LOG (TXT)
+                SELECT "PRICE DIFFERENCE LESS THAN 10%;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
+                WHERE
+                    EXISTS(
+                        SELECT ID FROM WORK_ORDER 
+                        WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
+                        AND ( ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7
+                            OR ABS(CREATED - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7 )
+                            AND TOTAL_PRICE <> ${PRICE} AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1 )`);
+
+        sqls.push(`INSERT INTO IMPORT_LOG (TXT)
+                SELECT "PRICE DIFFERENCE MORE THAN 10%;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
+                WHERE
+                    EXISTS(
+                        SELECT ID FROM WORK_ORDER 
+                        WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
+                        AND ( ABS(LAST_MOD - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7
+                            OR ABS(CREATED - STRFTIME("%s","${HANDOVER}") ) <= 60 * 60 * 24 * 7 )
+                            AND TOTAL_PRICE <> ${PRICE} AND ABS(TOTAL_PRICE - ${PRICE}) > TOTAL_PRICE * 0.1 )`);                            
     });
 }
 
@@ -131,6 +173,9 @@ let links = [];
 let sqls = [];
 
 function main(inFile,outFile) {
+    links.length = 0;
+    sqls.length = 0;
+    
     try {
         let fileData = fs.readFileSync(inFile, 'utf8');
         let csvs = parse(fileData,{columns: true, delimiter: ';'});

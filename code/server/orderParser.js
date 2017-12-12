@@ -13,7 +13,7 @@ let outFilename = 'C:/MyArea/work/WorkMonitor/data/WO_WAR_LUKASZ.sql';
 let orderMappings = [
     { sourceName: 'WORK_NO', targetName: 'WORK_NO' },
     { sourceName: 'PROTOCOL_NO', targetName: 'PROTOCOL_NO' },
-    { sourceName: 'PRICE', targetName: 'PRICE'},
+    { sourceName: 'PRICE', targetName: 'TOTAL_PRICE' },
     { sourceName: 'CREATED', targetName: 'CREATED', format: wrapDateInFunction },
     { sourceName: 'LAST_MOD', targetName: 'LAST_MOD', mod: checkClosedDate, format: wrapDateInFunction },
     { sourceName: 'ITEM_NO', targetName: 'ITEM_ID', format: formatSelectForItem },
@@ -120,6 +120,7 @@ function mapRecord(oldRecord) {
     let newRecords = getNewRecords(oldRecord);
     newRecords.forEach((newRecord)=>{
         orderMappings.forEach((field)=>{
+            if(newRecord[field.targetName]) return;
             if(field.mod) {
                 newRecord[field.targetName] = field.mod(oldRecord);
             }
@@ -141,29 +142,54 @@ function getNewRecords(oldRecord) {
 
                 if(pricePointingToType >= 600) {
                     pricePointingToType -= 600;
-                    records.push({TYPE_CODE: '1.1'});
+                    records.push({TYPE_CODE: '1.1', PRICE: 600});
                 }
                 if(pricePointingToType >= 300) {
                     pricePointingToType -= 300;
-                    records.push({TYPE_CODE: '1.2'});
+                    records.push({TYPE_CODE: '1.2', PRICE: 300});
                 }
                 if(pricePointingToType >= 150) {
                     pricePointingToType -= 150;
-                    records.push({TYPE_CODE: '1.3'});
+                    records.push({TYPE_CODE: '1.3', PRICE: 150});
                 }
 
                 if(pricePointingToType > 50) console.log('Something is wrong with price and type for WO ' + oldRecord.WORK_NO);
             } else {
-                records.push({TYPE_CODE: code});
+                let priceElement = priceList.filter((price)=>{ 
+                    return (price.code == code); 
+                })[0];
+                let price = parseFloat(oldRecord[code]) * priceElement.value; 
+                records.push({TYPE_CODE: code, PRICE: price});
             }
         }
     });
     return records;
 }
 
+function loadFactorsToList(record) {
+    typeCodes.forEach((code)=>{
+        let price = {};
+        price.code = code;
+        price.factor = parseFloat(record[code]);
+        priceList.push(price);
+    });
+}
+
+function loadPricesToList(record) {
+    typeCodes.forEach((code)=>{
+        let price = priceList.filter((price)=>{ 
+                        return (price.code == code); 
+                    })[0];
+        price.value = parseInt(record[code]);
+    });
+}
+
 function handleParsingResult(records) {
     for(let idx in records) {
-        if(idx < 15 || records[idx].WORK_NO == null || records[idx].WORK_NO == '') continue;
+        if(idx == 11) loadFactorsToList(records[idx]);
+        if(idx == 12) loadPricesToList(records[idx]);
+
+        if(idx < 14 || records[idx].WORK_NO == null || records[idx].WORK_NO == '') continue;
         mapRecord(records[idx]);
     }
 
@@ -184,6 +210,7 @@ function formatOrders() {
 let orders = [];
 let itemsMap = new Map();
 let sqls = [];
+let priceList = [];
 
 function main() {
     try {
