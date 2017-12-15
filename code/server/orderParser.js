@@ -3,7 +3,7 @@
 
 const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
-const dbUtil = require('./api/db/db_util');
+// const dbUtil = require('./api/db/db_util');
 
 
 let inFilename = 'C:/MyArea/work/WorkMonitor/data/WO_WAR_LUKASZ.csv';
@@ -12,7 +12,7 @@ let outFilename = 'C:/MyArea/work/WorkMonitor/data/WO_WAR_LUKASZ.sql';
 //{ sourceName: 'SOURCE_COLUMN', targetName: 'TARGET_COLUMN', mod: MODIFIER_FUNCTION, format: FORMAT_FUNCTION },
 let orderMappings = [
     { sourceName: 'WORK_NO', targetName: 'WORK_NO' },
-    { sourceName: 'PROTOCOL_NO', targetName: 'PROTOCOL_NO' },
+    { sourceName: 'PROTOCOL_NO', targetName: 'PROTOCOL_NO', mod: prepareProtocol },
     { sourceName: 'PRICE', targetName: 'TOTAL_PRICE' },
     { sourceName: 'CREATED', targetName: 'CREATED', format: wrapDateInFunction },
     { sourceName: 'LAST_MOD', targetName: 'LAST_MOD', mod: checkClosedDate, format: wrapDateInFunction },
@@ -59,6 +59,13 @@ function prepareItemDescription(record) {
     return record.COMMENT_2.replace(/"/g, '\'');
 }
 
+function prepareProtocol(record) {
+    if(/^[abc]\)/.test(record.PROTOCOL_NO) ) return null;
+    if(/^[0-9]{1,2}.[0-9]{1,2}.[0-9]{4}/.test(record.PROTOCOL_NO) ) return null;
+    if(/^[0-9]{4}.[0-9]{1,2}.[0-9]{1,2}/.test(record.PROTOCOL_NO) ) return null;
+    return record.PROTOCOL_NO;
+}
+
 function prepareItemAddress(record) {
     return record.ADDRESS.replace(/"/g, '\'');
 }
@@ -76,14 +83,19 @@ function decodeStatus(record) {
     //WYDANY
     if(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(status) || status.startsWith('a)')) return 'IS';
 
+    ///ZAMKNIETY
+    if(status != '' && !status.startsWith('b)')) return 'CL';
+    
     //ZAAKCEPTOWANY
     if(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(record.LAST_MOD.trim())) return 'AC';
 
     //PRZYPISANY -> ZAMKNIETY
-    if(record.TSSR != '') return 'CO';
+    if(record.TSSR != '') return 'AS';
 
     //OTWARTY 
     return 'OP';
+
+
 }
 
 function formatInsert(object, tableName, mappings) {
@@ -122,7 +134,8 @@ function mapRecord(oldRecord) {
         orderMappings.forEach((field)=>{
             if(newRecord[field.targetName]) return;
             if(field.mod) {
-                newRecord[field.targetName] = field.mod(oldRecord);
+                let newValue = field.mod(oldRecord);
+                if(newValue != null) newRecord[field.targetName] = newValue;
             }
             else if(oldRecord[field.sourceName] != null && oldRecord[field.sourceName] != '' ) newRecord[field.targetName] = oldRecord[field.sourceName].trim();
         });
@@ -158,7 +171,7 @@ function getNewRecords(oldRecord) {
                 let priceElement = priceList.filter((price)=>{ 
                     return (price.code == code); 
                 })[0];
-                let price = parseFloat(oldRecord[code]) * priceElement.value; 
+                let price = parseFloat(oldRecord[code].replace(',','.')) * priceElement.value; 
                 records.push({TYPE_CODE: code, PRICE: price});
             }
         }
@@ -170,7 +183,7 @@ function loadFactorsToList(record) {
     typeCodes.forEach((code)=>{
         let price = {};
         price.code = code;
-        price.factor = parseFloat(record[code]);
+        price.factor = parseFloat(record[code].replace(',','.'));
         priceList.push(price);
     });
 }
@@ -189,7 +202,8 @@ function handleParsingResult(records) {
         if(idx == 11) loadFactorsToList(records[idx]);
         if(idx == 12) loadPricesToList(records[idx]);
 
-        if(idx < 14 || records[idx].WORK_NO == null || records[idx].WORK_NO == '') continue;
+        // if(idx < 14 || records[idx].WORK_NO == null || records[idx].WORK_NO == '') continue;
+        if(idx < 14 || !/^[0-9_]+$/.test(records[idx].WORK_NO)) continue;
         mapRecord(records[idx]);
     }
 

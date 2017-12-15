@@ -1,10 +1,10 @@
 #!/bin/bash
 set -x 
 # SET DIR FOR IMPORT DATA
-# DATA_DIR=../../data
-# DB_DIR=../env_specific
-DATA_DIR=/home/botconsole/data
-DB_DIR=/home/botconsole/env_specific
+DATA_DIR=../../data
+DB_DIR=../env_specific
+# DATA_DIR=/home/botconsole/data
+# DB_DIR=/home/botconsole/env_specific
 
 sqlite3 -init setup_db.sql $DB_DIR/work-monitor.db ".exit"
 sqlite3 -init initdata.sql $DB_DIR/work-monitor.db ".exit"

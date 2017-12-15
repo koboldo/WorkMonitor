@@ -9,8 +9,8 @@ var dbUtil = require('./api/db/db_util');
 var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.csv';
 var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.sql';
 
-// var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.csv';
-// var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.sql';
+var inFilename2 = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.csv';
+var outFilename2 = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.sql';
 
 var fieldMap = [
     { sourceName: 'FIRST_NAME', targetName: 'FIRST_NAME', mod: null },
@@ -25,6 +25,7 @@ var fieldMap = [
     { sourceName: 'ADDRESS_STREET', targetName: 'ADDRESS_STREET', mod: null },
     { sourceName: 'ADDRESS_POST', targetName: 'ADDRESS_POST', mod: null },
     { sourceName: 'ACCOUNT', targetName: 'ACCOUNT', mod: null },
+    { sourceName: 'COMPANY', targetName: 'COMPANY', mod: null },
     { sourceName: 'PROJECT_FACTOR', targetName: 'PROJECT_FACTOR', mod: convertFactor },
     { sourceName: 'IS_ACTIVE', targetName: 'IS_ACTIVE', mod: mapIsActive },
     { sourceName: 'IS_ACTIVE', targetName: 'PASSWORD', mod: mapPassword },
@@ -87,38 +88,41 @@ var mapRecord = (oldRecord) => {
     return newRecord;
 };
 
-fs.readFile(inFilename, 'utf8', (err,data) => {
-    if (err) {
-        console.log('parsing failed');
-        return console.log(err);
-    }
-
-    parse(data, {columns: true, delimiter: ';'},(err,records)=>{
-        if(err) {
+function main(inFile, outFile) {
+    fs.readFile(inFile, 'utf8', (err,data) => {
+        if (err) {
             console.log('parsing failed');
-            return console.log(err);           
+            return console.log(err);
         }
 
-        var sqls = [];
-        // var db = dbUtil.getDatabase();
-        console.log('records ' + records.length);
-        for(var i = 0; i < records.length; i++) {
-            if(records[i].LAST_NAME == null || records[i].LAST_NAME == '') continue;
-            // console.log(JSON.stringify(records[i]));
-            var nrec = mapRecord(records[i]);
-
-            var sql = dbUtil.prepareInsert(nrec, 'PERSON');
-            sqls.push(sql);
-        }
-
-        fs.writeFile(outFilename, sqls.join(';\n')+';', (err) => {  
+        parse(data, {columns: true, delimiter: ';'},(err,records)=>{
             if(err) {
-                console.log('writign failed');
+                console.log('parsing failed');
                 return console.log(err);           
             }
-            console.log('sqls saved');
+
+            var sqls = [];
+            // var db = dbUtil.getDatabase();
+            console.log('records ' + records.length);
+            for(var i = 0; i < records.length; i++) {
+                if(records[i].LAST_NAME == null || records[i].LAST_NAME == '') continue;
+                // console.log(JSON.stringify(records[i]));
+                var nrec = mapRecord(records[i]);
+
+                var sql = dbUtil.prepareInsert(nrec, 'PERSON');
+                sqls.push(sql);
+            }
+
+            fs.writeFile(outFile, sqls.join(';\n')+';', (err) => {  
+                if(err) {
+                    console.log('writign failed');
+                    return console.log(err);           
+                }
+                console.log('sqls saved');
+            });
         });
     });
-  });
+}
 
-
+main(inFilename,outFilename);
+main(inFilename2,outFilename2);
