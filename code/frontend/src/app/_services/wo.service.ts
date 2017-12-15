@@ -18,11 +18,13 @@ export class WOService {
         this.dictService.init();
     }
 
+    /* ambigous since 12.2017
     getOrdersByWorkNo(workNo: string):Observable<Order> {
 
         return this.http.get('/api/v1/orders/external/'+workNo)
             .map((response: Response) => this.getWorkOrder(<Order> response.json()))
     }
+    */
 
     getOrdersByStatus(status: string):Observable<Order[]> {
 
@@ -48,7 +50,7 @@ export class WOService {
             .mergeMap(updatedId => this.getOrderById(order.id));
     }
 
-    private getOrderById(id:number):Observable<Order> {
+    getOrderById(id:number):Observable<Order> {
         return this.http.get('/api/v1/orders/'+id)
             .map((response: Response) => this.getWorkOrder(response.json()));
     }

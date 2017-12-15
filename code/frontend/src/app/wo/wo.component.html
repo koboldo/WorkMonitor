@@ -195,7 +195,7 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="itemNo">Numer obiektu</label></div>
         <div class="ui-grid-col-8">
-          <p-autoComplete placeholder="Numer obiektu np. stacji/kandydata" pTooltip="Uzupełnij nowy obiekt lub wybierz istniejący z listy i ew. modyfikuj. Możesz też przypisać później/Możesz zmienić później" id="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onBlur)="updateRelatedItem($event.target.value)" (onKeyUp)="updateRelatedItem($event.target.value)" (onFocus)="copyRelatedItem($event.target.value)" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" [forceSelection]="false"></p-autoComplete>
+              <p-autoComplete placeholder="Numer obiektu np. stacji/kandydata" id="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onBlur)="updateRelatedItem($event.target.value)" (onKeyUp)="updateRelatedItem($event.target.value)" (onFocus)="copyRelatedItem($event.target.value)" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" [forceSelection]="false" pTooltip="Uzupełnij nowy obiekt lub wybierz istniejący z listy. Obiekt wybrany z listy można zmodyfikowac/uzupełnić, co bedzie miało wpływ na inne WO powiązane z tym obiektem, ale po wybraniu z listy nie można już definiować nowego. Możesz też przypisać lub zmienić później tj. po utworzeniu WO." tooltipPosition="top"></p-autoComplete>
         </div>
       </div>
       <div *ngIf="relatedItem?.id && isRelatedItemChanged(relatedItem)" class="ui-grid-row" style="margin-top: 0px;" >
