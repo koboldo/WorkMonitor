@@ -92,7 +92,7 @@
 
 <!-- defaultDate="2017-11-01" -->
 
-<p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName +' ('+selectedReport?.timeUtilizationPercentage+')'" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="800">
+<p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName +' ('+selectedReport?.timeUtilizationPercentage+'%)'" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
         <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="4" [editable]="false" (onEventClick)="handleOrderClick($event)" [locale]="'pl'"></p-schedule>
     </div>
@@ -117,12 +117,15 @@
             </div>
 
         </p-fieldset>
-        <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedOrder">
-            <div class="ui-grid-row" style="margin-top: 10px;">
-                <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
-            </div>
-        </div>
+
     </div>
+
+    <div *ngIf="selectedOrder?.workNo" class="ui-grid ui-grid-responsive ui-fluid">
+
+        <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
+
+    </div>
+
 </p-dialog>
 
 

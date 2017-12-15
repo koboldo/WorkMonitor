@@ -78,12 +78,19 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 let event: any = {};
 
                 event.start = order.assignedDate;
+                event.orderId = order.id;
+                event.color = this.toolsService.getOrderColor(order.typeCode);
+
                 if (order.doneDate) {
                     event.title = order.workNo;
                     event.end = order.doneDate;
+                    event.borderColor = "green";
+                    event.textColor = "black";
                 } else {
-                    event.title = order.workNo+"?";
+                    event.title = order.workNo+"...";
                     event.end = this.future;
+                    event.borderColor = "orange";
+                    event.textColor = "#29293d";
                 }
 
                 console.log(event.title + "doneDate = "+order.doneDate + " => event.end = "+event.end +", event.start="+event.start);
@@ -99,11 +106,15 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     handleOrderClick(e: any) {
         console.log("order clicked :"+e.calEvent.title);
+        console.log("order clicked :"+e.calEvent.orderId);
+
         loop: for(let order of this.selectedReport.workOrders) {
             let title = e.calEvent.title;
-            let workNo = title.indexOf("?") > -1 ? title.substring(0, title.length-1) : title;
-            if (order.workNo === workNo) {
-                this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
+            //let workNo = title.indexOf("?") > -1 ? title.substring(0, title.length-1) : title;
+            let orderId = e.calEvent.orderId;
+            if (order.id === orderId) {
+                //ambigous since 12.2017 this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
+                this.woService.getOrderById(order.id).subscribe(order => this.showOrder(order));
                 break loop;
             }
         }
@@ -251,7 +262,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         } else if (utilization == 0) {
             this.setIcon(userData, "fa fa-exclamation", "darkred");
         } else if (utilization == this.holidays) {
-            this.setIcon(userData, "fa fa-hotel", "green");
+            this.setIcon(userData, "fa fa-hotel", "grey");
         } else if (utilization == this.noTimesheets) {
             this.setIcon(userData, "fa fa-question-circle", "darkgrey");
         }
