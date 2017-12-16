@@ -25,6 +25,8 @@ let nameReplace = [
     { src: 'mateusz prykiel', dest: 'mateusz prygiel'},
     { src: 'maja michalina ptaszek', dest: 'maja ptaszek'},
     { src: 'michał maciej dybowski', dest: 'michał dybowski'},
+    { src: 'kuba wojtaszczyk', dest: 'jakub wojtaszczyk'},
+    { src: 'kornel miczek', dest: 'korneliusz miczek'},
 ];
 
 
@@ -85,8 +87,7 @@ function handleParsingResult(records) {
 function formatLinks() {
     console.log('links length ' + links.length);
     links.forEach((link)=>{
-        // JUST TO COUNT THEM ALL
-        sqls.push(formatInsert(link,'LINK',linkMappings));
+        // sqls.push(formatInsert(link,'LINK',linkMappings));
         // sqls.push(JSON.stringify(link));
         let PERSON = link.PERSON;
         let ITEM_NO = link.ITEM_NO;
@@ -99,7 +100,7 @@ function formatLinks() {
         ),(
             SELECT ID FROM WORK_ORDER 
             WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1  
+                AND ABS(PRICE - ${PRICE}) <= PRICE * 0.15  
         ), STRFTIME("%s","now")
         WHERE
             EXISTS(
@@ -108,7 +109,7 @@ function formatLinks() {
             EXISTS(
                 SELECT ID FROM WORK_ORDER 
                 WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1 
+                AND ABS(PRICE - ${PRICE}) <= PRICE * 0.15 
             )`);
 
         // sqls.push( `INSERT INTO PERSON_WO (PERSON_ID, WO_ID, CREATED)
@@ -203,12 +204,12 @@ function formatLinks() {
         //             AND ABS(TOTAL_PRICE - ${PRICE}) <= TOTAL_PRICE * 0.1  
         //          )`);         
         sqls.push(`INSERT INTO IMPORT_LOG (TXT)
-                SELECT "PRICE DIFFERENCE MORE THAN 10%;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
+                SELECT "PRICE DIFFERENCE MORE THAN 15%;" ||  "${PERSON}" || ";" || "${ITEM_NO}" || ";" || "${PRICE}" || ";" || "${HANDOVER}"
                 WHERE
                     EXISTS(
                         SELECT ID FROM WORK_ORDER 
                         WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                            AND ABS(TOTAL_PRICE - ${PRICE}) > TOTAL_PRICE * 0.1  
+                            AND ABS(PRICE - ${PRICE}) > PRICE * 0.15  
                          )`);                            
 
     });

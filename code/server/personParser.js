@@ -6,7 +6,7 @@ var fs = require('fs');
 var dbUtil = require('./api/db/db_util');
 
 
-var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.csv';
+var inFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie_v2.csv';
 var outFilename = 'C:\\MyArea\\work\\WorkMonitor\\data\\ludzie.sql';
 
 var inFilename2 = 'C:\\MyArea\\work\\WorkMonitor\\data\\zlecajacy.csv';
@@ -67,6 +67,7 @@ var officeMap = [
     { office: 'Warszawa', code: 'WAW' },
     { office: 'Katowice', code: 'KAT' },
     { office: 'Poznań', code: 'WAW' }, 
+    { office: 'Gdańsk', code: 'GDA' }, 
 ]
 
 var roleMap = [

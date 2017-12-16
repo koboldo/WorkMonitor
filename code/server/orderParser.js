@@ -155,15 +155,15 @@ function getNewRecords(oldRecord) {
 
                 if(pricePointingToType >= 600) {
                     pricePointingToType -= 600;
-                    records.push({TYPE_CODE: '1.1', PRICE: 600});
+                    records.push({TYPE_CODE: '1.1', PRICE: Math.round(600*factor)});
                 }
                 if(pricePointingToType >= 300) {
                     pricePointingToType -= 300;
-                    records.push({TYPE_CODE: '1.2', PRICE: 300});
+                    records.push({TYPE_CODE: '1.2', PRICE: Math.round(300*factor)});
                 }
                 if(pricePointingToType >= 150) {
                     pricePointingToType -= 150;
-                    records.push({TYPE_CODE: '1.3', PRICE: 150});
+                    records.push({TYPE_CODE: '1.3', PRICE: Math.round(150*factor)});
                 }
 
                 if(pricePointingToType > 50) console.log('Something is wrong with price and type for WO ' + oldRecord.WORK_NO);
@@ -171,7 +171,7 @@ function getNewRecords(oldRecord) {
                 let priceElement = priceList.filter((price)=>{ 
                     return (price.code == code); 
                 })[0];
-                let price = parseFloat(oldRecord[code].replace(',','.')) * priceElement.value; 
+                let price = Math.round(parseFloat(oldRecord[code].replace(',','.')) * priceElement.value); 
                 records.push({TYPE_CODE: code, PRICE: price});
             }
         }
