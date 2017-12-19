@@ -42,7 +42,8 @@
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <!-- sortField="lastModDate" -->
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)" dataKey="id" resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -233,7 +234,9 @@
 
       <div *ngIf="relatedItem?.creationDate" class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="itemCreationDate">Data utworzenia</label></div>
-        <input pInputText id="itemCreationDate" disabled="true" [(ngModel)]="relatedItem.creationDate"/>
+        <div class="ui-grid-col-8">
+          <input pInputText id="itemCreationDate" disabled="true" [(ngModel)]="relatedItem.creationDate"/>
+        </div>
       </div>
 
     </div>

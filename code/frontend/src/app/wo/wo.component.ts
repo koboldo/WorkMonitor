@@ -179,12 +179,21 @@ export class WoComponent implements OnInit {
         this.suggestedStatuses = [];
         if (this.statuses && this.statuses.length > 0) {
             for (let status of this.statuses) {
-                if (status.paramChar.indexOf(event.query) > -1) {
+                if (status.paramChar.indexOf(event.query) > -1 && this.isStatusAllowed(this.editedOrder, status.code)) {
                     this.suggestedStatuses.push(status);
                 }
             }
         }
         console.log("suggestedStatuses: " + JSON.stringify(this.suggestedStatuses));
+    }
+
+    isStatusAllowed(order: Order, statusCode: string) {
+        if (order.assignee && order.assignee.length > 0) {
+            return true;
+        } else if (statusCode === "OP") {
+            return true;
+        }
+        return false;
     }
 
     suggestType(event) {

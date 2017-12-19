@@ -26,9 +26,14 @@
         <div *ngIf="f.submitted && !newemail?.valid" class="help-block">wymagany jest poprawny adres email</div>
       </div>
 
+      <div class="form-group">
+        <p-radioButton name="groupname" value="Y" [(ngModel)]="selectedUser.user.isActive" label="Aktywny (Konto)"></p-radioButton>
+        <p-radioButton name="groupname" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+      </div>
+
       <div class="form-group" *ngIf="showRoles">
         <label for="roleCode">Funkcja w systemie</label>
-        <p-selectButton id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required #roleCode="ngModel"></p-selectButton>
+        <p-selectButton [disabled]="operator.roleCode != 'PR'" id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required #roleCode="ngModel"></p-selectButton>
         <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
       </div>
 
