@@ -33,6 +33,27 @@ function mapDesc(record) {
     return record.TYPE + ' - ' + record.DESC;
 };
 
+var columnsToSkip = ['ID','LAST_MOD','CREATED'];
+var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE'];
+
+function prepareInsert(object, tableName) {
+    var sqlCols = '';
+    var sqlVals = '';
+    for(var col in object) {
+        if(columnsToSkip.indexOf(col) > -1 ) continue;
+
+        if(sqlCols.length > 0) sqlCols += ', ';
+        if(sqlVals.length > 0) sqlVals += ', ';
+        sqlCols +=  col;
+
+        if(columnsWithoutQuote.indexOf(col) > -1) sqlVals += object[col];
+        else sqlVals += '"' + object[col] + '"';
+    }
+
+    var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+    return insertStr;
+}
+
 var mapRecord = (oldRecord) => {
     var newRecord = {};
     fieldMap.forEach((field)=>{

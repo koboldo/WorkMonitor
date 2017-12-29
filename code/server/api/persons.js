@@ -17,7 +17,11 @@ var persons = {
             }
             
             var persons = mapper.mapList(mapper.person.mapToJson, personRows);
-            res.json(persons);
+            var personsFiltered = [];
+            persons.forEach((person)=>{
+                personsFiltered.push(filterPersonFields(req.context,person));
+            });
+            res.json(personsFiltered);
         });
     },
     
@@ -30,7 +34,8 @@ var persons = {
             
             if(personRow) {
                 var person = mapper.person.mapToJson(personRow);
-                res.json(person);
+                var personFiltered = filterPersonFields(req.context,person);
+                res.json(personFiltered);
             } else {
                 res.status(404).end();
             }
@@ -63,7 +68,8 @@ var persons = {
     update: function(req, res) {
         
         var personId = req.params.id;
-        var personSql = mapper.person.mapToSql(req.body);
+        var pe = filterPersonFields(req.context, req.body);
+        var personSql = mapper.person.mapToSql(pe);
 
         persons_db.update(personId, personSql,function(err, result){
             if(err) {
@@ -136,6 +142,15 @@ var persons = {
             else res.status(404).end();
         });
     }
+};
+
+function filterPersonFields(context, person) {
+    if(context.role != 'PR') {
+        delete person.agreementCode;
+        delete person.projectFactor;
+        delete person.isFromPool;
+    }
+    return person;
 };
 
 module.exports = persons;

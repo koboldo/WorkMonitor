@@ -11,7 +11,15 @@
 			"IS_ACTIVE": "isActive",
 			"LAST_MOD": "lastMod",
 			"WORK_ORDERS": "workOrders",
-			"COMPANY": "company"
+			"PROJECT_FACTOR": "projectFactor",
+			"IS_FROM_POOL": "isFromPool",
+			"COMPANY": "company",
+			"AGREEMENT_CODE": "agreementCode",
+			"ACCOUNT": "account",
+			"PHONE": "phone",
+			"POSITION": "position",
+			"ADDRESS_STREET": "addressStreet",
+			"ADDRESS_POST": "addressPost"
 		}
 	},
 	"order": {
