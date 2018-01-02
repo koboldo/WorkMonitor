@@ -241,7 +241,7 @@ function transformReportRows(rows) {
 		let personTransformed = (personsMap[pid]) ? true : false;
 
 		let person = {};
-		let order = {}
+		let order = {};
 		for(var field in row) {
 			if(!personTransformed && field.startsWith('PERSON_')) {
 				let newField = field.slice(7);

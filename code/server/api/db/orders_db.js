@@ -6,7 +6,7 @@ var local_util = require('../local_util');
 var dbUtil = require('./db_util');
 var async = require('async');
 var sprintf = require("sprintf-js").sprintf;
-
+var logErrAndCall = require('../local_util').logErrAndCall;
 var logger = require('../logger').getLogger('monitor'); 
 
 var queries = {
@@ -14,6 +14,11 @@ var queries = {
 	getOrder:		 ' SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, MD_CAPEX, PROTOCOL_NO, PRICE, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD, DATETIME(CREATED,"unixepoch") AS CREATED, ITEM_ID, (SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P, PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID) AS ASSIGNEE, VENTURE_ID FROM WORK_ORDER AS WO WHERE ID = ?',
 	getOrderByExtId:		 ' SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, MD_CAPEX, PROTOCOL_NO, PRICE, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD, DATETIME(CREATED,"unixepoch") AS CREATED, ITEM_ID, (SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P, PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID) AS ASSIGNEE, VENTURE_ID FROM WORK_ORDER AS WO WHERE WORK_NO = ?',
     getOrderItems:   'SELECT RI.ID, RI.ITEM_NO, RI.DESCRIPTION, RI.ADDRESS, RI.MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch") AS CREATED FROM RELATED_ITEM AS RI WHERE RI.ID = ?',
+    calculateTotalPriceStat: `WITH PARAMS AS ( SELECT STRFTIME('%%s', '%(dateAfter)s') AS AFTER_DATE ,STRFTIME('%%s', '%(dateBefore)s') + 86400 AS BEFORE_DATE ) 
+                                SELECT SUM(PRICE) AS TOTAL_PRICE, COUNT(WORK_NO) AS WO_COUNT FROM 
+                                ( SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER WHERE ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) )  
+                                UNION  SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER_HIST WHERE 
+                                    ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) ) ) `
 };
 
 // js object used by sprintf function to prepare WHERE condition
@@ -24,6 +29,10 @@ var filters = {
         lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s")',
         lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s")',
         personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
+    },
+    calculateTotalPrice: {
+        dateAfter: '%(dateAfter)s',
+        dateBefore: '%(dateBefore)s'
     }
 };
 
@@ -138,6 +147,20 @@ var orders_db = {
             if(err) return local_util.logErrAndCall(err,cb);
             cb(null,newId);
         });
+    },
+
+    calculateTotalPriceForCompleted: function(params,cb) {
+        console.log(JSON.stringify(params));
+        var query = dbUtil.prepareFiltersByInsertion(queries.calculateTotalPriceStat,params,filters.calculateTotalPrice);
+        console.log(query);
+        var db = dbUtil.getDatabase();
+        var calculateTotalPriceStat = db.prepare(query);
+        calculateTotalPriceStat.all(function(err, rows) {
+            calculateTotalPriceStat.finalize();
+            db.close();
+            if(err) return logErrAndCall(err,cb);
+			cb(null,rows[0]);
+		});
     }
 };
 

@@ -43,7 +43,9 @@
 			"VENTURE_ID": "ventureId",
 			"ASSIGNEE": "assignee",
 			"DONE_DATE": "doneDate",
-			"ASSIGNED_DATE": "assignedDate"			
+			"ASSIGNED_DATE": "assignedDate",
+			"TOTAL_PRICE": "totalPrice",
+			"WO_COUNT": "woCount"	
 		}
 	},
 	"code": {
