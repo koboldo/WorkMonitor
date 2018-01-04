@@ -5,7 +5,7 @@ var util = require('util');
 var dateformat = require('dateformat');
 var mapper = require('./mapper');
 var orders_db = require('./db/orders_db');
-
+var prepareProtocol = require('./local_util').prepareProtocol;
 var orders = {
     
     readAll: function(req,resp) {
@@ -76,7 +76,7 @@ var orders = {
         });
     },
 
-    calculateTotalPriceForCompleted(req, resp) {
+    calculateTotalPriceForCompleted: function(req, resp) {
         if(req.query.dateAfter == null) req.query.dateAfter = dateformat(
             new Date(new Date().getFullYear(), new Date().getMonth(),1),'yyyy-mm-dd');
         if(req.query.dateBefore == null) req.query.dateBefore = dateformat(
@@ -89,6 +89,36 @@ var orders = {
             }
             var report = mapper.order.mapToJson(reportRow);
             resp.json(report);
+        });
+    },
+
+    prepareProtocol: function(req, resp) {
+
+        var ids = null;
+
+        if(!req.query.ids) {
+            resp.status(400).json({status: 'error', message: 'id list cannot be empty'});
+            return;
+        } else {
+            ids = req.query.ids.split(',');
+            for( let id in ids) {
+                if(isNaN(parseInt(id))) {
+                    resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
+                    return;
+                }
+            }
+        }
+        console.log('ids ' +  ids.join('|'));
+        orders_db.getOrdersForProtocol(ids.join(','),function(err, protocolRows){
+            if(err) {
+                resp.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            
+            // prepareProtocol(protocolRows,resp);
+            prepareProtocol(protocolRows,function(fileObj){
+                resp.json(fileObj);
+            });
         });
     }
 };

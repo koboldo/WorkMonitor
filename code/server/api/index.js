@@ -18,6 +18,7 @@ router.delete('/v1/persons/:pid/order/:oid', persons.removeOrder);
 
 router.get('/v1/report/personOrders', persons.readOrders);
 router.get('/v1/report/ordersTotalPrice', orders.calculateTotalPriceForCompleted);
+router.get('/v1/report/prepareProtocol', orders.prepareProtocol);
 
 router.get('/v1/orders', orders.readAll);
 router.post('/v1/orders', orders.create);
