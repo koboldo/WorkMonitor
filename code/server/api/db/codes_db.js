@@ -5,7 +5,7 @@ var logErrAndCall = require('../local_util').logErrAndCall;
 var dbUtil = require('./db_util');
 
 var queries = {
-	getCodes: 'SELECT CODE, PARAM_INTVAL, PARAM_CHARVAL FROM CODE_REFERENCE WHERE CODE_TABLE = ?',
+	getCodes: 'SELECT CODE, PARAM_INTVAL, PARAM_CHARVAL FROM CODE_REFERENCE WHERE CODE_TABLE = ? ORDER BY PARAM_INTVAL',
     getTables: 'SELECT DISTINCT CODE_TABLE FROM CODE_REFERENCE'
 };
 

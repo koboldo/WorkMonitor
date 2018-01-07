@@ -11,7 +11,15 @@
 			"IS_ACTIVE": "isActive",
 			"LAST_MOD": "lastMod",
 			"WORK_ORDERS": "workOrders",
-			"COMPANY": "company"
+			"PROJECT_FACTOR": "projectFactor",
+			"IS_FROM_POOL": "isFromPool",
+			"COMPANY": "company",
+			"AGREEMENT_CODE": "agreementCode",
+			"ACCOUNT": "account",
+			"PHONE": "phone",
+			"POSITION": "position",
+			"ADDRESS_STREET": "addressStreet",
+			"ADDRESS_POST": "addressPost"
 		}
 	},
 	"order": {
@@ -35,7 +43,9 @@
 			"VENTURE_ID": "ventureId",
 			"ASSIGNEE": "assignee",
 			"DONE_DATE": "doneDate",
-			"ASSIGNED_DATE": "assignedDate"			
+			"ASSIGNED_DATE": "assignedDate",
+			"TOTAL_PRICE": "totalPrice",
+			"WO_COUNT": "woCount"	
 		}
 	},
 	"code": {

@@ -57,6 +57,9 @@ rm -f /tmp/$BASE_FILE
 	}
 }
 
+echo "Creating static link for remote copy"
+ln -sf $TARGET_DIR/$TARGET_ARCHIVE $TARGET_DIR/work-monitor.latest.tar.bz
+
 echo "Removing old backups:"
 find $TARGET_DIR -mtime +$RETENTION_PERIOD -exec basename {} \; -exec rm {} \;
 

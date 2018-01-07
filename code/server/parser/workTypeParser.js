@@ -3,7 +3,7 @@
 
 var parse = require('csv-parse');
 var fs = require('fs');
-var dbUtil = require('./api/db/db_util');
+// var dbUtil = require('./api/db/db_util');
 
 
 var inFilename = '/home/laros/projects/BOT/TYPY_WO.csv';
@@ -35,7 +35,7 @@ function mapStdComplexityCode(record) {
 
 function mapStdComplexity(record) {
     return record.STD;
-};
+}
 
 function mapHrdComplexityCode(record) {
 	return 'HRD';
@@ -43,8 +43,28 @@ function mapHrdComplexityCode(record) {
 
 function mapHrdComplexity(record) {
     return record.HRD;
-};
+}
 
+var columnsToSkip = ['ID','LAST_MOD','CREATED'];
+var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE'];
+
+function prepareInsert(object, tableName) {
+    var sqlCols = '';
+    var sqlVals = '';
+    for(var col in object) {
+        if(columnsToSkip.indexOf(col) > -1 ) continue;
+
+        if(sqlCols.length > 0) sqlCols += ', ';
+        if(sqlVals.length > 0) sqlVals += ', ';
+        sqlCols +=  col;
+
+        if(columnsWithoutQuote.indexOf(col) > -1) sqlVals += object[col];
+        else sqlVals += '"' + object[col] + '"';
+    }
+
+    var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+    return insertStr;
+}
 
 var offices = ["WAW","KAT","POZ"];
 
@@ -96,14 +116,14 @@ fs.readFile(inFilename, 'utf8', (err,data) => {
                 var nrecStd = mapRecordStd(records[i]);
                 nrecStd.OFFICE_CODE = offices[j];
                
-                var sqlStd = dbUtil.prepareInsert(nrecStd, 'WORK_TYPE');
+                var sqlStd = prepareInsert(nrecStd, 'WORK_TYPE');
                 sqls.push(sqlStd);
                 
                 //HRD
                 var nrecHrd = mapRecordHrd(records[i]);
                 nrecHrd.OFFICE_CODE = offices[j];
                
-                var sqlHrd = dbUtil.prepareInsert(nrecHrd, 'WORK_TYPE');
+                var sqlHrd = prepareInsert(nrecHrd, 'WORK_TYPE');
                 sqls.push(sqlHrd);
             }
             

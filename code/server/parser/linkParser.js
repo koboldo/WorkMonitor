@@ -95,22 +95,15 @@ function formatLinks() {
         let HANDOVER = link.HANDOVER;
 
         sqls.push( `INSERT INTO PERSON_WO (PERSON_ID, WO_ID, CREATED)
-        SELECT (
-            SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
-        ),(
-            SELECT ID FROM WORK_ORDER 
-            WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                AND ABS(PRICE - ${PRICE}) <= PRICE * 0.15  
-        ), STRFTIME("%s","now")
-        WHERE
-            EXISTS(
-                SELECT ID FROM PERSON WHERE (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
-            ) AND
-            EXISTS(
-                SELECT ID FROM WORK_ORDER 
-                WHERE ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
-                AND ABS(PRICE - ${PRICE}) <= PRICE * 0.15 
-            )`);
+        SELECT P.ID AS PID, WO.ID AS WOID, STRFTIME("%s","now") AS CREATED
+        FROM WORK_ORDER AS WO, PERSON AS P
+        WHERE 
+            (FIRST_NAME || ' ' || LAST_NAME) = '${PERSON}'
+            AND ITEM_ID IN ( SELECT ID FROM RELATED_ITEM WHERE ITEM_NO = '${ITEM_NO}' )
+            AND ABS(PRICE - ${PRICE}) <= PRICE * 0.15`);
+
+
+
 
         // sqls.push( `INSERT INTO PERSON_WO (PERSON_ID, WO_ID, CREATED)
         // SELECT (
