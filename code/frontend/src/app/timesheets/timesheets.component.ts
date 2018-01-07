@@ -38,7 +38,7 @@ export class TimesheetsComponent implements OnInit {
                 private toolsService:ToolsService,
                 private authSerice:AuthenticationService) {
 
-        this.afterDate = toolsService.getCurrentDateDayOperation(-1);
+        this.afterDate = toolsService.getCurrentDateDayOperation(0);
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.dictService.init();
     }
@@ -50,7 +50,7 @@ export class TimesheetsComponent implements OnInit {
 
 
     onEditInit(event) {
-        console.log("about edit !" + JSON.stringify(event));
+        console.log("about edit !" + JSON.stringify(event.data));
 
         if (event.data.timesheetFrom !== "" && event.data.timesheetTo != "") {
             this.copy = JSON.parse(JSON.stringify(event.data));
@@ -68,7 +68,7 @@ export class TimesheetsComponent implements OnInit {
     }
 
     onEditComplete(event) {
-        console.log("edited !" + JSON.stringify(event));
+        console.log("edited !" + JSON.stringify(event.data));
         if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && !this.timeRegexp.test(event.data.timesheetFrom)) {
             this.alertService.warn("Nie zmieniono deklaracji ze względu na nieprawidlową wartość: "+event.data.timesheetFrom);
             this.onEditCancel(event);
@@ -83,6 +83,7 @@ export class TimesheetsComponent implements OnInit {
             let workTime: number = this.calculateWorkTime(event.data.timesheetWorkDate, event.data.timesheetFrom, event.data.timesheetTo, event.data.timesheetBreakInMinutes);
             if (workTime >= 0) {
                 event.data.timesheetUsedTime = ""+workTime;
+                event.data.color = "darkgreen";
             } else {
                 this.alertService.warn("Nie zmieniono deklaracji ze względu na czas pracy mniejszy niż zero!");
                 event.data.timesheetFrom = this.copy.timesheetFrom;
@@ -91,7 +92,7 @@ export class TimesheetsComponent implements OnInit {
                 event.data.timesheetBreakInMinutes = this.copy.timesheetBreakInMinutes;
             }
         } else {
-            console.log("Prawdopodobnie nie skonczono wypelniac timesheet "+JSON.stringify(event.data));
+            console.log("Prawdopodobnie nie skonczono wypelniac timesheetu "+JSON.stringify(event.data));
         }
     }
 
@@ -104,7 +105,7 @@ export class TimesheetsComponent implements OnInit {
 
         this.userService.getEngineers()
             .mergeMap(engineers => this.callTimesheets(engineers, sAfterDate, sBeforeDate))
-            .subscribe(timesheets => this.combine(timesheets, this.engineers));
+            .subscribe((timesheets:Timesheet[]) => this.combine(timesheets, this.engineers));
     }
 
     private callTimesheets(engineers: User[], after:string, before:string):Observable<Timesheet[]> {
@@ -136,7 +137,7 @@ export class TimesheetsComponent implements OnInit {
 
     }
 
-    private calculateTimesheetsForDate(engineers, sDate, timesheets) {
+    private calculateTimesheetsForDate(engineers, sDate, timesheets:Timesheet[]) {
         for (let engineer of engineers) {
             let engineerWithSheet:UserWithSheet = <UserWithSheet> JSON.parse(JSON.stringify(engineer));
             engineerWithSheet.tabid = this.engineersWithSheets.length;
@@ -150,6 +151,7 @@ export class TimesheetsComponent implements OnInit {
             engineerWithSheet.timesheetFrom = this.sEmptySheet;
             engineerWithSheet.timesheetTo = this.sEmptySheet;
             engineerWithSheet.timesheetBreakInMinutes = 0;
+            engineerWithSheet.color = "darkred";
 
 
             //update with backend values if exist
@@ -160,18 +162,19 @@ export class TimesheetsComponent implements OnInit {
         }
     }
 
-    private updateTimesheetWithBackendValues(timesheets, engineerWithSheet, sDate) {
+    private updateTimesheetWithBackendValues(timesheets:Timesheet[], engineerWithSheet, sDate) {
         if (timesheets && timesheets.length > 0) {
             for (let timesheet of timesheets) {
                 if (timesheet.personId === engineerWithSheet.id && timesheet.workDate === sDate) {
-                    console.log("Found timesheet for " + engineerWithSheet.email + " and date=" + sDate + " with usedTime=" + timesheet.usedTime);
+                    console.log("Found timesheet for " + engineerWithSheet.email + " and date=" + sDate + " with usedTime=" + timesheet.usedTime+", break="+timesheet.breakInMinutes);
                     engineerWithSheet.timesheet = timesheet;
                     engineerWithSheet.timesheetUsedTime = this.getUsedTimeAsString(timesheet.usedTime);
                     engineerWithSheet.timesheetWorkDate = timesheet.workDate;
 
                     engineerWithSheet.timesheetFrom = timesheet.from;
                     engineerWithSheet.timesheetTo = timesheet.to;
-                    engineerWithSheet.timesheetBreakInMinutes = timesheet.timesheetBreakInMinutes;
+                    engineerWithSheet.timesheetBreakInMinutes = timesheet.breakInMinutes;
+                    engineerWithSheet.color = "darkblue";
 
                 }
             }
@@ -185,8 +188,10 @@ export class TimesheetsComponent implements OnInit {
     }
 
     private calculateWorkTime(workDate: string, from: string, to: string, workBreakMinutes: number): number {
-        if (from.indexOf(":") > -1 && to.indexOf(":") > -1) {
+        console.log("calculateWorkTime() workDate="+workDate+", from="+from +", to=" +to +" break="+workBreakMinutes);
 
+
+        if (from.indexOf(":") > -1 && to.indexOf(":") > -1) {
 
             let dateFrom: number = this.toolsService.parseDate(workDate+ " "+ from + ":00" ).getTime();
             let dateTo: number = this.toolsService.parseDate(workDate+ " "+ to + ":00" ).getTime();
@@ -243,6 +248,8 @@ export class TimesheetsComponent implements OnInit {
         this.timesheetService.upsert(timesheetsToUpdate)
             .subscribe(created => this.alertService.success("Pomyślnie wprowadzono "+timesheetsToUpdate.length+" deklaracji czasu pracy."));
 
+        this.search(); //refresh table with colors
+
     }
 }
 
@@ -255,6 +262,7 @@ export class UserWithSheet extends User {
     timesheetFrom: string;
     timesheetTo: string;
     timesheetBreakInMinutes: number;
+    color: string;
 
 
 }

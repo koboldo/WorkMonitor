@@ -43,7 +43,9 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 
     <!-- sortField="lastModDate" -->
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)" dataKey="id" resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
+                 selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"
+                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -62,7 +64,7 @@
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}"></p-column><!-- search -->
+      <p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column><!-- search -->
       <p-column [sortable]="true" field="typeCode" header="Typ">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
@@ -105,7 +107,7 @@
         </ng-template>
       </p-column>-->
       <p-column [sortable]="true" field="ventureCompany" header="Inwestor" ></p-column>
-      <p-column [sortable]="true" field="ventureDisplay" header="Przedstawiciel" ></p-column>
+      <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" ></p-column>
       <p-column [style]="{'width':'40px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
           <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
@@ -141,100 +143,132 @@
   <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="ventureRepresentative">Zleceniodawca</label></div>
-        <div class="ui-grid-col-8">
-          <p-autoComplete id="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" ></p-autoComplete> <!-- [forceSelection]="true" -->
+        <div class="ui-grid-col-2"><label for="ventureRepresentative">Zleceniodawca</label></div>
+        <div class="ui-grid-col-10">
+          <p-autoComplete id="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" pTooltip="Od lokalizacji wybranego zleceniodawcy zależeć będzie logika nadawania numerów WO" tooltipPosition="top"></p-autoComplete> <!-- [forceSelection]="true" -->
         </div>
       </div>
+
+      <div *ngIf="!assignedVentureRepresentative" class="ui-grid-row" style="margin-top: 0px;" >
+        <div class="ui-grid-col-2"></div>
+        <div class="ui-grid-col-10">
+          <p-message severity="warn" text="Przypisanie zleceniodawcy jest wymagane!"></p-message>
+        </div>
+      </div>
+
       <hr>
 
+
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="workNo">Numer WO*</label></div>
-        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" pTooltip="Uzupełnij jeśli posiadzasz numer zlecenia w innym przypadku pozostaw wartość XXXXX" tooltipPosition="top"/></div>
+        <div class="ui-grid-col-2"><label for="workNo">Numer WO*</label></div>
+        <div class="ui-grid-col-10 ui-fluid"><input pInputText [disabled]="!assignedVentureRepresentative" id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" pTooltip="Uzupełnij jeśli posiadzasz numer zlecenia w innym przypadku pozostaw wartość XXXXX" tooltipPosition="top"/></div>
       </div>
+
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="orderType">Typ WO*</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="orderType">Typ WO*</label></div>
+        <div class="ui-grid-col-4">
           <!-- TODO bug [forceSelection]="true" -->
-            <p-autoComplete id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
+            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
         </div>
+
+          <div class="ui-grid-col-2" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
+          <div class="ui-grid-col-4" *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'">
+            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+          </div>
+
       </div>
-      <div *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'" class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="price">Wartość zlecenia (PLN)</label></div>
-        <div class="ui-grid-col-8">
-          <p-autoComplete id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" placeholder="Można zmienić cenę (podaj liczbę)"></p-autoComplete>
-        </div>
-      </div>
+
+
+      <!--<p-inplace *ngIf="newOrder && workType?.code">
+        <span pInplaceDisplay>
+            <button type="button" pButton icon="fa-plus" label="Podtyp"></button>
+        </span>
+        <span pInplaceContent>
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2"><label for="orderType">Typ WO*</label></div>
+            <div class="ui-grid-col-4">
+              &lt;!&ndash; TODO bug [forceSelection]="true" &ndash;&gt;
+              <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
+            </div>
+
+              <div class="ui-grid-col-2" style="margin-left: 15px;"><label for="price">Wartość zlecenia (PLN)</label></div>
+              <div class="ui-grid-col-4" *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'">
+                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+              </div>
+          </div>
+        </span>
+      </p-inplace>
+-->
         
       <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
-            <div class="ui-grid-col-4"><label for="status">Status</label></div>
-            <div class="ui-grid-col-8">
-                <p-autoComplete id="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" [forceSelection]="true"></p-autoComplete>
+            <div class="ui-grid-col-2"><label for="status">Status</label></div>
+            <div class="ui-grid-col-10">
+                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" [forceSelection]="true"></p-autoComplete>
             </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="mdCapex">Capex</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" placeholder="nr wydatków związanych z rozwojem"/></div>
+        <div class="ui-grid-col-2"><label for="mdCapex">Capex</label></div>
+        <div class="ui-grid-col-10"><input [disabled]="!assignedVentureRepresentative" pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" placeholder="nr wydatków związanych z rozwojem"/></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="comment">Komentarz</label></div>
+        <div class="ui-grid-col-10">
           <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-          <textarea pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
+          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="description">Opis</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="description">Opis</label></div>
+        <div class="ui-grid-col-10">
           <!--<input pInputText id="description" [(ngModel)]="editedOrder.description" />-->
-          <textarea pInputTextarea id="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący WO..." [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
+          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący WO..." [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
         </div>
       </div>
       <hr>
       <!-- related item -->
 
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemNo">Numer obiektu</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="itemNo">Numer obiektu</label></div>
+        <div class="ui-grid-col-10">
               <p-autoComplete placeholder="Numer obiektu np. stacji/kandydata" id="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onBlur)="updateRelatedItem($event.target.value)" (onKeyUp)="updateRelatedItem($event.target.value)" (onFocus)="copyRelatedItem($event.target.value)" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" [forceSelection]="false" pTooltip="Uzupełnij nowy obiekt lub wybierz istniejący z listy. Obiekt wybrany z listy można zmodyfikowac/uzupełnić, co bedzie miało wpływ na inne WO powiązane z tym obiektem, ale po wybraniu z listy nie można już definiować nowego. Możesz też przypisać lub zmienić później tj. po utworzeniu WO." tooltipPosition="top"></p-autoComplete>
         </div>
       </div>
       <div *ngIf="relatedItem?.id && isRelatedItemChanged(relatedItem)" class="ui-grid-row" style="margin-top: 0px;" >
-        <div class="ui-grid-col-4"></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"></div>
+        <div class="ui-grid-col-10">
           <p-message severity="warn" text="Modyfikacja istniejącego obiektu"></p-message>
         </div>
       </div>
       <div *ngIf="relatedItem?.itemNo !== undefined && relatedItem?.id === undefined" class="ui-grid-row" style="margin-top: 0px;" >
-        <div class="ui-grid-col-4"></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"></div>
+        <div class="ui-grid-col-10">
           <p-message severity="info" text="Dodawanie nowego obiektu"></p-message>
         </div>
       </div>
 
 
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemAddress">Adres</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemAddress" [(ngModel)]="relatedItem.address" placeholder="Adres objektu inwestycji"/></div>
+        <div class="ui-grid-col-2"><label for="itemAddress">Adres</label></div>
+        <div class="ui-grid-col-10"><input pInputText id="itemAddress" [(ngModel)]="relatedItem.address" placeholder="Adres objektu inwestycji"/></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemBuildingType">Typ budynku</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemBuildingType" [(ngModel)]="relatedItem.mdBuildingType" placeholder="Typ budynku..."/></div>
+        <div class="ui-grid-col-2"><label for="itemBuildingType">Typ budynku</label></div>
+        <div class="ui-grid-col-10"><input pInputText id="itemBuildingType" [(ngModel)]="relatedItem.mdBuildingType" placeholder="Typ budynku..."/></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemConstructionCategory">Konstrukcja</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="itemConstructionCategory" [(ngModel)]="relatedItem.mdConstructionCategory" placeholder="Typ konstrukcji..." /></div>
+        <div class="ui-grid-col-2"><label for="itemConstructionCategory">Konstrukcja</label></div>
+        <div class="ui-grid-col-10"><input pInputText id="itemConstructionCategory" [(ngModel)]="relatedItem.mdConstructionCategory" placeholder="Typ konstrukcji..." /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemDescription">Opis obiektu</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="itemDescription">Opis obiektu</label></div>
+        <div class="ui-grid-col-10">
           <textarea pInputTextarea id="itemDescription" [(ngModel)]="relatedItem.description" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Opis objektu inwestycji..."></textarea>
         </div>
       </div>
 
       <div *ngIf="relatedItem?.creationDate" class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-4"><label for="itemCreationDate">Data utworzenia</label></div>
-        <div class="ui-grid-col-8">
+        <div class="ui-grid-col-2"><label for="itemCreationDate">Data utworzenia</label></div>
+        <div class="ui-grid-col-10">
           <input pInputText id="itemCreationDate" disabled="true" [(ngModel)]="relatedItem.creationDate"/>
         </div>
       </div>
@@ -245,6 +279,7 @@
         <button [disabled]="!(editedOrder?.workNo && editedOrder?.workNo.length > 2 && workType?.paramChar && workType?.paramChar?.length > 1)" width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
       </div>
     </p-footer>
+
   </p-dialog>
 
 

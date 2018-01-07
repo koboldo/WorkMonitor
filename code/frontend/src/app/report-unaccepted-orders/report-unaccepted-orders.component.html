@@ -45,7 +45,10 @@
   </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true"  [globalFilter]="gb" #dt dataKey="id"
+                 csvSeparator=";" exportFilename="niezaakceptowane.csv"
+                 selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
+                 resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>

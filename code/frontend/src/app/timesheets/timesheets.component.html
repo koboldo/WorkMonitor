@@ -46,12 +46,45 @@
       <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
       <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
 
-      <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
 
+
+      <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetWorkDate}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Obecny od" field="timesheetFrom">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetFrom}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Obecny do" field="timesheetTo">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTo}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetBreakInMinutes}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [sortable]="true" field="timesheetWorkDate" header="Godziny">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
+        </ng-template>
+      </p-column>
+
+      <!--
+      <p-column [sortable]="true" field="timesheetWohrkDate" header="Dnia" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
       <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetFrom" header="Obecny od" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
       <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetTo" header="Obecny do" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetBreakInMinutes" header="Przerwa [minuty]" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetBreakInMinutes" header="Przerwa [min]" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
       <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
+      -->
 
 
       <ng-template pTemplate="emptymessage">

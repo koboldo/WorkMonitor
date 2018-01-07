@@ -138,4 +138,8 @@ export class ToolsService {
 
     // private helper methods
 
+    public isStatusLowerThanProtocol(statusCode: string): boolean{
+        return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
+    }
+
 }

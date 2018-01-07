@@ -153,8 +153,9 @@ export class WoComponent implements OnInit {
         if (this.workTypesDetails && this.workTypesDetails.length > 0) {
             for (let workTypeDetails of this.workTypesDetails) {
                 let sPrice:string = <string> "" + workTypeDetails.price;
-                if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === this.workType.code || this.workType.code === undefined) && workTypeDetails.officeCode === this.operator.officeCode && workTypeDetails.complexityCode === 'STD') {
-                    this.suggestedPrice.push(new CodeValue(sPrice, sPrice + " PLN (" + this.workType.paramChar + " realizacja " + this.dictService.getOffice(workTypeDetails.officeCode) + ")"));
+                if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === this.workType.code || this.workType.code === undefined) && workTypeDetails.officeCode === this.assignedVentureRepresentative.user.officeCode && workTypeDetails.complexityCode === 'STD') {
+                    //let type: string = this.dictService.getWorkType(workTypeDetails.typeCode);
+                    this.suggestedPrice.push(new CodeValue(sPrice, sPrice + " PLN (cennik " + this.dictService.getOffice(workTypeDetails.officeCode) + ")"));
                 }
             }
         }
@@ -230,7 +231,7 @@ export class WoComponent implements OnInit {
                 let suggestion:string = JSON.stringify(v);
                 console.log("suggestVentureRepresentative " + suggestion + " for " + JSON.stringify(event));
                 if (suggestion.indexOf(event.query) > -1) {
-                    let displayName:string = v.firstName + " " + v.lastName + " (" + v.company + ")";
+                    let displayName:string = v.firstName + " " + v.lastName + " (" + v.company + " - "+v.office+")";
                     this.suggestedVentureRepresentatives.push(new SearchUser(displayName, v));
                 }
             }
@@ -330,6 +331,10 @@ export class WoComponent implements OnInit {
 
         this.editedOrder.statusCode = this.newOrder ? "OP" : this.status.code;
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
+        if (this.toolsService.isStatusLowerThanProtocol(this.editedOrder.statusCode)) {
+            this.editedOrder.protocolNo = ""; //TODO change to undefined but with backend awarness;
+        }
+
         this.editedOrder.typeCode = this.workType.code;
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
         this.editedOrder.ventureId = this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id ? this.assignedVentureRepresentative.user.id : undefined;
