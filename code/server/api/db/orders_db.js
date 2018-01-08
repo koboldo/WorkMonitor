@@ -136,8 +136,7 @@ var orders_db = {
             idObj.WORK_NO = '"' + orderExtId + '"';
         }
 
-        if(logger.isDebugEnabled()) logger.debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));
-        
+        if(logger.isDebugEnabled()) logger.debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));        
         dbUtil.performUpdate(idObj, order, 'WORK_ORDER', function(err,result) {
             if(err) return logErrAndCall(err,cb);
             cb(null,result);

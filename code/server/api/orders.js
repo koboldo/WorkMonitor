@@ -49,8 +49,9 @@ var orders = {
         var orderId = req.params.id;
         var orderExtId = req.params.extId;
         var re = filterOrderPrice(req.context, req.body, true);
-        console.log('filterred ' + JSON.stringify(re));
+        console.log(JSON.stringify(re));
         var orderSql = mapper.order.mapToSql(re);
+        console.log(JSON.stringify(orderSql));
         orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});

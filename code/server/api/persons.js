@@ -18,10 +18,10 @@ var persons = {
             
             var persons = mapper.mapList(mapper.person.mapToJson, personRows);
             var personsFiltered = [];
-            persons.forEach((person)=>{
+            persons.list.forEach((person)=>{
                 personsFiltered.push(filterPersonFields(req.context,person));
             });
-            res.json(personsFiltered);
+            res.json({list:personsFiltered});
         });
     },
     

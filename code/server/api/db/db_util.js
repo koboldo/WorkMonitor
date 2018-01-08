@@ -142,7 +142,7 @@ var db_util = {
 
             // updateStr += col + '="' + object[col] + '"';
             updateStr += col + '=';
-            let val = db_util.changeEmptyToNull(object[col]);
+            let val = db_util.changeEmptyStringToNull(object[col]);
             if(columnsWithoutQuote.indexOf(col) > -1 || val == null ) updateStr += val;
             else updateStr += '"' + val + '"';
         }
@@ -206,8 +206,11 @@ var db_util = {
         return rv;
     },
 
-    changeEmptyToNull: function(sqlValue) {
-        return (sqlValue != '') ? sqlValue : null; 
+    changeEmptyStringToNull: function(sqlValue) {
+        if(typeof sqlValue === 'string') 
+            return (sqlValue.length > 0) ? sqlValue : null; 
+        else 
+            return sqlValue;
     },
 
     getRowsIds: function(statement, rowId, cb) {
