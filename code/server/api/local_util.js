@@ -14,6 +14,11 @@ let local_util = {
         cb(err, null);
     }, 
     
+    parseStringToDate(dateTxt) {
+        let tokens = dateTxt.split(/[\s:-]+/);
+        return new Date(tokens[0],tokens[1]-1,tokens[2],tokens[3],tokens[4]);
+    },
+
     prepareProtocol: function(rows, cb) {
         let allProtocols = {};
         rows.forEach((row) => {

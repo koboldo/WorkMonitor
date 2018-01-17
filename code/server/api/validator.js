@@ -17,6 +17,12 @@ var validator = {
             }
         }
 
+        if(req.path == '/api/v1/persons' && req.method == 'POST') {
+            if(req.body && req.body.personId != req.context.id && ['OP','PR'].indexOf(req.context.role) < 0) {
+                res.status(403).json({status: 'error', message: 'niedozwolona zmiana'});
+            }    
+        }
+
         next();
     }
 };

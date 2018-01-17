@@ -77,7 +77,11 @@
 			"USED_TIME": "usedTime",
 			"FROM_DATE": "from",
 			"TO_DATE": 	 "to",
-			"BREAK_IN_MINUTES": "breakInMinutes"
+			"BREAK": "break",
+			"CREATED_BY": "createdBy",
+			"MODIFIED_BY": "modifiedBy",
+			"CREATED": "created",
+			"LAST_MOD": "lastMod"
 		}
 	},
 	"relatedItem": {
