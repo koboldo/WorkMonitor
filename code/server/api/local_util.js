@@ -22,14 +22,15 @@ let local_util = {
     prepareProtocol: function(rows, cb) {
         let allProtocols = {};
         rows.forEach((row) => {
-            if(!allProtocols.hasOwnProperty(row.PROTOCOL_NO)) {
+            let protocolKey = row.PROTOCOL_NO + '_' + row.VENTURE_ID;
+            if(!allProtocols.hasOwnProperty(protocolKey)) {
                 let protocol = {};
                 protocol.ORDERS = [];
                 protocol.TOTAL_PRICE = 0;
-                allProtocols[row.PROTOCOL_NO] = protocol;
+                allProtocols[protocolKey] = protocol;
             }
 
-            let p = allProtocols[row.PROTOCOL_NO];
+            let p = allProtocols[protocolKey];
             p.TOTAL_PRICE += row.PRICE;
             p.ORDERS.push(row);
         });
