@@ -5,10 +5,10 @@ var logger = require('./logger').getLogger('monitor');
 
 var validator = {
     validateIncoming: function(req, res, next) {
-        if((req.path == '/api/v1/persons' && req.method == 'POST')
-            || (req.path.startsWith('/api/v1/persons/') && req.method == 'PUT')) {
-            if(req.body && req.body.roleCode == 'PR') {
-                if(req.context && req.context.role != 'PR') {
+        if(req.path == '/api/v1/persons' && ['POST','PUT'].indexOf(req.method) >= 0 ) {
+
+            if(req.body && [].concat(req.body.roleCode).indexOf('PR') >= 0) {
+                if(req.context && [].concat(req.context.role).indexOf('PR') < 0) {
                     return res.status(403).json({
                         success: false,
                         message: "utworzenie nowego użytkownika o takiej roli nie jest możliwe"
@@ -18,8 +18,9 @@ var validator = {
         }
 
         if(req.path == '/api/v1/persons' && req.method == 'POST') {
-            if(req.body && req.body.personId != req.context.id && ['OP','PR'].indexOf(req.context.role) < 0) {
-                res.status(403).json({status: 'error', message: 'niedozwolona zmiana'});
+            if(req.body && req.body.personId != req.context.id && 
+                [].concat(req.context.role).filter((r)=>['OP','PR'].indexOf(r) >= 0).length == 0) {
+                    return res.status(403).json({status: 'error', message: 'niedozwolona zmiana'});
             }    
         }
 

@@ -73,6 +73,9 @@ var persons_db = {
 			var calls = [];
 			
 			rows.forEach(function(row){
+
+				if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
+
 				calls.push(function(async_cb) {
 
 					var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
@@ -128,7 +131,9 @@ var persons_db = {
 				cb(null,null);
 				return;
 			}
-            
+			
+			if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
+
 			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
 			getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
 				getPersonOrderIdsStat.finalize();
@@ -154,6 +159,7 @@ var persons_db = {
 		// idObj.value = personId;
 		idObj.ID = personId;
 		
+		if(person.ROLE_CODE) person.ROLE_CODE = [].concat(person.ROLE_CODE).join(',');
         
         if(logger.isDebugEnabled()) logger.debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
         
@@ -165,7 +171,9 @@ var persons_db = {
 	
 	create: function(person, cb) {
         
-        if(logger.isDebugEnabled()) logger.debug('insert person with object: ' + util.inspect(person));
+		if(person.ROLE_CODE) person.ROLE_CODE = [].concat(person.ROLE_CODE).join(',');
+		
+		if(logger.isDebugEnabled()) logger.debug('insert person with object: ' + util.inspect(person));
         
         dbUtil.performInsert(person, 'PERSON', null, function(err, newId){
             if(err) return logErrAndCall(err,cb);

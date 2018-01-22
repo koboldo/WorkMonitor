@@ -41,6 +41,8 @@ var auth = {
             authStat.finalize();
             db.close();
             
+            if(userRow.ROLE_CODE) userRow.ROLE_CODE = userRow.ROLE_CODE.split(',');
+
             if(err) {
                 return res.status(400).json({ 
                                     sucess: false,
