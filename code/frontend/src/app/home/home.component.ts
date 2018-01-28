@@ -29,13 +29,16 @@ export class HomeComponent implements OnInit {
 
 
     private redirect(user:User):void {
-        if (user && user.roleCode !== undefined) {
-            if (user.roleCode === "PR" || user.roleCode === "OP") {
+        if (user && user.roleCode !== undefined && user.roleCode.length > 0) {
+
+            console.log("roleCode "+JSON.stringify(user));
+
+            if (user.roleCode.indexOf("PR") > -1 || user.roleCode.indexOf("OP") > -1) {
                 this.router.navigate(['workOrders']);
-            } else if (user.roleCode === "EN" || user.roleCode === "MG") {
+            } else if (user.roleCode.indexOf("EN") > -1 || user.roleCode.indexOf("MG") > -1) {
                 this.router.navigate(['myWorkOrders']);
             } else {
-                this.alertService.error("Niezaimplementowana rola "+user.role+" użytkownika");
+                this.alertService.error("Niezaimplementowana rola "+JSON.stringify(user.roleCode)+" użytkownika");
                 this.router.navigate(['logme']);
             }
         }

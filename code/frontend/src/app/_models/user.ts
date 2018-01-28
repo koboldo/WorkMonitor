@@ -5,8 +5,8 @@
     public firstName: string;
     public lastName: string;
     public token: string;
-    public roleCode: string;
-    public role: string;
+    public roleCode: string[];
+    public role: string[];
     public officeCode: string;
     public office: string;
     public isActive: string;

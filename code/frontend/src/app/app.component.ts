@@ -18,7 +18,7 @@ export class AppComponent {
 
     items: MenuItem[];
 
-    role: Observable<string>;
+    roles: Observable<string[]>;
     office: Observable<string>;
 
     constructor(private authService:AuthenticationService, private dictService: DictService) {
@@ -34,7 +34,8 @@ export class AppComponent {
     private setUser(user:User):void {
         this.user = user;
         if (user) {
-            this.role = this.dictService.getRoleObs(user.roleCode);
+
+            this.roles = this.dictService.getRoleObs(user.roleCode);
             this.office = this.dictService.getOfficeObs(user.officeCode);
         }
     }

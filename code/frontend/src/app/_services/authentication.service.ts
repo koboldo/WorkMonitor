@@ -88,10 +88,14 @@ export class AuthenticationService {
     }
 
     private filterItem(item:any, user:User):boolean {
-        if (item.rolesRequired && item.rolesRequired.indexOf(user.roleCode) > -1) {
-            return true;
+        if (item.rolesRequired ) {
+            for (let roleCode of user.roleCode) {
+                if (item.rolesRequired.indexOf(roleCode) > -1) {
+                    return true;
+                }
+            }
         } else {
-            console.log("role "+user.roleCode +" has no access to "+item.label);
+            console.log("roles "+JSON.stringify(user.roleCode) +" has no access to "+item.label);
             return false;
         }
     }

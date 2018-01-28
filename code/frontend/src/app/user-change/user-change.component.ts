@@ -101,7 +101,7 @@ export class UserChangeComponent implements OnInit {
         if (user) {
             this.operator = user;
             console.log("Operator " + JSON.stringify(this.operator));
-            if (this.operator.roleCode !== 'PR') {
+            if (this.operator.roleCode.indexOf('PR') == -1) {
                 let roles:CodeValue[] = this.dictService.getRoles();
                 let allowedRoles:CodeValue[] = [];
                 for (let role of roles) {

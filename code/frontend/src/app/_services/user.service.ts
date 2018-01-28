@@ -107,8 +107,8 @@ export class UserService {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
     }
 
-    public getManagedUsers(role: string): Observable<User[]> {
-        if (role && role === 'PR') {
+    public getManagedUsers(role: string[]): Observable<User[]> {
+        if (role && role.indexOf('PR') > -1 ) {
             return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
         } else {
             return this.getEngineers();
@@ -119,24 +119,39 @@ export class UserService {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["VE"]));
     }
 
+    private hasAnyRole(sourceRoleCodes: string[], user: User): boolean {
+        for (let role of user.roleCode) {
+            if (sourceRoleCodes.indexOf(role) > -1) {
+                return true;
+            }
+        }
+    }
+
     // private helper methods
     private getAllByRole(response:any, roleCodes:string[]):User[] {
         let users : User[] = [];
 
+        console.log("getAllByRole for "+JSON.stringify(roleCodes));
+
         if (response.list && response.list.length > 0) {
             for (let user of response.list) {
 
-                if (user.roleCode && roleCodes.indexOf(user.roleCode) > -1) {
+                console.log("getAllByRole processing user "+JSON.stringify(user));
+
+                if (user.roleCode && user.roleCode.length && this.hasAnyRole(roleCodes, user)) {
+
 
                     if (user.officeCode) {
                         console.log("trying for "+user.officeCode +" from "+JSON.stringify( this.dictService.getOffices() ) );
                         user.office = this.dictService.getOffice(user.officeCode);
                     }
 
-                    if (user.roleCode) {
-                        user.role = this.dictService.getRole(user.roleCode);
+                    user.role = [];
+                    for (let roleCode of user.roleCode) {
+                        user.role.push(this.dictService.getRole(roleCode));
                     }
 
+                    console.log("getAllByRole pushing user "+JSON.stringify(user));
                     users.push(user);
 
                 }

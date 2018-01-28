@@ -98,7 +98,7 @@ export class ToolsService {
         else if (typeCode.startsWith("11."))
             return "#88cc00";
 
-        console.log("Return default color for "+typeCode+"!");
+        //console.log("Return default color for "+typeCode+"!");
 
         return "black";
 

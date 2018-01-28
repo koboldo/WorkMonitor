@@ -72,8 +72,19 @@ export class DictService {
     }
 
     // called just after login
-    public getRoleObs(key: string): Observable<string> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.getKey(response.json(), key))
+    public getRoleObs(keys: string[]): Observable<string[]> {
+        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.getKeys(response.json(), keys))
+    }
+
+    private getKeys(response:any, keys:string[]):string[] {
+        let result: string[] = [];
+        let codeValues: CodeValue[] = [];
+        this.setCodes(response, codeValues);
+        for (let key of keys) {
+            result.push(this.getValue(key, codeValues));
+        }
+
+        return result;
     }
 
     public getOfficeObs(key: string): Observable<string> {
