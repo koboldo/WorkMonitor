@@ -8,7 +8,8 @@
     "url": "https://git.koboldo"
   },
   "scripts": {
-    "start": "ng serve --port 3000 --proxy proxy.conf.json --ssl 1 --ssl-key ../env_specific/ssl/work_monitor.key.pem --ssl-cert ../env_specific/ssl/work_monitor.cert.pem",
+
+    "start": "ng serve --port 3000 --proxy proxy.conf.json",
     "start-old": "tsc && concurrently \"npm run tsc:w\" \"npm run lite:proxy\" ",
     "lite:proxy": "lite-server -c bs-config.js",
     "tsc": "tsc",
