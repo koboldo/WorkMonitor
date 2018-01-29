@@ -28,10 +28,14 @@
         </form>
       </p-fieldset>
     </div>
+    <div class="ui-grid-col-4">
+
+    </div>
   </div>
 
-  <div class="ui-grid-row" *ngIf="engineersWithSheets">
-    <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" (onEditCancel)="onEditCancel($event)" (onEditComplete)="onEditComplete($event)" [value]="engineersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+  <div class="ui-g" *ngIf="usersWithSheets" style="margin-top: 5px; margin-right: 10px;">
+    <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" (onEdit)="onEdit($event)" (onEditCancel)="onEditCancel($event)" (onEditComplete)="onEditComplete($event)" [value]="usersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner"
+                 csvSeparator=";" exportFilename="czas_pracy">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -39,10 +43,12 @@
         </div>
       </p-header>
 
-      <p-column [sortable]="true" field="tabid" header="tabid" hidden="true" ></p-column>
+
+      <p-column [sortable]="true" field="rowid" header="tabid" hidden="true" [exportable]="false"></p-column>
       <p-column [sortable]="true" field="office" header="Biuro"></p-column>
       <p-column [sortable]="true" field="role" header="Rola"></p-column>
-      <p-column [sortable]="true" field="email" header="Email" ></p-column>
+      <!--<p-column [sortable]="true" field="email" header="Email" ></p-column>-->
+
       <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
       <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
 
@@ -54,37 +60,38 @@
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Obecny od" field="timesheetFrom">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny od" field="timesheetFrom">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetFrom}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Obecny do" field="timesheetTo">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny do" field="timesheetTo">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTo}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetBreakInMinutes}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="timesheetWorkDate" header="Godziny">
+      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
         </ng-template>
       </p-column>
 
-      <!--
-      <p-column [sortable]="true" field="timesheetWohrkDate" header="Dnia" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetFrom" header="Obecny od" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetTo" header="Obecny do" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      <p-column [editable]="user?.roleCode === 'PR' || user?.roleCode === 'OP'" [sortable]="true" field="timesheetBreakInMinutes" header="Przerwa [min]" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny" [style]="{'color':'darkred', 'text-align':'center'}"></p-column>
-      -->
+      <p-column  [sortable]="true" field="status" header="Status" [style]="{'width': '50px'}">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div *ngIf="timesheet.status == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
+          <div *ngIf="timesheet.status == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
+          <div *ngIf="timesheet.status == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+        </ng-template>
+      </p-column>
+
 
 
       <ng-template pTemplate="emptymessage">
@@ -93,11 +100,11 @@
 
       <p-footer>
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-          <div  *ngIf="user?.roleCode === 'PR' || user?.roleCode === 'OP'" class="ui-grid-row"  style="margin-top: 15px;">
+          <div  *ngIf="user?.roleCode?.indexOf('OP') > -1" class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-5"></div>
             <div class="ui-grid-col-2">
               <!--<button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>-->
-              <button type="button" pButton icon="fa-check" iconPos="left" label="Zapisz" (click)="showConfirmDialog()"></button>
+              <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-5"></div>
           </div>
@@ -106,35 +113,6 @@
 
     </p-dataTable>
   </div>
-
-
-  <p-dialog header="Modyfikacja zadeklarowanego czasu pracy" [(visible)]="displayConfirmationDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
-
-    <div class="ui-grid ui-grid-responsive ui-fluid">
-
-      <div *ngFor="let warn of warns" class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-12">
-          <p-message severity="warn" [text]="warn"></p-message>
-        </div>
-      </div>
-
-      <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-12" *ngIf="!(engineerWithChangedSheet?.length > 0)"><label>Brak zmian!</label></div>
-        <div class="ui-grid-col-12" *ngIf="engineerWithChangedSheet?.length > 0">
-          <div *ngFor="let e of engineerWithChangedSheet">
-            <span style="margin-bottom: 10px"><strong>{{e.firstName}} {{e.lastName}}</strong> w dniu {{e.timesheetWorkDate}} przepracował <strong>{{e.timesheetUsedTime}}</strong> godzin.</span>
-            <br>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" [disabled]="!(engineerWithChangedSheet?.length > 0)" pButton icon="fa-check" (click)="saveSheets()" label="Zapisz"></button>
-      </div>
-    </p-footer>
-  </p-dialog>
 
 
 

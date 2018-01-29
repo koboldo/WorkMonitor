@@ -33,7 +33,8 @@
 
       <div class="form-group" *ngIf="showRoles">
         <label for="roleCode">Funkcja w systemie</label>
-        <p-selectButton [disabled]="operator.roleCode != 'PR'" id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required #roleCode="ngModel"></p-selectButton>
+        <!-- TODO change for multirole -->
+        <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required #roleCode="ngModel"></p-selectButton>
         <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
       </div>
 

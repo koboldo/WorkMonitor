@@ -1,12 +1,12 @@
 export class Timesheet {
 
     constructor(public personId:number,
-                public workDate:string,
-                public usedTime:number) {
+                public from:string,
+                public to:string) {
     }
 
-    public from: number;
-    public to: number;
-    public breakInMinutes: string;
+    public break: string;
+    public usedTime:number;
+
 }
 

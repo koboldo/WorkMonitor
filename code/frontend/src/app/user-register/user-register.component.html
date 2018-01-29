@@ -20,11 +20,12 @@
 
             <div class="form-group" *ngIf="showRoles">
                 <label for="roleCode">Funkcja w systemie</label>
+                <!-- TODO change for multirole -->
                 <p-selectButton id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="user.roleCode" required #roleCode="ngModel"></p-selectButton>
                 <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
             </div>
 
-            <div *ngIf="user.roleCode === 'VE'" style="width: 100%; margin-bottom: 10px;">
+            <div *ngIf="user.roleCode.indexOf('VE') > -1" style="width: 100%; margin-bottom: 10px;">
                 <label for="company">Firma</label>
                 <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
                         id="company"

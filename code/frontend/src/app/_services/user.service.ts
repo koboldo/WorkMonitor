@@ -107,9 +107,13 @@ export class UserService {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
     }
 
+    public getStaff(): Observable<User[]> {
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
+    }
+
     public getManagedUsers(role: string[]): Observable<User[]> {
         if (role && role.indexOf('PR') > -1 ) {
-            return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
+            return this.getStaff();
         } else {
             return this.getEngineers();
         }

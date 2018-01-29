@@ -23,13 +23,9 @@ export class TimesheetService {
             .map((response: Response) => this.getTimesheets(response.json()))
     }
 
-    upsert(sheets: Timesheet[]): Observable<number> {
-        console.log("upserting "+JSON.stringify(sheets));
-        if (sheets.length > 0) {
-            return this.http.put('/api/v1/timesheets', sheets).map((response: Response) => response.json());
-        } else {
-            return new EmptyObservable();
-        }
+    upsert(timesheet: Timesheet): Observable<Timesheet> {
+        console.log("upserting "+JSON.stringify(timesheet));
+        return this.http.put('/api/v1/timesheets', timesheet).map((response: Response) => response.json().timesheet);
     }
 
 

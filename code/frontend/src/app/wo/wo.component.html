@@ -171,8 +171,8 @@
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
         </div>
 
-          <div class="ui-grid-col-2" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
-          <div class="ui-grid-col-4" *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'">
+          <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
+          <div class="ui-grid-col-4" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
           </div>
 
