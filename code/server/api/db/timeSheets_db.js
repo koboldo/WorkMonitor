@@ -9,21 +9,42 @@ var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
 
 var queries = {
-    getAllTimesheet: 'SELECT PERSON_ID, ROUND(CAST(USED_TIME AS DOUBLE)/3600.0,2) USED_TIME, BREAK/60, DATETIME(FROM_DATE,"unixepoch") AS FROM_DATE, DATETIME(TO_DATE,"unixepoch") AS TO_DATE FROM TIME_SHEET WHERE %(personId)s AND %(workDate)s',
-    // getAllTimesheets: 'SELECT PERSON_ID, USED_TIME, BREAK, STRFTIME("%%Y-%%m-%%d",DATETIME(WORK_DATE,"unixepoch")) AS WORK_DATE, STRFTIME("%%H:%%M",DATETIME(FROM_DATE,"unixepoch")) AS FROM_DATE, STRFTIME("%%H:%%M",DATETIME(TO_DATE,"unixepoch")) AS TO_DATE FROM TIME_SHEET WHERE 1=1 %(workDateBefore)s %(workDateAfter)s',
+    getTimesheet: 
+    `SELECT PERSON_ID, ROUND(CAST(USED_TIME AS DOUBLE)/3600.0,2) USED_TIME, BREAK/60 BREAK, IS_LEAVE, DATETIME(FROM_DATE,"unixepoch") AS FROM_DATE, DATETIME(TO_DATE,"unixepoch") AS TO_DATE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
+    FROM TIME_SHEET TS LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.MODIFIED_BY = PM.ID WHERE %(personId)s AND %(workDate)s`,
     getAllTimesheets: 
-    `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9))
-    SELECT P.ID PERSON_ID, %(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , DATETIME(COALESCE(TS.FROM_DATE,%(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") FROM_DATE, DATETIME(COALESCE(TS.TO_DATE,%(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK
-    FROM MYL M1, MYL M2, MYL M3, PERSON P 
+    // `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9))
+    // SELECT P.ID PERSON_ID, %(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , DATETIME(COALESCE(TS.FROM_DATE,%(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") FROM_DATE, DATETIME(COALESCE(TS.TO_DATE,%(workDateAfter)s+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, IS_LEAVE
+    // FROM MYL M1, MYL M2, MYL M3, PERSON P 
+    //     LEFT JOIN TIME_SHEET TS ON P.ID = TS.PERSON_ID AND SWD = TS.WORK_DATE
+    // WHERE SWD <= (%(workDateBefore)s)*1 %(personId)s
+    // ORDER BY 1,3`,
+    `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
+    MY_FROM_DATE(T) AS (VALUES ((%(workDateAfter)s/86400)*86400)),
+    MY_TO_DATE(T) AS (VALUES ((%(workDateBefore)s/86400)*86400))    
+    SELECT P.ID PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , DATETIME(COALESCE(TS.FROM_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") FROM_DATE, DATETIME(COALESCE(TS.TO_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE
+    FROM MYL M1, MYL M2, MYL M3, MY_FROM_DATE FD, MY_TO_DATE TD, PERSON P 
         LEFT JOIN TIME_SHEET TS ON P.ID = TS.PERSON_ID AND SWD = TS.WORK_DATE
-    WHERE SWD <= (%(workDateBefore)s)*1
-    ORDER BY 1,3`
+    WHERE SWD <= (TD.T)*1 %(personId)s
+    ORDER BY 1,3`,
+    insertLeave:
+    `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
+    MY_FROM_DATE(T) AS (VALUES ((STRFTIME("%%s","%(FROM_DATE)s")/86400)*86400)),
+    MY_TO_DATE(T) AS (VALUES ((STRFTIME("%%s","%(TO_DATE)s")/86400)*86400))
+    INSERT INTO TIME_SHEET(
+        PERSON_ID, WORK_DATE, USED_TIME, FROM_DATE, TO_DATE, IS_LEAVE, CREATED_BY, BREAK )
+    SELECT
+        %(PERSON_ID)s, FD.T+86400*(M3.N*100+M2.N*10+M1.N), 8*60*60, FD.T+86400*(M3.N*100+M2.N*10+M1.N), FD.T+86400*(M3.N*100+M2.N*10+M1.N)+8*60*60, "Y", %(CREATED_BY)s, 0
+    FROM
+        MYL M1, MYL M2,MYL M3, MY_FROM_DATE FD, MY_TO_DATE TD 
+    WHERE 
+        M3.N*100+M2.N*10+M1.N <= (TD.T-FD.T)/86400`
 };
 
 var filters = {
     getTimesheet: {
-        personId: 'PERSON_ID = %(personId)s',
-        workDate: 'WORK_DATE = (STRFTIME("%%s","%(workDate)s")/86400)*86400',
+        personId: 'TS.PERSON_ID = %(personId)s',
+        workDate: 'TS.WORK_DATE = (STRFTIME("%%s","%(workDate)s")/86400)*86400',
     },
     // getTimesheets: {
     //     workDateBefore: 'AND (WORK_DATE/86400) <= (STRFTIME("%%s","%(workDateBefore)s")/86400)',
@@ -32,7 +53,14 @@ var filters = {
     getTimesheets: {
         workDateBefore: 'STRFTIME("%%s","%(workDateBefore)s")',
         workDateAfter: 'STRFTIME("%%s","%(workDateAfter)s")',
-    }    
+        personId: 'AND P.ID = %(personId)s'
+    },
+    insertLeave:{
+        FROM_DATE: "%(FROM_DATE)s",
+        TO_DATE: "%(TO_DATE)s",
+        PERSON_ID: "%(PERSON_ID)s",
+        CREATED_BY: "%(CREATED_BY)s"
+    }
 };
 
 var timeSheets_db = {
@@ -41,6 +69,7 @@ var timeSheets_db = {
         var db = dbUtil.getDatabase();
         
         var query = dbUtil.prepareFiltersByInsertion(queries.getAllTimesheets,params,filters.getTimesheets);
+        console.log('read query ' + query);
         var getAllTimesheetsStat = db.prepare(query);
 		getAllTimesheetsStat.all(function(err, rows) {
             getAllTimesheetsStat.finalize();
@@ -57,7 +86,7 @@ var timeSheets_db = {
     
     read: function(params, cb) {
         var db = dbUtil.getDatabase();
-        var query = dbUtil.prepareFiltersByInsertion(queries.getAllTimesheet,params,filters.getTimesheet);
+        var query = dbUtil.prepareFiltersByInsertion(queries.getTimesheet,params,filters.getTimesheet);
         var getTimesheetStat = db.prepare(query);
         getTimesheetStat.get((err,row)=>{
             getTimesheetStat.finalize();
@@ -80,7 +109,6 @@ var timeSheets_db = {
         var mydb = dbUtil.getDatabase();
 
         dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, (err, newId) => {
-            console.log('after insert err ' + (err ? err.name : '') + ' result ' + newId );
             let updating = false;
             if(err) {  
                 logErrAndCall(err,cb);  
@@ -95,9 +123,10 @@ var timeSheets_db = {
                 updating = true;
                 var idObj = {};
                 idObj.PERSON_ID = timeSheet.PERSON_ID;
-                idObj.WORK_DATE = timeSheet.WORK_DATE;
+                idObj.WORK_DATE = `(SELECT ${timeSheet.WORK_DATE})`;
+                delete timeSheet.CREATED_BY;
+
                 dbUtil.performUpdate(idObj, timeSheet, 'TIME_SHEET', (err,result) => {
-                    console.log('after update err ' + (err ? err.name : '') + ' result ' + result );
                     if(err)  logErrAndCall(err,cb);  
                     else if(result) { 
                         this.read(
@@ -113,6 +142,31 @@ var timeSheets_db = {
         }, mydb);
     },
 
+    createLeave: function(leaveSheet, cb) {
+
+        var db = dbUtil.getDatabase();
+        var query = dbUtil.prepareFiltersByInsertion(queries.insertLeave,leaveSheet,filters.insertLeave);
+        var leaveSheetStat = db.prepare(query);
+        leaveSheetStat.run((err,result)=>{
+            leaveSheetStat.finalize();
+            db.close();
+            if(err)  {
+                logErrAndCall(err,cb);  
+            } else {
+                this.readAll(
+                    {
+                        workDateAfter: leaveSheet.FROM_DATE,
+                        workDateBefore: leaveSheet.TO_DATE,
+                        personId: leaveSheet.PERSON_ID
+                    },
+                    (err,rows)=>{
+                        if(err)  logErrAndCall(err,cb);  
+                        else cb(null,rows);
+                    }
+                );
+            }
+        });
+    }
 /**
     bulkCreate: function(timeSheets, cb) {
 

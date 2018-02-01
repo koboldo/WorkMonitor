@@ -56,10 +56,11 @@ var timeSheets = {
             return;
         }
 
+        delete req.body.isLeave;
         req.body.createdBy = req.context.id;
         req.body.modifiedBy = req.context.id;
         
-        var nowDateTxt = dateformat(new Date(),'yyyy-mm-dd HH:MM');
+        var nowDateTxt = dateformat(new Date(),'yyyy-mm-dd HH:MM:ss');
         if(req.body.from == 'now') req.body.from = nowDateTxt;
         if(req.body.to == 'now') req.body.to = nowDateTxt;
         if(req.body.from) req.body.workDate = req.body.from;
@@ -86,6 +87,26 @@ var timeSheets = {
         });
     },
 
+    createLeave: function(req,res) {
+
+        if(!req.body.to || !req.body.from || parseStringToDate(req.body.from).getTime() > parseStringToDate(req.body.to).getTime()) {
+            return res.status(400).json({status:'error', message: 'invalid values'});
+        }
+        
+        req.body.createdBy = req.context.id;
+        var timeSheetSql = mapper.timeSheet.mapToSql(req.body);
+        timeSheets_db.createLeave(timeSheetSql,function(err, timeSheetRows){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+
+            var rv = {};
+            rv.created = 1;
+            rv.timesheet = mapper.mapList(mapper.timeSheet.mapToJson,timeSheetRows).list;
+            res.status(201).json(rv);
+        });
+    }
     // bulkCreate: function(req, res) {
     //     var timeSheets = mapper.mapList(mapper.timeSheet.mapToSql, req.body).list;
     //     timeSheets_db.bulkCreate(timeSheets, function(err, result){

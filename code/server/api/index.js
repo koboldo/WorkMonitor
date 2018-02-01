@@ -35,8 +35,8 @@ router.put('/v1/workTypes/:id', workTypes.update);
 router.get('/v1/codes', codes.readTables);
 router.get('/v1/codes/:codeTable', codes.readCodes);
 
-router.put('/v1/timeSheets', timeSheets.create);
-// router.get('/v1/timeSheets/:personId', timeSheets.read);
+router.post('/v1/timeSheets', timeSheets.create);
+router.post('/v1/timeSheets/leave', timeSheets.createLeave);
 router.get('/v1/timeSheets', timeSheets.readAll);
 
 router.get('/v1/relatedItems/:id', relatedItems.read);
