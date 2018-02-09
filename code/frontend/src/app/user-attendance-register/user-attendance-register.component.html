@@ -1,0 +1,10 @@
+<div>
+  <br>
+  <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: right; cursor: pointer; color: orangered;" >Wejście</a>
+  <div *ngIf="isSetFrom()" style="float: right;" >Wejście: {{timesheet?.from?.substr(11, 5)}}</div>
+</div>
+<div>
+  <br>
+  <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered">Wyjście</a>
+  <div *ngIf="isSetTo() && isSetFrom()" style="float: right;" >Wyjście: {{timesheet?.to?.substr(11, 5)}}</div>
+</div>

@@ -45,7 +45,7 @@
     <!-- sortField="lastModDate" -->
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"
-                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";">
+                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="WO">
       <p-header>
         <div>
           <i class="fa fa-search"></i>

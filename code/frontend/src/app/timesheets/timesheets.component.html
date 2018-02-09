@@ -3,7 +3,7 @@
 <p-panel header="Deklaracje czasu pracy">
 
   <div class="ui-grid-row">
-    <div class="ui-grid-col-8">
+    <div class="ui-grid-col-7">
       <p-fieldset legend="Listy obecności">
         <form #f="ngForm" (submit)="search()">
 
@@ -28,14 +28,17 @@
         </form>
       </p-fieldset>
     </div>
-    <div class="ui-grid-col-4">
-
+    <div class="ui-grid-col-5">
+      <p-fieldset legend="Urlopy">
+        <user-leave *ngIf="users?.length > 0" [users]="users"></user-leave>
+      </p-fieldset>
     </div>
   </div>
 
   <div class="ui-g" *ngIf="usersWithSheets" style="margin-top: 5px; margin-right: 10px;">
     <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" (onEdit)="onEdit($event)" (onEditCancel)="onEditCancel($event)" (onEditComplete)="onEditComplete($event)" [value]="usersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner"
-                 csvSeparator=";" exportFilename="czas_pracy">
+                 csvSeparator=";" exportFilename="czas_pracy"
+                 expandableRows="true">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -43,48 +46,51 @@
         </div>
       </p-header>
 
-
+      <p-column expander="true" styleClass="col-icon" [style]="{'width': '30px'}"></p-column>
       <p-column [sortable]="true" field="rowid" header="tabid" hidden="true" [exportable]="false"></p-column>
-      <p-column [sortable]="true" field="office" header="Biuro"></p-column>
-      <p-column [sortable]="true" field="role" header="Rola"></p-column>
-      <!--<p-column [sortable]="true" field="email" header="Email" ></p-column>-->
-
-      <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
-      <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
+      <p-column [sortable]="true" field="office" header="Biuro" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="firstName" header="Imie"  [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="lastName" header="Nazwisko"  [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
 
 
-      <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia">
+      <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetWorkDate}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny od" field="timesheetFrom">
+      <p-column [sortable]="true" header="Urlop" field="isLeave" [style]="{'width': '70px'}" [filter]="true" filterPlaceholder="Filtruj">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.isLeave}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny od" field="timesheetFrom" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetFrom}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny do" field="timesheetTo">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny do" field="timesheetTo" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTo}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetBreakInMinutes}}</div>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny">
+      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
         </ng-template>
       </p-column>
 
-      <p-column  [sortable]="true" field="status" header="Status" [style]="{'width': '50px'}">
+      <p-column *ngIf="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" field="status" header="Zapisano" [style]="{'width': '60px'}">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div *ngIf="timesheet.status == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
           <div *ngIf="timesheet.status == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
@@ -92,7 +98,25 @@
         </ng-template>
       </p-column>
 
-
+      <ng-template let-timesheet pTemplate="rowexpansion">
+        <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+          <div class="ui-grid-row">
+            <div *ngIf="timesheet?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+              Utworzony dla: {{timesheet.role}}, {{timesheet.email}}, {{timesheet.phone}},
+            </div>
+          </div>
+          <div class="ui-grid-row">
+            <div *ngIf="timesheet?.copy?.createdBy" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                Utworzony przez: <span style="font-weight: bold">{{timesheet.copy.createdBy}}</span>
+            </div>
+          </div>
+          <div class="ui-grid-row">
+            <div *ngIf="timesheet?.copy?.modifiedBy" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                Zmodyfikowany przez: <span style="font-weight: bold">{{timesheet.copy.modifiedBy}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
 
       <ng-template pTemplate="emptymessage">
         Brak danych...

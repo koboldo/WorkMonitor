@@ -9,6 +9,9 @@
         <div *ngIf="user?.firstName" style="position: absolute; top:50px; right: 50px; z-index: 3; font-weight: bold; color: #f0f3f5">
             {{user?.firstName}} ({{roles | async}}) @ {{office | async}}<br>
             <a style="float: right" href="logout">Wyloguj</a>
+
+            <user-attendance-register *ngIf="user?.firstName" [user]="user"></user-attendance-register>
+
         </div>
     </div>
 </div>
