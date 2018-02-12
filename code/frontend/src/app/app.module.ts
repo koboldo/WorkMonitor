@@ -32,6 +32,8 @@ import { ProgressComponent } from './progress/progress.component';
 import { UserResetPasswordComponent } from './user-reset-password/user-reset-password.component';
 import { WoDetailsComponent } from './wo-details/wo-details.component';
 import { StatusDetailsComponent } from './status-details/status-details.component';
+import { UserAttendanceRegisterComponent } from './user-attendance-register/user-attendance-register.component';
+import { UserLeaveComponent } from './user-leave/user-leave.component';
 
 @NgModule({
     imports: [
@@ -61,7 +63,9 @@ import { StatusDetailsComponent } from './status-details/status-details.componen
         ProgressComponent,
         UserResetPasswordComponent,
         WoDetailsComponent,
-        StatusDetailsComponent
+        StatusDetailsComponent,
+        UserAttendanceRegisterComponent,
+        UserLeaveComponent
     ],
     providers: [
         AuthGuard,

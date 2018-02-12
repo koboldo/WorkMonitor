@@ -20,6 +20,7 @@ export class TimesheetsComponent implements OnInit {
     usersWithSheets:UserWithSheet[] = <UserWithSheet[]> [];
 
     sEmptySheet: string = "BRAK";
+    sWeekendSheet: string = "Weekend";
     warns: string[];
     timeRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$');
     hourRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3])$');
@@ -52,7 +53,8 @@ export class TimesheetsComponent implements OnInit {
     onEditInit(event) {
         console.log("about edit !" + JSON.stringify(event.data));
 
-        if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet) {
+        if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
+            event.data.timesheetFrom === this.sWeekendSheet && event.data.timesheetTo === this.sWeekendSheet) {
             //cleaning BRAK values
             event.data.timesheetFrom = "";
             event.data.timesheetTo = "";
@@ -94,21 +96,49 @@ export class TimesheetsComponent implements OnInit {
     }
 
     private restore(userWithSheet: UserWithSheet) {
-        if (userWithSheet.copy.usedTime == 0) {
+        if (userWithSheet.copy.usedTime == 0 && "00:00" == userWithSheet.copy.from.substr(11, 5) && "00:00" == userWithSheet.copy.to.substr(11, 5)) {
             userWithSheet.timesheetBreakInMinutes = this.sEmptySheet;
             userWithSheet.timesheetWorkDate = userWithSheet.copy.from.substr(0, 10);
             userWithSheet.timesheetFrom = this.sEmptySheet;
             userWithSheet.timesheetTo = this.sEmptySheet;
             userWithSheet.timesheetUsedTime = userWithSheet.copy.usedTime;
             userWithSheet.color = "darkred";
+
+            if (this.isWeekend(userWithSheet.copy.from)) {
+                userWithSheet.timesheetBreakInMinutes = this.sWeekendSheet;
+                userWithSheet.timesheetFrom = this.sWeekendSheet;
+                userWithSheet.timesheetTo = this.sWeekendSheet;
+                userWithSheet.color = "grey";
+            }
+
+
         } else {
             userWithSheet.timesheetBreakInMinutes = userWithSheet.copy.break;
             userWithSheet.timesheetWorkDate = userWithSheet.copy.from.substr(0, 10);
             userWithSheet.timesheetFrom = userWithSheet.copy.from.substr(11, 5);
             userWithSheet.timesheetTo = userWithSheet.copy.to.substr(11, 5);
             userWithSheet.timesheetUsedTime = userWithSheet.copy.usedTime;
-            userWithSheet.color = "darkgreen";
+
+            if (userWithSheet.copy.createdBy && userWithSheet.copy.modifiedBy &&
+                userWithSheet.copy.createdBy === userWithSheet.copy.modifiedBy &&
+                userWithSheet.copy.createdBy === userWithSheet.firstName+" "+userWithSheet.lastName) {
+
+                userWithSheet.color = "darkgreen";
+            } else {
+                userWithSheet.color = "darkblue";
+            }
         }
+
+        userWithSheet.isLeave = userWithSheet.copy.isLeave;
+        if (userWithSheet.isLeave === "Y") {
+            userWithSheet.timesheetBreakInMinutes = "Urlop";
+            userWithSheet.timesheetFrom = "Urlop";
+            userWithSheet.timesheetTo = "Urlop";
+            userWithSheet.color = "#444433";
+        }
+
+
+
         userWithSheet.status = "OK";
     }
 
@@ -122,12 +152,12 @@ export class TimesheetsComponent implements OnInit {
 
     onEditComplete(event) {
         console.log("edited !" + JSON.stringify(event.data));
-        if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && !this.timeRegexp.test(event.data.timesheetFrom)) {
+        if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && event.data.timesheetFrom!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetFrom)) {
             this.alertService.warn("Nie zmieniono deklaracji ze względu na nieprawidlową wartość: "+event.data.timesheetFrom);
             this.restore(event.data);
         }
 
-        if (event.data.timesheetTo && event.data.timesheetTo!== this.sEmptySheet && !this.timeRegexp.test(event.data.timesheetTo)) {
+        if (event.data.timesheetTo && event.data.timesheetTo!== this.sEmptySheet && event.data.timesheetTo!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetTo)) {
             this.alertService.warn("Nie zmieniono deklaracji ze względu na nieprawidlową wartość: "+event.data.timesheetTo);
             this.restore(event.data);
         }
@@ -241,6 +271,12 @@ export class TimesheetsComponent implements OnInit {
         this.warns.push(msg);
     }
 
+    //YYYY-MM-DD
+    private isWeekend(workDate:string):boolean {
+        let myDate:Date = this.toolsService.parseDate(workDate);
+        console.log("Data dla "+workDate+" to "+ myDate.toISOString());
+        return myDate.getDay() == 6 || myDate.getDay() == 0;
+    }
 }
 
 
@@ -254,6 +290,7 @@ export class UserWithSheet extends User {
     timesheetFrom: string;
     timesheetTo: string;
     timesheetBreakInMinutes: string;
+    isLeave: string;
 
     color: string;
     status: string;

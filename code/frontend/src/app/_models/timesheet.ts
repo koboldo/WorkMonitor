@@ -7,6 +7,9 @@ export class Timesheet {
 
     public break: string;
     public usedTime:number;
+    public isLeave: string;
+    public createdBy: string;
+    public modifiedBy: string;
 
 }
 

@@ -1,6 +1,7 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
-import { Observable }    from 'rxjs/Observable';
+import { DatePipe }         from '@angular/common';
+import { Observable }       from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
 
@@ -10,6 +11,8 @@ import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class ToolsService {
+
+    datePipe :DatePipe = new DatePipe('en-US');
 
     constructor(private alertService: AlertService) {
 
@@ -51,7 +54,10 @@ export class ToolsService {
         let d: Date =  new Date(dateAsString.replace(/-/g, '/'));
         d.setTime( d.getTime() - d.getTimezoneOffset()*60*1000 );
         return d;
+    }
 
+    public formatDate(date: Date, format: string): string {
+        return this.datePipe.transform(date, format);
     }
 
     public parsePrice(price:string, workNo: string):number {
