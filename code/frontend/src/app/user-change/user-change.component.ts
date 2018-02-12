@@ -24,9 +24,13 @@ export class UserChangeComponent implements OnInit {
 
     roles:SelectItem[] = [];
     offices:SelectItem[] = [];
+    ranks:SelectItem[] = [];
+    agreements:SelectItem[] = [];
 
     showRoles:boolean = false;
     showOffices:boolean = false;
+    showRanks:boolean = false;
+    showAgreements:boolean = false;
 
     operator:User;
 
@@ -34,6 +38,10 @@ export class UserChangeComponent implements OnInit {
     users:User[] = [];
     suggestedUsers:SearchUser[];
     selectedUser:SearchUser;
+
+    /* autocompletion company */
+    suggestedCompanies: string[];
+    company: string;
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -48,6 +56,17 @@ export class UserChangeComponent implements OnInit {
         this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
 
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
+
+        this.mapToRanks(this.dictService.getRanks());
+        this.mapToAgreements(this.dictService.getAgreements());
+
+    }
+
+    public onSelectUser(value : SearchUser): void {
+        console.log("changing company "+JSON.stringify(value));
+        if (value && value.user && value.user.company) {
+            this.company = value.user.company;
+        }
     }
 
     suggestUser(event) {
@@ -60,15 +79,43 @@ export class UserChangeComponent implements OnInit {
                 if (suggestion.indexOf(event.query) > -1) {
                     let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
                     this.suggestedUsers.push(new SearchUser(displayName, user));
+                    console.log("added suggestUser " + suggestion + " for " + JSON.stringify(user));
                 }
             }
         }
         console.log("suggestedUsers " + JSON.stringify(this.suggestedUsers));
     }
 
+    public showProjectFactor() {
+        return this.selectedUser && this.operator && this.selectedUser.user.isFromPool === 'Y' && this.operator.roleCode.indexOf('PR') > -1;
+    }
+
+    suggestCompany(event) {
+        this.suggestedCompanies = <string[]> [];
+
+        if (this.users && this.users.length > 0) {
+            console.log('all ' + JSON.stringify(this.users));
+            for (let u of this.users) {
+                if (this.selectedUser.user.roleCode.indexOf('VE') == -1 && u.roleCode.indexOf('VE') == -1) {
+                    if (u.company && u.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(u.company) == -1) {
+                        this.suggestedCompanies.push(u.company);
+                    }
+                } else if (this.selectedUser.user.roleCode.indexOf('VE') > -1 && u.roleCode.indexOf('VE') > -1) {
+                    if (u.company && u.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(u.company) == -1) {
+                        this.suggestedCompanies.push(u.company);
+                    }
+                }
+            }
+        }
+        console.log('suggestedCompanies: ' + JSON.stringify(this.suggestedCompanies));
+    }
+
     changeUser() {
         this.loading = true;
 
+        if (this.company) {
+            this.selectedUser.user.company = this.company;
+        }
 
         this.userService.update(this.selectedUser.user)
             .subscribe(
@@ -88,6 +135,14 @@ export class UserChangeComponent implements OnInit {
 
     private mapToOffices(pairs:CodeValue[]):void {
         this.showOffices = this.mapToSelectItem(pairs, this.offices);
+    }
+
+    private mapToRanks(pairs:CodeValue[]):void {
+        this.showRanks = this.mapToSelectItem(pairs, this.ranks);
+    }
+
+    private mapToAgreements(pairs:CodeValue[]):void {
+        this.showAgreements = this.mapToSelectItem(pairs, this.agreements);
     }
 
     private mapToSelectItem(pairs:CodeValue[], ref:SelectItem[]):boolean {
@@ -114,7 +169,7 @@ export class UserChangeComponent implements OnInit {
             } else {
                 this.mapToRoles(this.dictService.getRoles());
             }
-            this.userService.getManagedUsers(user.roleCode).subscribe(engineers => this.users = engineers);
+            this.userService.getManagedUsers(user.roleCode, true).subscribe(engineers => this.users = engineers);
         }
     }
 }

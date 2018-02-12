@@ -20,36 +20,10 @@
 
             <div class="form-group" *ngIf="showRoles">
                 <label for="roleCode">Funkcja w systemie</label>
-                <!-- TODO change for multirole -->
-                <p-selectButton id="roleCode" name="roleCode" [options]="roles" [(ngModel)]="user.roleCode" required #roleCode="ngModel"></p-selectButton>
+                <p-selectButton id="roleCode" name="roleCode" [options]="roles" multiple="multiple" [(ngModel)]="user.roleCode" required #roleCode="ngModel"></p-selectButton>
                 <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
             </div>
 
-            <div *ngIf="user.roleCode.indexOf('VE') > -1" style="width: 100%; margin-bottom: 10px;">
-                <label for="company">Firma</label>
-                <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}"
-                        id="company"
-                        name="company"
-                        [(ngModel)]="company"
-                        [suggestions]="suggestedCompanies"
-                        (completeMethod)="suggestCompany($event)"
-                        [dropdown]="true"
-                        [forceSelection]="false"
-                        placeholder="Wybierz/wpisz nazwę firmy przedstawiciela..."
-                        required
-                        ></p-autoComplete>
-                <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
-            </div>
-
-            <!--<input id="company" type="text" class="form-control" name="company" [(ngModel)]="user.company" #company="ngModel" required minlength="2" />-->
-
-
-
-
-            <!--<div class="form-group">
-                <p-radioButton name="groupname" value="Y" [(ngModel)]="user.isActive" label="Aktywny (Konto)"></p-radioButton>
-                <p-radioButton name="groupname" value="N" [(ngModel)]="user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
-            </div>-->
 
             <div class="form-group" *ngIf="showOffices">
                 <label for="officeCode">Biuro macierzyste</label>
@@ -57,6 +31,100 @@
                 <!--<p-dropdown name="officeCode" [options]="offices | async" [(ngModel)]="user.officeCode" required autoWidth="false" ></p-dropdown>-->
                 <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
             </div>
+
+            <div *ngIf="user.roleCode.indexOf('VE') > -1" style="width: 100%; margin-bottom: 10px;">
+                <label for="company">Firma Zlecająca</label>
+                <div class="ui-fluid">
+                    <p-autoComplete
+                            id="company"
+                            name="company"
+                            [(ngModel)]="company"
+                            [suggestions]="suggestedCompanies"
+                            (completeMethod)="suggestCompany($event)"
+                            [dropdown]="true"
+                            [forceSelection]="false"
+                            placeholder="Wybierz/wpisz nazwę firmy zleceniodawcy..."
+                            required
+                            ></p-autoComplete>
+                    <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
+                </div>
+            </div>
+            <div *ngIf="user.roleCode.indexOf('VE') == -1">
+                <div style="margin-bottom: 10px; width: 100%; ">
+                    <label for="company">Podmiot zatrudniający</label>
+                    <div class="ui-fluid">
+                        <p-autoComplete
+                            id="company"
+                            name="company"
+                            [(ngModel)]="company"
+                            [suggestions]="suggestedCompanies"
+                            (completeMethod)="suggestCompany($event)"
+                            [dropdown]="true"
+                            [forceSelection]="false"
+                            placeholder="Wybierz/wpisz nazwę firmy zatrudniajacej BOT/DRU etc..."
+                            required
+                                ></p-autoComplete>
+                        <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
+                        <label for="account">Nr konta</label>
+                        <input id="account" type="text" class="form-control" name="account" [(ngModel)]="user.account" #account="ngModel" required account minlength="26"/>
+                        <div *ngIf="f.submitted && !account?.valid" class="help-block">wymagany jest poprawny numer rachunku</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !phone?.valid }">
+                        <label for="phone">Telefon</label>
+                        <input id="phone" type="text" class="form-control" name="phone" [(ngModel)]="user.phone" #phone="ngModel" required phone minlength="9" />
+                        <div *ngIf="f.submitted && !phone?.valid" class="help-block">wymagany jest numer telefonu</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressStreet?.valid }">
+                        <label for="addressStreet">Ulica nr domu/lokal</label>
+                        <input id="addressStreet" type="text" class="form-control" name="addressStreet" [(ngModel)]="user.addressStreet" #addressStreet="ngModel" required addressStreet minlength="5"/>
+                        <div *ngIf="f.submitted && !addressStreet?.valid" class="help-block">wymagany jest poprawny adres Ulica nr domu(/numer lokalu)</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressPost?.valid }">
+                        <label for="addressPost">Kod, miejscowość</label>
+                        <input id="addressPost" type="text" class="form-control" name="addressPost" [(ngModel)]="user.addressPost" #addressPost="ngModel" required addressPost minlength="7"/>
+                        <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">wymagany jest poprawny kod pocztowy oraz miejscowość</div>
+                    </div>
+
+                    <div class="form-group" *ngIf="showRanks">
+                        <label for="rankCode">Zaszeregowanie (powiązane ze sposobem wynagradzania)</label>
+                        <p-selectButton id="rankCode" name="rankCode" [options]="ranks" [(ngModel)]="user.rankCode" required #rankCode="ngModel"></p-selectButton>
+                        <!--<p-dropdown name="rankCode" [options]="ranks | async" [(ngModel)]="user.rankCode" required autoWidth="false" ></p-dropdown>-->
+                        <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Zaszeregowanie jest wymagane</div>
+                    </div>
+
+                    <div class="form-group" *ngIf="showAgreements">
+                        <label for="agreementCode">Główna umowa</label>
+                        <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="user.agreementCode" required #agreementCode="ngModel"></p-selectButton>
+                        <!--<p-dropdown name="agreementCode" [options]="agreements | async" [(ngModel)]="user.agreementCode" required autoWidth="false" ></p-dropdown>-->
+                        <div *ngIf="f.submitted && !agreementCode?.valid" class="help-block">Umowa jest wymagane</div>
+                    </div>
+
+                    <div class="form-group">
+                        <p-radioButton name="poolgroup" value="Y" [(ngModel)]="user.isFromPool" label="Pula (TAK)"></p-radioButton>
+                        <p-radioButton name="poolgroup" value="N" [(ngModel)]="user.isFromPool" label="Pula (NIE)"></p-radioButton>
+                    </div>
+
+                    <div *ngIf="showProjectFactor()" class="form-group" [ngClass]="{ 'has-error': f.submitted && !projectFactor?.valid }">
+                        <label for="projectFactor">Współczynnik (np. 1.2)</label>
+                        <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="user.projectFactor" #projectFactor="ngModel" required projectFactor />
+                        <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <p-radioButton name="activegroup" value="Y" [(ngModel)]="user.isActive" label="Aktywny (Konto - może się logować)"></p-radioButton>
+                <p-radioButton name="activegroup" value="N" [(ngModel)]="user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+            </div>
+
 
             <div class="form-group">
                 <button [disabled]="loading" class="btn btn-primary">Dodaj</button>

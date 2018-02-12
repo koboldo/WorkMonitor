@@ -111,10 +111,17 @@ export class UserService {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
     }
 
-    public getManagedUsers(role: string[]): Observable<User[]> {
+    public getEngineersAndVentureRepresentatives(): Observable<User[]> {
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "VE"]));
+    }
+
+    public getManagedUsers(role: string[], fetchVentures: boolean): Observable<User[]> {
         if (role && role.indexOf('PR') > -1 ) {
             return this.getStaff();
         } else {
+            if (fetchVentures) {
+                return this.getEngineersAndVentureRepresentatives();
+            }
             return this.getEngineers();
         }
     }
@@ -148,6 +155,16 @@ export class UserService {
                     if (user.officeCode) {
                         console.log("trying for "+user.officeCode +" from "+JSON.stringify( this.dictService.getOffices() ) );
                         user.office = this.dictService.getOffice(user.officeCode);
+                    }
+
+                    if (user.agreementCode) {
+                        console.log("trying for "+user.agreementCode +" from "+JSON.stringify( this.dictService.getAgreements() ) );
+                        user.agreement = this.dictService.getAgreement(user.agreementCode);
+                    }
+
+                    if (user.rankCode) {
+                        console.log("trying for "+user.rankCode +" from "+JSON.stringify( this.dictService.getRanks() ) );
+                        user.rank = this.dictService.getRank(user.rankCode);
                     }
 
                     user.role = [];

@@ -16,6 +16,8 @@ export class DictService {
     private complexities: CodeValue[];
     private roles: CodeValue[];
     private offices: CodeValue[];
+    private agreements: CodeValue[];
+    private ranks: CodeValue[];
     private initialized: boolean = false;
 
     constructor(private http: HttpInterceptor) {
@@ -32,6 +34,8 @@ export class DictService {
             this.complexities = [];
             this.roles = [];
             this.offices = [];
+            this.agreements = [];
+            this.ranks = [];
 
             this.http.get('/api/v1/codes/WORK_STATUS')
                 .subscribe((response:Response) => this.setCodes(response.json(), this.workStatuses));
@@ -47,6 +51,12 @@ export class DictService {
 
             this.http.get('/api/v1/codes/OFFICE')
                 .subscribe((response:Response) => this.setCodes(response.json(), this.offices))
+
+            this.http.get('/api/v1/codes/RANK')
+                .subscribe((response:Response) => this.setCodes(response.json(), this.ranks));
+
+            this.http.get('/api/v1/codes/AGREEMENT_TYPE')
+                .subscribe((response:Response) => this.setCodes(response.json(), this.agreements))
         }
         this.initialized = true;
 
@@ -111,6 +121,22 @@ export class DictService {
 
     public getOffice(key: string): string {
         return this.getValue(key, this.offices);
+    }
+
+    public getAgreements(): CodeValue[] {
+        return this.agreements;
+    }
+
+    public getAgreement(key: string): string {
+        return this.getValue(key, this.agreements);
+    }
+
+    public getRanks(): CodeValue[] {
+        return this.ranks;
+    }
+
+    public getRank(key: string): string {
+        return this.getValue(key, this.ranks);
     }
 
     public getWorkStatus(key: string): string {
