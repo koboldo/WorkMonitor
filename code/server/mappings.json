@@ -38,6 +38,8 @@
 			"PRICE": "price",
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
+			"CREATED_BY": "createdBy",
+			"MODIFIED_BY": "modifiedBy",			
 			"HIST_CREATE": "versionDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
 			"RELATED_ITEMS": "relatedItems",

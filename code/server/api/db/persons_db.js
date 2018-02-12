@@ -83,26 +83,10 @@ var persons_db = {
 						getPersonOrderIdsStat.finalize();
 
 						var ids = [];
-						idRows.forEach((idRow) => { ids.push(idRow.ID) });
+						idRows.forEach((idRow) => { ids.push(idRow.ID); });
 						row.WORK_ORDERS = ids;
 						async_cb();
 					});
-					// getRowsIds: function(statement, rowId, cb) {
-					// 	statement.bind(rowId).all(function(err,rows){
-					// 		var ids = [];
-					// 		rows.forEach(function(row){
-					// 			ids.push(row.ID);
-					// 		});
-					// 		cb(ids);
-					// 	});
-					// }
-
-
-                    // dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
-					// 	row.WORK_ORDERS = ids;
-                    //     getPersonOrderIdsStat.finalize();
-					// 	async_cb();
-					// });
 				});
 			});
 			
@@ -139,7 +123,7 @@ var persons_db = {
 				getPersonOrderIdsStat.finalize();
 				
 				var ids = [];
-				idRows.forEach((idRow) => { ids.push(idRow.ID) });
+				idRows.forEach((idRow) => { ids.push(idRow.ID); });
 				row.WORK_ORDERS = ids;
 				cb(null,row);
 			});

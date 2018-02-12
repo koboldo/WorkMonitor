@@ -62,6 +62,8 @@ var orders = {
     },
 
     update: function(req, resp) {
+        req.body.modifiedBy = req.context.id;
+
         var orderId = req.params.id;
         var orderExtId = req.params.extId;
         var re = filterOrderPrice(req.context, req.body, true);
@@ -80,6 +82,8 @@ var orders = {
     },
     
     create: function(req, resp) {
+        req.body.modifiedBy = req.context.id;
+
         var orderSql = mapper.order.mapToSql(req.body);
         orders_db.create(orderSql, function(err,result) {
             if(err) {
