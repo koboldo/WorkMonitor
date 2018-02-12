@@ -59,7 +59,9 @@ var timeSheets = {
         delete req.body.isLeave;
         req.body.createdBy = req.context.id;
         req.body.modifiedBy = req.context.id;
-        
+ 
+        if(req.body.from == 'now' || req.body.to == 'now') req.body.personId = req.context.id;
+
         var nowDateTxt = dateformat(new Date(),'yyyy-mm-dd HH:MM:ss');
         if(req.body.from == 'now') req.body.from = nowDateTxt;
         if(req.body.to == 'now') req.body.to = nowDateTxt;

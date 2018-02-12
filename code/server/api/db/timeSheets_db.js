@@ -69,7 +69,6 @@ var timeSheets_db = {
         var db = dbUtil.getDatabase();
         
         var query = dbUtil.prepareFiltersByInsertion(queries.getAllTimesheets,params,filters.getTimesheets);
-        console.log('read query ' + query);
         var getAllTimesheetsStat = db.prepare(query);
 		getAllTimesheetsStat.all(function(err, rows) {
             getAllTimesheetsStat.finalize();
@@ -79,7 +78,7 @@ var timeSheets_db = {
 			if(rows == null) {
 				cb(null,null);
 				return;
-			}
+            }
             cb(null,rows);
 		});        
     },

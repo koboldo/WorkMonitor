@@ -145,7 +145,7 @@ var persons = {
 };
 
 function filterPersonFields(context, person) {
-    if(context.role != 'PR') {
+    if([].concat(context.role).indexOf('PR') < 0)  {
         delete person.agreementCode;
         delete person.projectFactor;
         delete person.isFromPool;

@@ -6,6 +6,7 @@
 			"LAST_NAME": "lastName",
 			"OFFICE_CODE": "officeCode",
 			"ROLE_CODE": "roleCode",
+			"RANK_CODE": "rankCode",
 			"EMAIL": "email",
 			"PASSWORD": "password",
 			"IS_ACTIVE": "isActive",
@@ -37,15 +38,17 @@
 			"PRICE": "price",
 			"LAST_MOD": "lastModDate",
 			"CREATED": "creationDate",
+			"HIST_CREATE": "versionDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
 			"RELATED_ITEMS": "relatedItems",
 			"ITEM_ID": "itemId",
 			"VENTURE_ID": "ventureId",
+			"OFFICE_CODE": "officeCode",
 			"ASSIGNEE": "assignee",
 			"DONE_DATE": "doneDate",
 			"ASSIGNED_DATE": "assignedDate",
 			"TOTAL_PRICE": "totalPrice",
-			"WO_COUNT": "woCount"	
+			"WO_COUNT": "woCount"
 		}
 	},
 	"code": {

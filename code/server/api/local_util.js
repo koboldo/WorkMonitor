@@ -103,6 +103,7 @@ let local_util = {
         });
     }
 };
+
 function prepareStyles(wb) {
     let styles = {
         headerStyle: wb.createStyle({

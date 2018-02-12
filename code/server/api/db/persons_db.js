@@ -131,7 +131,7 @@ var persons_db = {
 				cb(null,null);
 				return;
 			}
-			
+
 			if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
 
 			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);

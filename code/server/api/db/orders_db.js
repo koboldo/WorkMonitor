@@ -18,9 +18,13 @@ var queries = {
                                 ( SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER WHERE ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) )  
                                 UNION  SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER_HIST WHERE 
                                     ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) ) ) `,
+    checkOrdersForProtocol: 'SELECT WORK_NO FROM WORK_ORDER WHERE ID IN (%(idList)s) AND PROTOCOL_NO IS NOT NULL',
+    updateOrdersForProtocol: 'UPDATE WORK_ORDER SET PROTOCOL_NO = "%(protocolNo)s" WHERE ID IN (%(idList)s)',
     getOrdersForProtocol: `SELECT WO.WORK_NO, WO.PRICE, WO.LAST_MOD, WO.DESCRIPTION, WO.PROTOCOL_NO, SUBSTR(WO.TYPE_CODE,0,INSTR(WO.TYPE_CODE,'.')) AS TYPE, RI.ITEM_NO, P.INITIALS, WO.VENTURE_ID 
                             FROM WORK_ORDER AS WO JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID JOIN PERSON AS P ON WO.VENTURE_ID = P.ID 
-                            WHERE WO.ID IN (%(idList)s)`
+                            WHERE %(idList)s %(protocolNo)s`,
+    getOfficeCode: 'SELECT OFFICE_CODE FROM PERSON WHERE ID = ?',
+    getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch" ) AS CREATED ,DATETIME ( HIST_CREATE ,"unixepoch" ) AS HIST_CREATE ,ITEM_ID  ,VENTURE_ID FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATE DESC'
 };
 
 // js object used by sprintf function to prepare WHERE condition
@@ -37,7 +41,15 @@ var filters = {
         dateBefore: '%(dateBefore)s'
     },
     getOrdersForProtocol: {
+        idList: 'WO.ID IN (%(idList)s)',
+        protocolNo: 'WO.PROTOCOL_NO = "%(protocolNo)s"'
+    },
+    checkOrdersForProtocol: {
         idList: '%(idList)s'
+    },
+    updateOrdersForProtocol: {
+        idList: '%(idList)s',
+        protocolNo: '%(protocolNo)s'
     }
 };
 
@@ -122,6 +134,22 @@ var orders_db = {
 		});
     },
     
+    readHistory: function(orderId, cb){
+        var db = dbUtil.getDatabase();
+        var getOrderHistStat = db.prepare(queries.getOrderHistory);
+        getOrderHistStat.bind(orderId);
+        getOrderHistStat.all((err, rows) => {
+            getOrderHistStat.finalize();
+            db.close();
+
+            if(err) { 
+                logErrAndCall(err,cb);
+            } else {
+                cb(null,rows);
+            }
+        });
+    },
+
     update: function(orderId, orderExtId, order, cb) {
 
         var idObj = {};
@@ -144,13 +172,52 @@ var orders_db = {
     },
     
     create: function(order, cb) {
-        
-        if(logger.isDebugEnabled()) logger.debug('insert order with object: ' + util.inspect(order));
 
-        dbUtil.performInsert(order, 'WORK_ORDER', null, function(err, newId){
-            if(err) return logErrAndCall(err,cb);
-            cb(null,newId);
-        });
+        var calls = [];
+
+        if(!order.WORK_NO) {
+            calls.push(function(_cb){
+                var db = dbUtil.getDatabase();
+                var getOfficeCodeStat = db.prepare(queries.getOfficeCode);
+                getOfficeCodeStat.bind(order.VENTURE_ID);
+                getOfficeCodeStat.get(function(err,result){
+                    getOfficeCodeStat.finalize();
+                    db.close();
+                    
+                    if(err) _cb(err);
+                    else {
+                        _cb(null,result.OFFICE_CODE);
+                    }
+                });
+            });
+            
+            calls.push((_cb)=>{
+                dbUtil.getNextSeq('WO_SEQ',function(err, seqVal){
+                    if(err) _cb(err);
+                    else {
+                        _cb(null,seqVal);
+                    }
+                });
+            });
+        }
+        
+        async.series(
+            calls,
+            function(err, result) {
+                if(err) cb(err);
+                else {
+                    if(result.length) order.WORK_NO = result[0] + result[1];
+
+                    if(logger.isDebugEnabled()) logger.debug('insert order with object: ' + util.inspect(order));
+            
+                    dbUtil.performInsert(order, 'WORK_ORDER', null, function(err, newId){
+                        if(err) return logErrAndCall(err,cb);
+                        cb(null,newId);
+                    });
+                }
+            }
+        );
+
     },
 
     calculateTotalPriceForCompleted: function(params,cb) {
@@ -167,28 +234,79 @@ var orders_db = {
 		});
     },
 
-    getOrdersForProtocol: function(idlist, cb) {
+    prepareOrdersForProtocol: function(idlist, protocolNo, cb) {
         
-        var db = dbUtil.getDatabase();
-        var params =  {idList: idlist};
-        console.log(JSON.stringify(params));
-        var query = dbUtil.prepareFiltersByInsertion(queries.getOrdersForProtocol,params,filters.getOrdersForProtocol);
-        // var getOrdersForProtocolStat = db.prepare(queries.getOrdersForProtocol);
-        var getOrdersForProtocolStat = db.prepare(query);
-        // getOrdersForProtocolStat.bind(idlist,function(err,success){
-        //     console.log('err ' + err);
-        //     console.log('su ' + success); 
-        // });
+        var calls = [];
 
-        console.log(query.getOrdersForProtocol);
-        console.log(JSON.stringify(getOrdersForProtocolStat));
-        getOrdersForProtocolStat.all(function(err,rows) {
-            getOrdersForProtocolStat.finalize();
-            db.close();
-
-            if(err) return logErrAndCall(err,cb);
-            cb(null,rows);
+        if(idlist) {
+            calls.push(function(_cb){
+                var db = dbUtil.getDatabase();
+                var params =  {idList: idlist};
+                var query = dbUtil.prepareFiltersByInsertion(queries.checkOrdersForProtocol,params,filters.checkOrdersForProtocol);
+                var checkOrdersStat = db.prepare(query);      
+                checkOrdersStat.all(function(err,rows){
+                    checkOrdersStat.finalize();
+                    db.close();
+                    
+                    if(rows.length > 0) _cb(new Error('Zamówienia posiadające już numer protokołu ' + rows.map((r)=>{r.WORK_NO;}).join(','), 'custom'));
+                    else if(err) _cb(err);
+                    else _cb(null);
+                });
+            });
+            
+            calls.push(function(_cb){
+                dbUtil.getNextSeq('PROTOCOL_NO_SEQ',function(err, seqVal){
+                    if(err) _cb(err);
+                    else  _cb(null,seqVal);
+                });
+            });
+            
+            calls.push(function(seqVal,_cb){
+                var db = dbUtil.getDatabase();
+                var params =  {
+                    idList: idlist,
+                    protocolNo: 'CUSTOM' + seqVal
+                };
+                var update = dbUtil.prepareFiltersByInsertion(queries.updateOrdersForProtocol,params,filters.updateOrdersForProtocol);
+                var updateOrdersStat = db.prepare(update);      
+                updateOrdersStat.run(function(err,rows){
+                    updateOrdersStat.finalize();
+                    db.close();
+                    
+                    if(err) _cb(err);
+                    else _cb(null);
+                }
+            );
         });
+    } 
+
+    calls.push(function(_cb){
+        var db = dbUtil.getDatabase();
+        var params =  {
+                        idList: (idlist) ? idlist : '',
+                        protocolNo: (protocolNo) ? protocolNo : ''
+                    };
+        var query = dbUtil.prepareFiltersByInsertion(queries.getOrdersForProtocol,params,filters.getOrdersForProtocol);
+        var getOrdersForProtocolStat = db.prepare(query);
+            getOrdersForProtocolStat.all(function(err,rows) {
+                getOrdersForProtocolStat.finalize();
+                db.close();
+                
+                if(err) return logErrAndCall(err,cb);
+                _cb(null,rows);
+            });
+        });
+
+        async.waterfall(
+            calls,
+            function(err, result) {
+                console.log('err ' + JSON.stringify(err));
+                console.log('result ' + JSON.stringify(result));
+                
+                if(err) return logErrAndCall(err,cb);
+                cb(null,result);
+            }
+        );
     }
 };
 

@@ -44,14 +44,29 @@ var orders = {
             }
         });
     },
-        
+    
+    readHistory: function(req, resp){
+        var orderId = req.params.id;
+        orders_db.readHistory(orderId,function(err,histRows){
+            if(err) {
+                resp.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            
+            var orders = mapper.mapList(mapper.order.mapToJson, histRows);
+            orders.list.forEach((order) => {
+                filterOrderPrice(req.context, order);
+            });
+            resp.json(orders);            
+        });
+    },
+
     update: function(req, resp) {
         var orderId = req.params.id;
         var orderExtId = req.params.extId;
         var re = filterOrderPrice(req.context, req.body, true);
-        console.log(JSON.stringify(re));
         var orderSql = mapper.order.mapToSql(re);
-        console.log(JSON.stringify(orderSql));
+
         orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
@@ -96,26 +111,36 @@ var orders = {
     prepareProtocol: function(req, resp) {
 
         var ids = null;
+        var protocolNo = null;
 
-        if(!req.query.ids) {
-            resp.status(400).json({status: 'error', message: 'id list cannot be empty'});
+        if(!req.query.ids && !req.query.protocolNo) {
+            resp.status(400).json({status: 'error', message: 'canot prepare report without ids'});
             return;
         } else {
-            ids = req.query.ids.split(',');
-            for( let id in ids) {
-                if(isNaN(parseInt(id))) {
-                    resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
-                    return;
+            if(req.query.ids) {
+                console.log('checking ids');
+                
+                ids = req.query.ids.split(',');
+                for( let id in ids) {
+                    if(isNaN(parseInt(id))) {
+                        resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
+                        return;
+                    }
                 }
+                ids = ids.join(',');
             }
+            protocolNo = req.query.protocolNo;
         }
-        console.log('ids ' +  ids.join('|'));
-        orders_db.getOrdersForProtocol(ids.join(','),function(err, protocolRows){
+        
+        orders_db.prepareOrdersForProtocol(ids,protocolNo,function(err, protocolRows){
             if(err) {
-                resp.status(500).json({status:'error', message: 'request processing failed'});
-                return;
+                if(err.fileName == 'custom') return resp.status(500).json({status:'error', message: err.message});
+                else return resp.status(500).json({status:'error', message: 'request processing failed'});
             }
             
+            if(protocolRows.length == 0) {
+                return resp.status(404).json({status:'error', message: 'work orders not found'});
+            }
             // prepareProtocol(protocolRows,resp);
             prepareProtocol(protocolRows,function(fileObj){
                 resp.json(fileObj);

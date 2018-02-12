@@ -4,10 +4,13 @@
 var sqlite3 = require('sqlite3').verbose();
 // var util = require('util');
 var path = require('path');
-
+var async = require('async');
 var sprintf = require("sprintf-js").sprintf;
 var logger = require('../logger').getLogger('monitor'); 
 var logErrAndCall = require('../local_util').logErrAndCall;
+
+var insertSeq = 'INSERT INTO SEQUENCER (SEQ_NAME,SEQ_VAL) VALUES ( $NAME , ( SELECT COALESCE(MAX(SEQ_VAL),0) + 1 FROM SEQUENCER WHERE SEQ_NAME = $NAME ))';
+var querySeq = 'SELECT SEQ_VAL FROM SEQUENCER WHERE ROWID = ?';
 
 var columnsToSkip = ['ID','LAST_MOD','CREATED'];
 var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK'];
@@ -15,9 +18,9 @@ var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK'];
 var db_util = {
     
     getDatabase: function() {
-        var dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db') 
+        var dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db');
 
-        // var db = new sqlite3.Database('./work-monitor.db');
+        if(logger.isDebugEnabled()) logger.debug('connecting to db in location ' + dbPath);
         var db = new sqlite3.Database(dbPath);
         db.serialize(function() {
             db.run( 'PRAGMA journal_mode = DELETE;' );
@@ -211,6 +214,47 @@ var db_util = {
             return (sqlValue.length > 0) ? sqlValue : null; 
         else 
             return sqlValue;
+    },
+    
+    getNextSeq: function(seqName, cb) {
+    
+        var db = db_util.getDatabase();
+        var insertStat = db.prepare(insertSeq);
+        var seqQueryStat = db.prepare(querySeq);
+        
+        var rowid;
+    
+        var calls = [];
+        calls.push(function(_cb) {
+            insertStat.run({$NAME: seqName}, function(err,result){
+                insertStat.finalize();
+                if(err) _cb(err);
+                else {
+                    rowid = this.lastID;
+                    _cb(null,this.lastID);
+                } 
+            });
+        });
+        
+        calls.push(function(_cb) {
+            seqQueryStat.bind(rowid);
+            seqQueryStat.get(function(err,results){
+                seqQueryStat.finalize();
+                if(err) _cb(err);
+                else _cb(null,results);
+            });
+        });
+        
+        async.series(
+            calls,
+            function(err, results) {
+                db.close();
+                if(err) {
+                    return cb(err);
+                } else {
+                    cb(null,results[1].SEQ_VAL);
+                }
+            });
     },
 
     getRowsIds: function(statement, rowId, cb) {
