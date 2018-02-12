@@ -21,10 +21,15 @@ export class UserRegisterComponent implements OnInit {
 
     roles: SelectItem[] = [];
     offices: SelectItem[] = [];
+    ranks: SelectItem[] = [];
+    agreements: SelectItem[] = [];
 
     showRoles: boolean = false;
     showOffices: boolean = false;
+    showRanks: boolean = false;
+    showAgreements: boolean = false;
 
+    staff: User[];
     representatives: User[];
     suggestedCompanies: string[];
     company: string;
@@ -37,8 +42,9 @@ export class UserRegisterComponent implements OnInit {
         private dictService: DictService,
         private authService: AuthenticationService) {
 
-        this.user.roleCode = ["EN"];
-        this.user.officeCode = "WAW";
+        this.user.roleCode = ['EN'];
+        this.user.officeCode = 'WAW';
+        this.user.isActive = 'Y';
     }
 
     ngOnInit():void {
@@ -47,18 +53,25 @@ export class UserRegisterComponent implements OnInit {
 
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
         this.userService.getVentureRepresentatives().subscribe(representatives => this.representatives = representatives);
+
+        this.mapToRanks(this.dictService.getRanks());
+        this.mapToAgreements(this.dictService.getAgreements());
+
+        this.authService.userAsObs.subscribe(user => this.fillStaff(user));
+    }
+
+    private fillStaff(user:User):void {
+        this.userService.getManagedUsers(user.roleCode, false).subscribe(staff => this.staff = staff);
     }
 
     register() {
         this.loading = true;
 
-        if ( this.user.roleCode.indexOf('VE') != -1 ) {
-            this.user.isActive = "N";
-            this.user.company = this.company;
-        } else {
-            this.user.isActive = "Y";
-            this.user.company = "BOT";
-        }
+        this.user.company = this.company;
+
+        if (this.user.isFromPool == 'Y' && this.operator.roleCode.indexOf('PR') == -1) {
+            this.user.projectFactor = 0.8;
+        } 
 
         this.userService.create(this.user)
             .subscribe(
@@ -80,6 +93,14 @@ export class UserRegisterComponent implements OnInit {
         this.showOffices = this.mapToSelectItem(pairs, this.offices);
     }
 
+    private mapToRanks(pairs:CodeValue[]):void {
+        this.showRanks = this.mapToSelectItem(pairs, this.ranks);
+    }
+
+    private mapToAgreements(pairs:CodeValue[]):void {
+        this.showAgreements = this.mapToSelectItem(pairs, this.agreements);
+    }
+
     private mapToSelectItem(pairs:CodeValue[], ref: SelectItem[]):boolean {
         for(let pair of pairs) {
             ref.push({label: pair.paramChar, value: pair.code});
@@ -87,24 +108,36 @@ export class UserRegisterComponent implements OnInit {
         return true;
     }
 
-    suggestCompany(event) {
-        console.log("all " + JSON.stringify(this.representatives));
+    public showProjectFactor() {
+        return this.user && this.operator && this.user.isFromPool === 'Y' && this.operator.roleCode.indexOf('PR') > -1;
+    }
 
+    suggestCompany(event) {
         this.suggestedCompanies = <string[]> [];
-        if (this.representatives && this.representatives.length > 0) {
+
+        if (this.user.roleCode.indexOf('VE') > -1 && this.representatives && this.representatives.length > 0) {
+            console.log('all ' + JSON.stringify(this.representatives));
             for (let r of this.representatives) {
-                if (r.company.indexOf(event.query) > -1) {
+                if (r.company && r.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(r.company) == -1) {
                     this.suggestedCompanies.push(r.company);
                 }
             }
         }
-        console.log("suggestedCompanies: " + JSON.stringify(this.suggestedCompanies));
+        if (this.user.roleCode.indexOf('VE') == -1 && this.staff && this.staff.length > 0) {
+            console.log('all ' + JSON.stringify(this.staff));
+            for (let s of this.staff) {
+                if (s.company && s.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(s.company) == -1) {
+                    this.suggestedCompanies.push(s.company);
+                }
+            }
+        }
+        console.log('suggestedCompanies: ' + JSON.stringify(this.suggestedCompanies));
     }
 
     private removeRoles(user:User):void {
         if (user) {
             this.operator = user;
-            console.log("Operator "+JSON.stringify(this.operator));
+            console.log('Operator '+JSON.stringify(this.operator));
             if (this.operator.roleCode.indexOf('PR') == -1 ) {
                 let roles: CodeValue[] = this.dictService.getRoles();
                 let allowedRoles: CodeValue[] = [];
@@ -120,4 +153,5 @@ export class UserRegisterComponent implements OnInit {
             }
         }
     }
+
 }
