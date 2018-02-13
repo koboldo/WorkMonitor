@@ -3,10 +3,10 @@
     <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('OP')"></i> {{dictService.getWorkStatus('OP')}}</span></div><div class="ui-grid-col-8">Wpisane do systemu, czeka na przypisanie</div></div>
     <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('AS')"></i> {{dictService.getWorkStatus('AS')}}</span></div><div class="ui-grid-col-8">Przypisane do projektanta, czeka na zrealizowanie</div></div>
     <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('CO')"></i> {{dictService.getWorkStatus('CO')}}</span></div><div class="ui-grid-col-8">Wykonane przez projektanta, czeka na przekazanie dokumentacji</div></div>
-    <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('IS')"></i> {{dictService.getWorkStatus('IS')}}</span></div><div class="ui-grid-col-8">Formalności zakończone, czeka na akceptacje inwestora</div></div>
-    <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('AC')"></i> {{dictService.getWorkStatus('AC')}}</span></div><div class="ui-grid-col-8">Zaakceptowane przez inwestora, czeka na protokół</div></div>
+    <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('IS')"></i> {{dictService.getWorkStatus('IS')}}</span></div><div class="ui-grid-col-8">Formalności zakończone, w poczekalni do protokołu</div></div>
     <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('CL')"></i> {{dictService.getWorkStatus('CL')}}</span></div><div class="ui-grid-col-8">Zawarte w protokole</div></div>
     <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('SU')"></i> {{dictService.getWorkStatus('SU')}}</span></div><div class="ui-grid-col-8">Zawieszone - przynę podać w polu komentarz</div></div>
+    <div class="ui-grid-row"><div class="ui-grid-col-4"><span class="ui-inputgroup-addon"><i [class]="getStatusIcon('CA')"></i> {{dictService.getWorkStatus('CA')}}</span></div><div class="ui-grid-col-8">Anulowane</div></div>
 
   </div>
 </p-fieldset>
