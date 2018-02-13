@@ -54,18 +54,18 @@
         </div>
       </p-header>
       <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="workNo" header="WO" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-      <p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column><!-- search -->
-      <p-column [sortable]="true" field="statusCode" header="Status" [style]="{'width':'135px'}">
+      <!--<p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
+      <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column><!-- search -->
-      <p-column [sortable]="true" field="typeCode" header="Typ">
+      <!--<p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
+      <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
@@ -78,18 +78,18 @@
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}"></p-column>
+      <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <p-column [sortable]="true" field="comment" header="Komentarz" hidden="true"></p-column>
       <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
 
-      <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
-      <p-column [sortable]="true" field="protocolNo" header="Protokół"></p-column>
-      <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}"></p-column>
+      <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
+      <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
+      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <!-- search by invisible colums flatten into order by wo.service -->
       <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu" hidden="true"></p-column>
       <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja" hidden="true"></p-column>
@@ -106,8 +106,8 @@
           <span *ngIf="relatedItem?.description">{{relatedItem?.description}}<br></span>
         </ng-template>
       </p-column>-->
-      <p-column [sortable]="true" field="ventureCompany" header="Inwestor" ></p-column>
-      <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" ></p-column>
+      <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [style]="{'width':'40px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
           <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>

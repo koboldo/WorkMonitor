@@ -115,9 +115,10 @@ export class ToolsService {
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AS","Przypisane");
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CO","Zakończone");
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","IS","Wydane");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AC","Zaakceptowane");
+     -- removed INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AC","Zaakceptowane");
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CL","Zamknięte");
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","SU","Zawieszone");
+     -- added INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CA","Anulowane");
      */
 
     public getStatusIcon(statusCode: string) {
@@ -137,15 +138,41 @@ export class ToolsService {
             return "fa fa-envelope-o";
         else if (statusCode === "SU")
             return "fa fa-ban";
+        else if (statusCode === "CA")
+            return "fa fa-trash-o";
 
         console.log("Return default status icon for "+statusCode+"!");
-        return "fa fa-trash-o";
+        return "fa question";
     }
 
     // private helper methods
 
     public isStatusLowerThanProtocol(statusCode: string): boolean{
         return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
+    }
+
+
+    public downloadXLSFile(name: string, contentBase64: string) {
+
+        console.log("download " + name);
+
+        var byteCharacters = atob(contentBase64);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+
+        let blob = new Blob([byteArray], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        let e = document.createEvent('MouseEvents');
+        let a = document.createElement('a');
+
+        a.download = name + '.xlsx';
+        a.href = window.URL.createObjectURL(blob);
+
+
+        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
     }
 
 }

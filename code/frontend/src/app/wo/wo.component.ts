@@ -332,7 +332,7 @@ export class WoComponent implements OnInit {
         this.editedOrder.statusCode = this.newOrder ? "OP" : this.status.code;
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         if (this.toolsService.isStatusLowerThanProtocol(this.editedOrder.statusCode)) {
-            this.editedOrder.protocolNo = ""; //TODO change to undefined but with backend awarness;
+            this.editedOrder.protocolNo = ""; //According to LE its null for sqlite
         }
 
         this.editedOrder.typeCode = this.workType.code;

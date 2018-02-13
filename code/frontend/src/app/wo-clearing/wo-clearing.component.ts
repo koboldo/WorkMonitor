@@ -16,13 +16,12 @@ import { MenuItem } from 'primeng/primeng';
 export class WoClearingComponent implements OnInit {
 
     /* search and selection */
-    lastModAfter:Date;
-    lastModBefore:Date;
+
     orders:Order[];
     selectedOrders:Order[];
 
     displayClearingDialog:boolean;
-    protocolNo: string;
+    //protocolNo: string;
 
     engineers:User[] = [];
     vrs:User[] = [];
@@ -32,9 +31,6 @@ export class WoClearingComponent implements OnInit {
                 private dictService:DictService,
                 private toolsService:ToolsService,
                 private alertService: AlertService) {
-        this.lastModAfter = toolsService.getCurrentDateDayOperation(-365);
-        this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
-
     }
 
     ngOnInit() {
@@ -46,23 +42,15 @@ export class WoClearingComponent implements OnInit {
     }
 
     search() {
-        this.woService.getOrdersByDates(
-            this.lastModAfter.toISOString().substring(0, 10),
-            this.lastModBefore.toISOString().substring(0, 10)
-        )
+        this.woService.getOrdersByStatus('IS')
             .mergeMap(orders => this.callVentures(orders))
             .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
+
+        this.selectedOrders = [];
     }
 
     private callVentures(orders:Order[]):Observable<User[]> {
-        this.orders = [];
-
-        for (let order of orders) {
-            console.log("Checking status: "+order.statusCode);
-            if (order.statusCode === "AC") {
-                this.orders.push(order);
-            }
-        }
+        this.orders = orders;
         return this.userService.getVentureRepresentatives();
     }
 
@@ -84,6 +72,33 @@ export class WoClearingComponent implements OnInit {
         this.displayClearingDialog = true;
     }
 
+    prepareProtocol() {
+
+        let ids: number[] = [];
+
+        for(let order of this.selectedOrders) {
+           ids.push(order.id);
+        }
+
+        console.log("Prepare protocol for ids="+JSON.stringify(ids));
+
+        this.woService.prepareProtocol(ids).
+            subscribe(protocol => this.processProtocol(protocol));
+
+        this.displayClearingDialog = false;
+        this.selectedOrders = [];
+    }
+
+    private processProtocol(protocol:any):void {
+        if (protocol && protocol.file) {
+            //TODO file name
+            this.toolsService.downloadXLSFile("test", protocol.file);
+        } else {
+            this.alertService.error("Generacja protokołu niepowiodła się");
+        }
+    }
+
+    /* mored to backed
     saveOrders() {
         this.displayClearingDialog = false;
         for(let order of this.selectedOrders) {
@@ -105,7 +120,7 @@ export class WoClearingComponent implements OnInit {
         }
     }
 
-    private refreshTableAndRecuriveCall(order:Order, counter:number, orders:Order[]) {
+    private refreshTableAndRecursiveCall(order:Order, counter:number, orders:Order[]) {
         console.log("Refreshing table with order " + JSON.stringify(order));
 
 
@@ -121,5 +136,6 @@ export class WoClearingComponent implements OnInit {
         }
 
     }
+    */
 
 }

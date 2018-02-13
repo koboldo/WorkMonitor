@@ -61,7 +61,29 @@ export class WOService {
             .mergeMap(createdId => this.getOrderById(createdId));
     }
 
+    prepareProtocol(ids: number[]) : Observable<any> {
+
+        let flatIds: string = "";
+
+        for(let id of ids) {
+            flatIds += id+",";
+        }
+        if (flatIds.length > 1) {
+            flatIds = flatIds.substr(0, flatIds.length-1);
+        }
+
+        return this.http.get('/api/v1/report/prepareProtocol?ids='+flatIds)
+            .map((response: Response) => this.getProtocol(response.json()))
+
+    }
+
+
     // private helper methods
+
+    private getProtocol(json:any):any {
+        console.log("protocol: "+JSON.stringify(json));
+        return json;
+    }
 
     private getStrippedOrder(order: Order): Order {
         let strippedOrder:Order = JSON.parse(JSON.stringify(order));

@@ -2,6 +2,7 @@
 
 <p-panel header="Nadawanie nr protokołu">
 
+  <!-- removed
   <div class="ui-grid-row">
     <div class="ui-grid-col-12">
       <p-fieldset legend="Wyszukiwanie zleceń do rozliczenia">
@@ -14,7 +15,7 @@
                 <label for="lastModAfter">zmodyfikowano od</label>
                 <p-calendar name="lastModAfter" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
               </div>
-              <!--<div class="ui-grid-col-1"></div>-->
+              &lt;!&ndash;<div class="ui-grid-col-1"></div>&ndash;&gt;
               <div class="ui-grid-col-5">
                 <label for="lastModBefore">zmodyfikowano do</label>
                 <p-calendar name="lastModBefore" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
@@ -34,7 +35,7 @@
       </p-fieldset>
     </div>
 
-  </div>
+  </div>-->
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
 
@@ -81,7 +82,7 @@
           <div class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-5"></div>
             <div class="ui-grid-col-2">
-              <button [disabled]="!(selectedOrders?.length > 0)" type="button" pButton icon="fa-check" style="float:left" (click)="showDialog()" label="Rozliczenie"></button>
+              <button [disabled]="!(selectedOrders?.length > 0)" type="button" pButton icon="fa-check" style="float:left" (click)="showDialog()" label="Protokół"></button>
             </div>
             <div class="ui-grid-col-5"></div>
           </div>
@@ -96,10 +97,12 @@
     <div class="ui-grid ui-grid-responsive ui-fluid">
 
 
+      <!--
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer Protokołu*</label></div>
         <div class="ui-grid-col-8 ui-fluid"><input pInputText id="protocolNo" [(ngModel)]="protocolNo" width="auto" required placeholder="Wpisz numer protokołu..."/></div>
       </div>
+      -->
 
       <hr>
 
@@ -139,7 +142,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" [disabled]="protocolNo === undefined || protocolNo.length < 1" (click)="saveOrders()" label="Zapisz"></button>
+        <button width="200px" type="button" pButton icon="fa-check" (click)="prepareProtocol()" label="Protokół"></button>
       </div>
     </p-footer>
   </p-dialog>
