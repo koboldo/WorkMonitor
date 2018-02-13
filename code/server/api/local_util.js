@@ -99,7 +99,7 @@ let local_util = {
         
         // wb.write('out.xlsx',cb);
         wb.writeToBuffer().then((buffer)=>{ 
-            cb({file: buffer.toString('base64')});
+            cb(buffer.toString('base64'));
         });
     }
 };

@@ -136,18 +136,21 @@ var orders = {
             protocolNo = req.query.protocolNo;
         }
         
-        orders_db.prepareOrdersForProtocol(ids,protocolNo,function(err, protocolRows){
+        orders_db.prepareOrdersForProtocol(ids,protocolNo,function(err, protocol){
             if(err) {
-                if(err.fileName == 'custom') return resp.status(500).json({status:'error', message: err.message});
+                if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
                 else return resp.status(500).json({status:'error', message: 'request processing failed'});
             }
             
+            var protocolNo = protocol[0];
+            var protocolRows = protocol[1];
             if(protocolRows.length == 0) {
                 return resp.status(404).json({status:'error', message: 'work orders not found'});
             }
             // prepareProtocol(protocolRows,resp);
-            prepareProtocol(protocolRows,function(fileObj){
-                resp.json(fileObj);
+            let fileName = protocolNo.replace(/[\[\]\*\?\:\/\\]/g,'-').toUpperCase() +'.xlsx';
+            prepareProtocol(protocolRows,function(fileContent){
+                resp.json({ file: fileContent, name: fileName});
             });
         });
     }
