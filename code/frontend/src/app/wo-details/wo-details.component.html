@@ -1,119 +1,147 @@
+<div class="ui-grid-row" style="max-width: 900px;">
+    <div class="ui-grid-col-6" style="margin-top: 10px;">
+        <p-fieldset legend="Detale zamówienia"
+                    *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
+            <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
+                <div class="ui-grid-col-4">Dodano:</div>
+                <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.creationDate}}</span>
+                </div>
+            </div>
+            <div class="ui-grid-row" *ngIf="selectedOrder?.lastModDate">
+                <div class="ui-grid-col-4">Modyfikacja:</div>
+                <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.lastModDate}}</span></div>
+            </div>
+            <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
 
-<div class="ui-grid-row">
-    <div class="ui-grid-col-6"  style="margin-top: 10px;">
-      <p-fieldset legend="Detale zamówienia" *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
-        <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
-          <div class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.creationDate}}</span></div>
-        </div>
-        <div class="ui-grid-row" *ngIf="selectedOrder?.lastModDate">
-          <div class="ui-grid-col-4">Modyfikacja:</div><div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.lastModDate}}</span></div>
-        </div>
-          <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
+                <div class="ui-grid-col-4">Typ:</div>
+                <div class="ui-grid-col-8">
+                    <span [style.color]="getColor()" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                    <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
+                </div>
+            </div>
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
+                <div class="ui-grid-col-4">Złożoność:</div>
+                <div class="ui-grid-col-8">
+                    <span class="ui-inputgroup-addon"><i
+                            [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                    <span style="padding: 3px; font-style: italic;">{{selectedOrder?.complexity}}</span>
+                </div>
+            </div>
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+                <div class="ui-grid-col-4">Status:</div>
+                <div class="ui-grid-col-8">
+                    <span class="ui-inputgroup-addon"><i [class]="getStatusIcon()"></i></span>
+                    <span style="padding: 3px; font-style: italic;">{{selectedOrder?.status}}</span>
+                </div>
+            </div>
 
-          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
-              <div class="ui-grid-col-4">Typ:</div>
-              <div class="ui-grid-col-8">
-                  <span [style.color]="getColor()" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-                  <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
-              </div>
-          </div>
-          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
-              <div class="ui-grid-col-4">Złożoność:</div>
-              <div class="ui-grid-col-8">
-                  <span class="ui-inputgroup-addon"><i [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-                  <span style="padding: 3px; font-style: italic;">{{selectedOrder?.complexity}}</span>
-              </div>
-          </div>
-          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
-              <div class="ui-grid-col-4">Status:</div>
-              <div class="ui-grid-col-8">
-                <span class="ui-inputgroup-addon"><i [class]="getStatusIcon()"></i></span>
-                <span style="padding: 3px; font-style: italic;">{{selectedOrder?.status}}</span>
-              </div>
-          </div>
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+                <div class="ui-grid-col-4">Wartość zamówienia:</div>
+                <div class="ui-grid-col-8">
+                    <span style="font-style: italic;">{{selectedOrder?.price}} PLN</span>
+                </div>
+            </div>
 
-          <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
-              <div class="ui-grid-col-4">Wartość zamówienia:</div>
-              <div class="ui-grid-col-8">
-                  <span style="font-style: italic;">{{selectedOrder?.price}} PLN</span>
-              </div>
-          </div>
+            <div class="ui-grid-row" *ngIf="selectedOrder?.status">
+                <div class="ui-grid-col-4">Numer protokołu:</div>
+                <div class="ui-grid-col-8">
+                    <span style="font-style: italic;">{{selectedOrder?.protocolNo}}</span>
+                </div>
+            </div>
 
-          <div class="ui-grid-row" *ngIf="selectedOrder?.status">
-              <div class="ui-grid-col-4">Numer protokołu:</div>
-              <div class="ui-grid-col-8">
-                  <span style="font-style: italic;">{{selectedOrder?.protocolNo}}</span>
-              </div>
-          </div>
+            <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
 
-          <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
-
-        <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row"><strong>Wykonawcy</strong></div>
-        <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
-          <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
-          <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
-          <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
-        </div>
-      </p-fieldset>
+            <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row">
+                <strong>Wykonawcy</strong></div>
+            <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+                <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+                <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+                <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+            </div>
+        </p-fieldset>
     </div>
 
-  <div class="ui-grid-col-6" >
-      <div *ngIf="selectedOrder?.ventureDisplay || selectedOrder?.ventureCompany" class="ui-grid-row"  style="margin-top: 10px;">
-          <p-fieldset  legend="Inwestor">
-              {{selectedOrder?.ventureDisplay}} @ {{selectedOrder?.ventureCompany}}
-          </p-fieldset>
-      </div>
-      <div class="ui-grid-row"  style="margin-top: 10px;">
-        <p-fieldset legend="Obiekt inwestycji" >
-          <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo || selectedOrder?.relatedItems[0]?.address || selectedOrder?.relatedItems[0]?.mdBuildingType || selectedOrder?.relatedItems[0]?.description || selectedOrder?.relatedItems[0]?.mdConstructionCategory;else noRelatedItem">
-            <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo" class="ui-grid-row"><div class="ui-grid-col-4">Numer:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.itemNo}}</div></div>
-            <div *ngIf="selectedOrder?.relatedItems[0]?.address" class="ui-grid-row"><div class="ui-grid-col-4">Adres:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.address}}</div></div>
-            <div *ngIf="selectedOrder?.relatedItems[0]?.mdBuildingType" class="ui-grid-row"><div class="ui-grid-col-4">Typ budynku:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdBuildingType}}</div></div>
-            <div *ngIf="selectedOrder?.relatedItems[0]?.mdConstructionCategory" class="ui-grid-row"><div class="ui-grid-col-4">Konstrukcja:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}</div></div>
-            <div *ngIf="selectedOrder?.relatedItems[0]?.description" class="ui-grid-row"><div class="ui-grid-col-4">Opis:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.description}}</div></div>
-            <div *ngIf="selectedOrder?.relatedItems[0]?.creationDate" class="ui-grid-row"><div class="ui-grid-col-4">Dodano:</div><div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.creationDate}}</div></div>
-          </div>
-          <ng-template #noRelatedItem><strong style="color: darkorange;">Nie przypisano...</strong></ng-template>
-        </p-fieldset>
-      </div>
-  </div>
-</div>
-
-<div class="ui-grid-row">
-  <div class="ui-grid-col-12" *ngIf="selectedOrder?.comment || selectedOrder?.description"  style="margin-top: 10px;">
-    <p-fieldset legend="Uwagi">
-    <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
-        <div class="ui-grid-col-12">
-          <p-panel header="Komentarz">{{selectedOrder.comment}}</p-panel>
+    <div class="ui-grid-col-6">
+        <div *ngIf="selectedOrder?.ventureDisplay || selectedOrder?.ventureCompany" class="ui-grid-row"
+             style="margin-top: 10px;">
+            <p-fieldset legend="Inwestor">
+                {{selectedOrder?.ventureDisplay}} @ {{selectedOrder?.ventureCompany}}
+            </p-fieldset>
         </div>
-      </div>
-      <hr *ngIf="selectedOrder?.comment">
-      <div class="ui-grid-row" *ngIf="selectedOrder?.description">
-        <div class="ui-grid-col-12">
-          <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
+        <div class="ui-grid-row" style="margin-top: 10px;">
+            <p-fieldset legend="Obiekt inwestycji">
+                <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo || selectedOrder?.relatedItems[0]?.address || selectedOrder?.relatedItems[0]?.mdBuildingType || selectedOrder?.relatedItems[0]?.description || selectedOrder?.relatedItems[0]?.mdConstructionCategory;else noRelatedItem">
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Numer:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.itemNo}}</div>
+                    </div>
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.address" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Adres:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.address}}</div>
+                    </div>
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.mdBuildingType" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Typ budynku:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdBuildingType}}</div>
+                    </div>
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.mdConstructionCategory" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Konstrukcja:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}</div>
+                    </div>
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.description" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Opis:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.description}}</div>
+                    </div>
+                    <div *ngIf="selectedOrder?.relatedItems[0]?.creationDate" class="ui-grid-row">
+                        <div class="ui-grid-col-4">Dodano:</div>
+                        <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.creationDate}}</div>
+                    </div>
+                </div>
+                <ng-template #noRelatedItem><strong style="color: darkorange;">Nie przypisano...</strong></ng-template>
+            </p-fieldset>
         </div>
-      </div>
-    </p-fieldset>
-  </div>
-</div>
+    </div>
 
-<div class="ui-grid-row">
-    <div class="ui-grid-col-10" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"  style="margin-top: 10px;">
-        <p-fieldset legend="Historia">
-            <div class="ui-grid-row">
-                <p-dataTable [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true" sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
-                    <p-column [sortable]="true" field="workNo" header="WO" [style]="{'width':'90px'}"></p-column>
-                    <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
-                    <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
-                    <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px'}"></p-column>
-
-                    <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
-                    <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
-                    <p-column [sortable]="true" field="lastModDate" header="Zapisano" [style]="{'width':'100px'}"></p-column>
-                    <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
-
-                </p-dataTable>
+    <div class="ui-grid-col-12" *ngIf="selectedOrder?.comment || selectedOrder?.description" style="margin-top: 10px;">
+        <p-fieldset legend="Uwagi">
+            <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
+                <div class="ui-grid-col-12">
+                    <p-panel header="Komentarz">{{selectedOrder.comment}}</p-panel>
+                </div>
             </div>
+            <hr *ngIf="selectedOrder?.comment">
+            <div class="ui-grid-row" *ngIf="selectedOrder?.description">
+                <div class="ui-grid-col-12">
+                    <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
+                </div>
+            </div>
+        </p-fieldset>
+    </div>
+
+    <div class="ui-grid-col-12" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"
+         style="margin-top: 10px; margin-top: 10px;">
+        <p-fieldset legend="Historia">
+
+            <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
+                         sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+                <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
+                <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
+                <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
+
+                <p-column [sortable]="true" field="workNo" header="WO" [style]="{'width':'90px'}"></p-column>
+                <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
+                <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
+                <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
+                <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px'}"></p-column>
+
+                <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
+
+                <ng-template pTemplate="emptymessage">
+                    Brak historycznych danych o WO...
+                </ng-template>
+
+            </p-dataTable>
+
 
             <!--<div class="ui-grid-row" *ngFor="let record of selectedOrder.history">
                 <div class="ui-grid-col-12">
@@ -125,3 +153,4 @@
         </p-fieldset>
     </div>
 </div>
+

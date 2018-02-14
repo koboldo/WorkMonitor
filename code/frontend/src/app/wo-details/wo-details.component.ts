@@ -43,13 +43,16 @@ export class WoDetailsComponent implements OnInit {
     }
 
     private processHistory(history:OrderHistory[]):void {
-        if (this.staff && this.staff.length > 0) {
-            for(let record of history) {
+
+
+        for (let record of history) {
+            if (record.itemId !== undefined && record.itemId > 0) {
+                this.woService.getRelatedItem(record.itemId).subscribe(item => record.itemNo = item.itemNo);
+            }
+            if (this.staff && this.staff.length > 0) {
                 this.fillModifiedBy(record);
             }
-        }
-        if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
-            for(let record of history) {
+            if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
                 this.fillVentureRepresentative(record);
             }
         }

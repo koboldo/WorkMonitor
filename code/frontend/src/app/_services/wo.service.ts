@@ -65,6 +65,11 @@ export class WOService {
             .map((response:Response) => this.getWorkOrders(response.json()));
     }
 
+    getRelatedItem(id: number): Observable<any> {
+        return this.http.get('/api/v1/relatedItems/' + id)
+            .map((response:Response) => this.getItem(response.json()));
+    }
+
     prepareProtocol(ids: number[]) : Observable<any> {
 
         let flatIds: string = "";
@@ -152,5 +157,9 @@ export class WOService {
         }
 
         return order;
+    }
+
+    private getItem(item:any):any {
+        return item;
     }
 }
