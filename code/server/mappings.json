@@ -46,6 +46,7 @@
 			"ITEM_ID": "itemId",
 			"VENTURE_ID": "ventureId",
 			"OFFICE_CODE": "officeCode",
+			"IS_FROM_POOL": "isFromPool",
 			"ASSIGNEE": "assignee",
 			"DONE_DATE": "doneDate",
 			"ASSIGNED_DATE": "assignedDate",

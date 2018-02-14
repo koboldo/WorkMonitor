@@ -1525,7 +1525,7 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="read order - success" id="4e3993dc-d5ff-4386-b9a0-8b2dcaffc586" mediaType="application/json">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read order - success" id="4e3993dc-d5ff-4386-b9a0-8b2dcaffc586" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -1667,7 +1667,7 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="update order - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="update order - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -1718,7 +1718,23 @@
 					<con:jmsPropertyConfig/>
 					<con:parameters/>
 				</con:request>
-			</con:method>
+			<con:request name="update order change status - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:encoding>UTF-8</con:encoding>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "statusCode": "CO"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request></con:method>
 		</con:resource>
 		<con:resource name="orders" path="/api/v1/orders" id="c6011108-4dcc-42fe-a3fa-ad704f7d3540">
 			<con:settings/>
@@ -1914,7 +1930,7 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -2035,9 +2051,7 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters>
-						<entry key="personId" value="1" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
+					<con:parameters><entry key="personId" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters>
 					<con:parameterOrder>
 						<con:entry>status</con:entry>
 						<con:entry>lastModBefore</con:entry>
@@ -2205,7 +2219,7 @@
 					<con:params/>
 					<con:element xmlns:waw2="http://localhost/api/v1/orders/external/WAW2">waw2:Response</con:element>
 				</con:representation>
-				<con:request name="read order by ext id - uccess" id="69a1e92d-7f79-4104-9900-e3b9aec7d81a" mediaType="application/json">
+				<con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read order by ext id - success" id="69a1e92d-7f79-4104-9900-e3b9aec7d81a" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -4911,7 +4925,7 @@ Before running test suite again test data has to be refreshed.
 	<con:properties>
 		<con:property>
 			<con:name>securityToken</con:name>
-			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjksInJvbGUiOlsiT1AiXSwiaWF0IjoxNTE4NDMwOTI4LCJleHAiOjE1MTg0MzI3Mjh9.hKVl8Zr0pD1Ar7-GdA6uzwzBgRswWeRksYrx1OEWWI0</con:value>
+			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjksInJvbGUiOlsiT1AiXSwiaWF0IjoxNTE4NTU3Mjc1LCJleHAiOjE1MTg1NTkwNzV9.mdfEgshjV6_VW0QV8iqKruI9u1JC7gxaML_p_kocAHQ</con:value>
 		</con:property>
 	</con:properties>
 	<con:wssContainer/>

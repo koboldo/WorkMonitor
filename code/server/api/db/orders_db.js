@@ -9,17 +9,17 @@ var logErrAndCall = require('../local_util').logErrAndCall;
 var logger = require('../logger').getLogger('monitor'); 
 
 var queries = {
-	getOrders:		 ' SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, MD_CAPEX, PROTOCOL_NO, PRICE, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD, DATETIME(CREATED,"unixepoch") AS CREATED, MODIFIED_BY, ITEM_ID, (SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P, PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID) AS ASSIGNEE, VENTURE_ID FROM WORK_ORDER AS WO %s ORDER BY WO.LAST_MOD DESC',
-	getOrder:		 ' SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, MD_CAPEX, PROTOCOL_NO, PRICE, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD, DATETIME(CREATED,"unixepoch") AS CREATED, MODIFIED_BY, ITEM_ID, (SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P, PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID) AS ASSIGNEE, VENTURE_ID FROM WORK_ORDER AS WO WHERE ID = ?',
-	getOrderByExtId:		 ' SELECT ID, WORK_NO, STATUS_CODE, TYPE_CODE, COMPLEXITY_CODE, COMPLEXITY, DESCRIPTION, COMMENT, MD_CAPEX, PROTOCOL_NO, PRICE, DATETIME(LAST_MOD,"unixepoch") AS LAST_MOD, DATETIME(CREATED,"unixepoch") AS CREATED, ITEM_ID, (SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P, PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID) AS ASSIGNEE, VENTURE_ID FROM WORK_ORDER AS WO WHERE WORK_NO = ?',
+	getOrders: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID %s ORDER BY WO.LAST_MOD DESC',
+	getOrder: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WO.ID = ?',
+	getOrderByExtId: ' SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WORK_NO = ?',
     getOrderItems:   'SELECT RI.ID, RI.ITEM_NO, RI.DESCRIPTION, RI.ADDRESS, RI.MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch") AS CREATED FROM RELATED_ITEM AS RI WHERE RI.ID = ?',
     calculateTotalPriceStat: `WITH PARAMS AS ( SELECT STRFTIME('%%s', '%(dateAfter)s') AS AFTER_DATE ,STRFTIME('%%s', '%(dateBefore)s') + 86400 AS BEFORE_DATE ) 
                                 SELECT SUM(PRICE) AS TOTAL_PRICE, COUNT(WORK_NO) AS WO_COUNT FROM 
                                 ( SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER WHERE ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) )  
                                 UNION  SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER_HIST WHERE 
                                     ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) ) ) `,
-    checkOrdersForProtocol: 'SELECT WORK_NO FROM WORK_ORDER WHERE ID IN (%(idList)s) AND PROTOCOL_NO IS NOT NULL',
-    updateOrdersForProtocol: 'UPDATE WORK_ORDER SET PROTOCOL_NO = "%(protocolNo)s" WHERE ID IN (%(idList)s)',
+    checkOrdersForProtocol: 'SELECT WORK_NO FROM WORK_ORDER WHERE ID IN (%(idList)s) AND ( PROTOCOL_NO IS NOT NULL OR STATUS_CODE != "CO" )',
+    updateOrdersForProtocol: 'UPDATE WORK_ORDER SET PROTOCOL_NO = "%(protocolNo)s", STATUS_CODE = "IS" WHERE ID IN (%(idList)s)',
     getOrdersForProtocol: `SELECT COALESCE(WO.WORK_NO,"") AS WORK_NO, COALESCE(WO.PRICE,0) AS PRICE, WO.LAST_MOD, COALESCE(WO.DESCRIPTION,"") AS DESCRIPTION, WO.PROTOCOL_NO, SUBSTR(WO.TYPE_CODE,0,INSTR(WO.TYPE_CODE,'.')) AS TYPE, RI.ITEM_NO, COALESCE(P.INITIALS,"") AS INITIALS, WO.VENTURE_ID 
                             FROM WORK_ORDER AS WO JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID JOIN PERSON AS P ON WO.VENTURE_ID = P.ID 
                             WHERE %(idList)s %(protocolNo)s`,
@@ -236,6 +236,7 @@ var orders_db = {
 
     prepareOrdersForProtocol: function(idlist, protocolNo, cb) {
         
+        var protNo = protocolNo;
         var calls = [];
 
         if(idlist) {
@@ -248,8 +249,11 @@ var orders_db = {
                     checkOrdersStat.finalize();
                     db.close();
                     
-                    if(rows.length > 0) _cb(new Error('Zamówienia posiadające już numer protokołu ' + rows.map((r)=>{return r.WORK_NO;}).join(','), 'custom'));
-                    else if(err) _cb(err);
+                    if(rows.length > 0) {
+                        var checkErr = new Error('Zamówienia o niewłaściwym statusie lub posiadające już numer protokołu: ' + rows.map((r)=>{return r.WORK_NO;}).join(','));
+                        checkErr.type = 'custom';
+                        _cb(checkErr);
+                    } else if(err) _cb(err);
                     else _cb(null);
                 });
             });
@@ -262,10 +266,17 @@ var orders_db = {
             });
             
             calls.push(function(seqVal,_cb){
+                
+                protNo = 
+                'A' + new Date().getFullYear().toString().substr(-2) + '/'
+                      + ((new Date().getMonth() < 10) ? '0' : '') + new Date().getMonth().toString()
+                      + '/' + seqVal;
+                console.log('protNo ' + protNo);
+                
                 var db = dbUtil.getDatabase();
                 var params =  {
                     idList: idlist,
-                    protocolNo: 'CUSTOM' + seqVal
+                    protocolNo: protNo
                 };
                 var update = dbUtil.prepareFiltersByInsertion(queries.updateOrdersForProtocol,params,filters.updateOrdersForProtocol);
                 var updateOrdersStat = db.prepare(update);      
@@ -274,7 +285,7 @@ var orders_db = {
                     db.close();
                     
                     if(err) _cb(err);
-                    else _cb(null);
+                    else _cb();
                 });
             });
         } 
@@ -286,7 +297,6 @@ var orders_db = {
                             protocolNo: (protocolNo) ? protocolNo : ''
                         };
             var query = dbUtil.prepareFiltersByInsertion(queries.getOrdersForProtocol,params,filters.getOrdersForProtocol);
-            console.log(query);
             var getOrdersForProtocolStat = db.prepare(query);
             getOrdersForProtocolStat.all(function(err,rows) {
                 getOrdersForProtocolStat.finalize();
@@ -299,12 +309,9 @@ var orders_db = {
 
         async.waterfall(
             calls,
-            function(err, result) {
-                console.log('err ' + JSON.stringify(err));
-                console.log('result ' + JSON.stringify(result));
-                
+            function(err, result) {                
                 if(err) return logErrAndCall(err,cb);
-                cb(null,result);
+                cb(null,[protNo,result]);
             }
         );
     }
