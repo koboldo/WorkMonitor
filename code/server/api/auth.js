@@ -40,8 +40,6 @@ var auth = {
         var authStat = db.prepare(authQuery).bind([user, passwdSha1]).get(function(err,userRow) {
             authStat.finalize();
             db.close();
-            
-            if(userRow.ROLE_CODE) userRow.ROLE_CODE = userRow.ROLE_CODE.split(',');
 
             if(err) {
                 return res.status(400).json({ 
@@ -55,6 +53,9 @@ var auth = {
                                 message: "authetication failed"
                                 });
             }
+
+            if(userRow.ROLE_CODE) userRow.ROLE_CODE = userRow.ROLE_CODE.split(',');
+
             if(userRow.IS_ACTIVE == "N") {
                 return res.status(403).json({
                                 success: false,
