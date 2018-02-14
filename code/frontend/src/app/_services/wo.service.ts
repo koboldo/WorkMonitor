@@ -4,8 +4,7 @@ import { Observable }    from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
 
-import { Order } from '../_models/order';
-import { User } from '../_models/user';
+import { Order, OrderHistory, User } from '../_models/index';
 import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import 'rxjs/add/operator/mergeMap';
@@ -59,6 +58,11 @@ export class WOService {
         return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)))
             .map((response: Response) => response.json().created)
             .mergeMap(createdId => this.getOrderById(createdId));
+    }
+
+    getOrderHistoryById(id:number):Observable<OrderHistory[]> {
+        return this.http.get('/api/v1/orders/history/' + id)
+            .map((response:Response) => this.getWorkOrders(response.json()));
     }
 
     prepareProtocol(ids: number[]) : Observable<any> {
@@ -138,7 +142,7 @@ export class WOService {
         }
 
         // flat structure to enable filtering in p-datatable
-        if (order.relatedItems[0] !== undefined) {
+        if (order.relatedItems && order.relatedItems[0] !== undefined) {
             order.itemNo = order.relatedItems[0].itemNo;
             order.itemDescription = order.relatedItems[0].description;
             order.itemBuildingType = order.relatedItems[0].mdBuildingType;

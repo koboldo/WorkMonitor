@@ -14,6 +14,8 @@ export class ToolsService {
 
     datePipe :DatePipe = new DatePipe('en-US');
 
+    public NO_WO = "XXXXX";
+
     constructor(private alertService: AlertService) {
 
     }
@@ -145,10 +147,14 @@ export class ToolsService {
         return "fa question";
     }
 
-    // private helper methods
 
     public isStatusLowerThanProtocol(statusCode: string): boolean{
         return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
+    }
+
+    //TODO implement has WO and Station?
+    public isReadyForProtocol(order:Order):boolean {
+        return order.workNo != this.NO_WO && order.assignee && order.itemId != undefined;
     }
 
 

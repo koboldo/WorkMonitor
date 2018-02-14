@@ -12,20 +12,37 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 })
 export class WoDetailsComponent implements OnInit {
 
-    constructor(private toolsService: ToolsService) {
+    constructor(private toolsService: ToolsService,
+                private woService: WOService) {
     }
 
     ngOnInit() {
     }
 
-    @Input() selectedOrder: Order;
+    @Input()
+    set selectedOrder(order: Order) {
+        if (order) {
+            console.log('got order: ', order.id);
+            this._selectedOrder = order;
+
+            this.woService.getOrderHistoryById(order.id)
+                .subscribe(history => this._selectedOrder.history = history);
+
+        }
+    }
+
+    get selectedOrder(): Order {
+        return this._selectedOrder;
+    }
+
+    _selectedOrder: Order;
 
     public getColor() :string {
-        return this.toolsService.getOrderColor(this.selectedOrder.typeCode);
+        return this.toolsService.getOrderColor(this._selectedOrder.typeCode);
     }
 
     public getStatusIcon(): string {
-        return this.toolsService.getStatusIcon(this.selectedOrder.statusCode);
+        return this.toolsService.getStatusIcon(this._selectedOrder.statusCode);
     }
 
 }
