@@ -83,7 +83,11 @@ export class WOService {
 
         return this.http.get('/api/v1/report/prepareProtocol?ids='+flatIds)
             .map((response: Response) => this.getProtocol(response.json()))
+    }
 
+    fetchProtocol(protocolNo: string) : Observable<any> {
+        return this.http.get('/api/v1/report/prepareProtocol?protocolNo='+protocolNo)
+            .map((response: Response) => this.getProtocol(response.json()))
     }
 
 

@@ -16,9 +16,9 @@ import { MenuItem } from 'primeng/primeng';
 export class WoClearingComponent implements OnInit {
 
     /* search and selection */
-
     orders:Order[];
     selectedOrders:Order[];
+    protocolNo: string;
 
     displayClearingDialog:boolean;
     //protocolNo: string;
@@ -39,6 +39,16 @@ export class WoClearingComponent implements OnInit {
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
 
         this.search();
+    }
+
+    fetchProtocol() {
+        if (!this.protocolNo) {
+            this.alertService.warn("Nie można wygenerować bez numeru!");
+        } else {
+            this.woService.fetchProtocol(this.protocolNo).
+                subscribe(protocol => this.processProtocol(protocol, false));
+        }
+
     }
 
     search() {
@@ -83,18 +93,18 @@ export class WoClearingComponent implements OnInit {
         console.log("Prepare protocol for ids="+JSON.stringify(ids));
 
         this.woService.prepareProtocol(ids).
-            subscribe(protocol => this.processProtocol(protocol));
+            subscribe(protocol => this.processProtocol(protocol, true));
 
         this.displayClearingDialog = false;
         this.selectedOrders = [];
     }
 
-    private processProtocol(protocol:any):void {
+    private processProtocol(protocol:any, refresh: boolean):void {
         if (protocol && protocol.file) {
             let protocolName: string = this.getProtocolName(protocol);
             this.toolsService.downloadXLSFile(protocolName, protocol.file);
             this.alertService.success("Wygenerowano protokół: '"+protocolName+"'", false);
-            this.search();
+            if (refresh) this.search();
         } else {
             this.alertService.error("Generacja protokołu niepowiodła się");
         }

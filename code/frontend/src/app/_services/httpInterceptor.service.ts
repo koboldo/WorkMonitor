@@ -75,28 +75,30 @@ export class HttpInterceptor {
 
         return this.http.get(url, this.authSerivce.getAuthOptions())
             .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(this.handleError)
+            .catch(e => this.handleError(e, url))
     }
 
     public post(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.post(url, object, this.authSerivce.getAuthOptions())
             .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(this.handleError)
+            .catch(e => this.handleError(e, url))
     }
 
     public put(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.put(url, object, this.authSerivce.getAuthOptions())
             .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(this.handleError)
+            .catch(e => this.handleError(e, url))
     }
 
     public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
         return this.http.delete(url, this.authSerivce.getAuthOptions())
             .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(this.handleError)
+            .catch(e => this.handleError(e, url))
+
     }
 
-    public handleError = (error: Response) => {
+    public handleError(error: Response, url: string) {
+        this.decrementProgress(this.getProgressKey(url));
 
         console.log("This is an error: "+JSON.stringify(error));
         let body: any = JSON.parse(error["_body"]);
