@@ -34,6 +34,11 @@ export class Order {
 
     history: OrderHistory[];
 
+    officeCode: string;
+    office:     string;
+    isFromPool: string;
+
+
     constructor(public workNo:string,
                 public statusCode:string,
                 public status:string,

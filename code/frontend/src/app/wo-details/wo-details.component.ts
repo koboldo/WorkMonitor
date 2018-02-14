@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
-import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
+import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
 @Component({
@@ -12,11 +12,18 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 })
 export class WoDetailsComponent implements OnInit {
 
+    _selectedOrder: Order;
+    staff: User[];
+    ventureRepresentatives: User[];
+
     constructor(private toolsService: ToolsService,
-                private woService: WOService) {
+                private woService: WOService,
+                private userService:UserService) {
     }
 
     ngOnInit() {
+        this.userService.getAllStaff().subscribe(staff => this.staff = staff);
+        this.userService.getVentureRepresentatives().subscribe(vr => this.ventureRepresentatives = vr);
     }
 
     @Input()
@@ -26,7 +33,7 @@ export class WoDetailsComponent implements OnInit {
             this._selectedOrder = order;
 
             this.woService.getOrderHistoryById(order.id)
-                .subscribe(history => this._selectedOrder.history = history);
+                .subscribe(history => this.processHistory(history));
 
         }
     }
@@ -35,7 +42,38 @@ export class WoDetailsComponent implements OnInit {
         return this._selectedOrder;
     }
 
-    _selectedOrder: Order;
+    private processHistory(history:OrderHistory[]):void {
+        if (this.staff && this.staff.length > 0) {
+            for(let record of history) {
+                this.fillModifiedBy(record);
+            }
+        }
+        if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
+            for(let record of history) {
+                this.fillVentureRepresentative(record);
+            }
+        }
+
+        this._selectedOrder.history = history;
+    }
+
+    private fillModifiedBy(record: OrderHistory): void {
+        for(let s of this.staff) {
+            if (s.id === record.modifiedBy) {
+                record.modifiedByFull = s;
+                return;
+            }
+        }
+    }
+
+    private fillVentureRepresentative(record:OrderHistory):void {
+        for(let vr of this.ventureRepresentatives) {
+            if(vr.id === record.ventureId) {
+                record.ventureDisplay = vr.firstName+" "+vr.lastName;
+                record.ventureCompany = vr.company;
+            }
+        }
+    }
 
     public getColor() :string {
         return this.toolsService.getOrderColor(this._selectedOrder.typeCode);

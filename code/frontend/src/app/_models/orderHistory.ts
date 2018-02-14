@@ -19,7 +19,8 @@ import { User, RelatedItem, Order } from '../_models/index';
 
 export class OrderHistory extends Order {
     public versionDate :string;
-    public modifiedBy: string;
+    public modifiedBy: number;
+    public modifiedByFull: User;
 
 }
 

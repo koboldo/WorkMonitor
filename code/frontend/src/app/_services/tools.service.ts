@@ -158,9 +158,9 @@ export class ToolsService {
     }
 
 
-    public downloadXLSFile(name: string, contentBase64: string) {
+    public downloadXLSFile(fileName: string, contentBase64: string) {
 
-        console.log("download " + name);
+        console.log("download " + fileName);
 
         var byteCharacters = atob(contentBase64);
         var byteNumbers = new Array(byteCharacters.length);
@@ -173,7 +173,7 @@ export class ToolsService {
         let e = document.createEvent('MouseEvents');
         let a = document.createElement('a');
 
-        a.download = name + '.xlsx';
+        a.download = fileName;
         a.href = window.URL.createObjectURL(blob);
 
 

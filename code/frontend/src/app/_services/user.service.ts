@@ -111,6 +111,10 @@ export class UserService {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
     }
 
+    public getAllStaff(): Observable<User[]> {
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "PR"]));
+    }
+
     public getEngineersAndVentureRepresentatives(): Observable<User[]> {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "VE"]));
     }

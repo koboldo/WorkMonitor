@@ -91,11 +91,22 @@ export class WoClearingComponent implements OnInit {
 
     private processProtocol(protocol:any):void {
         if (protocol && protocol.file) {
-            //TODO file name
-            this.toolsService.downloadXLSFile("test", protocol.file);
+            let protocolName: string = this.getProtocolName(protocol);
+            this.toolsService.downloadXLSFile(protocolName, protocol.file);
+            this.alertService.success("Wygenerowano protokół: '"+protocolName+"'", false);
+            this.search();
         } else {
             this.alertService.error("Generacja protokołu niepowiodła się");
         }
+    }
+
+    private getProtocolName(protocol:any): string{
+        if (protocol.name && protocol.name.length > 0) {
+            return protocol.name;
+        }
+
+        console.log("protocol name is not set!");
+        return "protokol.xslx";
     }
 
     /* mored to backed
@@ -137,5 +148,6 @@ export class WoClearingComponent implements OnInit {
 
     }
     */
+
 
 }
