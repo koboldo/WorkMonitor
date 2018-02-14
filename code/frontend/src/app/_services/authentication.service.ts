@@ -71,7 +71,7 @@ export class AuthenticationService {
     private buildMenu(user:User):any {
 
         let allItems = [
-            {label: 'Praca z WO', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR"]},
+            {label: 'Praca z WO', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
             {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
             {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},

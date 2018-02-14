@@ -21,7 +21,7 @@ export class WoComponent implements OnInit {
     orders:Order[];
     selectedOrder:Order;
 
-    /* edit */
+    /*  */
     editedOrder:Order;
     newOrder:boolean;
     isNewOrderOwner:boolean;
@@ -87,12 +87,23 @@ export class WoComponent implements OnInit {
         this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
         this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
         this.workService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
-        this.authSerice.userAsObs.subscribe(user => this.operator = user);
+        this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
 
         this.workTypes = this.dictService.getWorkTypes();
         this.statuses = this.dictService.getWorkStatuses();
 
         this.search();
+    }
+
+    private assignOperator(operator:User):void {
+        console.log("operator: "+JSON.stringify(operator));
+        this.operator = operator;
+        if (operator && operator.roleCode && operator.roleCode.indexOf('OP') == -1) {
+            for(let item of this.items) {
+                item.disabled = true;
+            }
+        }
+
     }
 
     search() {
@@ -105,7 +116,15 @@ export class WoComponent implements OnInit {
     }
 
     private callVentures(orders: Order[]):Observable<User[]> {
-        this.orders = orders;
+        //this.orders = orders;
+        //filter
+        this.orders = [];
+        for (let order of orders) {
+            if (order.statusCode !== 'CA' && order.statusCode != 'SU') {
+                this.orders.push(order);
+            }
+        }
+
         return this.userService.getVentureRepresentatives();
     }
 
@@ -189,13 +208,17 @@ export class WoComponent implements OnInit {
     }
 
     isStatusAllowed(order: Order, statusCode: string) {
-        if (order.assignee && order.assignee.length > 0) {
+        if (statusCode === 'IS' && this.toolsService.isReadyForProtocol(order)) {
             return true;
-        } else if (statusCode === "OP") {
+        } else if (order.assignee && order.assignee.length > 0) {
+            return true;
+        } else if (statusCode === 'OP' || statusCode === 'CL' || statusCode === 'SU') {
             return true;
         }
         return false;
     }
+
+
 
     suggestType(event) {
         this.suggestedTypes = [];
@@ -239,6 +262,11 @@ export class WoComponent implements OnInit {
         console.log("suggestedVentureRepresentatives " + JSON.stringify(this.suggestedVentureRepresentatives));
     }
 
+    public showWoDetails(event, order) {
+        this.selectedOrder=order;
+        this.onRowSelect(event);
+        this.displayDetailsDialog=true;
+    }
 
     onRowSelect(event) {
         console.log("selected row!" + JSON.stringify(this.selectedOrder));
@@ -247,7 +275,9 @@ export class WoComponent implements OnInit {
 
     onRowDblclick(event) {
         console.log("onRowDblclick row!" + JSON.stringify(this.selectedOrder));
-        this.edit();
+        if (this.operator && this.operator.roleCode && this.operator.roleCode.indexOf('OP') > -1) {
+            this.edit();
+        }
     }
 
     assign(isNewOrderOwner:boolean):void {
@@ -270,7 +300,7 @@ export class WoComponent implements OnInit {
 
     add() {
 
-        this.editedOrder = new Order("XXXXX", "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
+        this.editedOrder = new Order(this.toolsService.NO_WO, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
         this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
 
         this.relatedItem = <RelatedItem> {};
@@ -439,6 +469,7 @@ export class WoComponent implements OnInit {
             if (item && item.itemNo) this.alertService.success("Pomyślnie zaktualizowano obiekt: " + item.itemNo);
         }
     }
+
 
 
 }

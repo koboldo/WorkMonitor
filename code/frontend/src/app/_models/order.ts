@@ -1,4 +1,4 @@
-import { User, RelatedItem } from '../_models/index';
+import { User, RelatedItem, OrderHistory } from '../_models/index';
 
 export class Order {
     //internal backend fields not set by the constuctor
@@ -31,6 +31,8 @@ export class Order {
 
     assignedDate: string;   //utilization report
     doneDate: string;       //utilization report
+
+    history: OrderHistory[];
 
     constructor(public workNo:string,
                 public statusCode:string,
