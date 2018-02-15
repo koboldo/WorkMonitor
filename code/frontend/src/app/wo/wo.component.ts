@@ -300,7 +300,7 @@ export class WoComponent implements OnInit {
 
     add() {
 
-        this.editedOrder = new Order(this.toolsService.NO_WO, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, null, null);
+        this.editedOrder = new Order(this.toolsService.NO_WO, "OP", this.dictService.getWorkStatus("OP"), null, null, "STD", this.dictService.getComplexities("STD"), null, null, this.toolsService.NO_CAPEX, null);
         this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
 
         this.relatedItem = <RelatedItem> {};
@@ -365,9 +365,24 @@ export class WoComponent implements OnInit {
             this.editedOrder.protocolNo = ""; //According to LE its null for sqlite
         }
 
+        if (this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id) {
+            this.editedOrder.officeCode = this.assignedVentureRepresentative.user.officeCode;
+            this.editedOrder.office = this.assignedVentureRepresentative.user.office;
+            if (this.editedOrder.officeCode !== 'WAW') {
+                this.editedOrder.workNo = undefined;
+            }
+            if (this.editedOrder.officeCode !== 'KAT') {
+                this.editedOrder.mdCapex = undefined;
+            }
+            this.editedOrder.ventureId = this.assignedVentureRepresentative.user.id;
+        } else {
+            this.alertService.error("WO nie zostało zapiasane, nieprawidlowy (pusty?) region zleceniodawcy!");
+            return;
+        }
+
         this.editedOrder.typeCode = this.workType.code;
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
-        this.editedOrder.ventureId = this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id ? this.assignedVentureRepresentative.user.id : undefined;
+
 
         this.editedOrder.price = (this.price != undefined && this.price.code !== undefined) ? <number> +this.price.code : this.toolsService.parsePrice(JSON.stringify(this.price), this.editedOrder.workNo);
         console.log("price " + this.editedOrder.price);

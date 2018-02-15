@@ -50,6 +50,15 @@
                 </div>
             </div>
 
+            <div style="margin-bottom: 5px; margin-top: 5px;" class="ui-grid-row" *ngIf="selectedOrder?.isFromPool">
+                <div class="ui-grid-col-4">W ramach puli:</div>
+                <div class="ui-grid-col-8">
+                    <span class="ui-inputgroup-addon"><i
+                            [class]="selectedOrder.isFromPool=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
+                    <span style="padding: 3px; font-style: italic;">{{selectedOrder?.isFromPool == 'Y' ? 'TAK' : 'NIE'}}</span>
+                </div>
+            </div>
+
             <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
 
             <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row">

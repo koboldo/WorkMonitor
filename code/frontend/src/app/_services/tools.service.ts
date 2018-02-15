@@ -15,6 +15,7 @@ export class ToolsService {
     datePipe :DatePipe = new DatePipe('en-US');
 
     public NO_WO = "XXXXX";
+    public NO_CAPEX = "YYYYY";
 
     constructor(private alertService: AlertService) {
 
