@@ -180,38 +180,37 @@
 
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="orderType">Typ WO*</label></div>
-        <div class="ui-grid-col-4">
+        <div class="ui-grid-col-5">
           <!-- TODO bug [forceSelection]="true" -->
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
         </div>
 
           <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
-          <div class="ui-grid-col-4" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
+          <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
           </div>
 
       </div>
 
-      <!--<p-inplace *ngIf="newOrder && workType?.code">
-        <span pInplaceDisplay>
-            <button type="button" pButton icon="fa-plus" label="Podtyp"></button>
-        </span>
-        <span pInplaceContent>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><label for="orderType">Typ WO*</label></div>
-            <div class="ui-grid-col-4">
-              &lt;!&ndash; TODO bug [forceSelection]="true" &ndash;&gt;
-              <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
-            </div>
+      <div *ngIf="newOrder && workType?.code">
 
-              <div class="ui-grid-col-2" style="margin-left: 15px;"><label for="price">Wartość zlecenia (PLN)</label></div>
-              <div class="ui-grid-col-4" *ngIf="operator.roleCode === 'PR' || editedOrder?.typeCode != 'OT'">
-                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+          <div *ngFor="let addWorkType of additionalWorkTypes; let i = index">
+              <div class="ui-grid-row" *ngIf="i===0 || additionalWorkTypes[i-1]?.code" style="margin-top: 5px;">
+                  <div class="ui-grid-col-2"><label for="additionalOrderType">Dod. {{i+2}} WO*</label></div>
+                  <div class="ui-grid-col-5">
+                      <!-- TODO bug [forceSelection]="true" -->
+                      <p-autoComplete [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'"></p-autoComplete>
+                  </div>
+
+                  <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="additionalPrices">Wartość zlecenia</label></div>
+                  <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
+                      <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="additionalPrices[i]" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+                  </div>
               </div>
           </div>
-        </span>
-      </p-inplace>
--->
+
+      </div>
+
         
       <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
             <div class="ui-grid-col-2"><label for="status">Status</label></div>
@@ -285,7 +284,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button [disabled]="!(editedOrder?.workNo && editedOrder?.workNo.length > 2 && workType?.paramChar && workType?.paramChar?.length > 1)" width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zapisz"></button>
+        <button [disabled]="!(editedOrder?.workNo && editedOrder?.workNo.length > 2 && workType?.paramChar && workType?.paramChar?.length > 1)" width="200px" type="button" pButton icon="fa-check" (click)="saveOrders()" label="Zapisz"></button>
       </div>
     </p-footer>
 
@@ -307,6 +306,10 @@
           </div>
         </div>
 
+        <div class="ui-grid-row" style="margin-top: 20px;" *ngIf="editedOrder?.officeCode === 'KAT'">
+            <div class="ui-grid-col-4"><label for="mdCapex">Numer CAPEX</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" disabled="true"/></div>
+        </div>
         <div class="ui-grid-row" style="margin-top: 20px;">
             <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
             <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" disabled="true"/></div>
