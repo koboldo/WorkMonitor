@@ -96,13 +96,13 @@ export class ChangeWoComplexityComponent implements OnInit {
     }
 
     private changeComplexity(increase:boolean):void {
-        if (increase && this.selectedOrder.complexityCode !== "STD") {
+        /*if (increase && this.selectedOrder.complexityCode !== "STD") {
             this.alertService.error("Zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
             return;
         } else if (!increase && this.selectedOrder.complexityCode === "STD") {
             this.alertService.error("Zlecenie " + this.selectedOrder.workNo + " jest już " + this.selectedOrder.complexity + "!");
             return;
-        }
+        }*/
 
         this.justification = "";
         this.complexityIncrease = increase;
@@ -119,7 +119,16 @@ export class ChangeWoComplexityComponent implements OnInit {
         } else {
             this.editedOrder.complexityCode = "STD";
         }
-        this.editedOrder.complexity = this.dictService.getComplexities(this.editedOrder.complexityCode);
+
+        let workType: WorkType = this.workService.getWorkType(this.editedOrder.typeCode, this.editedOrder.officeCode, this.editedOrder.complexityCode);
+        console.log("Changing complexity for workType: "+JSON.stringify(workType));
+
+        if (workType && workType.complexity) {
+            this.editedOrder.complexity = workType.complexity;     //this.dictService.getComplexities(this.editedOrder.complexityCode);
+        } else {
+            this.alertService.warn("Brak danych z parametryzacji...");
+            this.editedOrder.complexity = 4;
+        }
 
         this.displayChangeComplexityDialog = true;
     }

@@ -21,7 +21,7 @@
               </div>
               <div class="ui-grid-col-1"></div>
             </div>
-            <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-row"  style="margin-top: 15px; margin-bottom: 65px;">
               <div class="ui-grid-col-4"></div>
               <div class="ui-grid-col-4">
                 <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
@@ -78,6 +78,7 @@
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
+      <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
 
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>

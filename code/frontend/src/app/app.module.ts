@@ -34,6 +34,7 @@ import { WoDetailsComponent } from './wo-details/wo-details.component';
 import { StatusDetailsComponent } from './status-details/status-details.component';
 import { UserAttendanceRegisterComponent } from './user-attendance-register/user-attendance-register.component';
 import { UserLeaveComponent } from './user-leave/user-leave.component';
+import { WorkTypesComponent } from './work-types/work-types.component';
 
 @NgModule({
     imports: [
@@ -65,7 +66,8 @@ import { UserLeaveComponent } from './user-leave/user-leave.component';
         WoDetailsComponent,
         StatusDetailsComponent,
         UserAttendanceRegisterComponent,
-        UserLeaveComponent
+        UserLeaveComponent,
+        WorkTypesComponent
     ],
     providers: [
         AuthGuard,

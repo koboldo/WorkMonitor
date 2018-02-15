@@ -45,7 +45,7 @@ export class Order {
                 public typeCode:string,
                 public type:string,
                 public complexityCode:string,
-                public complexity:string,
+                public complexity:number,
                 public description:string,
                 public comment:string,
                 public mdCapex:string,

@@ -1,0 +1,88 @@
+<div style="margin-top: 5px" *ngIf="workTypes" class="ui-g">
+  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <p-header>
+      <div>
+        <i class="fa fa-search"></i>
+        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        <button type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+      </div>
+    </p-header>
+
+    <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+    <p-column [sortable]="true" field="typeCode" header="Typ" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    <p-column [sortable]="true" field="typeDescription" header="Opis typu" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+      <ng-template let-col let-workType="rowData" pTemplate="body">
+        <span [style.color]="toolsService.getOrderColor(workType.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+        <span style="padding: 3px">{{workType.typeDescription}}</span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'60px'}"></p-column>
+
+    <p-column [sortable]="true" field="complexityCode" header="Złożoność" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span><span style="margin-left: 5px;">{{order[col.field]}}</span>
+      </ng-template>
+    </p-column>-->
+
+    <p-column [sortable]="true" field="complexity" header="Pracochłonność [H]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+    <p-column [sortable]="true" field="price" header="Cena [PLN]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+
+
+    <ng-template pTemplate="emptymessage">
+      Brak zleceń w zakresie dat...
+    </ng-template>
+
+    <p-footer>
+    </p-footer>
+
+  </p-dataTable>
+
+  <p-contextMenu #cm [model]="items"></p-contextMenu>
+</div>
+
+
+
+<p-dialog [header]="newWorkType? 'Tworzysz nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedWorkType">
+
+
+    <!--typeCode: string;
+    typeDescription: string;
+    officeCode: string;
+    complexityCode: string;
+    complexity: number;
+    price: number;-->
+
+    <div class="ui-grid-row" style="margin-top: 10px;">
+      <div class="ui-grid-col-2"><label for="typeCode">Typ</label></div>
+      <div class="ui-grid-col-10"><input [disabled]="!newWorkType" pInputText id="typeCode" [(ngModel)]="editedWorkType.typeCode" placeholder="Typ WO" required/></div>
+    </div>
+    <div class="ui-grid-row" style="margin-top: 10px;">
+      <div class="ui-grid-col-2"><label for="officeCode">Region</label></div>
+      <div class="ui-grid-col-10"><input [disabled]="!newWorkType" pInputText id="officeCode" [(ngModel)]="editedWorkType.officeCode" placeholder="Region" required/></div>
+    </div>
+    <div class="ui-grid-row" style="margin-top: 10px;">
+      <div class="ui-grid-col-2"><label for="complexityCode">Złożoność</label></div>
+      <div class="ui-grid-col-10"><input [disabled]="!newWorkType" pInputText id="complexityCode" [(ngModel)]="editedWorkType.complexityCode" placeholder="Złożoność HRD lub STD" required/></div>
+    </div>
+    <div class="ui-grid-row" style="margin-top: 10px;">
+      <div class="ui-grid-col-2"><label for="complexity">Pracochłonność</label></div>
+      <div class="ui-grid-col-10"><input type="number" pInputText id="complexity" [(ngModel)]="editedWorkType.complexity" placeholder="Pracochłonność w godzinach" required/></div>
+    </div>
+    <div class="ui-grid-row" style="margin-top: 10px;">
+      <div class="ui-grid-col-2"><label for="price">Cena</label></div>
+      <div class="ui-grid-col-10"><input type="number" pInputText id="price" [(ngModel)]="editedWorkType.price" placeholder="Cena w PLN" required/></div>
+    </div>
+
+
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
+              width="200px" type="button" pButton icon="fa-check" (click)="save()" label="Zapisz"></button>
+    </div>
+  </p-footer>
+
+</p-dialog>

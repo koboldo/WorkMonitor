@@ -49,42 +49,43 @@
         </div>
       </p-header>
       <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
+      <p-column [sortable]="true" field="workNo" header="WO" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-      <p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
-      <p-column [sortable]="true" field="statusCode" header="Status" >
+      <p-column [sortable]="true" field="status" header="Status" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="type" header="typeSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
-      <p-column [sortable]="true" field="typeCode" header="Typ">
+
+      <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
+      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
+      <p-column [sortable]="true" field="complexity" header="Wycena [H]" ></p-column>
+      <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <!--
       <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
       <p-column [sortable]="true" field="description" header="Opis"></p-column>
       -->
-      <p-column [sortable]="true" field="assignee" header="Wykonawca"></p-column><!--this is array -->
-      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Powołanie"></p-column>
+      <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
+      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="creationDate" header="Utworzenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <!-- search by invisible colums, display in one row -->
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
+      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <!-- search by invisible colums flatten into order by wo.service -->
       <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu"   hidden="true"></p-column>
       <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja"   hidden="true"></p-column>
@@ -132,7 +133,7 @@
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="comment">Komentarz*</label></div>
+        <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
         <div class="ui-grid-col-8">
           <textarea disabled="true" pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="8" [cols]="30"></textarea>
         </div>
@@ -171,21 +172,21 @@
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="complexity">Trudność*</label></div>
+        <div class="ui-grid-col-4"><label for="complexity">{{complexityIncrease? 'Zwiekszona': 'Standardowa'}} trudność*</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText id="complexity" [(ngModel)]="editedOrder.complexity" disabled="true"/>
+          <input pInputText type="number" id="complexity" [(ngModel)]="editedOrder.complexity" required/>
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="comment">Komentarz*</label></div>
+        <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
         <div class="ui-grid-col-8">
-          <textarea disabled="true" pInputTextarea id="comment" [(ngModel)]="editedOrder.comment" [rows]="8" [cols]="30"></textarea>
+          <textarea disabled="true" pInputTextarea name="comment" [(ngModel)]="editedOrder.comment" [rows]="8" [cols]="30"></textarea>
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="justification">Uzasadnienie*</label></div>
         <div class="ui-grid-col-8">
-          <textarea pInputTextarea id="justification" [(ngModel)]="justification" [rows]="2" [cols]="30" required autoResize="autoResize"></textarea>
+          <textarea pInputTextarea name="justification" [(ngModel)]="justification" [rows]="2" [cols]="30" required autoResize="autoResize"></textarea>
         </div>
       </div>
     </div>

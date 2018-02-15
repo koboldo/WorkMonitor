@@ -77,10 +77,10 @@ export class WoComponent implements OnInit {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-161); //TODO change
         this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
         this.items = [
-            {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', command: (event) => this.assign(true)},
-            {label: 'Dopisz wykonawce', icon: 'fa-share', command: (event) => this.assign(false)},
-            {label: 'Edycja zlecenia', icon: 'fa-pencil-square-o', command: (event) => this.edit()},
-            {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', command: (event) => this.add()}
+            {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', disabled: true, command: (event) => this.assign(true)},
+            {label: 'Dopisz wykonawce', icon: 'fa-share', disabled: true, command: (event) => this.assign(false)},
+            {label: 'Edycja zlecenia', icon: 'fa-pencil-square-o', disabled: true, command: (event) => this.edit()},
+            {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', disabled: true, command: (event) => this.add()}
         ];
         this.relatedItem = <RelatedItem>{};
     }
@@ -101,12 +101,17 @@ export class WoComponent implements OnInit {
     private assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
         this.operator = operator;
-        if (operator && operator.roleCode && operator.roleCode.indexOf('OP') == -1) {
+        if (operator && operator.roleCode && operator.roleCode.indexOf('OP') > -1) {
             for(let item of this.items) {
-                item.disabled = true;
+                item.disabled = false;
             }
         }
 
+    }
+
+    refresh() {
+        this.lastModBefore = this.toolsService.getCurrentDateDayOperation(1);
+        this.search();
     }
 
     search() {
@@ -303,7 +308,7 @@ export class WoComponent implements OnInit {
 
     add() {
 
-        this.editedOrder = new Order(this.toolsService.NO_WO, 'OP', this.dictService.getWorkStatus('OP'), null, null, 'STD', this.dictService.getComplexities('STD'), null, null, this.toolsService.NO_CAPEX, null);
+        this.editedOrder = new Order(this.toolsService.NO_WO, 'OP', this.dictService.getWorkStatus('OP'), null, null, 'STD', -1, null, null, this.toolsService.NO_CAPEX, null);
         this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
         this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
 
@@ -364,7 +369,7 @@ export class WoComponent implements OnInit {
         this.alertService.info('Pomyślnie przypisano zlecenie ' + order.workNo + ' do ' + engineer.email);
 
         //this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
-        this.woService.updateOrder(order).subscribe(updatedOrder => this.search());
+        this.woService.updateOrder(order).subscribe(updatedOrder => this.refresh());
     }
 
     saveOrders() {
@@ -380,7 +385,7 @@ export class WoComponent implements OnInit {
                     i++;
                 }
             }
-            this.search();
+            this.refresh();
         }
     }
 
@@ -409,7 +414,12 @@ export class WoComponent implements OnInit {
 
         order.typeCode = workType.code;
         order.type = this.dictService.getWorkType(order.typeCode);
-
+        let workTypeParam: WorkType = this.workService.getWorkType(order.type, order.officeCode, 'STD');
+        if (workTypeParam && workTypeParam.complexity > 0) {
+            order.complexity = workTypeParam.complexity;
+        } else {
+            this.alertService.error('WO nie zostało zapiasane, nieprawidlowa parametryzacja dla '+order.type+', '+order.officeCode+'!');
+        }
 
         order.price = (price != undefined && price.code !== undefined) ? <number> +price.code : this.toolsService.parsePrice(JSON.stringify(price), order.workNo);
         console.log('price ' + order.price);
@@ -445,7 +455,7 @@ export class WoComponent implements OnInit {
             console.log('saving new!' + JSON.stringify(order));
             if (refresh) {
                 //this.woService.addOrder(order).subscribe(createdOrder => this.refreshTable(createdOrder, this.newOrder))
-                this.woService.addOrder(order).subscribe(createdOrder => this.search())
+                this.woService.addOrder(order).subscribe(createdOrder => this.refresh())
             } else {
                 this.woService.addOrder(order).subscribe();
             }
@@ -453,7 +463,7 @@ export class WoComponent implements OnInit {
             console.log('changing!' + JSON.stringify(order));
             if (refresh) {
                 //this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, this.newOrder));
-                this.woService.updateOrder(order).subscribe(updatedOrder => this.search());
+                this.woService.updateOrder(order).subscribe(updatedOrder => this.refresh());
             } else {
                 this.woService.updateOrder(order).subscribe();
             }
@@ -517,7 +527,7 @@ export class WoComponent implements OnInit {
                 }
                 index++;
             }
-            this.search();
+            this.refresh();
             if (item && item.itemNo) this.alertService.success('Pomyślnie zaktualizowano obiekt: ' + item.itemNo);
         }
     }

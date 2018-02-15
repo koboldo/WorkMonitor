@@ -4,15 +4,16 @@ import { Observable }    from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
 
-import { Order, OrderHistory, User } from '../_models/index';
+import { Order, OrderHistory, User, WorkType } from '../_models/index';
 import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
+import { WorkTypeService } from '../_services/workType.service';
 import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class WOService {
 
-    constructor(private http: HttpInterceptor, private dictService: DictService) {
+    constructor(private http: HttpInterceptor, private dictService: DictService, private workService: WorkTypeService) {
         console.log("WOService created");
         this.dictService.init();
     }
@@ -100,7 +101,7 @@ export class WOService {
 
     private getStrippedOrder(order: Order): Order {
         let strippedOrder:Order = JSON.parse(JSON.stringify(order));
-        strippedOrder.complexity = undefined;
+        // this is not from dict but strippedOrder.complexity = undefined;
         strippedOrder.status = undefined;
         strippedOrder.type = undefined;
         strippedOrder.lastModDate = undefined;
@@ -142,8 +143,21 @@ export class WOService {
             order.type = this.dictService.getWorkType(order.typeCode);
         }
 
-        if (order.complexityCode) {
-            order.complexity = this.dictService.getComplexities(order.complexityCode)
+        if (order.officeCode) {
+            order.office = this.dictService.getOffice(order.officeCode);
+        }
+
+        if (order.complexity && order.complexity > 0) {
+            console.log('Complexity read from backend: '+order.complexity);
+        }
+        else if (order.complexityCode && order.typeCode && order.officeCode) {
+            let workType: WorkType = this.workService.getWorkType(order.typeCode, order.officeCode, order.complexityCode);
+            if (workType && workType.complexity) {
+                console.log('Complexity read from workType parametrization: '+workType.complexity);
+                order.complexity = workType.complexity;
+            } else {
+                order.complexity = -13;
+            }
         }
 
         if (order.price === -13) {
