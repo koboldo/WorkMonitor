@@ -375,6 +375,88 @@ export class WoComponent implements OnInit {
         this.woService.updateOrder(order).subscribe(updatedOrder => this.refresh());
     }
 
+    canSaveOrders(): boolean {
+        return (
+            this.assignedVentureRepresentative && this.assignedVentureRepresentative.user &&
+            this.editedOrder && this.editedOrder.workNo && this.editedOrder.workNo.length > 2 &&
+            this.workType && this.workType.paramChar && this.workType.paramChar.length > 1
+        );
+    }
+
+    saveOrders() {
+        if (this.canSaveOrders()) {
+            this.displayEditDialog = false;
+            this.setWorkTypeAndPrice(this.editedOrder, this.workType, this.price);
+            this.saveOrder(this.editedOrder, this.saveOrderSubscribeCallback);
+        }
+    }
+
+    private saveOrder(order: Order, saveOrderCallback: (o: Order, that: WoComponent) => any): void {
+
+        order.statusCode = this.newOrder ? 'OP' : this.status.code;
+        order.status = this.dictService.getWorkStatus(order.statusCode);
+        if (this.toolsService.isStatusLowerThanProtocol(order.statusCode)) {
+            order.protocolNo = ''; //According to LE its null for sqlite
+        }
+
+        if (this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id) {
+            order.officeCode = this.assignedVentureRepresentative.user.officeCode;
+            order.office = this.assignedVentureRepresentative.user.office;
+            order.ventureId = this.assignedVentureRepresentative.user.id;
+            if (order.officeCode !== 'WAW' && this.generateWorkNoFlag === 'Y') {
+                this.editedOrder.workNo = undefined;
+            }
+            if (order.officeCode !== 'KAT') {
+                order.mdCapex = undefined;
+            }
+        } else {
+            this.alertService.error('WO nie zostało zapiasane, nieprawidlowy (pusty?) region zleceniodawcy!');
+            return;
+        }
+
+
+        let workTypeParam: WorkType = this.workService.getWorkType(order.typeCode, order.officeCode, 'STD');
+        if (workTypeParam && workTypeParam.complexity >= 0) {
+            order.complexity = workTypeParam.complexity;
+            order.type = this.dictService.getWorkType(order.typeCode);
+        } else {
+            console.log("workTypeParam = "+JSON.stringify(workTypeParam));
+            this.alertService.error('WO nie zostało zapiasane, nieprawidlowa parametryzacja dla '+order.type+', '+order.officeCode+'!');
+            return;
+        }
+
+
+        //trying to optimize all actions newOrder-newRelatedItem(noId), changeOrder-newRelatedItem(noId), newOrder-changeRelatedItem(Id), changeOrder-changeRelatedItem(Id)
+        if (this.relatedItem.itemNo !== undefined && this.relatedItem.id !== undefined) {
+            if (this.isRelatedItemChanged(this.relatedItem)) {
+                console.log('changing existing relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
+                this.itemService.updateItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this)));
+            } else {
+                console.log('no action on relatedItem but could be reassignment - this will be handled in storeOrder');
+                this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this));
+            }
+        } else if (this.relatedItem.itemNo !== undefined && this.relatedItem.id === undefined) {
+            console.log('adding new relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
+            this.itemService.addItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, true).subscribe(order => saveOrderCallback(order, this)));
+        } else {
+            console.log('no action on relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
+            this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this));
+        }
+    }
+
+    private storeOrder(item:RelatedItem, order:Order, newOrder:boolean, newItem:boolean):Observable<Order> {
+        console.log('changing order related item to ' + item.id);
+        order.itemId = item.id;
+
+        if (newOrder) {
+            console.log('saving new!' + JSON.stringify(order));
+            return this.woService.addOrder(order)
+        } else {
+            console.log('changing!' + JSON.stringify(order));
+            return this.woService.updateOrder(order);
+        }
+    }
+
     private saveOrderSubscribeCallback(order: Order, that: WoComponent) {
         if (that.additionalWorkTypes.length > 0 && that.additionalWorkTypes[0].code !== '') {
             console.log('Still work todo, up to '+that.additionalWorkTypes.length +", order.workNo: "+order.workNo);
@@ -390,114 +472,11 @@ export class WoComponent implements OnInit {
         }
     }
 
-    saveOrders() {
-
-        this.displayEditDialog = false;
-
-        this.setWorkTypeAndPrice(this.editedOrder, this.workType, this.price);
-
-        if (this.generateWorkNoFlag === 'Y' && this.editedOrder.officeCode !== 'WAW') {
-            this.editedOrder.workNo = undefined;
-        }
-        this.saveOrder(this.editedOrder, this.saveOrderSubscribeCallback);
-
-    }
-
     private setWorkTypeAndPrice(order: Order, workType: CodeValue, price: CodeValue): void {
         order.typeCode = workType.code;
         order.price = (price != undefined && price.code !== undefined) ? <number> +price.code : this.toolsService.parsePrice(JSON.stringify(price), order.workNo);
         console.log('price ' + order.price);
     }
-
-    private saveOrder(order: Order, saveOrderCallback: (o: Order, that: WoComponent) => any) {
-
-        let refresh: boolean = false;
-
-        order.statusCode = this.newOrder ? 'OP' : this.status.code;
-        order.status = this.dictService.getWorkStatus(order.statusCode);
-        if (this.toolsService.isStatusLowerThanProtocol(order.statusCode)) {
-            order.protocolNo = ''; //According to LE its null for sqlite
-        }
-
-        if (this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id) {
-            order.officeCode = this.assignedVentureRepresentative.user.officeCode;
-            order.office = this.assignedVentureRepresentative.user.office;
-            order.ventureId = this.assignedVentureRepresentative.user.id;
-        } else {
-            this.alertService.error('WO nie zostało zapiasane, nieprawidlowy (pusty?) region zleceniodawcy!');
-            return;
-        }
-
-
-        let workTypeParam: WorkType = this.workService.getWorkType(order.typeCode, order.officeCode, 'STD');
-        if (workTypeParam && workTypeParam.complexity >= 0) {
-            order.complexity = workTypeParam.complexity;
-            order.type = this.dictService.getWorkType(order.typeCode);
-        } else {
-            console.log("workTypeParam = "+JSON.stringify(workTypeParam));
-            this.alertService.error('WO nie zostało zapiasane, nieprawidlowa parametryzacja dla '+order.type+', '+order.officeCode+'!');
-        }
-
-
-        //trying to optimize all actions newOrder-newRelatedItem(noId), changeOrder-newRelatedItem(noId), newOrder-changeRelatedItem(Id), changeOrder-changeRelatedItem(Id)
-        if (this.relatedItem.itemNo !== undefined && this.relatedItem.id !== undefined) {
-            if (this.isRelatedItemChanged(this.relatedItem)) {
-                console.log('changing existing relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-                this.itemService.updateItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, false, refresh).subscribe(order => saveOrderCallback(order, this)));
-            } else {
-                console.log('no action on relatedItem but could be reassignment - this will be handled in storeOrder');
-                this.storeOrder(this.relatedItem, order, this.newOrder, false, refresh).subscribe(order => saveOrderCallback(order, this));
-            }
-        } else if (this.relatedItem.itemNo !== undefined && this.relatedItem.id === undefined) {
-            console.log('adding new relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-            this.itemService.addItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, true, refresh).subscribe(order => saveOrderCallback(order, this)));
-        } else {
-            console.log('no action on relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-            this.storeOrder(this.relatedItem, order, this.newOrder, false, refresh).subscribe(order => saveOrderCallback(order, this));
-        }
-    }
-
-    private storeOrder(item:RelatedItem, order:Order, newOrder:boolean, newItem:boolean, refresh: boolean):Observable<Order> {
-
-        if (refresh) {
-            this.refreshItems(item, newItem);
-        }
-
-        console.log('changing order related item to ' + item.id);
-        order.itemId = item.id;
-
-        if (newOrder) {
-            console.log('saving new!' + JSON.stringify(order));
-
-            //this.woService.addOrder(order).subscribe(createdOrder => this.refreshTable(createdOrder, this.newOrder))
-            return this.woService.addOrder(order)
-
-        } else {
-            console.log('changing!' + JSON.stringify(order));
-            return this.woService.updateOrder(order);
-        }
-    }
-
-    private refreshTable(order:Order, newOrder:boolean) {
-        console.log('Refreshing table with order ' + JSON.stringify(order));
-
-        if (newOrder && order && order.id > 0) {
-            this.orders.push(order);
-            this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
-            this.alertService.success('Pomyślnie dodano zlecenie ' + order.workNo);
-        } else if (!newOrder && order.id > 0) {
-            let index:number = this.toolsService.findSelectedOrderIndex(order, this.orders);
-            console.log('refresh index: ' + index);
-            this.orders[index] = order;
-            this.orders = JSON.parse(JSON.stringify(this.orders)); //immutable dirty trick
-            this.alertService.success('Pomyślnie zmieniono zlecenie ' + order.workNo);
-            return;
-        } else {
-            this.alertService.error('Nie można bylo odświeżyć tabeli wyników, szukaj jeszcze raz');
-        }
-    }
-
-
 
     private isRelatedItemChanged(relatedItem:RelatedItem):boolean {
         //console.log('isRelatedItemChanged');
@@ -518,28 +497,6 @@ export class WoComponent implements OnInit {
         }
         return null;
     }
-
-
-    private refreshItems(item:RelatedItem, newItem: boolean):void {
-        if (newItem) {
-            this.relatedItems.push(item);
-            if (item && item.itemNo) this.alertService.success('Pomyślnie dodano nowy obiekt: ' + item.itemNo);
-        } else {
-
-            let index:number = 0;
-            for (let anItem of this.relatedItems) {
-                if (anItem.id === item.id) {
-                    this.relatedItems[index] = item;
-                    console.log('item ' + JSON.stringify(item) + ' has been refreshed!');
-                    break;
-                }
-                index++;
-            }
-            this.refresh();
-            if (item && item.itemNo) this.alertService.success('Pomyślnie zaktualizowano obiekt: ' + item.itemNo);
-        }
-    }
-
 
 
 }

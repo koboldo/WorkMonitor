@@ -113,14 +113,11 @@
 
     <div class="ui-grid-col-12" *ngIf="selectedOrder?.comment || selectedOrder?.description" style="margin-top: 10px;">
         <p-fieldset legend="Uwagi">
-            <div class="ui-grid-row" *ngIf="selectedOrder?.comment">
-                <div class="ui-grid-col-12">
+            <div class="ui-grid-row" >
+                <div class="ui-grid-col-6" *ngIf="selectedOrder?.comment">
                     <p-panel header="Komentarz">{{selectedOrder.comment}}</p-panel>
                 </div>
-            </div>
-            <hr *ngIf="selectedOrder?.comment">
-            <div class="ui-grid-row" *ngIf="selectedOrder?.description">
-                <div class="ui-grid-col-12">
+                <div class="ui-grid-col-6"  *ngIf="selectedOrder?.description">
                     <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
                 </div>
             </div>
