@@ -153,8 +153,11 @@ export class ToolsService {
         return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
     }
 
-    //TODO implement has WO and Station?
+
     public isReadyForProtocol(order:Order):boolean {
+        if (order.officeCode === 'KAT') {
+            return order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.mdCapex !== this.NO_CAPEX;
+        }
         return order.workNo != this.NO_WO && order.assignee && order.itemId != undefined;
     }
 

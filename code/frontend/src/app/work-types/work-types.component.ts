@@ -34,7 +34,7 @@ export class WorkTypesComponent implements OnInit {
 
         this.items = [
             {label: 'Dodaj', icon: 'fa-plus', command: (event) => this.add()},
-            {label: 'Zmień', icon: 'fa-arrow-circle-up', command: (event) => this.change()}
+            {label: 'Zmień', icon: 'fa-pencil-square-o', command: (event) => this.change()}
         ];
     }
 

@@ -169,7 +169,17 @@
         </div>
       </div>
 
-      <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="assignedVentureRepresentative?.user?.officeCode === 'WAW'">
+      <hr>
+
+      <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="newOrder && assignedVentureRepresentative && assignedVentureRepresentative?.user?.officeCode !== 'WAW'">
+        <div class="ui-grid-col-2"><label for="generategroup">Generuj WO</label></div>
+        <div class="form-group ui-grid-col-10">
+          <p-radioButton name="generategroup" value="Y" [(ngModel)]="generateWorkNoFlag" label="TAK"></p-radioButton>
+          <p-radioButton name="generategroup" value="N" [(ngModel)]="generateWorkNoFlag" label="NIE"></p-radioButton>
+        </div>
+      </div>
+
+      <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="!newOrder || assignedVentureRepresentative?.user?.officeCode === 'WAW' || generateWorkNoFlag === 'N'">
         <div class="ui-grid-col-2"><label for="workNo">Numer WO*</label></div>
         <div class="ui-grid-col-10 ui-fluid"><input pInputText [disabled]="!assignedVentureRepresentative" id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" [pTooltip]="'Uzupełnij jeśli posiadzasz numer zlecenia w innym przypadku pozostaw wartość '+this.toolsService.NO_WO" tooltipPosition="top"/></div>
       </div>
@@ -188,7 +198,7 @@
 
           <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
           <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
-            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, workType)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
           </div>
 
       </div>
@@ -205,7 +215,7 @@
 
                   <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="additionalPrices">Wartość zlecenia</label></div>
                   <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
-                      <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="additionalPrices[i]" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+                      <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" [(ngModel)]="additionalPrices[i]" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, additionalWorkTypes[i])" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
                   </div>
               </div>
           </div>
