@@ -1,0 +1,127 @@
+
+
+<div style="margin-top: 5px" *ngIf="users" class="ui-g">
+
+  <p-contextMenu #cm [model]="items"></p-contextMenu>
+
+  <!--[(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"-->
+  <p-dataTable [value]="users" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
+               selectionMode="single"
+               [(selection)]="selectedUser"
+               (onRowDblclick)="onRowDblclick($event)"
+               resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
+
+    <p-header>
+      <div>
+        <i class="fa fa-search"></i>
+        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+        <button [disabled]="operator.roleCode.indexOf('PR') == -1" type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+      </div>
+    </p-header>
+
+    <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
+    <p-column [sortable]="true" field="firstName" header="Imie" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'40px'}"></p-column>
+    <p-column [sortable]="true" field="lastName" header="Nazwisko" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'40px'}"></p-column>
+    <p-column [sortable]="true" field="email" header="Email" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'50px'}"></p-column>
+
+    <!--<p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>-->
+    <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
+      <ng-template let-col let-user="rowData" pTemplate="body">
+        <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+        <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" field="role" header="Rola" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
+    <p-column [sortable]="true" field="rank" header="Stopień" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'35px'}"></p-column>
+
+    <!--<p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'25px'}"></p-column>-->
+    <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'35px'}">
+      <ng-template let-col let-user="rowData" pTemplate="body">
+        <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+        <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" field="projectFactor" header="Wspł." [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'30px'}"></p-column>
+    <p-column [sortable]="true" field="company" header="Firma" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'30px'}"></p-column>
+    <p-column [sortable]="true" field="agreement" header="Umowa" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
+
+    <p-column [sortable]="true" field="phone" header="Telefon" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}"></p-column>
+    <p-column [sortable]="true" field="addressStreet" header="adres" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'65px'}"></p-column>
+    <p-column [sortable]="true" field="addressPost" header="miejscowość" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'70px'}"></p-column>
+    <p-column [sortable]="true" field="account" header="Rachunek" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'100px'}"></p-column>
+
+    <!--
+    <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
+    <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+    <p-column [sortable]="true" field="workNo" header="WO" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+
+    <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
+        <span style="padding: 3px">{{order.status}}</span>
+      </ng-template>
+    </p-column>
+
+
+    <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+        <span style="padding: 3px">{{order.type}}</span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
+
+    <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    <p-column [sortable]="true" field="comment" header="Komentarz" hidden="true"></p-column>
+    <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
+
+
+    <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+
+    <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    -->
+    <p-footer>
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 15px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-2">
+            <button type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+          </div>
+
+          <div class="ui-grid-col-6"></div>
+
+          <div class="ui-grid-col-2">
+            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+          </div>
+          <div class="ui-grid-col-1"></div>
+        </div>
+      </div>
+    </p-footer>
+
+    <ng-template pTemplate="emptymessage">
+      Brak pracowników...
+    </ng-template>
+
+  </p-dataTable>
+</div>

@@ -17,13 +17,16 @@ import { ReportMonitorEngineersComponent } from './report-monitor-engineers/repo
 import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 import { WorkTypesComponent } from './work-types/work-types.component';
 import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
+import { UsersDisplayComponent } from './users-display/users-display.component';
 
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'logme',                    component: LoginComponent },
     { path: 'resetPassword',            component: UserResetPasswordComponent },
     { path: 'addPerson',                component: UserRegisterComponent, canActivate: [AuthGuard] },
+    { path: 'employees',                component: UsersDisplayComponent, canActivate: [AuthGuard] },
     { path: 'changePerson',             component: UserChangeComponent, canActivate: [AuthGuard] },
+    { path: 'changePerson/:id',         component: UserChangeComponent, canActivate: [AuthGuard] },
     { path: 'workOrders',               component: WoComponent,       canActivate: [AuthGuard] },
     { path: 'suspendedWorkOrders',      component: WoSuspendedComponent,       canActivate: [AuthGuard] },
     { path: 'workTypes',                component: WorkTypesComponent,       canActivate: [AuthGuard] },
