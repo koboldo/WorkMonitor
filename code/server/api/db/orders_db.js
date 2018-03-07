@@ -24,7 +24,8 @@ var queries = {
                             FROM WORK_ORDER AS WO JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID JOIN PERSON AS P ON WO.VENTURE_ID = P.ID 
                             WHERE %(idList)s %(protocolNo)s`,
     getOfficeCode: 'SELECT OFFICE_CODE FROM PERSON WHERE ID = ?',
-    getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch" ) AS CREATED ,DATETIME ( HIST_CREATE ,"unixepoch" ) AS HIST_CREATE, MODIFIED_BY, ITEM_ID,VENTURE_ID FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATE DESC'
+    getIsFromPool: 'SELECT IS_FROM_POOL FROM WORK_TYPE WHERE TYPE_CODE = ? AND COMPLEXITY_CODE = ? AND OFFICE_CODE = ?',
+    getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch" ) AS CREATED ,DATETIME ( HIST_CREATED ,"unixepoch" ) AS HIST_CREATED, MODIFIED_BY, ITEM_ID,VENTURE_ID FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATED DESC'
 };
 
 // js object used by sprintf function to prepare WHERE condition
@@ -173,29 +174,53 @@ var orders_db = {
     
     create: function(order, cb) {
 
+        var missingWorkNo = (order.WORK_NO) ? false : true;
+        var officeCode;
+        var seqNo;
+        var isFromPool;
+
         var calls = [];
 
-        if(!order.WORK_NO) {
-            calls.push(function(_cb){
-                var db = dbUtil.getDatabase();
-                var getOfficeCodeStat = db.prepare(queries.getOfficeCode);
-                getOfficeCodeStat.bind(order.VENTURE_ID);
-                getOfficeCodeStat.get(function(err,result){
-                    getOfficeCodeStat.finalize();
-                    db.close();
-                    
-                    if(err) _cb(err);
-                    else {
-                        _cb(null,result.OFFICE_CODE);
-                    }
-                });
+        calls.push(function(_cb){
+            var db = dbUtil.getDatabase();
+            var getOfficeCodeStat = db.prepare(queries.getOfficeCode);
+            getOfficeCodeStat.bind(order.VENTURE_ID);
+            getOfficeCodeStat.get(function(err,result){
+                getOfficeCodeStat.finalize();
+                db.close();
+                
+                if(err) _cb(err);
+                else {
+                    officeCode = result.OFFICE_CODE;
+                    _cb(null);
+                }
             });
-            
+        });
+
+        calls.push(function(_cb){
+            var db = dbUtil.getDatabase();
+            var getIsFromPoolStat = db.prepare(queries.getIsFromPool);
+            getIsFromPoolStat.bind([order.TYPE_CODE,order.COMPLEXITY_CODE,officeCode]);
+            getIsFromPoolStat.get(function(err,result){
+                getIsFromPoolStat.finalize();
+                db.close();
+
+                if(err) _cb(err);
+                else {
+                    isFromPool = result.IS_FROM_POOL;
+                    _cb(null);
+                }
+            });
+
+        });
+
+        if(!order.WORK_NO) {
             calls.push((_cb)=>{
                 dbUtil.getNextSeq('WO_SEQ',function(err, seqVal){
                     if(err) _cb(err);
                     else {
-                        _cb(null,seqVal);
+                        seqNo = seqVal;
+                        _cb(null);
                     }
                 });
             });
@@ -206,7 +231,11 @@ var orders_db = {
             function(err, result) {
                 if(err) cb(err);
                 else {
-                    if(result.length) order.WORK_NO = result[0] + result[1];
+                    console.log('office code ' + officeCode + ' isFromPool ' + isFromPool);
+                    if(missingWorkNo) order.WORK_NO = officeCode + seqNo;
+                    order.OFFICE_CODE = officeCode;
+                    order.IS_FROM_POOL = isFromPool;
+                    order.STATUS_CODE = 'OP';
 
                     if(logger.isDebugEnabled()) logger.debug('insert order with object: ' + util.inspect(order));
             
@@ -219,7 +248,7 @@ var orders_db = {
         );
 
     },
-
+/*
     calculateTotalPriceForCompleted: function(params,cb) {
         console.log(JSON.stringify(params));
         var query = dbUtil.prepareFiltersByInsertion(queries.calculateTotalPriceStat,params,filters.calculateTotalPrice);
@@ -233,7 +262,7 @@ var orders_db = {
 			cb(null,rows[0]);
 		});
     },
-
+*/
     prepareOrdersForProtocol: function(idlist, protocolNo, cb) {
         
         var protNo = protocolNo;

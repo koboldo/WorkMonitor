@@ -93,6 +93,10 @@ var mapper = {
         mapToSql: toolbox.produceMapper(toolbox.swap(mappings.relatedItem.sqlToJson)),
     },
 
+    payroll: {
+        mapToJson: toolbox.produceMapper(mappings.payroll.sqlToJson),
+        mapToSql: toolbox.produceMapper(toolbox.swap(mappings.payroll.sqlToJson)),
+    },
     mapList: toolbox.mapListToJson
 };
 

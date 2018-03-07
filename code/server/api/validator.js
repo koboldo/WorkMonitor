@@ -33,15 +33,16 @@ var validator = {
         // }
 
         try {
-            console.log(JSON.stringify(req.context));
-            console.log([].concat(req.context.role).indexOf('OP'));
+            // console.log(JSON.stringify(req.context));
+            // console.log([].concat(req.context.role).indexOf('OP'));
             
             checkIfTimesheetCanBeModified(req);
             checkIfPersonCanBeModified(req);
             checkIfPrezesCanBeAdded(req);
             checkIfModificationCanBeDone(req);
         } catch (error) {
-            logger.info('validation error: ' + error.message);
+            logger.warn('validation error: ' + error.message);
+            logger.warn(error.stack.split("\n")[1]);
             return res.status(403).json({status: 'error', message: error.message});
         }
 

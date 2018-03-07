@@ -40,7 +40,7 @@
 			"CREATED": "creationDate",
 			"CREATED_BY": "createdBy",
 			"MODIFIED_BY": "modifiedBy",			
-			"HIST_CREATE": "versionDate",
+			"HIST_CREATED": "versionDate",
 			"LAST_ASSIGNMENT": "lastAssignment",
 			"RELATED_ITEMS": "relatedItems",
 			"ITEM_ID": "itemId",
@@ -73,7 +73,9 @@
 			"OFFICE_CODE": "officeCode",
 			"COMPLEXITY_CODE": "complexityCode",
 			"COMPLEXITY": "complexity",
-			"PRICE": "price"
+			"PRICE": "price",
+			"DESCRIPTION": "description",
+			"IS_FROM_POOL": "isFromPool"
 		}
 	},
 	"timeSheet": {
@@ -100,6 +102,28 @@
 			"MD_CONSTRUCTION_CATEGORY": "mdConstructionCategory",
 			"ADDRESS": "address",
 			"CREATED": "creationDate"
+		}
+	},
+	"payroll": {
+		"sqlToJson": {
+			"PERSON_ID": "personId",
+			"PERIOD_DATE": "periodDate",
+			"LEAVE_TIME": "leaveTime",
+			"WORK_TIME": "workTime",
+			"POOL_WORK_TIME": "poolWorkTime",
+			"OVER_TIME": "overTime",
+			"LEAVE_DUE": "leaveDue",
+			"WORK_DUE": "workDue",
+			"OVER_DUE": "overDue",
+			"TOTAL_DUE": "totalDue",
+			"IS_FROM_POOL": "isFromPool",
+			"RANK_CODE": "rankCode",
+			"PROJECT_FACTOR": "projectFactor",
+			"POOL_RATE": "poolRate",
+			"OVER_TIME_FACTOR": "overTimeFactor",
+			"APPROVED": "approved",
+			"MODIFIED_BY": "modifiedBy",
+			"LAST_MOD": "lastMod"
 		}
 	}
 }

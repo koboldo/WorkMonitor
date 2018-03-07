@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="631991b0-c716-4da6-ae47-e692b919f1f8" activeEnvironment="Default" name="work-monitor" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-project id="631991b0-c716-4da6-ae47-e692b919f1f8" activeEnvironment="Default" name="work-monitor" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" defaultScriptLanguage="Javascript" xmlns:con="http://eviware.com/soapui/config">
 	<con:settings>
 		<con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.TestRunnerAction@values-local"><![CDATA[
+			
 			<xml-fragment xmlns:con="http://eviware.com/soapui/config">
   <con:entry key="Report Format(s)" value=""/>
   <con:entry key="Host:Port" value=""/>
@@ -34,6 +35,7 @@
   <con:entry key="Tool Args" value=""/>
   <con:entry key="Save Project" value="false"/>
 </xml-fragment>
+		
 		]]></con:setting>
 	</con:settings>
 	<con:interface xsi:type="con:RestService" id="08869698-fcfe-4d72-9d61-577ac75d62ef" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -87,6 +89,18 @@
 					<con:status>403</con:status>
 					<con:params/>
 					<con:element xmlns:log="http://localhost/api/v1/login">log:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
 				</con:representation>
 				<con:representation type="RESPONSE">
 					<con:mediaType xsi:nil="true"/>
@@ -244,6 +258,291 @@
 	"hash": "ac1cb69adad744924e804f337c7588443cca65c82b407872b7ee0dd7c2490f52"
 }</con:request>
 					<con:originalUri>http://localhost/pwdreset/9</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
+		<con:resource name="persons" path="/api/v1/persons" id="9cbbb2dc-ceac-40eb-9659-52770e8202a2">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="read all persons" id="ac09eafb-3192-4cb2-a29e-0a87bee2e1be" method="GET">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element>Response</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>text/html; charset=utf-8</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+					<con:element>html</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>403</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>403</con:status>
+					<con:params/>
+					<con:element xmlns:per="http://localhost/api/v1/persons">per:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="read all persons - success" id="3b4b7914-b48d-4259-9b5c-713c297299d2" mediaType="application/json">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request/>
+					<con:originalUri>http://localhost/api/v1/persons</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+			<con:method name="add person" id="8c89dedf-39b5-496e-8337-f859139193e8" method="POST">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/json</con:mediaType>
+					<con:params/>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>text/html; charset=utf-8</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+					<con:element>html</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200 201</con:status>
+					<con:params/>
+					<con:element xmlns:per="http://localhost/api/v1/persons">per:Response</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>500 403</con:status>
+					<con:params/>
+					<con:element xmlns:per="http://localhost/api/v1/persons">per:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="add person - success" id="6a1e951e-3b62-4de1-8745-3afa1b9a8fda" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "firstName": "Morgan",
+   "lastName": "Freeman",
+   "officeCode": "GDA",
+   "roleCode": "EN",
+   "email": "mfreeman",
+   "isActive": "Y"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/persons</con:originalUri>
 					<con:credentials>
 						<con:authType>No Authorization</con:authType>
 					</con:credentials>
@@ -777,291 +1076,6 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="persons" path="/api/v1/persons" id="9cbbb2dc-ceac-40eb-9659-52770e8202a2">
-			<con:settings/>
-			<con:parameters/>
-			<con:method name="read all persons" id="ac09eafb-3192-4cb2-a29e-0a87bee2e1be" method="GET">
-				<con:settings/>
-				<con:parameters/>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>200</con:status>
-					<con:params/>
-					<con:element>Response</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>text/html; charset=utf-8</con:mediaType>
-					<con:status>500</con:status>
-					<con:params/>
-					<con:element>html</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>403</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>403</con:status>
-					<con:params/>
-					<con:element xmlns:per="http://localhost/api/v1/persons">per:Fault</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:request name="read all persons - success" id="3b4b7914-b48d-4259-9b5c-713c297299d2" mediaType="application/json">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request/>
-					<con:originalUri>http://localhost/api/v1/persons</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-			</con:method>
-			<con:method name="add person" id="8c89dedf-39b5-496e-8337-f859139193e8" method="POST">
-				<con:settings/>
-				<con:parameters/>
-				<con:representation type="REQUEST">
-					<con:mediaType>application/json</con:mediaType>
-					<con:params/>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>text/html; charset=utf-8</con:mediaType>
-					<con:status>500</con:status>
-					<con:params/>
-					<con:element>html</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>200 201</con:status>
-					<con:params/>
-					<con:element xmlns:per="http://localhost/api/v1/persons">per:Response</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>500 403</con:status>
-					<con:params/>
-					<con:element xmlns:per="http://localhost/api/v1/persons">per:Fault</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:request name="add person - success" id="6a1e951e-3b62-4de1-8745-3afa1b9a8fda" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "firstName": "Morgan",
-   "lastName": "Freeman",
-   "officeCode": "GDA",
-   "roleCode": "EN",
-   "email": "mfreeman",
-   "isActive": "Y"
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/persons</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-			</con:method>
-		</con:resource>
 		<con:resource name="relation person order" path="/api/v1/persons/1/order/8" id="2841caea-7879-47aa-9f34-edfe4b081c6c">
 			<con:description/>
 			<con:settings/>
@@ -1471,271 +1485,6 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="order" path="/api/v1/orders/2" id="645097ff-3fd6-427e-a51e-0bc42845a9a0">
-			<con:settings/>
-			<con:parameters/>
-			<con:method name="read order" id="40e1bea1-89c0-46cc-a121-9c513615201c" method="GET">
-				<con:settings/>
-				<con:parameters/>
-				<con:representation type="FAULT">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>404</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>404</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>200</con:status>
-					<con:params/>
-					<con:element xmlns:ns="http://localhost/order/2">ns:Response</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>403</con:status>
-					<con:params/>
-					<con:element xmlns:ns="http://localhost/order/2">ns:Fault</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read order - success" id="4e3993dc-d5ff-4386-b9a0-8b2dcaffc586" mediaType="application/json">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request/>
-					<con:originalUri>http://localhost/order/2</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-			</con:method>
-			<con:method name="update order" id="f40f6688-71c5-459c-9432-14dba6fcc5ab" method="PUT">
-				<con:settings/>
-				<con:parameters/>
-				<con:representation type="REQUEST">
-					<con:mediaType>application/json</con:mediaType>
-					<con:params/>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>text/html; charset=utf-8</con:mediaType>
-					<con:status>500</con:status>
-					<con:params/>
-					<con:element>html</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>200</con:status>
-					<con:params/>
-					<con:element xmlns:ns="http://localhost/api/v1/orders/2">ns:Response</con:element>
-				</con:representation>
-				<con:representation type="FAULT">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>403 500</con:status>
-					<con:params/>
-					<con:element xmlns:ns="http://localhost/api/v1/orders/2">ns:Fault</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE">
-					<con:mediaType xsi:nil="true"/>
-					<con:status>0</con:status>
-					<con:params/>
-					<con:element>data</con:element>
-				</con:representation>
-				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="update order - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:encoding>UTF-8</con:encoding>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "protocolNo": "",
-   "complexity": 16,
-   "comment": "To są jakieś żarty"
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-				<con:request name="update relation to related item" id="99048f50-ba5e-43a1-95fc-48c39bcdabaa" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "itemId": "2"
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-				<con:request name="update order with null - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "ventureId": ""
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-			<con:request name="update order change status - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:encoding>UTF-8</con:encoding>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "statusCode": "CO"
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request></con:method>
-		</con:resource>
 		<con:resource name="orders" path="/api/v1/orders" id="c6011108-4dcc-42fe-a3fa-ad704f7d3540">
 			<con:settings/>
 			<con:parameters>
@@ -1930,7 +1679,19 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -2051,7 +1812,9 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters><entry key="personId" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+					<con:parameters>
+						<entry key="personId" value="1" xmlns="http://eviware.com/soapui/config"/>
+					</con:parameters>
 					<con:parameterOrder>
 						<con:entry>status</con:entry>
 						<con:entry>lastModBefore</con:entry>
@@ -2069,7 +1832,7 @@
 				</con:representation>
 				<con:representation type="FAULT">
 					<con:mediaType>text/html; charset=utf-8</con:mediaType>
-					<con:status>500</con:status>
+					<con:status>500 400</con:status>
 					<con:params/>
 					<con:element>html</con:element>
 				</con:representation>
@@ -2133,7 +1896,7 @@
 					<con:params/>
 					<con:element xmlns:ord="http://localhost/api/v1/orders">ord:Fault</con:element>
 				</con:representation>
-				<con:request name="add order - success" id="89e304bd-88e0-4419-954e-51a1cbf53729" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="add order - success" id="89e304bd-88e0-4419-954e-51a1cbf53729" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -2144,7 +1907,8 @@
    "typeCode": "OT",
    "complexityCode": "HRD",
    "comment": "my WO",
-   "itemId": 2
+   "itemId": 2,
+   "ventureId": 2
 }</con:request>
 					<con:originalUri>http://localhost/api/v1/orders</con:originalUri>
 					<con:credentials>
@@ -2189,6 +1953,294 @@
 				</con:request>
 			</con:method>
 		</con:resource>
+		<con:resource name="order" path="/api/v1/orders/2" id="645097ff-3fd6-427e-a51e-0bc42845a9a0">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="read order" id="40e1bea1-89c0-46cc-a121-9c513615201c" method="GET">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/order/2">ns:Response</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>403</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/order/2">ns:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="read order - success" id="4e3993dc-d5ff-4386-b9a0-8b2dcaffc586" mediaType="application/json">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request/>
+					<con:originalUri>http://localhost/order/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+			<con:method name="update order" id="f40f6688-71c5-459c-9432-14dba6fcc5ab" method="PUT">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/json</con:mediaType>
+					<con:params/>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>text/html; charset=utf-8</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+					<con:element>html</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/api/v1/orders/2">ns:Response</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>403 500</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/api/v1/orders/2">ns:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="update order - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:encoding>UTF-8</con:encoding>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "comment": "To są jakieś żarty"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+				<con:request name="update relation to related item" id="99048f50-ba5e-43a1-95fc-48c39bcdabaa" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "itemId": "2"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+				<con:request name="update order with null - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "ventureId": ""
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			<con:request name="update order change status - success" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:encoding>UTF-8</con:encoding>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "statusCode": "CL"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
 		<con:resource name="order by ext id" path="/api/v1/orders/external/WAW2" id="a689f4d3-9574-44b5-96c5-bcf62cb1b32f">
 			<con:settings/>
 			<con:parameters/>
@@ -2219,7 +2271,25 @@
 					<con:params/>
 					<con:element xmlns:waw2="http://localhost/api/v1/orders/external/WAW2">waw2:Response</con:element>
 				</con:representation>
-				<con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read order by ext id - success" id="69a1e92d-7f79-4104-9900-e3b9aec7d81a" mediaType="application/json">
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>404</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="read order by ext id - success" id="69a1e92d-7f79-4104-9900-e3b9aec7d81a" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -2353,13 +2423,24 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-<con:resource name="order history" path="/api/v1/orders/history/2" id="345561da-8554-434f-bc16-9e704b405511"><con:settings/><con:parameters/><con:method name="read order history" id="746330b3-6fff-4f4b-8e7c-b25c3c859924" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403</con:status><con:params/><con:element xmlns:ns="http://localhost/api/v1/orders/history/2">ns:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://localhost/api/v1/orders/history/2">ns:Response</con:element></con:representation><con:request name="read order history - success" id="e44193ca-1c0d-4ad2-ace2-19051f2877e5" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/orders/history/2</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource>	
-	<con:resource name="work type" path="/api/v1/workTypes/1" id="fac0e3a7-a17d-4b6d-b890-d14dad1f7a5f">
+		<con:resource name="order history" path="/api/v1/orders/history/2" id="345561da-8554-434f-bc16-9e704b405511">
 			<con:settings/>
 			<con:parameters/>
-			<con:method name="read work type" id="6b31b5c5-a9de-4ae0-ab12-ffb987055054" method="GET">
+			<con:method name="read order history" id="746330b3-6fff-4f4b-8e7c-b25c3c859924" method="GET">
 				<con:settings/>
 				<con:parameters/>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>403</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/api/v1/orders/history/2">ns:Fault</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
 				<con:representation type="RESPONSE">
 					<con:mediaType xsi:nil="true"/>
 					<con:status>0</con:status>
@@ -2370,15 +2451,15 @@
 					<con:mediaType>application/json; charset=utf-8</con:mediaType>
 					<con:status>200</con:status>
 					<con:params/>
-					<con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Response</con:element>
+					<con:element xmlns:ns="http://localhost/api/v1/orders/history/2">ns:Response</con:element>
 				</con:representation>
-				<con:request name="read work type - success" id="bce8acd3-b124-4190-b1c8-3353aba364e1" mediaType="application/json">
+				<con:request name="read order history - success" id="e44193ca-1c0d-4ad2-ace2-19051f2877e5" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request/>
-					<con:originalUri>http://localhost/api/v1/workTypes/1</con:originalUri>
+					<con:originalUri>http://localhost/api/v1/orders/history/2</con:originalUri>
 					<con:credentials>
 						<con:authType>No Authorization</con:authType>
 					</con:credentials>
@@ -2387,37 +2468,7 @@
 					<con:parameters/>
 				</con:request>
 			</con:method>
-			<con:method name="update work type" id="7eb9694b-e30c-45d3-b4b4-d244a20d694d" method="PUT">
-				<con:settings/>
-				<con:parameters/>
-				<con:representation type="RESPONSE">
-					<con:mediaType>application/json; charset=utf-8</con:mediaType>
-					<con:status>200</con:status>
-					<con:params/>
-					<con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Response</con:element>
-				</con:representation>
-				<con:representation type="REQUEST">
-					<con:mediaType>application/json</con:mediaType>
-					<con:params/>
-				</con:representation>
-				<con:request name="update work type - success" id="61e13f2e-4555-45e2-be67-c343fbb09e53" mediaType="application/json" postQueryString="false">
-					<con:settings>
-						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
-					</con:settings>
-					<con:endpoint>http://localhost:8080</con:endpoint>
-					<con:request>{
-   "price": 1234567
-}</con:request>
-					<con:originalUri>http://localhost/api/v1/workTypes/1</con:originalUri>
-					<con:credentials>
-						<con:authType>No Authorization</con:authType>
-					</con:credentials>
-					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
-					<con:jmsPropertyConfig/>
-					<con:parameters/>
-				</con:request>
-			</con:method>
-		</con:resource>
+		</con:resource>	
 		<con:resource name="work types" path="/api/v1/workTypes" id="d0d0047e-7722-4306-9c53-ae1ac644fd39">
 			<con:settings/>
 			<con:parameters/>
@@ -2483,6 +2534,70 @@
    "price": 90000
 }</con:request>
 					<con:originalUri>http://localhost/api/v1/workTypes</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
+		<con:resource name="work type" path="/api/v1/workTypes/1" id="fac0e3a7-a17d-4b6d-b890-d14dad1f7a5f">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="read work type" id="6b31b5c5-a9de-4ae0-ab12-ffb987055054" method="GET">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Response</con:element>
+				</con:representation>
+				<con:request name="read work type - success" id="bce8acd3-b124-4190-b1c8-3353aba364e1" mediaType="application/json">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request/>
+					<con:originalUri>http://localhost/api/v1/workTypes/1</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+			<con:method name="update work type" id="7eb9694b-e30c-45d3-b4b4-d244a20d694d" method="PUT">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json; charset=utf-8</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Response</con:element>
+				</con:representation>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/json</con:mediaType>
+					<con:params/>
+				</con:representation>
+				<con:request name="update work type - success" id="61e13f2e-4555-45e2-be67-c343fbb09e53" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "price": 1234567
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/workTypes/1</con:originalUri>
 					<con:credentials>
 						<con:authType>No Authorization</con:authType>
 					</con:credentials>
@@ -2601,7 +2716,7 @@
 						</con:settings>
 						<con:endpoint>http://localhost:8080</con:endpoint>
 						<con:request>{
-	"personId": 5,
+	"personId": 51,
 	"from": "2018-05-10 08:00:00",
 	"to": "2018-05-11 14:30:00"
 }</con:request>
@@ -2712,7 +2827,7 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="read all time - success" id="a71036a3-f86b-46fc-9878-bc543baa8e3b" mediaType="application/json">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read all time - success" id="a71036a3-f86b-46fc-9878-bc543baa8e3b" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -3243,8 +3358,9 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-						<entry key="dateBefore" value="" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
+  <con:entry key="dateAfter" value="2017-01-01"/>
+  <con:entry key="dateBefore" value="2018-03-03"/>
+</con:parameters>
 					<con:parameterOrder>
 						<con:entry>dateBefore</con:entry>
 						<con:entry>dateAfter</con:entry>
@@ -3326,7 +3442,7 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="prepare protocol" path="/api/v1/report/prepareProtocol" id="ab19869b-7391-4943-aa5a-908cec73b3b6">
+		<con:resource name="protocol" path="/api/v1/report/protocol" id="ab19869b-7391-4943-aa5a-908cec73b3b6">
 			<con:settings/>
 			<con:parameters>
 				<con:parameter>
@@ -3336,7 +3452,13 @@
 					<con:default/>
 					<con:description xsi:nil="true"/>
 				</con:parameter>
-			<con:parameter><con:name>protocolNo</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter></con:parameters>
+			<con:parameter>
+					<con:name>protocolNo</con:name>
+					<con:value/>
+					<con:style>QUERY</con:style>
+					<con:default/>
+				</con:parameter>
+			</con:parameters>
 			<con:method name="prepare protocol" id="b6fcbc97-beed-4113-8918-ad4aa76de6e2" method="GET">
 				<con:settings/>
 				<con:parameters/>
@@ -3394,7 +3516,19 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="prepare protocol with id list - success" id="0df54602-970e-43d0-9cd6-73f47526bea3" mediaType="application/json">
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType xsi:nil="true"/>
+					<con:status>0</con:status>
+					<con:params/>
+					<con:element>data</con:element>
+				</con:representation>
+				<con:request name="prepare protocol with id list - success" id="0df54602-970e-43d0-9cd6-73f47526bea3" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -3410,7 +3544,10 @@
   <con:entry key="ids" value="70,71,72,73,74,75,76,133,134,135,136,137,138,139"/>
   <con:entry key="protocolNo" value=""/>
 </con:parameters>
-					<con:parameterOrder><con:entry>ids</con:entry><con:entry>protocolNo</con:entry></con:parameterOrder>
+					<con:parameterOrder>
+						<con:entry>ids</con:entry>
+						<con:entry>protocolNo</con:entry>
+					</con:parameterOrder>
 				</con:request>
 			<con:request name="prepare protocol with protocol no - success" id="0df54602-970e-43d0-9cd6-73f47526bea3" mediaType="application/json">
 					<con:settings>
@@ -3424,13 +3561,30 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters><entry key="protocolNo" value="CUSTOM6" xmlns="http://eviware.com/soapui/config"/></con:parameters>
-					<con:parameterOrder><con:entry>ids</con:entry><con:entry>protocolNo</con:entry></con:parameterOrder>
-				</con:request></con:method>
+					<con:parameters>
+						<entry key="protocolNo" value="CUSTOM6" xmlns="http://eviware.com/soapui/config"/>
+					</con:parameters>
+					<con:parameterOrder>
+						<con:entry>ids</con:entry>
+						<con:entry>protocolNo</con:entry>
+					</con:parameterOrder>
+				</con:request>
+			</con:method>
 		</con:resource>
-		
 	
-	</con:interface>
+	<con:resource name="payroll" path="/api/v1/payroll" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters><con:parameter><con:name>periodDate</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>overTimeFactor</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>personId</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get all payroll for current month - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="overTimeFactor" value=""/>
+  <con:entry key="personId" value=""/>
+  <con:entry key="periodDate" value=""/>
+</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry></con:parameterOrder></con:request><con:request name="get all payroll for given month - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="overTimeFactor" value="1.5"/>
+  <con:entry key="personId" value=""/>
+  <con:entry key="periodDate" value="2018-01-01"/>
+</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry></con:parameterOrder></con:request><con:request name="get all payroll for given month and user - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="overTimeFactor" value="1.5"/>
+  <con:entry key="personId" value="51"/>
+  <con:entry key="periodDate" value="2018-01-01"/>
+</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="payroll self service" path="/api/v1/payroll/51" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters/><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get payroll - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource></con:interface>
 	<con:testSuite id="b8a7d5e9-988a-4cc7-878e-2a0a57af0e95" name="Test work-monitor">
 		<con:description>Database has to be filled only with test data.
 Before running test suite again test data has to be refreshed.
@@ -3448,7 +3602,7 @@ Before running test suite again test data has to be refreshed.
 						</con:settings>
 						<con:endpoint>http://localhost:8080</con:endpoint>
 						<con:request>{
-	"email": "koboldo@gmail.com",
+	"email": "adrian.pelczar@botprojekt.com",
 	"password": "welcome1"
 }
 </con:request>
@@ -3938,7 +4092,13 @@ Before running test suite again test data has to be refreshed.
 							</con:configuration>
 						</con:assertion>
 						<con:assertion type="JsonPath Count" id="e2382929-23be-4f39-920e-113d1b22e9b6" name="JsonPath Count for item list">
-							<con:configuration><path>$.list</path><content>8</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration>
+							<con:configuration>
+								<path>$.list</path>
+								<content>8</content>
+								<allowWildcards>false</allowWildcards>
+								<ignoreNamspaceDifferences>false</ignoreNamspaceDifferences>
+								<ignoreComments>false</ignoreComments>
+							</con:configuration>
 						</con:assertion>
 						<con:assertion type="JsonPath Count" id="a199a781-765e-48d9-8aff-8c6ed2e97b23">
 							<con:configuration/>
@@ -4349,7 +4509,8 @@ Before running test suite again test data has to be refreshed.
    "statusCode": "AS",
    "typeCode": "OT",
    "complexityCode": "HRD",
-   "comment": "my WO"
+   "comment": "my WO",
+   "ventureId": 7
 }</con:request>
 						<con:originalUri>http://localhost/api/v1/orders</con:originalUri>
 						<con:assertion type="Valid HTTP Status Codes" id="bfd7ca29-225b-4948-a571-1fc0210f1bca" name="Valid HTTP Status Codes">
@@ -4922,10 +5083,79 @@ Before running test suite again test data has to be refreshed.
 		</con:testCase>
 		<con:properties/>
 	</con:testSuite>
-	<con:properties>
+	<con:testSuite id="435e9f0b-32ff-4f11-b531-1be99dc2465d" name="Test advanced"><con:description>TestSuite generated for REST Service [http://localhost:8080]</con:description><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="536ed69e-a1ac-4dd6-ab7f-5b40a1806448" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="add order and change status TestCase" searchProperties="true"><con:description>TestCase generated for REST Resource [orders] located at [/api/v1/orders]</con:description><con:settings/><con:testStep type="restrequest" name="login" id="dd346c33-d9f6-4043-9e49-1cd82097cd35"><con:settings/><con:config service="http://localhost:8080" resourcePath="/login" methodName="authenticate" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="login" id="7fe605ca-a9d1-4f87-9923-ad006684426e" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+	"email": "koboldo@gmail.com",
+	"password": "welcome1"
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/login</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="copyToken" id="c00d4acd-47ba-4169-99c2-32d9d50f9fff"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>token</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>login</con:sourceStep><con:sourcePath>$.token</con:sourcePath><con:targetType>securityToken</con:targetType><con:targetStep>#Project#</con:targetStep><con:type>JSONPATH</con:type><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="groovy" name="generateWorkNo" id="a4b3c25a-36b6-40a1-b4e1-3c945b3d8bba"><con:settings/><con:config><script>if (!Date.prototype.toISOString) {
+  (function() {
+
+    function pad(number) {
+      if (number &lt; 10) {
+        return '0' + number;
+      }
+      return number;
+    }
+
+    Date.prototype.toISOString = function() {
+      return this.getUTCFullYear() +
+        '-' + pad(this.getUTCMonth() + 1) +
+        '-' + pad(this.getUTCDate()) +
+        'T' + pad(this.getUTCHours()) +
+        ':' + pad(this.getUTCMinutes()) +
+        ':' + pad(this.getUTCSeconds()) +
+        '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+        'Z';
+    };
+
+  }());
+}
+
+var workNo = new Date().toISOString().replace(/[TZ\. \[\]\*\?\:\/\\-]/g,'');
+testRunner.testCase.setPropertyValue( "workNo", workNo );
+log.info("workNo " + workNo);
+</script></con:config></con:testStep><con:testStep type="properties" name="testProperties" id="5f17b912-e2bf-410e-815f-da01c275c138"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>xxx</con:name><con:value>aadasdads</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="restrequest" name="addOrder" id="0982b3b9-6da2-435f-b081-814cbd82b5f2"><con:settings/><con:config service="http://localhost:8080" resourcePath="/api/v1/orders" methodName="add order" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="addOrder" id="89e304bd-88e0-4419-954e-51a1cbf53729" mediaType="application/json" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request>{
+   "workNo": "TEST${#TestCase#workNo}",
+   "typeCode": "1.1",
+   "complexityCode": "HRD",
+   "comment": "my test WO",
+   "itemId": 2,
+   "ventureId": 2
+}</con:request>
+					<con:originalUri>http://localhost/api/v1/orders</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+					<con:parameterOrder>
+						<con:entry>personId</con:entry>
+						<con:entry>status</con:entry>
+						<con:entry>lastModBefore</con:entry>
+						<con:entry>lastModAfter</con:entry>
+					</con:parameterOrder>
+				</con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>workNo</con:name><con:value>20180226153402186</con:value></con:property></con:properties></con:testCase><con:properties/></con:testSuite><con:properties>
 		<con:property>
 			<con:name>securityToken</con:name>
-			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjksInJvbGUiOlsiT1AiXSwiaWF0IjoxNTE4NTU3Mjc1LCJleHAiOjE1MTg1NTkwNzV9.mdfEgshjV6_VW0QV8iqKruI9u1JC7gxaML_p_kocAHQ</con:value>
+			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkcmlhbi5wZWxjemFyQGJvdHByb2pla3QuY29tIiwiaWQiOjUxLCJyb2xlIjpbIkVOIl0sImlhdCI6MTUyMDQzNjk4NywiZXhwIjoxNTIwNDM4Nzg3fQ.lB3CR5wLqT8dfny7XEuPw2RlTDicKRb2N3xOTmlrsJU</con:value>
 		</con:property>
 	</con:properties>
 	<con:wssContainer/>

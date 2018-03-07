@@ -82,6 +82,12 @@ var orders = {
     },
     
     create: function(req, resp) {
+
+        if(!req.body.typeCode || !req.body.complexityCode || !req.body.ventureId) {
+            resp.status(400).json({status:'error', message: 'missing parameters'});
+            return;
+        }
+
         req.body.modifiedBy = req.context.id;
 
         var orderSql = mapper.order.mapToSql(req.body);
@@ -95,7 +101,7 @@ var orders = {
             else resp.status(404).end();
         });
     },
-
+/*
     calculateTotalPriceForCompleted: function(req, resp) {
         if(req.query.dateAfter == null) req.query.dateAfter = dateformat(
             new Date(new Date().getFullYear(), new Date().getMonth(),1),'yyyy-mm-dd');
@@ -111,7 +117,7 @@ var orders = {
             resp.json(report);
         });
     },
-
+*/
     prepareProtocol: function(req, resp) {
 
         var ids = null;
@@ -145,7 +151,7 @@ var orders = {
             var protocolNo = protocol[0];
             var protocolRows = protocol[1];
             if(protocolRows.length == 0) {
-                return resp.status(404).json({status:'error', message: 'work orders not found'});
+                return resp.status(404).json({status:'error', message: 'nie znaleziono zamówień'});
             }
             // prepareProtocol(protocolRows,resp);
             let fileName = protocolNo.replace(/[\[\]\*\?\:\/\\]/g,'-').toUpperCase() +'.xlsx';

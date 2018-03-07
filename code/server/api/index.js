@@ -7,6 +7,7 @@ var codes = require('./codes');
 var workTypes = require('./workTypes');
 var timeSheets = require('./timeSheets');
 var relatedItems = require('./relatedItems');
+var payroll = require('./payroll');
 
 //TODO: validations - for create and update
 router.get('/v1/persons', persons.readAll);
@@ -17,8 +18,8 @@ router.post('/v1/persons/:pid/order/:oid', persons.addOrder);
 router.delete('/v1/persons/:pid/order/:oid', persons.removeOrder);
 
 router.get('/v1/report/personOrders', persons.readOrders);
-router.get('/v1/report/ordersTotalPrice', orders.calculateTotalPriceForCompleted);
-router.get('/v1/report/prepareProtocol', orders.prepareProtocol);
+// router.get('/v1/report/ordersTotalPrice', orders.calculateTotalPriceForCompleted);
+router.get('/v1/report/protocol', orders.prepareProtocol);
 
 router.get('/v1/orders', orders.readAll);
 router.post('/v1/orders', orders.create);
@@ -44,6 +45,9 @@ router.get('/v1/relatedItems/:id', relatedItems.read);
 router.get('/v1/relatedItems', relatedItems.readAll);
 router.post('/v1/relatedItems', relatedItems.create);
 router.put('/v1/relatedItems/:id', relatedItems.update);
+
+router.get('/v1/payroll',payroll.read);
+router.get('/v1/payroll/:id',payroll.read);
 
 module.exports = router;
 

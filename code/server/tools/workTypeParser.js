@@ -6,8 +6,11 @@ var fs = require('fs');
 // var dbUtil = require('./api/db/db_util');
 
 
-var inFilename = '/home/laros/projects/BOT/TYPY_WO.csv';
-var outFilename = '/home/laros/projects/BOT/WORK_TYPE.sql';
+// var inFilename = '/home/laros/projects/BOT/TYPY_WO.csv';
+// var outFilename = '/home/laros/projects/BOT/WORK_TYPE.sql';
+
+var inFilename = 'C:/MyArea/work/WorkMonitor/data/TYPY_WO.csv';
+var outFilename = 'C:/MyArea/work/WorkMonitor/data/WORK_TYPE.sql';
 
 var fieldMapStd = [
 	{ sourceName: 'TYPE', targetName: 'TYPE_CODE', mod: null },
