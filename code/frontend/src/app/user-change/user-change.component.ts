@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { AlertService, UserService, DictService, AuthenticationService } from '../_services/index';
 import { User, CodeValue, SearchUser } from '../_models/index';
@@ -44,6 +44,7 @@ export class UserChangeComponent implements OnInit {
     company: string;
 
     constructor(private router:Router,
+                private route: ActivatedRoute,
                 private userService:UserService,
                 private alertService:AlertService,
                 private dictService:DictService,
@@ -52,8 +53,11 @@ export class UserChangeComponent implements OnInit {
     }
 
     ngOnInit():void {
+
+        let id: string = this.route.snapshot.paramMap.get('id'); //can be null
+
         this.dictService.init();
-        this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
+        this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user, id));
 
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
 
@@ -152,7 +156,7 @@ export class UserChangeComponent implements OnInit {
         return true;
     }
 
-    private removeRolesAndGetManagedUsers(user:User):void {
+    private removeRolesAndGetManagedUsers(user:User, id: string):void {
         if (user) {
             this.operator = user;
             console.log("Operator " + JSON.stringify(this.operator));
@@ -169,7 +173,22 @@ export class UserChangeComponent implements OnInit {
             } else {
                 this.mapToRoles(this.dictService.getRoles());
             }
-            this.userService.getManagedUsers(user.roleCode, true).subscribe(engineers => this.users = engineers);
+            this.userService.getManagedUsers(user.roleCode, true).subscribe(users => this.setUsersAndSelectedUser(users, id));
+        }
+    }
+
+    private setUsersAndSelectedUser(users:User[], sId:String):any {
+        this.users = users;
+        if (sId) {
+            let id: number = +sId;
+            for(let user of users) {
+                if (user.id === id) {
+                    console.log("found "+JSON.stringify(user));
+                    let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
+                    this.selectedUser = new SearchUser(displayName, user);
+                    this.onSelectUser(this.selectedUser);
+                }
+            }
         }
     }
 }

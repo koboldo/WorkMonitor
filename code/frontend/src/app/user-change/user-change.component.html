@@ -36,14 +36,14 @@
         <p-radioButton name="activegroup" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
       </div>
 
-      <div class="form-group" *ngIf="showRoles">
+      <div class="form-group" *ngIf="showRoles" [ngClass]="{ 'has-error': f.submitted && !(selectedUser?.user?.roleCode?.length > 0) }">
         <label for="roleCode">Funkcja w systemie</label>
         <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" name="roleCode" multiple="multiple" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required roles></p-selectButton>
-        <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
+        <div *ngIf="f.submitted && !(selectedUser?.user?.roleCode?.length > 0)" class="help-block">Rola jest wymagana</div>
       </div>
 
 
-      <div class="form-group" *ngIf="showOffices">
+      <div class="form-group" *ngIf="showOffices" [ngClass]="{ 'has-error': f.submitted && !officeCode?.valid }">
         <label for="officeCode">Biuro macierzyste</label>
         <p-selectButton id="officeCode" name="officeCode" [options]="offices" [(ngModel)]="selectedUser.user.officeCode" required #officeCode="ngModel"></p-selectButton>
         <!--<p-dropdown name="officeCode" [options]="offices | async" [(ngModel)]="user.officeCode" required autoWidth="false" ></p-dropdown>-->
@@ -53,7 +53,7 @@
       <div *ngIf="selectedUser.user.roleCode.indexOf('VE') > -1">
         <div style="margin-bottom: 10px; width: 100%; ">
           <label for="company">Firma zleceniodawcy</label>
-          <div class="ui-fluid">
+          <div class="ui-fluid form-group" [ngClass]="{ 'has-error': f.submitted && !company?.valid }">
             <p-autoComplete
                     id="company"
                     name="company"
@@ -73,7 +73,7 @@
       <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1">
         <div style="margin-bottom: 10px; width: 100%; ">
           <label for="company">Podmiot zatrudniający</label>
-          <div class="ui-fluid">
+          <div class="ui-fluid form-group" [ngClass]="{ 'has-error': f.submitted && !company?.valid }">
             <p-autoComplete
                     id="company"
                     name="company"
@@ -113,28 +113,29 @@
             <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">wymagany jest poprawny kod pocztowy oraz miejscowość</div>
           </div>
 
-          <div class="form-group" *ngIf="showRanks">
-            <label for="rankCode">Zaszeregowanie (powiązane ze sposobem wynagradzania)</label>
+          <div class="form-group" *ngIf="showRanks" [ngClass]="{ 'has-error': f.submitted && !rankCode?.valid }">
+            <label for="rankCode">Stopień (powiązane ze sposobem wynagradzania)</label>
             <p-selectButton id="rankCode" name="rankCode" [options]="ranks" [(ngModel)]="selectedUser.user.rankCode" required #rankCode="ngModel"></p-selectButton>
             <!--<p-dropdown name="rankCode" [options]="ranks | async" [(ngModel)]="selectedUser.user.rankCode" required autoWidth="false" ></p-dropdown>-->
-            <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Zaszeregowanie jest wymagane</div>
+            <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Stopień jest wymagany</div>
           </div>
 
-          <div class="form-group" *ngIf="showAgreements">
+          <div class="form-group" *ngIf="showAgreements" [ngClass]="{ 'has-error': f.submitted && !agreementCode?.valid }">
             <label for="agreementCode">Główna umowa</label>
             <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="selectedUser.user.agreementCode" required #agreementCode="ngModel"></p-selectButton>
             <!--<p-dropdown name="agreementCode" [options]="agreements | async" [(ngModel)]="selectedUser.user.agreementCode" required autoWidth="false" ></p-dropdown>-->
             <div *ngIf="f.submitted && !agreementCode?.valid" class="help-block">Umowa jest wymagane</div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" [ngClass]="{ 'has-error': f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N' }">
             <p-radioButton name="poolgroup" value="Y" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (TAK)"></p-radioButton>
             <p-radioButton name="poolgroup" value="N" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (NIE)"></p-radioButton>
+            <div *ngIf="f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N'" class="help-block">Określenie przynależności do puli jest obowiązkowe</div>
           </div>
 
           <div *ngIf="showProjectFactor()" class="form-group" [ngClass]="{ 'has-error': f.submitted && !projectFactor?.valid }">
             <label for="projectFactor">Współczynnik (np. 1.2)</label>
-            <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="selectedUser.user.projectFactor" #projectFactor="ngModel" required projectFactor />
+            <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="selectedUser.user.projectFactor" #projectFactor="ngModel" required projectFactor min="0" />
             <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik</div>
           </div>
 
