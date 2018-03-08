@@ -207,8 +207,9 @@ var queries = {
             , PS.MODIFIER_ID
     FROM PERSON_STATS PS LEFT JOIN PAYROLL PY ON PS.PERSON_ID = PY.PERSON_ID AND PS.PERIOD_DATE = PY.PERIOD_DATE
     WHERE PY.PERIOD_DATE IS NULL OR PS.APPROVED = "Y" OR (PS.APPROVED = "N" AND PY.APPROVED = "N")`,
+    
     getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
-                    FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
+                    FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
 
 var filters = {
@@ -221,7 +222,8 @@ var filters = {
     },
     getPayroll: {
         personId: 'AND CASE %(personId)s WHEN 0 THEN 1 ELSE PERSON_ID = %(personId)s END',
-        periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")'
+        periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")',
+        history: 'AND APPROVED = "Y"'
     }
 };
 
@@ -230,26 +232,32 @@ var payroll_db = {
         
         var db = dbUtil.getDatabase();
         
-        async.series([
-            function(_cb){
-                var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
-                var calculatePayrollStat = db.prepare(query);
-                calculatePayrollStat.get(function(err, result){
-                    calculatePayrollStat.finalize();
-                    console.log("number of changes " + this.changes);
-                    
-                    if(err) _cb(err);
-                    else _cb(null,result);
-                });
-            },
+        var calls = [];
 
+        if(!params.history || params.history == "N") {
+            calls.push(
+                function(_cb){
+                    var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                    var calculatePayrollStat = db.prepare(query);
+                    calculatePayrollStat.get(function(err, result){
+                        calculatePayrollStat.finalize();
+
+                        
+                        if(err) _cb(err);
+                        else _cb(null,result);
+                    });
+                });
+        }
+
+        calls.push(
             function(_cb) {
                 console.log('query for payroll');
-
+    
                 var getParams = {};
                 getParams.personId = params.personId;
                 if(params.history == 'N') getParams.periodDate = params.periodDate;
-
+                else getParams.history = 'Y';
+    
                 var query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,getParams,filters.getPayroll);
                 var getPayrollStat = db.prepare(query);
                 getPayrollStat.all(function(err,rows){
@@ -258,19 +266,16 @@ var payroll_db = {
                     if(err) _cb(err);
                     else _cb(null,rows);
                 });
-            }
-        ],function(err, result){
+            });
+
+        async.series(calls,function(err, result){
             db.close();
 
             if(err) logErrAndCall(err,cb);
             else {
-                cb(null,result[1]);
+                cb(null,result[result.length-1]);
             }
         });
-
-
-        //calculate
-        //readAll
     },
 
     readHistory: function(personId){
