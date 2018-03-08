@@ -206,8 +206,8 @@ var queries = {
             , PS.APPROVED
             , PS.MODIFIER_ID
     FROM PERSON_STATS PS`,
-    getPayroll: `SELECT PERSON_ID, DATETIME( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
-                    FROM PAYROLL %(personId)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
+    getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
+                    FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
 
 var filters = {
@@ -219,7 +219,8 @@ var filters = {
         approved: '%(approved)s'
     },
     getPayroll: {
-        personId: 'WHERE PERSON_ID = %(personId)s'
+        personId: 'AND CASE %(personId)s WHEN 0 THEN 1 ELSE PERSON_ID = %(personId)s END',
+        periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")'
     }
 };
 
@@ -243,7 +244,12 @@ var payroll_db = {
 
             function(_cb) {
                 console.log('query for payroll');
-                var query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,params,filters.getPayroll);
+
+                var getParams = {};
+                getParams.personId = params.personId;
+                if(params.history == 'N') getParams.periodDate = params.periodDate;
+
+                var query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,getParams,filters.getPayroll);
                 var getPayrollStat = db.prepare(query);
                 getPayrollStat.all(function(err,rows){
                     getPayrollStat.finalize();

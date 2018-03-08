@@ -10,10 +10,10 @@ var payrolls = {
     read: function(req, resp){
 
         var isBoss = ([].concat(req.context.role).indexOf('PR') > -1);
-        console.log(JSON.stringify(req.query));
+
         var params = {};
 
-        if(isBoss) params.approved = "Y";
+        if(req.query.approved && isBoss) params.approved = req.query.approved;
         else params.approved = "N";
 
         if(req.query.periodDate && isBoss) params.periodDate = req.query.periodDate;
@@ -22,6 +22,9 @@ var payrolls = {
         if(req.query.overTimeFactor && isBoss) params.overTimeFactor = req.query.overTimeFactor;
         else params.overTimeFactor = 1;
 
+        if(req.query.history) params.history = req.query.history;
+        else params.history = "N";
+
         try {
             params.overTimeFactor = parseFloat(params.overTimeFactor);
         } catch (error) {
@@ -29,8 +32,18 @@ var payrolls = {
             return;
         }
 
-        if(!isBoss && req.params.id != req.context.id) {
-            resp.status(403).json({status:'error', message: 'dostęp wzbroniony'});
+        if(['Y','N'].indexOf(params.approved) < 0) {
+            resp.status(500).json({status:'error', message: 'zły współczynnik akceptacji'});
+            return;
+        }
+
+        if(['Y','N'].indexOf(params.history) < 0) {
+            resp.status(500).json({status:'error', message: 'zły parametr historii'});
+            return;
+        }
+
+        if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(params.periodDate)) {
+            resp.status(500).json({status:'error', message: 'zła data okresu'});
             return;
         }
 
@@ -39,8 +52,6 @@ var payrolls = {
         else params.personId = req.context.id;
 
         params.modifierId = req.context.id;
-
-        console.log(JSON.stringify(params));
 
         payroll_db.read(params, function(err, payrollRows){
             if(err) {
