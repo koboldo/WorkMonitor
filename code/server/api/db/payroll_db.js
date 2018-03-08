@@ -205,7 +205,8 @@ var queries = {
             , PS.OVER_TIME_FACTOR
             , PS.APPROVED
             , PS.MODIFIER_ID
-    FROM PERSON_STATS PS`,
+    FROM PERSON_STATS PS LEFT JOIN PAYROLL PY ON PS.PERSON_ID = PY.PERSON_ID AND PS.PERIOD_DATE = PY.PERIOD_DATE
+    WHERE PY.PERIOD_DATE IS NULL OR PS.APPROVED = "Y" OR (PS.APPROVED = "N" AND PY.APPROVED = "N")`,
     getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
                     FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
@@ -270,6 +271,10 @@ var payroll_db = {
 
         //calculate
         //readAll
+    },
+
+    readHistory: function(personId){
+
     }
 };
 
