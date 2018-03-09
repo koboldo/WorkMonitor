@@ -37,6 +37,7 @@ import { UserLeaveComponent } from './user-leave/user-leave.component';
 import { WorkTypesComponent } from './work-types/work-types.component';
 import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
 import { UsersDisplayComponent } from './users-display/users-display.component';
+import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 
 @NgModule({
     imports: [
@@ -71,7 +72,8 @@ import { UsersDisplayComponent } from './users-display/users-display.component';
         UserLeaveComponent,
         WorkTypesComponent,
         WoSuspendedComponent,
-        UsersDisplayComponent
+        UsersDisplayComponent,
+        UsersPayrollComponent
     ],
     providers: [
         AuthGuard,

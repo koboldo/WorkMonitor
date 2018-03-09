@@ -82,12 +82,12 @@ export class WOService {
             flatIds = flatIds.substr(0, flatIds.length-1);
         }
 
-        return this.http.get('/api/v1/report/prepareProtocol?ids='+flatIds)
+        return this.http.get('/api/v1/report/protocol?ids='+flatIds)
             .map((response: Response) => this.getProtocol(response.json()))
     }
 
     fetchProtocol(protocolNo: string) : Observable<any> {
-        return this.http.get('/api/v1/report/prepareProtocol?protocolNo='+protocolNo)
+        return this.http.get('/api/v1/report/protocol?protocolNo='+protocolNo)
             .map((response: Response) => this.getProtocol(response.json()))
     }
 

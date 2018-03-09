@@ -98,33 +98,37 @@
     </div>
 </p-dialog>
 
-<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="600" [width]="700">
+<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="900">
 
-    <div *ngIf="selectedOrder?.workNo" class="ui-grid ui-grid-responsive ui-fluid">
-        <p-fieldset legend="Realizacja" *ngIf="selectedOrder">
-            <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedOrder">
+    <div *ngIf="selectedOrder?.workNo">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p-fieldset legend="Realizacja" *ngIf="selectedOrder">
+                    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="selectedOrder">
 
-                <div class="ui-grid-row" style="margin-top: 10px;">
-                    <div class="ui-grid-col-4">Przypisano</div>
-                    <div class="ui-grid-col-8">{{selectedOrder.assignedDate}}</div>
-                </div>
+                        <div class="ui-grid-row" style="margin-top: 10px;">
+                            <div class="ui-grid-col-4">Przypisano</div>
+                            <div class="ui-grid-col-8">{{selectedOrder.assignedDate}}</div>
+                        </div>
 
-                <div class="ui-grid-row" style="margin-top: 10px;" *ngIf="selectedOrder?.doneDate">
-                    <div class="ui-grid-col-4">Wykonano</div>
-                    <div class="ui-grid-col-8">{{selectedOrder.doneDate}}</div>
-                </div>
+                        <div class="ui-grid-row" style="margin-top: 10px;" *ngIf="selectedOrder?.doneDate">
+                            <div class="ui-grid-col-4">Wykonano</div>
+                            <div class="ui-grid-col-8">{{selectedOrder.doneDate}}</div>
+                        </div>
 
+                    </div>
+
+                </p-fieldset>
             </div>
+        </div>
 
-        </p-fieldset>
-
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
+            </div>
+        </div>
     </div>
 
-    <div *ngIf="selectedOrder?.workNo" class="ui-grid ui-grid-responsive ui-fluid">
-
-        <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
-
-    </div>
 
 </p-dialog>
 

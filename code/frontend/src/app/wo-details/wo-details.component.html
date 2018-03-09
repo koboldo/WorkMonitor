@@ -110,53 +110,58 @@
             </p-fieldset>
         </div>
     </div>
+    <br>
 
-    <div class="ui-grid-col-12" *ngIf="selectedOrder?.comment || selectedOrder?.description" style="margin-top: 10px;">
-        <p-fieldset legend="Uwagi">
-            <div class="ui-grid-row" >
-                <div class="ui-grid-col-6" *ngIf="selectedOrder?.comment">
-                    <p-panel header="Komentarz">{{selectedOrder.comment}}</p-panel>
+    <div class="ui-grid-row" style="max-width: 900px;">
+        <div class="ui-grid-col-12" *ngIf="selectedOrder?.comment || selectedOrder?.description" style="margin-top: 10px;">
+            <p-fieldset legend="Uwagi">
+                <div class="ui-grid-row" >
+                    <div class="ui-grid-col-6" *ngIf="selectedOrder?.comment">
+                        <p-panel header="Komentarz">{{selectedOrder.comment}}</p-panel>
+                    </div>
+                    <div class="ui-grid-col-6"  *ngIf="selectedOrder?.description">
+                        <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
+                    </div>
                 </div>
-                <div class="ui-grid-col-6"  *ngIf="selectedOrder?.description">
-                    <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
-                </div>
-            </div>
-        </p-fieldset>
+            </p-fieldset>
+        </div>
     </div>
 
-    <div class="ui-grid-col-12" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"
-         style="margin-top: 10px; margin-top: 10px;">
-        <p-fieldset legend="Historia">
+    <div class="ui-grid-row" style="max-width: 900px;">
+        <div class="ui-grid-col-12" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"
+             style="margin-top: 10px; margin-top: 10px;">
+            <p-fieldset legend="Historia">
 
-            <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                         sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
-                <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
-                <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
-                <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
+                <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
+                             sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+                    <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
+                    <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
+                    <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
 
-                <p-column [sortable]="true" field="workNo" header="WO" [style]="{'width':'90px'}"></p-column>
-                <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
-                <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
-                <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
-                <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px'}"></p-column>
+                    <p-column [sortable]="true" field="workNo" header="WO" [style]="{'width':'90px'}"></p-column>
+                    <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
+                    <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
+                    <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
+                    <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px'}"></p-column>
 
-                <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
+                    <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
 
-                <ng-template pTemplate="emptymessage">
-                    Brak historycznych danych o WO...
-                </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        Brak historycznych danych o WO...
+                    </ng-template>
 
-            </p-dataTable>
-
-
-            <!--<div class="ui-grid-row" *ngFor="let record of selectedOrder.history">
-                <div class="ui-grid-col-12">
-                    <p-panel header="Nadpisano">{{record.versionDate}}</p-panel>
+                </p-dataTable>
 
 
-                </div>
-            </div>-->
-        </p-fieldset>
+                <!--<div class="ui-grid-row" *ngFor="let record of selectedOrder.history">
+                    <div class="ui-grid-col-12">
+                        <p-panel header="Nadpisano">{{record.versionDate}}</p-panel>
+
+
+                    </div>
+                </div>-->
+            </p-fieldset>
+        </div>
     </div>
 </div>
 

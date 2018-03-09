@@ -2,6 +2,7 @@
 export * from './alert.service';
 export * from './httpInterceptor.service';
 export * from './user.service';
+export * from './payroll.service';
 export * from './wo.service';
 export * from './dict.service';
 export * from './relatedItem.service';
