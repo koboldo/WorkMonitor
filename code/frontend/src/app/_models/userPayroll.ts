@@ -57,10 +57,12 @@ export class UserPayroll {
     rank: string;
     projectFactor: number;
     poolRate: number;
+    formattedPoolRate: string;
 
     //payroll report metadata
     periodDate: string;
     overTimeFactor: number;
+    formattedOverTimeFactor: string;
     approved: string;
     lastMod: string;
     modifiedBy: number;

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule, LOCALE_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 
 import { AlertService, UserService, DictService, AuthenticationService, PayrollService } from '../_services/index';
 import { User, CodeValue, SearchUser, UserPayroll } from '../_models/index';
@@ -11,11 +12,14 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
 
+
 @Component({
     selector: 'app-users-payroll',
     templateUrl: './users-payroll.component.html',
     styleUrls: ['./users-payroll.component.css'],
-    providers: [PayrollService]
+    providers: [
+        {provide: LOCALE_ID, useValue: 'pl-PL'},
+        PayrollService]
 })
 export class UsersPayrollComponent implements OnInit {
 
@@ -27,7 +31,9 @@ export class UsersPayrollComponent implements OnInit {
 
     currentPayroll: UserPayroll[];
     historicalPayrolls: UserPayroll[];
+    aSelectedPayroll: UserPayroll;
     approvedPayroll: UserPayroll[]; // just to show in dialog what's been confirmed
+    approvedPayrollCost: number;
 
     periodDates: SelectItem[];
 
@@ -59,21 +65,60 @@ export class UsersPayrollComponent implements OnInit {
         this.router.navigate(['/workMonitor']);
     }
 
-    public showApproveDialog():void {
-        this.displayApproveDialog = true;
+    private isCurrent(periodDate: string): boolean {
+        if (this.currentPayroll && this.currentPayroll[0].periodDate === periodDate) {
+            return true;
+        }
+        return false;
+    }
+
+    public calculatePayrollCost(periodDate: string): number {
+
+        let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
+
+        return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+    }
+
+    private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
+        let result: number = 0;
+        for (let payroll of payrolls) {
+            if (payroll.periodDate && payroll.periodDate === periodDate) {
+                result += payroll.totalDue;
+            }
+        }
+
+        return result;
+    }
+
+    public showApproveDialog(periodDate: string):void {
+        let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
+
+        for(let payroll of payrolls) { // for just for historical
+            if (payroll.periodDate && payroll.periodDate === periodDate) {
+                this.aSelectedPayroll = payroll;
+                this.overTimeFactor = this.aSelectedPayroll.overTimeFactor * 100;
+                this.displayApproveDialog = true;
+                return;
+            }
+        }
+        this.alertService.error("Wewnętrzny, nie można znaleźć rekordu dla: "+periodDate);
     }
 
     public approve():void {
         this.displayApproveDialog = false;
         if (this.currentPayroll[0] && this.currentPayroll[0].periodDate) {
-            this.payrollService.approve(this.users, this.currentPayroll[0].periodDate, this.overTimeFactor/100.0)
+            this.payrollService.approve(this.users, this.aSelectedPayroll.periodDate, this.overTimeFactor/100.0)
                 .subscribe(approvedPayroll => this.showApproveResult(approvedPayroll));
         }
     }
 
     private showApproveResult(approvedPayroll:UserPayroll[]):void {
         this.approvedPayroll = approvedPayroll;
+
+        this.approvedPayrollCost = this.calculatePayrollCostFromPayrolls(approvedPayroll, approvedPayroll[0].periodDate);
+
         this.displayApproveResultDialog = true;
+        this.searchPayrolls();
     }
 
     private initAll(user:User):void {
