@@ -13,6 +13,11 @@ var payrolls = {
 
         var params = {};
 
+        if(req.query.history == 'Y' && req.query.periodDate) {
+            resp.status(400).json({status:'error', message: 'wykluczające się parametry'});
+            return;
+        }
+
         if(req.query.approved && isBoss) params.approved = req.query.approved;
         else params.approved = "N";
 
@@ -28,22 +33,22 @@ var payrolls = {
         try {
             params.overTimeFactor = parseFloat(params.overTimeFactor);
         } catch (error) {
-            resp.status(500).json({status:'error', message: 'zły współczynnik nadgodzin'});
+            resp.status(400).json({status:'error', message: 'zły współczynnik nadgodzin'});
             return;
         }
 
         if(['Y','N'].indexOf(params.approved) < 0) {
-            resp.status(500).json({status:'error', message: 'zły współczynnik akceptacji'});
+            resp.status(400).json({status:'error', message: 'zły współczynnik akceptacji'});
             return;
         }
 
         if(['Y','N'].indexOf(params.history) < 0) {
-            resp.status(500).json({status:'error', message: 'zły parametr historii'});
+            resp.status(400).json({status:'error', message: 'zły parametr historii'});
             return;
         }
 
         if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(params.periodDate)) {
-            resp.status(500).json({status:'error', message: 'zła data okresu'});
+            resp.status(400).json({status:'error', message: 'zła data okresu'});
             return;
         }
 
