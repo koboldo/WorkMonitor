@@ -1,65 +1,122 @@
 
-<p-panel header="Bieżace" *ngIf="currentPayroll">
+<p-accordion>
+    <p-accordionTab header="Bieżace" [selected]="true" *ngIf="currentPayroll">
 
-    <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-9">
+        <div class="ui-grid-row" style="margin-top: 10px;">
+            <div class="ui-grid-col-9">
 
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'darkblue'">{{currentPayroll[0].periodDate}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{currentPayroll[0].poolRate}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{currentPayroll[0].overTimeFactor}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{currentPayroll[0].lastMod}}</span>
-        </div>
-
-        <div class="ui-grid-col-3">
-            <div style="margin-top: 0px; margin-bottom: 10px;">
-                <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="currentDt.exportCSV()"></button>
-                <span style="margin-right: 10px;"></span>
-                <button type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog()"></button>
+            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'darkblue'">{{currentPayroll[0].periodDate}}</span>
+            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{currentPayroll[0].poolRate}}</span>
+            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{currentPayroll[0].overTimeFactor}}</span>
+            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
+            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{currentPayroll[0].lastMod}}</span>
             </div>
+
+            <div class="ui-grid-col-3">
+                <div style="margin-top: 0px; margin-bottom: 10px;">
+                    <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="currentDt.exportCSV()"></button>
+                    <span style="margin-right: 10px;"></span>
+                    <button type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog()"></button>
+                </div>
+            </div>
+
         </div>
-
-    </div>
-    <p-dataTable [value]="currentPayroll" sortField="periodDate"
-                 rowGroupMode="rowspan"
-                 #currentDt
-                 [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
+        <p-dataTable [value]="currentPayroll" sortField="periodDate"
+                     rowGroupMode="rowspan"
+                     #currentDt
+                     [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
 
 
-        <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
-            <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-                <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-                <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+            <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
+                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+                </ng-template>
+            </p-column>
+            <p-column header="Stopień" field="rank" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
+            <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
+
+            <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                    <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                </ng-template>
+            </p-column>
+
+            <p-column header="Obecność" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+
+            <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+
+
+            <ng-template pTemplate="emptymessage">
+                Brak danych...
             </ng-template>
-        </p-column>
-        <p-column header="Stopień" field="rank" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
-        <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
-        <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-            <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-                <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-                <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+        </p-dataTable>
+
+    </p-accordionTab>
+
+    <p-accordionTab header="Historyczne" [selected]="true" *ngIf="currentPayroll">
+
+        <p-dataTable [value]="historicalPayrolls" sortField="periodDate"
+                     rowGroupMode="subheader" groupField="periodDate" expandableRowGroups="true" [sortableRowGroup]="false"
+                     [style]="{'margin-top':'50px'}" scrollable="true" scrollHeight="600px">
+
+
+            <ng-template pTemplate="rowgroupheader" let-rowData>
+
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'darkblue'">{{rowData['periodDate']}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{rowData['poolRate']}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{rowData['overTimeFactor']}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{rowData['lastMod']}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'darkblue'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
+                <span [style.color]="rowData['approved']=='Y'?'black':'orange'">{{rowData['approved']=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
+
             </ng-template>
-        </p-column>
+            <!--<p-column header="Okres rozliczeniowy" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>-->
+            <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Nazwisko">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
+                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+                </ng-template>
+            </p-column>
+            <p-column header="Stopień" field="rank" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
+            <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
-        <p-column header="Obecność" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-        <p-column header="Dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-        <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-        <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                    <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                </ng-template>
+            </p-column>
 
-        <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-        <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-        <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-        <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Obecność" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+
+            <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
+            <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
 
 
-        <ng-template pTemplate="emptymessage">
-            Brak danych...
-        </ng-template>
+            <ng-template pTemplate="emptymessage">
+                Brak danych...
+            </ng-template>
 
-    </p-dataTable>
+        </p-dataTable>
 
-</p-panel>
+    </p-accordionTab>
+
+</p-accordion>
+
 
 
 <p-dialog *ngIf="currentPayroll && currentPayroll[0]?.periodDate" [header]="'Akceptacja płac za okres '+currentPayroll[0].periodDate" [(visible)]="displayApproveDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
@@ -83,13 +140,13 @@
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button width="200px" type="button" pButton icon="fa-check" (click)="approve()" label="Protokół"></button>
+            <button width="200px" type="button" pButton icon="fa-check" (click)="approve()" label="Zatwierdź"></button>
         </div>
     </p-footer>
 
 </p-dialog>
 
-<p-dialog *ngIf="approvedPayroll" [(visible)]="displayApproveResultDialog" [header]="'Zatwierdzono płace za okres '+approvedPayroll[0].periodDate" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true">
+<p-dialog *ngIf="approvedPayroll" [(visible)]="displayApproveResultDialog" [header]="'Zatwierdzone płace za okres '+approvedPayroll[0].periodDate" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="700" [width]="800">
     <p-panel header="Zatwierdzone" *ngIf="approvedPayroll">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
@@ -151,53 +208,3 @@
     </p-panel>
 </p-dialog>
 
-
-
-<p-dataTable [value]="historicalPayrolls" sortField="periodDate"
-             rowGroupMode="subheader" groupField="periodDate" expandableRowGroups="true" [sortableRowGroup]="false"
-             [style]="{'margin-top':'50px'}" scrollable="true" scrollHeight="600px">
-    <p-header>Historyczne</p-header>
-
-    <ng-template pTemplate="rowgroupheader" let-rowData>
-        
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'darkblue'">{{rowData['periodDate']}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{rowData['poolRate']}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{rowData['overTimeFactor']}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{rowData['lastMod']}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'darkblue'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
-        <span [style.color]="rowData['approved']=='Y'?'black':'orange'">{{rowData['approved']=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
-
-    </ng-template>
-    <!--<p-column header="Okres rozliczeniowy" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>-->
-    <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Nazwisko">
-        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-            <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-            <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
-        </ng-template>
-    </p-column>
-    <p-column header="Stopień" field="rank" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
-    <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
-
-    <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-            <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-            <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-        </ng-template>
-    </p-column>
-
-    <p-column header="Obecność" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-    <p-column header="Dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-    <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-    <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-
-    <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-    <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-    <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-    <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}"></p-column>
-
-
-    <ng-template pTemplate="emptymessage">
-        Brak danych...
-    </ng-template>
-
-</p-dataTable>

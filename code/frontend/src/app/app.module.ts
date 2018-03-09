@@ -17,7 +17,7 @@ import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { WoComponent } from './wo/wo.component';
 
-import { ProgressSpinnerModule, InplaceModule, ProgressBarModule, ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
+import { AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule }  from 'primeng/primeng';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
@@ -45,7 +45,7 @@ import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,
+        AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,
         BrowserAnimationsModule,
         DataTableModule,
         routing
