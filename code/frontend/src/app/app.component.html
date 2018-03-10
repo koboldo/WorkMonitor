@@ -8,6 +8,7 @@
         <img src="assets/projects-banner-m2.png" style="position:relative;" width="100%" height="184px">
         <div *ngIf="user?.firstName" style="position: absolute; top:50px; right: 50px; z-index: 3; font-weight: bold; color: #f0f3f5">
             {{user?.firstName}} ({{roles | async}}) @ {{office | async}}<br>
+            <div style="float: right">Sesja {{getMinutesBeforeLogout() | async}} minut.</div><br>
             <a style="float: right" href="logout">Wyloguj</a>
 
             <user-attendance-register *ngIf="user?.firstName" [user]="user"></user-attendance-register>

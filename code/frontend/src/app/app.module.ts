@@ -1,4 +1,4 @@
-﻿import { NgModule }      from '@angular/core';
+﻿import { NgModule, LOCALE_ID }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -10,7 +10,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, HttpInterceptor } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpInterceptor } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -76,9 +76,10 @@ import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
         UsersPayrollComponent
     ],
     providers: [
-        AuthGuard,
         AlertService,
+        AuthGuard,
         AuthenticationService,
+        AutoLogoutService,
         UserService,
         BaseRequestOptions,
         WOService,
@@ -87,7 +88,9 @@ import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
         WorkTypeService,
         ToolsService,
         TimesheetService,
-        HttpInterceptor
+        PayrollService,
+        HttpInterceptor,
+        {provide: LOCALE_ID, useValue: 'pl-PL'}
     ],
     bootstrap: [AppComponent]
 })

@@ -16,10 +16,7 @@ import { MenuItem } from 'primeng/primeng';
 @Component({
     selector: 'app-users-payroll',
     templateUrl: './users-payroll.component.html',
-    styleUrls: ['./users-payroll.component.css'],
-    providers: [
-        {provide: LOCALE_ID, useValue: 'pl-PL'},
-        PayrollService]
+    styleUrls: ['./users-payroll.component.css']
 })
 export class UsersPayrollComponent implements OnInit {
 

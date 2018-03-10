@@ -115,14 +115,14 @@
 
             </ng-template>
             <!--<p-column header="Okres rozliczeniowy" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>-->
-            <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Nazwisko">
+            <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
                 </ng-template>
             </p-column>
-            <p-column header="Stopień" field="rank" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
-            <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
+            <p-column header="Stopień" field="rank"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
+            <p-column header="Współ." field="projectFactor"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
             <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -131,27 +131,27 @@
                 </ng-template>
             </p-column>
 
-            <p-column header="Czas pracy" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-            <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
-            <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Czas pracy" field="workTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Czas dla puli" field="poolWorkTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Nadgodziny" field="overTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
+            <p-column header="Urlop" field="leaveTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'darkblue'}"></p-column>
 
-            <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+            <p-column header="Obecnosc PLN" field="workDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
-            <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+            <p-column header="Nadgodziny PLN" field="overDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
-            <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+            <p-column header="Urlop PLN" field="leaveDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
-            <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+            <p-column header="Suma PLN" field="totalDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>

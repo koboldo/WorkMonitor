@@ -11,9 +11,14 @@ export class AuthenticationService {
 
     constructor(private http: Http) { }
 
+    private isLoggedFlag: boolean;
     private menuItems = new BehaviorSubject<MenuItem[]>(null);
     private user = new BehaviorSubject<User>(null);
     private authOptions: RequestOptions;
+
+    get isLogged(): boolean {
+        return this.isLoggedFlag;
+    }
 
     get menuItemsAsObs() : Observable<MenuItem[]> {
         return this.menuItems.asObservable();
@@ -49,6 +54,7 @@ export class AuthenticationService {
                     this.user.next(user);
                     this.menuItems.next(this.buildMenu(user));
                     this.initAuthHeaders(user.token);
+                    this.isLoggedFlag = true;
                 }
 
                 return user;
@@ -66,6 +72,7 @@ export class AuthenticationService {
         console.log("Logging out!");
         this.menuItems.next(null);
         this.user.next(null);
+        this.isLoggedFlag = false;
     }
 
     private buildMenu(user:User):any {

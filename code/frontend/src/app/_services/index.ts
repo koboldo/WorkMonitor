@@ -9,3 +9,4 @@ export * from './relatedItem.service';
 export * from './workType.service';
 export * from './tools.service';
 export * from './timesheet.service';
+export * from './autoLogout.service';

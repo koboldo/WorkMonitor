@@ -2,7 +2,7 @@
 import { Observable } from 'rxjs/Observable';
 import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
-import { AlertService, AuthenticationService, DictService } from './_services/index';
+import { AlertService, AuthenticationService, DictService, AutoLogoutService } from './_services/index';
 
 import { User } from './_models/index';
 
@@ -21,7 +21,9 @@ export class AppComponent {
     roles: Observable<string[]>;
     office: Observable<string>;
 
-    constructor(private authService:AuthenticationService, private dictService: DictService) {
+    constructor(private authService:AuthenticationService,
+                private dictService: DictService,
+                private autoLogoutService: AutoLogoutService) {
 
     }
 
@@ -38,5 +40,9 @@ export class AppComponent {
             this.roles = this.dictService.getRoleObs(user.roleCode);
             this.office = this.dictService.getOfficeObs(user.officeCode);
         }
+    }
+
+    public getMinutesBeforeLogout() {
+        return this.autoLogoutService.getMinutesBeforeLogout();
     }
 }
