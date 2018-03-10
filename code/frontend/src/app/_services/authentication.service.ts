@@ -82,7 +82,8 @@ export class AuthenticationService {
             {label: 'Zawieszone WO', icon: 'fa-trash-o', routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR"]},
             {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
             {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
-            {label: 'Czas pracy', icon: 'fa-calendar', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+            {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+            {label: 'Wynagrodzenie', icon: 'fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"]},
             {label: 'Protokół', icon: 'fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR"]},
             /*{label: 'WO do akceptacji', icon: 'fa-paperclip', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}, removed since status Accepted was removed*/
             {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
@@ -91,7 +92,7 @@ export class AuthenticationService {
             {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Parametryzacja WO', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
-            {label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}
+            /*{label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 
         return allItems.filter(item => this.filterItem(item, user));

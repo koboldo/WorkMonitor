@@ -89,7 +89,7 @@
 
     </p-accordionTab>
 
-    <p-accordionTab header="Historyczne" [selected]="false" *ngIf="currentPayroll">
+    <p-accordionTab header="Historyczne" [selected]="false" *ngIf="historicalPayrolls">
 
         <p-dataTable [value]="historicalPayrolls" sortField="periodDate"
                      rowGroupMode="subheader" groupField="periodDate" expandableRowGroups="true" [sortableRowGroup]="false"

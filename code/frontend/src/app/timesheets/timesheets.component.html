@@ -28,7 +28,7 @@
         </form>
       </p-fieldset>
     </div>
-    <div class="ui-grid-col-5">
+    <div *ngIf="user.roleCode.indexOf('OP') != -1" class="ui-grid-col-5">
       <p-fieldset legend="Urlopy">
         <user-leave *ngIf="users?.length > 0" [users]="users"></user-leave>
       </p-fieldset>

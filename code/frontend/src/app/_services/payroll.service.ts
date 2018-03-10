@@ -36,7 +36,21 @@ export class PayrollService {
             .map((response: Response) => this.getJoined(response.json(), users));
     }
 
+    public getCurrentPersonal(user: User): Observable<UserPayroll[]> {
+        let users: Map<number, User> = new Map<number, User>();
+        users.set(user.id, user);
 
+        return this.http.get('/api/v1/payroll/'+user.id)
+            .map((response: Response) => this.getJoined(response.json(), users));
+    }
+
+    public getHistoricalPersonal(user: User): Observable<UserPayroll[]>  {
+        let users: Map<number, User> = new Map<number, User>();
+        users.set(user.id, user);
+
+        return this.http.get('/api/v1/payroll/'+user.id+'?history=Y')
+            .map((response: Response) => this.getJoined(response.json(), users));
+    }
 
 
     private getJoined(response:any, users:Map<number, User>):UserPayroll[] {

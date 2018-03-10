@@ -19,6 +19,7 @@ import { WorkTypesComponent } from './work-types/work-types.component';
 import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
 import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
+import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
     { path: 'clearing',                 component: WoClearingComponent, canActivate: [AuthGuard] },
     { path: 'workMonitor',              component: ReportMonitorEngineersComponent, canActivate: [AuthGuard] },
     { path: 'unacceptedWork',           component: ReportUnacceptedOrdersComponent, canActivate: [AuthGuard] },
+    { path: 'myPayroll',                component: MyPayrollComponent,     canActivate: [AuthGuard] },
     { path: 'payroll',                  component: UsersPayrollComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '', canActivate: [AuthGuard] }
 ];
