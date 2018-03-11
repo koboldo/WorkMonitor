@@ -20,7 +20,10 @@
 			"PHONE": "phone",
 			"POSITION": "position",
 			"ADDRESS_STREET": "addressStreet",
-			"ADDRESS_POST": "addressPost"
+			"ADDRESS_POST": "addressPost",
+			"SALARY": "salary",
+			"SALARY_RATE": "salaryRate",
+			"LEAVE_RATE": "leaveRate"
 		}
 	},
 	"order": {
