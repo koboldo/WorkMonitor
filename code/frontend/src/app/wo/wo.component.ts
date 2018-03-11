@@ -4,6 +4,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_models/index';
+import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
 import { MenuItem } from 'primeng/primeng';
@@ -64,6 +65,9 @@ export class WoComponent implements OnInit {
     suggestedPrice:CodeValue[];
     price:CodeValue;
     additionalPrices:CodeValue[];
+
+    comment; string;
+    newComment: string;
 
     operator:User;
 
@@ -319,10 +323,12 @@ export class WoComponent implements OnInit {
 
     add() {
 
-        this.editedOrder = new Order(this.toolsService.NO_WO, 'OP', this.dictService.getWorkStatus('OP'), null, null, 'STD', -1, null, null, this.toolsService.NO_CAPEX, null);
+        this.editedOrder = new Order(this.toolsService.NO_WO, 'OP', this.dictService.getWorkStatus('OP'), null, null, 'STD', -1, null, new Comments(null), this.toolsService.NO_CAPEX, null);
         this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
         this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
         this.generateWorkNoFlag = 'Y';
+        this.comment = undefined;
+        this.newComment = undefined;
 
         this.status = new CodeValue(this.editedOrder.statusCode, this.editedOrder.status);
 
@@ -331,6 +337,7 @@ export class WoComponent implements OnInit {
 
         this.price = <CodeValue> {};
         this.workType = <CodeValue> {};
+        this.newComment = undefined;
 
         this.newOrder = true;
         this.displayEditDialog = true;
@@ -340,6 +347,8 @@ export class WoComponent implements OnInit {
 
         console.log('editing!' + JSON.stringify(this.selectedOrder));
         this.generateWorkNoFlag = 'N';
+        this.comment = this.selectedOrder.comments ? commentAsString(this.selectedOrder.comments) : undefined;
+        this.newComment = undefined;
 
         //initial values based on selectedOrder for form preparation
         let price: string = this.selectedOrder.price !== undefined? ''+this.selectedOrder.price : '';
@@ -388,7 +397,7 @@ export class WoComponent implements OnInit {
     canSaveOrders(): boolean {
         return (
             this.assignedVentureRepresentative && this.assignedVentureRepresentative.user &&
-            this.editedOrder && this.editedOrder.workNo && this.editedOrder.workNo.length > 2 &&
+            ((this.editedOrder && this.editedOrder.workNo && this.editedOrder.workNo.length > 2) || this.assignedVentureRepresentative.user.officeCode !== 'WAW') &&
             this.workType && this.workType.paramChar && this.workType.paramChar.length > 1
         );
     }
@@ -405,6 +414,15 @@ export class WoComponent implements OnInit {
 
         order.statusCode = this.newOrder ? 'OP' : this.status.code;
         order.status = this.dictService.getWorkStatus(order.statusCode);
+
+        if (this.newComment && this.newComment.length > 0) {
+            let reason: string = (order.statusCode === 'SU' || order.statusCode === 'CA') ? "Anulowanie" : "Edycja";
+            if (!order.comments) {
+                order.comments = new Comments(null);
+            }
+            commentAdd(order.comments, reason, this.operator, this.newComment);
+        }
+
         if (this.toolsService.isStatusLowerThanProtocol(order.statusCode)) {
             order.protocolNo = ''; //According to LE its null for sqlite
         }
@@ -482,6 +500,7 @@ export class WoComponent implements OnInit {
         }
     }
 
+    //this can differ when creating many orders in one dialog
     private setWorkTypeAndPrice(order: Order, workType: CodeValue, price: CodeValue): void {
         order.typeCode = workType.code;
         order.price = (price != undefined && price.code !== undefined) ? <number> +price.code : this.toolsService.parsePrice(JSON.stringify(price), order.workNo);

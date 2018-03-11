@@ -83,7 +83,7 @@
       <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-      <p-column [sortable]="true" field="comment" header="Komentarz" hidden="true"></p-column>
+      <p-column [sortable]="true" field="sComments" header="Komentarz" hidden="true"></p-column>
       <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
 
       <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
@@ -148,7 +148,7 @@
     </p-dataTable>
   </div>
 
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 
@@ -230,16 +230,35 @@
       <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
             <div class="ui-grid-col-2"><label for="status">Status</label></div>
             <div class="ui-grid-col-10">
-                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" [forceSelection]="true"></p-autoComplete>
+                <!--  [forceSelection]="true" does not work -->
+                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>
             </div>
       </div>
-      <div class="ui-grid-row" style="margin-top: 10px;">
-        <div class="ui-grid-col-2"><label for="comment">Komentarz</label></div>
-        <div class="ui-grid-col-10">
-          <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="comment" name="comment" [(ngModel)]="editedOrder.comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
+
+        <div *ngIf="comment" class="ui-grid-row" style="margin-top: 10px;">
+          <div class="ui-grid-col-2"><label for="comment">Poprzednie komentarze</label></div>
+          <div class="ui-grid-col-10">
+            <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
+            <textarea readonly="readonly" pInputTextarea id="comment" name="comment" [(ngModel)]="comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Dotychczasowe komentarze dotyczące WO..."></textarea>
+          </div>
         </div>
-      </div>
+          <div class="ui-grid-row" style="margin-top: 10px;">
+            <div class="ui-grid-col-2"><label for="newComment">Dodaj komentarz</label></div>
+            <div class="ui-grid-col-10">
+              <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
+                <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
+
+              <!--<textarea *ngIf="status.code === 'SU' || status.code === 'CA'" required [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
+                <textarea *ngIf="status.code !== 'SU' && status.code !== 'CA'" [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>-->
+            </div>
+          </div>
+          <div *ngIf="!newComment && (status.code === 'SU' || status.code === 'CA')" class="ui-grid-row" style="margin-top: 0px;" >
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-10">
+              <p-message severity="warn" text="Dodaj powód anulujowania/wstrzymania zlecenia!"></p-message>
+            </div>
+          </div>
+
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="description">Opis</label></div>
         <div class="ui-grid-col-10">

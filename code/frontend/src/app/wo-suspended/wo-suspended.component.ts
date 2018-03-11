@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
+import { Comments, commentCancelOrHoldAsString } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 
@@ -49,6 +50,14 @@ export class WoSuspendedComponent implements OnInit {
         this.selectedOrder=order;
         this.onRowSelect(event);
         this.displayDetailsDialog=true;
+    }
+
+    public getCancelOrHoldComment(order: Order): string {
+        if (order.comments) {
+            return commentCancelOrHoldAsString(order.comments);
+        } else {
+            return '';
+        }
     }
 
     onRowSelect(event) {

@@ -98,7 +98,7 @@
     </div>
 </p-dialog>
 
-<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="900">
+<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
 
     <div *ngIf="selectedOrder?.workNo">
         <div class="ui-grid-row">

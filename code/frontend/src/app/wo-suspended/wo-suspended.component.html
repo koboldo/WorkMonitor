@@ -30,7 +30,11 @@
       <p-column [sortable]="true" field="mdCapex" header="CAPEX"  [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'60px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-      <p-column [sortable]="true" field="comment" header="Komentarz" hiddem="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column field="sComments" header="Komentarz" hiddem="true" [filter]="true" filterPlaceholder="Filtruj">
+          <ng-template let-col let-order="rowData" pTemplate="body">
+              <span>{{getCancelOrHoldComment(order)}}</span>
+          </ng-template>
+      </p-column>
       <p-column [sortable]="true" field="description" header="Opis" hiddem="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="lastModDate" header="Modyfikacja" [style]="{'width':'90px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
@@ -71,7 +75,7 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 

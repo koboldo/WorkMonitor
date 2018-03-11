@@ -5,6 +5,7 @@ import { Observable }    from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { Order, OrderHistory, User, WorkType } from '../_models/index';
+import { Comments, commentToDbContent } from '../_models/comment';
 import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import { DictService } from '../_services/dict.service';
 import { WorkTypeService } from '../_services/workType.service';
@@ -115,6 +116,12 @@ export class WOService {
         strippedOrder.itemAddress = undefined;
         strippedOrder.itemCreationDate = undefined;
 
+        if (strippedOrder.comments) {
+            console.log("changing comments");
+            strippedOrder.comment = commentToDbContent(strippedOrder.comments);
+            strippedOrder.comments = undefined;
+        }
+
         return strippedOrder;
     }
 
@@ -162,6 +169,13 @@ export class WOService {
 
         if (order.price === -13) {
             order.price = undefined;
+        }
+
+        console.log("test order.comment: "+order.comment+" -> ");
+        if (order.comment) {
+            console.log("test order.comment: inside ");
+            order.comments = new Comments(order.comment);
+            order.sComments = JSON.stringify(order.comments);
         }
 
         // flat structure to enable filtering in p-datatable

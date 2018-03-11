@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
+import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 
@@ -30,10 +31,11 @@ export class ChangeWoComplexityComponent implements OnInit {
     displayReassignDialog: boolean;
     displayChangeComplexityDialog: boolean;
     complexityIncrease: boolean;
-    justification: string;
 
     /* statuses dict or autocompletion statuses */
     statuses:CodeValue[] = [];
+
+    newComment: string;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -63,7 +65,7 @@ export class ChangeWoComplexityComponent implements OnInit {
         this.woService.getOrdersByDates(
             this.lastModAfter.toISOString().substring(0, 10),
             this.lastModBefore.toISOString().substring(0, 10)
-        ).subscribe(orders => this.orders = orders);
+        ).subscribe(orders => this.processOrders(orders));
     }
 
     onRowSelect(event) {
@@ -85,9 +87,7 @@ export class ChangeWoComplexityComponent implements OnInit {
     private reassign(): void {
         this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
 
-        this.editedOrder.comment ?
-            this.editedOrder.comment += this.getCommentReassign(this.editedOrder, this.leader):
-            this.editedOrder.comment = this.getCommentReassign(this.editedOrder, this.leader);
+        this.newComment = undefined;
 
         this.editedOrder.status = this.dictService.getWorkStatus("AS");
         this.editedOrder.statusCode = "AS";
@@ -104,15 +104,12 @@ export class ChangeWoComplexityComponent implements OnInit {
             return;
         }*/
 
-        this.justification = "";
+        this.newComment = undefined;
         this.complexityIncrease = increase;
 
         this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         this.editedOrder.type = this.dictService.getWorkStatus(this.editedOrder.typeCode);
-        this.editedOrder.comment ?
-            this.editedOrder.comment += this.getComment(increase, this.editedOrder, this.leader):
-            this.editedOrder.comment = this.getComment(increase, this.editedOrder, this.leader);
 
         if (increase) {
             this.editedOrder.complexityCode = "HRD";
@@ -133,56 +130,55 @@ export class ChangeWoComplexityComponent implements OnInit {
         this.displayChangeComplexityDialog = true;
     }
 
-    private getComment(increase: boolean, order: Order, leader: User) : string {
-        let assigners: string = "";
-        if (order && order.assignee) {
-            for(let email of order.assignee) {
-                assigners += email+",";
-            }
-        }
-
-        let text: string =
-            "\n----------------\n"+
-            "W dniu "+new Date().toLocaleString()+" "+
-            leader.firstName+" "+leader.lastName+
-            (increase? " zwiększył(a)": " zmniejszył(a)")+
-            " trudność zlecenia "+
-            (assigners.length > 0 ? "przypisanego do "+ assigners : "nieprzypisanego") +
-            " będącego w statusie "+order.status;
-        return text;
-
+    doReassign(): void {
+        this.addComment(this.editedOrder, false);
+        this.saveOrder();
     }
 
-    private getCommentReassign(order: Order, leader: User) : string {
-        let assigners: string = "";
-        if (order && order.assignee) {
-            for(let email of order.assignee) {
-                assigners += email+",";
-            }
-        }
-
-        let text: string =
-            "\n----------------\n"+
-            "W dniu "+new Date().toLocaleString()+" "+
-            leader.firstName+" "+leader.lastName+
-            " zdecydował o poprawie zlecenia "+
-            (assigners.length > 0 ? "przypisanego do "+ assigners : "nieprzypisanego") +
-            " będącego w statusie "+order.status;
-        return text;
-
+    doChangeComplexity(): void {
+        this.addComment(this.editedOrder, true);
+        this.saveOrder();
     }
 
-    saveOrder() {
+    private saveOrder():void {
 
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
         this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
-
-        this.editedOrder.comment += this.justification ? " ---------------- Uzasadnienie: "+this.justification : " BRAK uzasadnienia!";
 
         this.storeOrder(this.editedOrder);
 
         this.displayChangeComplexityDialog = false;
         this.displayReassignDialog = false;
+    }
+
+    private addComment(order: Order, changeComplexity: boolean): void {
+        if (!order.comments) {
+            order.comments = new Comments(null);
+        }
+
+        let assignees: string = '';
+        if (order.assigneeFull && order.assigneeFull.length > 0) {
+            for (let user of order.assigneeFull) {
+                assignees += user.firstName + ' ' + user.lastName + ", "
+            }
+        }
+
+        let prefix: string = '';
+        if (changeComplexity) {
+            prefix += "Zmiana wyceny na "+order.complexity+"h";
+        } else {
+            prefix += "Poprawa WO";
+        }
+
+        if (order.assigneeFull) {
+            prefix += " przypisanego do: "+assignees;
+        } else {
+            prefix += " nieprzypisanego,";
+        }
+        prefix +=  " będącego w stanie: "+order.status+", ";
+
+        let justification: string = this.newComment ? prefix+this.newComment : prefix+"Brak uzasadnienia";
+        commentAdd(order.comments, changeComplexity? "Wycena" : "Poprawa", this.leader, justification);
     }
 
     private storeOrder(order:Order):void {
@@ -206,4 +202,14 @@ export class ChangeWoComplexityComponent implements OnInit {
     }
 
 
+    private processOrders(orders:Order[]):void {
+        let tmpOrders: Order[] = [];
+        for (let order of orders) {
+            if (order.statusCode !== 'CA' && order.statusCode !== 'SU') {
+                tmpOrders.push(order);
+            }
+        }
+
+        this.orders = tmpOrders;
+    }
 }

@@ -1,4 +1,4 @@
-import { User, RelatedItem, OrderHistory } from '../_models/index';
+import { User, RelatedItem, OrderHistory, Comments } from '../_models/index';
 
 export class Order {
     //internal backend fields not set by the constuctor
@@ -38,6 +38,8 @@ export class Order {
     office:     string;
     isFromPool: string;
 
+    comment: string;
+    sComments: string; //user to filter
 
     constructor(public workNo:string,
                 public statusCode:string,
@@ -47,9 +49,10 @@ export class Order {
                 public complexityCode:string,
                 public complexity:number,
                 public description:string,
-                public comment:string,
+                public comments:Comments,
                 public mdCapex:string,
                 public price:number) {
     }
+
 }
 
