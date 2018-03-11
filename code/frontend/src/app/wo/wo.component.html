@@ -185,7 +185,7 @@
 
       <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="!newOrder || assignedVentureRepresentative?.user?.officeCode === 'WAW' || generateWorkNoFlag === 'N'">
         <div class="ui-grid-col-2"><label for="workNo">Numer WO*</label></div>
-        <div class="ui-grid-col-10 ui-fluid"><input pInputText [disabled]="!assignedVentureRepresentative" id="workNo" name="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" [pTooltip]="'Uzupełnij jeśli posiadzasz numer zlecenia w innym przypadku pozostaw wartość '+this.toolsService.NO_WO" tooltipPosition="top"/></div>
+        <div class="ui-grid-col-10 ui-fluid"><input pInputText [disabled]="!assignedVentureRepresentative" id="workNo" name="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" [pTooltip]="'Uzupełnij jeśli posiadasz numer zlecenia w innym przypadku pozostaw wartość '+this.toolsService.NO_WO" tooltipPosition="top"/></div>
       </div>
 
       <div *ngIf="assignedVentureRepresentative?.user?.officeCode === 'KAT'" class="ui-grid-row" style="margin-top: 10px;">

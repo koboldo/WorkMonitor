@@ -32,18 +32,20 @@ export class UserLeaveComponent implements OnInit {
     }
 
     suggestUser(event) {
-        this.selectedUser = undefined;
-        this.suggestedUsers = [];
+        let suggestedUsers: SearchUser[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
+
         if (this.users && this.users.length > 0) {
             for (let user of this.users) {
-                let suggestion:string = JSON.stringify(user);
+                let suggestion:string = JSON.stringify(user).toLowerCase();
                 console.log("suggestUser " + suggestion + " for " + JSON.stringify(event));
-                if (suggestion.indexOf(event.query) > -1) {
+                if (suggestion.indexOf(queryIgnoreCase) > -1) {
                     let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
-                    this.suggestedUsers.push(new SearchUser(displayName, user));
+                    suggestedUsers.push(new SearchUser(displayName, user));
                 }
             }
         }
+        this.suggestedUsers = suggestedUsers;
         console.log("suggestedUsers " + JSON.stringify(this.suggestedUsers));
     }
 

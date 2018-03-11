@@ -177,42 +177,47 @@ export class WoComponent implements OnInit {
     suggestPrice(event, workType: CodeValue) {
         console.log('all ' + JSON.stringify(this.workTypesDetails));
 
-        this.suggestedPrice = <CodeValue[]> [];
+        let suggestedPrice: CodeValue[] = [];
         if (this.workTypesDetails && this.workTypesDetails.length > 0) {
             for (let workTypeDetails of this.workTypesDetails) {
                 let sPrice:string = <string> '' + workTypeDetails.price;
                 if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === workType.code || workType.code === undefined) && workTypeDetails.officeCode === this.assignedVentureRepresentative.user.officeCode && workTypeDetails.complexityCode === 'STD') {
                     //let type: string = this.dictService.getWorkType(workTypeDetails.typeCode);
-                    this.suggestedPrice.push(new CodeValue(sPrice, sPrice + ' PLN (cennik ' + this.dictService.getOffice(workTypeDetails.officeCode) + ')'));
+                    suggestedPrice.push(new CodeValue(sPrice, sPrice + ' PLN (cennik ' + this.dictService.getOffice(workTypeDetails.officeCode) + ')'));
                 }
             }
         }
+        this.suggestedPrice = suggestedPrice;
         console.log('suggestedWorkTypeDetails: ' + JSON.stringify(this.suggestedPrice));
     }
 
     suggestRelatedItem(event) {
         console.log('all ' + JSON.stringify(this.relatedItems));
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
 
-        this.suggestedRelatedItems = [];
+        let suggestedRelatedItems: RelatedItem[] = [];
         if (this.relatedItems && this.relatedItems.length > 0) {
             for (let item of this.relatedItems) {
-                if (item.itemNo.indexOf(event.query) > -1) {
-                    this.suggestedRelatedItems.push(item);
+                if (item.itemNo.toLowerCase().indexOf(queryIgnoreCase) > -1) {
+                    suggestedRelatedItems.push(item);
                 }
             }
         }
+        this.suggestedRelatedItems = suggestedRelatedItems;
         console.log('suggestedRelatedItems: ' + JSON.stringify(this.suggestedRelatedItems));
     }
 
     suggestStatus(event) {
-        this.suggestedStatuses = [];
+        let suggestedStatuses: CodeValue[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.statuses && this.statuses.length > 0) {
             for (let status of this.statuses) {
-                if (status.paramChar.indexOf(event.query) > -1 && this.isStatusAllowed(this.editedOrder, status.code)) {
-                    this.suggestedStatuses.push(status);
+                if (status.paramChar.toLowerCase().indexOf(queryIgnoreCase) > -1 && this.isStatusAllowed(this.editedOrder, status.code)) {
+                    suggestedStatuses.push(status);
                 }
             }
         }
+        this.suggestedStatuses = suggestedStatuses;
         console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
     }
 
@@ -230,44 +235,49 @@ export class WoComponent implements OnInit {
 
 
     suggestType(event) {
-        this.suggestedTypes = [];
+        let suggestedTypes:CodeValue[] = [];
         if (this.workTypes && this.workTypes.length > 0) {
             for (let workType of this.workTypes) {
                 if (workType.paramChar.indexOf(event.query) > -1) {
-                    this.suggestedTypes.push(workType);
+                    suggestedTypes.push(workType);
                 }
             }
         }
+        this.suggestedTypes = suggestedTypes;
         console.log('suggestedTypes: ' + JSON.stringify(this.suggestedTypes));
     }
 
     suggestEngineer(event) {
-        this.suggestedEngineers = [];
+        let suggestedEngineers:SearchUser[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.engineers && this.engineers.length > 0) {
             for (let engineer of this.engineers) {
-                let suggestion:string = JSON.stringify(engineer);
+                let suggestion:string = JSON.stringify(engineer).toLowerCase();
                 console.log('suggestEngineer ' + suggestion + ' for ' + JSON.stringify(event));
-                if (suggestion.indexOf(event.query) > -1 && (this.editedOrder.assignee === undefined || this.editedOrder.assignee.indexOf(engineer.email) === -1)) {
+                if (suggestion.indexOf(queryIgnoreCase) > -1 && (this.editedOrder.assignee === undefined || this.editedOrder.assignee.indexOf(engineer.email) === -1)) {
                     let displayName:string = engineer.firstName + ' ' + engineer.lastName + ' (' + engineer.role + ')';
-                    this.suggestedEngineers.push(new SearchUser(displayName, engineer));
+                    suggestedEngineers.push(new SearchUser(displayName, engineer));
                 }
             }
         }
+        this.suggestedEngineers = suggestedEngineers;
         console.log('suggestedEngineers ' + JSON.stringify(this.suggestedEngineers));
     }
 
     suggestVentureRepresentative(event) {
-        this.suggestedVentureRepresentatives = [];
+        let suggestedVentureRepresentatives: SearchUser[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
             for (let v of this.ventureRepresentatives) {
-                let suggestion:string = JSON.stringify(v);
+                let suggestion:string = JSON.stringify(v).toLowerCase();
                 console.log('suggestVentureRepresentative ' + suggestion + ' for ' + JSON.stringify(event));
-                if (suggestion.indexOf(event.query) > -1) {
+                if (suggestion.indexOf(queryIgnoreCase) > -1) {
                     let displayName:string = v.firstName + ' ' + v.lastName + ' (' + v.company + ' - '+v.office+')';
-                    this.suggestedVentureRepresentatives.push(new SearchUser(displayName, v));
+                    suggestedVentureRepresentatives.push(new SearchUser(displayName, v));
                 }
             }
         }
+        this.suggestedVentureRepresentatives = suggestedVentureRepresentatives;
         console.log('suggestedVentureRepresentatives ' + JSON.stringify(this.suggestedVentureRepresentatives));
     }
 

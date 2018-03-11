@@ -6,7 +6,7 @@
               id="person" [(ngModel)]="selectedUser" [suggestions]="suggestedUsers"
               (completeMethod)="suggestUser($event)"
               (onSelect)="onSelectUser($event)"
-              [dropdown]="true" field="displayName"></p-autoComplete>
+              [dropdown]="true" field="displayName" [delay]="200" [minLength]="2" [required]="true"></p-autoComplete>
           <!-- does not work  [forceSelection]="true" -->
     </div>
   </div>
@@ -71,7 +71,7 @@
       </div>
 
       <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1">
-        <div style="margin-bottom: 10px; width: 100%; ">
+        <!--<div style="margin-bottom: 10px; width: 100%; ">
           <label for="company">Podmiot zatrudniający</label>
           <div class="ui-fluid form-group" [ngClass]="{ 'has-error': f.submitted && !company?.valid }">
             <p-autoComplete
@@ -87,7 +87,7 @@
                     ></p-autoComplete>
             <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
           </div>
-        </div>
+        </div>-->
         <div style="margin-bottom: 10px;">
           <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
             <label for="account">Nr konta</label>
@@ -120,12 +120,12 @@
             <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Stopień jest wymagany</div>
           </div>
 
-          <div class="form-group" *ngIf="showAgreements" [ngClass]="{ 'has-error': f.submitted && !agreementCode?.valid }">
+          <!--<div class="form-group" *ngIf="showAgreements" [ngClass]="{ 'has-error': f.submitted && !agreementCode?.valid }">
             <label for="agreementCode">Główna umowa</label>
             <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="selectedUser.user.agreementCode" required #agreementCode="ngModel"></p-selectButton>
-            <!--<p-dropdown name="agreementCode" [options]="agreements | async" [(ngModel)]="selectedUser.user.agreementCode" required autoWidth="false" ></p-dropdown>-->
+            &lt;!&ndash;<p-dropdown name="agreementCode" [options]="agreements | async" [(ngModel)]="selectedUser.user.agreementCode" required autoWidth="false" ></p-dropdown>&ndash;&gt;
             <div *ngIf="f.submitted && !agreementCode?.valid" class="help-block">Umowa jest wymagane</div>
-          </div>
+          </div>-->
 
           <div class="form-group" [ngClass]="{ 'has-error': f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N' }">
             <p-radioButton name="poolgroup" value="Y" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (TAK)"></p-radioButton>

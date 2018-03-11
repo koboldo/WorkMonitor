@@ -74,20 +74,22 @@ export class UserChangeComponent implements OnInit {
     }
 
     suggestUser(event) {
-        this.selectedUser = undefined;
-        this.suggestedUsers = [];
+        let suggestedUsers: SearchUser[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.users && this.users.length > 0) {
             for (let user of this.users) {
                 let suggestion:string = JSON.stringify(user);
                 console.log("suggestUser " + suggestion + " for " + JSON.stringify(event));
-                if (suggestion.indexOf(event.query) > -1) {
+                if (suggestion.toLowerCase().indexOf(queryIgnoreCase) > -1) {
                     let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
-                    this.suggestedUsers.push(new SearchUser(displayName, user));
+                    suggestedUsers.push(new SearchUser(displayName, user));
                     console.log("added suggestUser " + suggestion + " for " + JSON.stringify(user));
                 }
             }
         }
-        console.log("suggestedUsers " + JSON.stringify(this.suggestedUsers));
+        this.suggestedUsers = suggestedUsers;
+        //this.selectedUser = undefined;
+        console.log("suggestedUsers new " + JSON.stringify(this.suggestedUsers));
     }
 
     public showProjectFactor() {
@@ -95,22 +97,24 @@ export class UserChangeComponent implements OnInit {
     }
 
     suggestCompany(event) {
-        this.suggestedCompanies = <string[]> [];
+        let suggestedCompanies: string[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
 
         if (this.users && this.users.length > 0) {
             console.log('all ' + JSON.stringify(this.users));
             for (let u of this.users) {
                 if (this.selectedUser.user.roleCode.indexOf('VE') == -1 && u.roleCode.indexOf('VE') == -1) {
-                    if (u.company && u.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(u.company) == -1) {
-                        this.suggestedCompanies.push(u.company);
+                    if (u.company && u.company.toLowerCase().indexOf(queryIgnoreCase) > -1 && suggestedCompanies.indexOf(u.company) == -1) {
+                        suggestedCompanies.push(u.company);
                     }
                 } else if (this.selectedUser.user.roleCode.indexOf('VE') > -1 && u.roleCode.indexOf('VE') > -1) {
-                    if (u.company && u.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(u.company) == -1) {
-                        this.suggestedCompanies.push(u.company);
+                    if (u.company && u.company.toLowerCase().indexOf(queryIgnoreCase) > -1 && suggestedCompanies.indexOf(u.company) == -1) {
+                        suggestedCompanies.push(u.company);
                     }
                 }
             }
         }
+        this.suggestedCompanies = suggestedCompanies;
         console.log('suggestedCompanies: ' + JSON.stringify(this.suggestedCompanies));
     }
 

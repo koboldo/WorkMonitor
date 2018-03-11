@@ -113,24 +113,26 @@ export class UserRegisterComponent implements OnInit {
     }
 
     suggestCompany(event) {
-        this.suggestedCompanies = <string[]> [];
+        let suggestedCompanies: string[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
 
         if (this.user.roleCode.indexOf('VE') > -1 && this.representatives && this.representatives.length > 0) {
             console.log('all ' + JSON.stringify(this.representatives));
             for (let r of this.representatives) {
-                if (r.company && r.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(r.company) == -1) {
-                    this.suggestedCompanies.push(r.company);
+                if (r.company && r.company.toLowerCase().indexOf(queryIgnoreCase) > -1 && suggestedCompanies.indexOf(r.company) == -1) {
+                    suggestedCompanies.push(r.company);
                 }
             }
         }
         if (this.user.roleCode.indexOf('VE') == -1 && this.staff && this.staff.length > 0) {
             console.log('all ' + JSON.stringify(this.staff));
             for (let s of this.staff) {
-                if (s.company && s.company.indexOf(event.query) > -1 && this.suggestedCompanies.indexOf(s.company) == -1) {
-                    this.suggestedCompanies.push(s.company);
+                if (s.company && s.company.toLowerCase().indexOf(queryIgnoreCase) > -1 && suggestedCompanies.indexOf(s.company) == -1) {
+                    suggestedCompanies.push(s.company);
                 }
             }
         }
+        this.suggestedCompanies = suggestedCompanies;
         console.log('suggestedCompanies: ' + JSON.stringify(this.suggestedCompanies));
     }
 
