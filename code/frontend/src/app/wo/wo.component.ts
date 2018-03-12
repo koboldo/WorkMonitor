@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
@@ -187,7 +188,8 @@ export class WoComponent implements OnInit {
                 let sPrice:string = <string> '' + workTypeDetails.price;
                 if (sPrice.indexOf(event.query) > -1 && (workTypeDetails.typeCode === workType.code || workType.code === undefined) && workTypeDetails.officeCode === this.assignedVentureRepresentative.user.officeCode && workTypeDetails.complexityCode === 'STD') {
                     //let type: string = this.dictService.getWorkType(workTypeDetails.typeCode);
-                    suggestedPrice.push(new CodeValue(sPrice, sPrice + ' PLN (cennik ' + this.dictService.getOffice(workTypeDetails.officeCode) + ')'));
+                    //suggestedPrice.push(new CodeValue(sPrice, sPrice + ' PLN (cennik ' + this.dictService.getOffice(workTypeDetails.officeCode) + ')'));
+                    suggestedPrice.push(new CodeValue(sPrice, sPrice + ' PLN'));
                 }
             }
         }

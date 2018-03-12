@@ -204,8 +204,13 @@
           <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" name="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, workType)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
           </div>
-
       </div>
+        <div class="ui-grid-row" style="margin-top: 0px;" >
+          <div class="ui-grid-col-7"></div>
+          <div class="ui-grid-col-5">
+            <p-message severity="info" text="Cennik"></p-message>
+          </div>
+        </div>
 
       <div *ngIf="newOrder && workType?.code">
 
@@ -252,7 +257,7 @@
                 <textarea *ngIf="status.code !== 'SU' && status.code !== 'CA'" [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>-->
             </div>
           </div>
-          <div *ngIf="!newComment && (status.code === 'SU' || status.code === 'CA')" class="ui-grid-row" style="margin-top: 0px;" >
+          <div *ngIf="!newComment && (status?.code === 'SU' || status?.code === 'CA')" class="ui-grid-row" style="margin-top: 0px;" >
             <div class="ui-grid-col-2"></div>
             <div class="ui-grid-col-10">
               <p-message severity="warn" text="Dodaj powód anulujowania/wstrzymania zlecenia!"></p-message>
