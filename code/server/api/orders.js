@@ -63,11 +63,13 @@ var orders = {
 
     update: function(req, resp) {
         req.body.modifiedBy = req.context.id;
-
+        delete req.body.isFromPool;
+        
         var orderId = req.params.id;
         var orderExtId = req.params.extId;
         var re = filterOrderPrice(req.context, req.body, true);
         var orderSql = mapper.order.mapToSql(re);
+
 
         orders_db.update(orderId, orderExtId, orderSql,function(err, result){
             if(err) {
