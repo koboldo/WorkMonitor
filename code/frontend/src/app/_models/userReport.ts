@@ -44,10 +44,13 @@ export class UserReport {
     //calculateTimeUtilization
     noOrdersDone: number;
     expectedTime: number;
-    timeUtilizationPercentage: string;
+    timeUtilizationPercentage: number;
     icon: string;
     iconColor: string;
 
     workOrders: Order[];
+
+    // calculated by front
+    earnedMoney: number;
 
 }
