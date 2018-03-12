@@ -8,8 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime.js';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
-
+import { FormsModule, FormBuilder, FormGroup, FormControl, EmailValidator, Validators, NG_VALIDATORS, Validator }     from '@angular/forms';
 
 @Component({
     selector: 'app-user-change',
@@ -42,6 +41,8 @@ export class UserChangeComponent implements OnInit {
     /* autocompletion company */
     suggestedCompanies: string[];
     company: string;
+
+    rateControl = new FormControl("", [Validators.min(0)]);
 
     constructor(private router:Router,
                 private route: ActivatedRoute,
