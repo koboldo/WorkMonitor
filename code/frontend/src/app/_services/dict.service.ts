@@ -12,7 +12,6 @@ import { HttpInterceptor } from '../_services/httpInterceptor.service';
 export class DictService {
 
     private workStatuses: CodeValue[];
-    private workTypes: CodeValue[];
     private complexities: CodeValue[];
     private roles: CodeValue[];
     private offices: CodeValue[];
@@ -30,7 +29,6 @@ export class DictService {
             console.log("Initializing dictService!");
 
             this.workStatuses = [];
-            this.workTypes = [];
             this.complexities = [];
             this.roles = [];
             this.offices = [];
@@ -40,8 +38,6 @@ export class DictService {
             this.http.get('/api/v1/codes/WORK_STATUS')
                 .subscribe((response:Response) => this.setCodes(response.json(), this.workStatuses));
 
-            this.http.get('/api/v1/codes/WORK_TYPE')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.workTypes));
 
             this.http.get('/api/v1/codes/COMPLEXITY')
                 .subscribe((response:Response) => this.setCodes(response.json(), this.complexities));
@@ -147,15 +143,11 @@ export class DictService {
         return this.workStatuses;
     }
 
-    public getWorkType(key: string): string {
-        return this.getValue(key, this.workTypes);
+    public getComplexities(): CodeValue[] {
+        return this.complexities;
     }
 
-    public getWorkTypes(): CodeValue[] {
-        return this.workTypes;
-    }
-
-    public getComplexities(key: string): string {
+    public getComplexitiy(key: string): string {
         return this.getValue(key, this.complexities);
     }
 

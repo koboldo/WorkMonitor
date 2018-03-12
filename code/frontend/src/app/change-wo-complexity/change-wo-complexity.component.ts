@@ -39,7 +39,7 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private workService:WorkTypeService,
+                private workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private toolsService: ToolsService,
                 private alertService:AlertService,
@@ -117,7 +117,7 @@ export class ChangeWoComplexityComponent implements OnInit {
             this.editedOrder.complexityCode = "STD";
         }
 
-        let workType: WorkType = this.workService.getWorkType(this.editedOrder.typeCode, this.editedOrder.officeCode, this.editedOrder.complexityCode);
+        let workType: WorkType = this.workTypeService.getWorkType(this.editedOrder.typeCode, this.editedOrder.officeCode, this.editedOrder.complexityCode);
         console.log("Changing complexity for workType: "+JSON.stringify(workType));
 
         if (workType && workType.complexity) {
@@ -143,7 +143,7 @@ export class ChangeWoComplexityComponent implements OnInit {
     private saveOrder():void {
 
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
-        this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
+        this.editedOrder.type = this.workTypeService.getWorkTypeDescription(this.editedOrder.typeCode);
 
         this.storeOrder(this.editedOrder);
 

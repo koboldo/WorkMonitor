@@ -174,7 +174,7 @@
     <form name="f" (ngSubmit)="f.form?.valid && approve()" #f="ngForm">
         <div class="ui-grid ui-grid-responsive ui-fluid">
 
-            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !overTimeFactor?.valid }">
                 <div class="ui-grid-row" style="margin-top: 10px;">
                   <div class="ui-grid-col-4"><label for="overTimeFactor">Współczynnik nadgodzin [%]</label></div>
                   <div class="ui-grid-col-8 ui-fluid">

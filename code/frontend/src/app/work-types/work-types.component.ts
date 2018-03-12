@@ -5,6 +5,7 @@ import 'rxjs/add/operator/switchMap';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/primeng'
 
 @Component({
     selector: 'app-work-types',
@@ -20,6 +21,11 @@ export class WorkTypesComponent implements OnInit {
     displayEditDialog: boolean;
     newWorkType: boolean;
 
+    showOffices: boolean;
+    offices:SelectItem[] = [];
+
+    showComplexities: boolean;
+    complexities:SelectItem[] = [];
 
     constructor(private workService:WorkTypeService,
                 private dictService:DictService,
@@ -31,6 +37,8 @@ export class WorkTypesComponent implements OnInit {
 
     ngOnInit() {
         this.workService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
+        this.mapToComplexities(this.dictService.getComplexities());
 
         this.items = [
             {label: 'Dodaj', icon: 'fa-plus', command: (event) => this.add()},
@@ -83,5 +91,13 @@ export class WorkTypesComponent implements OnInit {
 
     private processResult(result:any):any {
         console.log("Received "+JSON.stringify(result));
+    }
+
+    private mapToOffices(pairs:CodeValue[]):void {
+        this.showOffices = this.toolsService.mapToSelectItem(pairs, this.offices);
+    }
+
+    private mapToComplexities(pairs:CodeValue[]):void {
+        this.showComplexities = this.toolsService.mapToSelectItem(pairs, this.complexities);
     }
 }

@@ -3,7 +3,7 @@ export class WorkType {
 
 	id: number;
 	typeCode: string;
-	typeDescription: string;
+	description: string;
 	officeCode: string;
 	complexityCode: string;
 	complexity: number;

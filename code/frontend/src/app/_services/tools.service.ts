@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
+import { SelectItem } from 'primeng/primeng'
 import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
@@ -183,6 +184,13 @@ export class ToolsService {
 
         e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         a.dispatchEvent(e);
+    }
+
+    public mapToSelectItem(pairs:CodeValue[], ref:SelectItem[]):boolean {
+        for (let pair of pairs) {
+            ref.push({label: pair.paramChar, value: pair.code});
+        }
+        return true;
     }
 
 }

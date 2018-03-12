@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AlertService, UserService, DictService, AuthenticationService } from '../_services/index';
+import { AlertService, UserService, DictService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { User, CodeValue, SearchUser } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
 import 'rxjs/add/operator/map';
@@ -49,7 +49,9 @@ export class UserChangeComponent implements OnInit {
                 private userService:UserService,
                 private alertService:AlertService,
                 private dictService:DictService,
-                private authService:AuthenticationService) {
+                private workTypeService: WorkTypeService,
+                private authService:AuthenticationService,
+                private toolsService: ToolsService) {
 
     }
 
@@ -58,6 +60,7 @@ export class UserChangeComponent implements OnInit {
         let id: string = this.route.snapshot.paramMap.get('id'); //can be null
 
         this.dictService.init();
+        this.workTypeService.init();
         this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user, id));
 
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
@@ -139,27 +142,22 @@ export class UserChangeComponent implements OnInit {
     }
 
     private mapToRoles(pairs:CodeValue[]):void {
-        this.showRoles = this.mapToSelectItem(pairs, this.roles);
+        this.showRoles = this.toolsService.mapToSelectItem(pairs, this.roles);
     }
 
     private mapToOffices(pairs:CodeValue[]):void {
-        this.showOffices = this.mapToSelectItem(pairs, this.offices);
+        this.showOffices = this.toolsService.mapToSelectItem(pairs, this.offices);
     }
 
     private mapToRanks(pairs:CodeValue[]):void {
-        this.showRanks = this.mapToSelectItem(pairs, this.ranks);
+        this.showRanks = this.toolsService.mapToSelectItem(pairs, this.ranks);
     }
 
     private mapToAgreements(pairs:CodeValue[]):void {
-        this.showAgreements = this.mapToSelectItem(pairs, this.agreements);
+        this.showAgreements = this.toolsService.mapToSelectItem(pairs, this.agreements);
     }
 
-    private mapToSelectItem(pairs:CodeValue[], ref:SelectItem[]):boolean {
-        for (let pair of pairs) {
-            ref.push({label: pair.paramChar, value: pair.code});
-        }
-        return true;
-    }
+
 
     private removeRolesAndGetManagedUsers(user:User, id: string):void {
         if (user) {
