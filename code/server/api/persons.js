@@ -4,7 +4,7 @@
 var util = require('util');
 var mapper = require('./mapper');
 var persons_db = require('./db/persons_db');
-var dateformat = require('dateformat');
+var moment = require('moment');
 
 var persons = {
     
@@ -44,12 +44,11 @@ var persons = {
     
     readOrders: function(req,res) {
 
-        if(req.query.dateAfter == null) req.query.dateAfter = dateformat(
-            new Date(new Date().getFullYear(), new Date().getMonth(),1)
-            ,'yyyy-mm-dd');
-        if(req.query.dateBefore == null) req.query.dateBefore = dateformat(
-            new Date(new Date().getFullYear(), new Date().getMonth()+1,0)
-            ,'yyyy-mm-dd');
+        if(req.query.dateAfter == null) 
+            req.query.dateAfter = moment().startOf('month').format('YYYY-MM-DD');
+
+        if(req.query.dateBefore == null) 
+            req.query.dateBefore = moment().startOf('month').add(1,'month').add(-1,'second').format('YYYY-MM-DD');
 
         persons_db.readOrders(req.query, function(err, personRows){
             if(err) {

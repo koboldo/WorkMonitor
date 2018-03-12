@@ -223,7 +223,7 @@ var filters = {
     getPayroll: {
         personId: 'AND CASE %(personId)s WHEN 0 THEN 1 ELSE PERSON_ID = %(personId)s END',
         periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")',
-        history: 'AND APPROVED = "Y"'
+        history: 'AND PERIOD_DATE <= STRFTIME("%%s", "now", "start of month","-1 month")'
     }
 };
 
@@ -234,20 +234,18 @@ var payroll_db = {
         
         var calls = [];
 
-        if(!params.history || params.history == "N") {
-            calls.push(
-                function(_cb){
-                    var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
-                    var calculatePayrollStat = db.prepare(query);
-                    calculatePayrollStat.get(function(err, result){
-                        calculatePayrollStat.finalize();
+        calls.push(
+            function(_cb){
+                var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                var calculatePayrollStat = db.prepare(query);
+                calculatePayrollStat.get(function(err, result){
+                    calculatePayrollStat.finalize();
 
-                        
-                        if(err) _cb(err);
-                        else _cb(null,result);
-                    });
+                    
+                    if(err) _cb(err);
+                    else _cb(null,result);
                 });
-        }
+            });
 
         calls.push(
             function(_cb) {

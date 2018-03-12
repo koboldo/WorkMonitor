@@ -1,7 +1,7 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var dateformat = require('dateformat');
+var moment = require('moment');
 var mapper = require('./mapper');
 var payroll_db = require('./db/payroll_db');
 
@@ -13,7 +13,7 @@ var payrolls = {
 
         var params = {};
 
-        if(req.query.history == 'Y' && req.query.periodDate) {
+        if(req.query.history == 'Y' && (req.query.periodDate || req.query.overTimeFactor || req.query.approved)) {
             resp.status(400).json({status:'error', message: 'wykluczające się parametry'});
             return;
         }
@@ -22,13 +22,15 @@ var payrolls = {
         else params.approved = "N";
 
         if(req.query.periodDate && isBoss) params.periodDate = req.query.periodDate;
-        else params.periodDate = dateformat(new Date(),'yyyy-mm-dd');
+        else params.periodDate = moment().format('YYYY-MM-DD');
 
         if(req.query.overTimeFactor && isBoss) params.overTimeFactor = req.query.overTimeFactor;
         else params.overTimeFactor = 1;
 
-        if(req.query.history) params.history = req.query.history;
-        else params.history = "N";
+        if(req.query.history && req.query.history == "Y") {
+            params.history = req.query.history;
+            params.periodDate = moment().add(-1,'month').format('YYYY-MM-DD');
+        } else params.history = "N";
 
         try {
             params.overTimeFactor = parseFloat(params.overTimeFactor);

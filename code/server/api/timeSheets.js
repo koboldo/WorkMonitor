@@ -3,7 +3,7 @@
 
 var mapper = require('./mapper');
 var timeSheets_db = require('./db/timeSheets_db');
-var dateformat = require('dateformat');
+var moment = require('moment');
 var parseStringToDate = require('./local_util').parseStringToDate;
 
 var timeSheets = {
@@ -62,7 +62,7 @@ var timeSheets = {
  
         if(req.body.from == 'now' || req.body.to == 'now') req.body.personId = req.context.id;
 
-        var nowDateTxt = dateformat(new Date(),'yyyy-mm-dd HH:MM:ss');
+        var nowDateTxt = moment().format('YYYY-MM-DD HH:mm:ss');
         if(req.body.from == 'now') req.body.from = nowDateTxt;
         if(req.body.to == 'now') req.body.to = nowDateTxt;
         if(req.body.from) req.body.workDate = req.body.from;

@@ -2,7 +2,6 @@
 'use strict';
 
 var util = require('util');
-var dateformat = require('dateformat');
 var mapper = require('./mapper');
 var orders_db = require('./db/orders_db');
 var prepareProtocol = require('./local_util').prepareProtocol;
@@ -103,23 +102,7 @@ var orders = {
             else resp.status(404).end();
         });
     },
-/*
-    calculateTotalPriceForCompleted: function(req, resp) {
-        if(req.query.dateAfter == null) req.query.dateAfter = dateformat(
-            new Date(new Date().getFullYear(), new Date().getMonth(),1),'yyyy-mm-dd');
-        if(req.query.dateBefore == null) req.query.dateBefore = dateformat(
-            new Date(new Date().getFullYear(), new Date().getMonth()+1,0),'yyyy-mm-dd');
 
-        orders_db.calculateTotalPriceForCompleted(req.query, function(err, reportRow){
-            if(err) {
-                resp.status(500).json({status:'error', message: 'request processing failed'});
-                return;
-            }
-            var report = mapper.order.mapToJson(reportRow);
-            resp.json(report);
-        });
-    },
-*/
     prepareProtocol: function(req, resp) {
 
         var ids = null;
