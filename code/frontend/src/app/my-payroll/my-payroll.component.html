@@ -19,8 +19,9 @@
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{currentPayroll[0].overTimeFactor}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{currentPayroll[0].lastMod}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{currentPayroll[0].formattedPoolRate}}</span>
-
+        <div *ngIf="currentPayroll[0]?.rankCode !== 'YOU'">
+          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{currentPayroll[0].formattedPoolRate}}</span>
+        </div>
       </div>
 
 
@@ -97,7 +98,9 @@
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'darkblue'">{{rowData.formattedOverTimeFactor}}</span>
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'darkblue'">{{rowData.lastMod}}</span>
 <!--          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'darkblue'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>-->
-          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{rowData.formattedPoolRate}}</span>
+            <div *ngIf="currentPayroll[0]?.rankCode !== 'YOU'">
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'darkblue'">{{rowData.formattedPoolRate}}</span>
+            </div>
         </div>
 
 

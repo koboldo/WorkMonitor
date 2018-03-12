@@ -10,15 +10,28 @@ import { WorkType } from '../_models/index';
 import { DictService } from '../_services/dict.service';
 import { HttpInterceptor } from '../_services/httpInterceptor.service';
 import 'rxjs/add/operator/mergeMap';
+import { CodeValue } from '../_models/code';
 
 @Injectable()
 export class WorkTypeService {
 
     private cache: WorkType[];
+    private initialized: boolean;
 
-    constructor(private http: HttpInterceptor,
-                private dictService: DictService) {
+    constructor(private http: HttpInterceptor) {
         console.log("RelatedItemService options");
+    }
+
+    public init(): void {
+        if (this.initialized === false) {
+
+            console.log("Initializing workTypeService!");
+            this.http.get('/api/v1/workTypes')
+                .subscribe((response:Response) => this.cacheAndGet(response.json().list));
+
+        }
+        this.initialized = true;
+
     }
 
     getAllWorkTypes() : Observable<WorkType[]> {
@@ -64,19 +77,45 @@ export class WorkTypeService {
 
     private cacheAndGet(workTypes: WorkType[]): WorkType[] {
         console.log("Caching workTypes! first: "+JSON.stringify(workTypes[0]));
-        for (let workType of workTypes) {
-            workType.typeDescription = this.dictService.getWorkType(workType.typeCode);
-        }
 
         this.cache = workTypes;
 
         return workTypes;
     }
 
+    public getWorkTypeDescription(key: string): string {
+        let workType:WorkType = this.getWorkType(key, 'WAW', 'STD');
+        if (workType) {
+            return workType.description;
+        }
+        console.log("getWorkTypeDescription not inited yet!");
+        return null;
+    }
 
+    public getWorkTypes(): Observable<CodeValue[]> {
+        if (this.cache) {
+            return new BehaviorSubject<CodeValue[]>(this.processWorkTypes(null)).asObservable();
+        }
+        return this.http.get('/api/v1/workTypes')
+            .map((response: Response) => this.processWorkTypes(response.json().list));
+    }
 
+    private processWorkTypes(workTypes: WorkType[]): CodeValue[] {
+        let cache: WorkType[] = workTypes ? this.cacheAndGet(workTypes): this.cache;
+        let map: Map<string, string> = new Map<string, string>();
+        let result: CodeValue[] = [];
 
+        for(let workType of cache) {
+            map.set(workType.typeCode, workType.description);
+        }
 
-    // private helper methods
+        map.forEach((value: string, key: string) => {
+            result.push(new CodeValue(key, value));
+        });
+
+        return result;
+        
+
+    }
 
 }

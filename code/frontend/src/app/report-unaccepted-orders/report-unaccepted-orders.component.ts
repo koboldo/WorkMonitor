@@ -24,11 +24,13 @@ export class ReportUnacceptedOrdersComponent implements OnInit {
     constructor(private woService:WOService,
                 private userService:UserService,
                 private dictService:DictService,
+                private workTypeService: WorkTypeService,
                 private toolsService:ToolsService) {
     }
 
     ngOnInit() {
         this.dictService.init();
+        this.workTypeService.init();
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
         this.items = [

@@ -42,13 +42,14 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private workService:WorkTypeService,
+                private workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
                 private toolsService:ToolsService,
                 private timesheetService: TimesheetService) {
 
         this.dictService.init();
+        this.workTypeService.init();
         this.afterDate = toolsService.getCurrentDateDayOperation(-31);
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.future = toolsService.getCurrentDateDayOperation(+10).toISOString().substring(0, 10);
@@ -56,7 +57,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     ngOnInit() {
 
-        this.workService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
+        this.workTypeService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
 
         this.schedulerHeader = {
             left: 'prev,next today',

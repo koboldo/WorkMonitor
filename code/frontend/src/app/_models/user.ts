@@ -25,6 +25,10 @@
     public isFromPool: string;
     public projectFactor: number;
 
+    public salary: number;
+    public salaryRate: number;
+    public leaveRate: number;
+
 
 }
 

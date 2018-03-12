@@ -75,7 +75,7 @@ export class WoComponent implements OnInit {
     constructor(private woService:WOService,
                 private userService:UserService,
                 private itemService:RelatedItemService,
-                private workService:WorkTypeService,
+                private workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService,
@@ -95,10 +95,10 @@ export class WoComponent implements OnInit {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
         this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
-        this.workService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
+        this.workTypeService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
 
-        this.workTypes = this.dictService.getWorkTypes();
+        this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
 
         this.search();
@@ -242,9 +242,10 @@ export class WoComponent implements OnInit {
 
     suggestType(event) {
         let suggestedTypes:CodeValue[] = [];
+        let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.workTypes && this.workTypes.length > 0) {
             for (let workType of this.workTypes) {
-                if (workType.paramChar.indexOf(event.query) > -1) {
+                if (workType.paramChar.toLowerCase().indexOf(queryIgnoreCase) > -1) {
                     suggestedTypes.push(workType);
                 }
             }
@@ -445,10 +446,10 @@ export class WoComponent implements OnInit {
         }
 
 
-        let workTypeParam: WorkType = this.workService.getWorkType(order.typeCode, order.officeCode, 'STD');
+        let workTypeParam: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, 'STD');
         if (workTypeParam && workTypeParam.complexity >= 0) {
             order.complexity = workTypeParam.complexity;
-            order.type = this.dictService.getWorkType(order.typeCode);
+            order.type = this.workTypeService.getWorkTypeDescription(order.typeCode);
         } else {
             console.log("workTypeParam = "+JSON.stringify(workTypeParam));
             this.alertService.error('WO nie zostało zapiasane, nieprawidlowa parametryzacja dla '+order.type+', '+order.officeCode+'!');

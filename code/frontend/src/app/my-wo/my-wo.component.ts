@@ -28,7 +28,7 @@ export class MyWoComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private workService:WorkTypeService,
+                private workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService,
@@ -83,7 +83,7 @@ export class MyWoComponent implements OnInit {
     saveOrder() {
 
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
-        this.editedOrder.type = this.dictService.getWorkType(this.editedOrder.typeCode);
+        this.editedOrder.type = this.workTypeService.getWorkTypeDescription(this.editedOrder.typeCode);
 
         this.storeOrder(this.editedOrder);
 

@@ -35,6 +35,7 @@ export class TimesheetsComponent implements OnInit {
     constructor(private userService:UserService,
                 private timesheetService:TimesheetService,
                 private dictService:DictService,
+                private workTypeService: WorkTypeService,
                 private alertService:AlertService,
                 private toolsService:ToolsService,
                 private authSerice:AuthenticationService) {
@@ -42,6 +43,7 @@ export class TimesheetsComponent implements OnInit {
         this.afterDate = toolsService.getCurrentDateDayOperation(0);
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.dictService.init();
+        this.workTypeService.init();
     }
 
     ngOnInit() {

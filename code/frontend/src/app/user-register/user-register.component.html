@@ -99,6 +99,22 @@
                         <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Zaszeregowanie jest wymagane</div>
                     </div>
 
+                    <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && user?.rankCode === 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salary?.valid }">
+                        <label for="salary">Stałe wynagrodzenie w PLN</label>
+                        <input pInputText id="salary" type="number" class="form-control" name="salary" [(ngModel)]="user.salary" #salary="ngModel" required salary min="0" pattern="^[0-9]\d*(\.\d+)?$"/>
+                        <div *ngIf="f.submitted && !salary?.valid" class="help-block">wymagane jest poprawne wynagrodznie (liczba > 0)</div>
+                    </div>
+                    <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salaryRate?.valid }">
+                        <label for="salaryRate">Stawka gwarantowana w PLN</label>
+                        <input pInputText id="salaryRate" type="number" class="form-control" name="salaryRate" [(ngModel)]="user.salaryRate" #salaryRate="ngModel" required salaryRate min="0" pattern="^[0-9]\d*(\.\d+)?$"/>
+                        <div *ngIf="f.submitted && !salaryRate?.valid" class="help-block">wymagana jest stawka gwarantowana (liczba > 0)</div>
+                    </div>
+                    <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !leaveRate?.valid }">
+                        <label for="leaveRate">Stała stawka za urlop w PLN</label>
+                        <input pInputText id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="user.leaveRate" #leaveRate="ngModel" required leaveRate min="0" pattern="^[0-9]\d*(\.\d+)?$"/>
+                        <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0)</div>
+                    </div>
+
                     <!--<div class="form-group" *ngIf="showAgreements">
                         <label for="agreementCode">Główna umowa</label>
                         <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="user.agreementCode" required #agreementCode="ngModel"></p-selectButton>

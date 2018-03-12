@@ -14,9 +14,10 @@ import 'rxjs/add/operator/mergeMap';
 @Injectable()
 export class WOService {
 
-    constructor(private http: HttpInterceptor, private dictService: DictService, private workService: WorkTypeService) {
+    constructor(private http: HttpInterceptor, private dictService: DictService, private workTypeService: WorkTypeService) {
         console.log("WOService created");
         this.dictService.init();
+        this.workTypeService.init();
     }
 
     /* ambigous since 12.2017
@@ -148,7 +149,7 @@ export class WOService {
         }
 
         if (order.typeCode) {
-            order.type = this.dictService.getWorkType(order.typeCode);
+            order.type = this.workTypeService.getWorkTypeDescription(order.typeCode);
         }
 
         if (order.officeCode) {
@@ -159,7 +160,7 @@ export class WOService {
             console.log('Complexity read from backend: '+order.complexity);
         }
         else if (order.complexityCode && order.typeCode && order.officeCode) {
-            let workType: WorkType = this.workService.getWorkType(order.typeCode, order.officeCode, order.complexityCode);
+            let workType: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, order.complexityCode);
             if (workType && workType.complexity) {
                 console.log('Complexity read from workType parametrization: '+workType.complexity);
                 order.complexity = workType.complexity;
