@@ -89,8 +89,10 @@
       <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
       <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
           <ng-template let-col let-order="rowData" pTemplate="body">
-              <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
+            <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+            <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
           </ng-template>
+
       </p-column>
       <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 

@@ -107,6 +107,7 @@ export class WOService {
         strippedOrder.type = undefined;
         strippedOrder.lastModDate = undefined;
         strippedOrder.assignee = undefined;
+        strippedOrder.isFromPool = undefined;
 
         strippedOrder.relatedItems = undefined;
         strippedOrder.itemNo = undefined;
