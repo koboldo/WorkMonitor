@@ -35,7 +35,7 @@ export class Comments {
             this.comments = JSON.parse(decodeURIComponent(atob(dbContent.substring(2))));
         } else if (dbContent && dbContent.length > 1) {
             console.log("got old "+dbContent);
-            let comment: Comment = <Comment> {index: 1, reason: "stary", date: "?", createdBy: -1, sCreatedBy: "?", text: dbContent};
+            let comment: Comment = <Comment> {index: 1, reason: "Faza I", date: "Brak danych", createdBy: -1, sCreatedBy: "Brak danych", text: dbContent};
             this.comments.push(comment);
         } else {
             console.log("No comment!");
@@ -60,7 +60,7 @@ export function commentToDbContent(comments: Comments) {
 export function commentAdd(comments: Comments, reason: string, createdBy: User, content: string): void {
     let index: number = comments.comments.length;
     let now = new Date();
-    let sNow = now.toISOString().substr(0, 16).replace('T', ' ');
+    let sNow = now.toISOString().substr(0, 16).replace('T', ' ').replace('-', '.');
     let comment: Comment = <Comment> {index: 1, reason: reason, date: sNow, createdBy: createdBy.id, sCreatedBy: createdBy.firstName+' '+createdBy.lastName, text: content};
     comments.comments.push(comment);
 }
