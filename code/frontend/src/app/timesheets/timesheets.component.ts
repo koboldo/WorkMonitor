@@ -104,7 +104,7 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.timesheetFrom = this.sEmptySheet;
             userWithSheet.timesheetTo = this.sEmptySheet;
             userWithSheet.timesheetUsedTime = userWithSheet.copy.usedTime;
-            userWithSheet.color = "darkred";
+            userWithSheet.color = "#902828";
 
             if (this.isWeekend(userWithSheet.copy.from)) {
                 userWithSheet.timesheetBreakInMinutes = this.sWeekendSheet;
@@ -125,9 +125,9 @@ export class TimesheetsComponent implements OnInit {
                 userWithSheet.copy.createdBy === userWithSheet.copy.modifiedBy &&
                 userWithSheet.copy.createdBy === userWithSheet.firstName+" "+userWithSheet.lastName) {
 
-                userWithSheet.color = "darkgreen";
+                userWithSheet.color = "#28902f";
             } else {
-                userWithSheet.color = "darkblue";
+                userWithSheet.color = "#286090";
             }
         }
 

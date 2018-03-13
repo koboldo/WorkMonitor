@@ -263,7 +263,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         } else if (utilization > 0) {
             this.setIcon(userData, "fa fa-thumbs-down", "red");
         } else if (utilization == 0) {
-            this.setIcon(userData, "fa fa-exclamation", "darkred");
+            this.setIcon(userData, "fa fa-exclamation", "#902828");
         } else if (utilization == this.holidays) {
             this.setIcon(userData, "fa fa-hotel", "grey");
         } else if (utilization == this.noTimesheets) {

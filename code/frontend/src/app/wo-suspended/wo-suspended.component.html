@@ -2,7 +2,7 @@
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true"  [globalFilter]="gb" #dt dataKey="id"
-                 csvSeparator=";" exportFilename="zawieszone.csv"
+                 csvSeparator=";" exportFilename="zawieszone"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
                  resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
       <p-header>
