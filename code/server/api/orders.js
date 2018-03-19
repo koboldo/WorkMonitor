@@ -76,7 +76,7 @@ var orders = {
                 return;
             }
             var rv = { updated: result };
-            if(result == 1) resp.status(200);
+            if(result > 0) resp.status(200);
             else resp.status(404);
             resp.json(rv);
         });

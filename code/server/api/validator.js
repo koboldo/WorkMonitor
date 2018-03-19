@@ -5,6 +5,9 @@ var logger = require('./logger').getLogger('monitor');
 
 var validator = {
     validateIncoming: function(req, res, next) {
+        if(logger.isDebugEnabled()) logger.debug('incoming ' + req.method + ' ' + req.path);
+        if(logger.isDebugEnabled()) logger.debug(JSON.stringify(req.body));
+        
         try {
             checkIfTimesheetCanBeModified(req);
             checkIfPersonCanBeModified(req);

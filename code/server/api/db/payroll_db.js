@@ -56,8 +56,8 @@ var queries = {
     , PERSON_TIME AS (
         SELECT 
             PERSON_ID
-            , SUM(CASE WHEN IS_LEAVE = "N" THEN USED_TIME ELSE 0 END) WORK_TIME
-            , SUM(CASE WHEN IS_LEAVE = "Y" THEN USED_TIME ELSE 0 END) LEAVE_TIME
+            , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "N" THEN USED_TIME ELSE 0 END) AS DOUBLE) / 3600.0, 2) WORK_TIME
+            , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "Y" THEN USED_TIME ELSE 0 END) AS DOUBLE) / 3600.0, 2) LEAVE_TIME
         FROM TIME_SHEET, TIME_PARAMS TP
         WHERE WORK_DATE BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
         GROUP BY PERSON_ID
@@ -75,8 +75,9 @@ var queries = {
             , Q.TIME_AFTER PERIOD_DATE
             , Q.WORK_TIME
             , Q.LEAVE_TIME
+            , Q.NONPOOL_WORK_TIME
             , CASE WHEN Q.POOL_WORK_TIME > 0 THEN Q.POOL_WORK_TIME ELSE 0 END POOL_WORK_TIME
-            , CASE WHEN Q.POLL_RATE_COMPONENT > 0 THEN Q.POLL_RATE_COMPONENT ELSE 0 END POLL_RATE_COMPONENT
+            , CASE WHEN Q.POOL_RATE_COMPONENT > 0 THEN Q.POOL_RATE_COMPONENT ELSE 0 END POOL_RATE_COMPONENT
             , CASE WHEN Q.OVER_TIME > 0 THEN Q.OVER_TIME ELSE 0 END OVER_TIME                
             , Q.IS_FROM_POOL
             , Q.RANK_CODE
@@ -90,7 +91,8 @@ var queries = {
                 , COALESCE(PT.WORK_TIME,0) WORK_TIME
                 , COALESCE(PT.LEAVE_TIME,0) LEAVE_TIME
                 , (PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0)) POOL_WORK_TIME
-                , (PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0))*P.PROJECT_FACTOR POLL_RATE_COMPONENT
+                , COALESCE(PNPT.NONPOOL_TIME,0) NONPOOL_WORK_TIME
+                , (PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0))*P.PROJECT_FACTOR POOL_RATE_COMPONENT
                 , (PT.WORK_TIME + PT.LEAVE_TIME - TP.PERIOD_LENGTH) OVER_TIME
                 , P.IS_FROM_POOL
                 , P.RANK_CODE
@@ -106,10 +108,10 @@ var queries = {
         ) Q
     )
     , PERIOD_POOL_RATE AS (
-        SELECT ROUND(PS.BUDGET*1.0 / CASE WHEN Q.POLL_RATE_COMPONENT_SUM > 0 THEN Q.POLL_RATE_COMPONENT_SUM ELSE -1111111 END,4)  POOL_RATE
+        SELECT PS.BUDGET, ROUND(PS.BUDGET*1.0 / CASE WHEN Q.POOL_RATE_COMPONENT_SUM > 0 THEN Q.POOL_RATE_COMPONENT_SUM ELSE -1111111 END,4)  POOL_RATE
         FROM
         (
-            SELECT SUM(PSI.POLL_RATE_COMPONENT) POLL_RATE_COMPONENT_SUM
+            SELECT SUM(PSI.POOL_RATE_COMPONENT) POOL_RATE_COMPONENT_SUM
             FROM PERSON_STATS_INIT PSI
             WHERE IS_FROM_POOL = "Y"
         ) Q, PERIOD_STATS PS
@@ -121,6 +123,7 @@ var queries = {
             , Q.LEAVE_TIME        
             , Q.WORK_TIME
             , Q.POOL_WORK_TIME
+            , Q.NONPOOL_WORK_TIME
             , Q.OVER_TIME
             , Q.LEAVE_DUE
             , Q.WORK_DUE
@@ -129,6 +132,7 @@ var queries = {
             , Q.IS_FROM_POOL
             , Q.RANK_CODE
             , Q.PROJECT_FACTOR
+            , Q.BUDGET
             , Q.POOL_RATE
             , Q.OVER_TIME_FACTOR
             , Q.APPROVED
@@ -139,25 +143,27 @@ var queries = {
                 , PSI.WORK_TIME
                 , PSI.LEAVE_TIME
                 , PSI.POOL_WORK_TIME
+                , PSI.NONPOOL_WORK_TIME
                 , PSI.OVER_TIME
-                , (PSI.LEAVE_TIME * PSI.SALARY_RATE) LEAVE_DUE
-                , CASE 
+                , ROUND(PSI.LEAVE_TIME * PSI.SALARY_RATE, 2) LEAVE_DUE
+                , ROUND(CASE 
                     WHEN PSI.RANK_CODE = "YOU" THEN PSI.WORK_TIME * PSI.SALARY_RATE
                     WHEN PSI.RANK_CODE = "REG" AND (PPR.POOL_RATE * PSI.PROJECT_FACTOR) > PSI.SALARY_RATE THEN PSI.WORK_TIME * PPR.POOL_RATE * PSI.PROJECT_FACTOR
                     WHEN PSI.RANK_CODE = "REG" AND (PPR.POOL_RATE * PSI.PROJECT_FACTOR) <= PSI.SALARY_RATE THEN PSI.WORK_TIME * PSI.SALARY_RATE
                     WHEN PSI.RANK_CODE = "SEN" THEN PSI.SALARY
                     ELSE 0
-                    END WORK_DUE
-                , CASE 
+                    END, 2) WORK_DUE
+                , ROUND(CASE 
                     WHEN PSI.RANK_CODE = "YOU" THEN PSI.OVER_TIME * PSI.SALARY_RATE * QP.OVER_TIME_FACTOR
                     WHEN PSI.RANK_CODE = "REG" AND (PPR.POOL_RATE * PSI.PROJECT_FACTOR) > PSI.SALARY_RATE THEN PSI.OVER_TIME * PPR.POOL_RATE * PSI.PROJECT_FACTOR * QP.OVER_TIME_FACTOR
                     WHEN PSI.RANK_CODE = "REG" AND (PPR.POOL_RATE * PSI.PROJECT_FACTOR) <= PSI.SALARY_RATE THEN PSI.OVER_TIME * PSI.SALARY_RATE * QP.OVER_TIME_FACTOR
                     WHEN PSI.RANK_CODE = "SEN" THEN 0
                     ELSE 0
-                    END OVER_DUE
+                    END, 2) OVER_DUE
                 , PSI.IS_FROM_POOL
                 , PSI.RANK_CODE
                 , PSI.PROJECT_FACTOR
+                , PPR.BUDGET
                 , PPR.POOL_RATE
                 , QP.OVER_TIME_FACTOR
                 , QP.APPROVED
@@ -175,6 +181,7 @@ var queries = {
                     LEAVE_TIME,
                     WORK_TIME,
                     POOL_WORK_TIME,
+                    NONPOOL_WORK_TIME,
                     OVER_TIME,
                     LEAVE_DUE,
                     WORK_DUE,
@@ -183,6 +190,7 @@ var queries = {
                     IS_FROM_POOL,
                     RANK_CODE,
                     PROJECT_FACTOR,
+                    BUDGET,
                     POOL_RATE,
                     OVER_TIME_FACTOR,
                     APPROVED,
@@ -193,14 +201,16 @@ var queries = {
             , PS.LEAVE_TIME        
             , PS.WORK_TIME
             , PS.POOL_WORK_TIME
+            , PS.NONPOOL_WORK_TIME
             , PS.OVER_TIME
             , PS.LEAVE_DUE
             , PS.WORK_DUE
             , PS.OVER_DUE
-            , PS.LEAVE_DUE + PS.WORK_DUE + PS.OVER_DUE TOTAL_DUE
+            , PS.TOTAL_DUE
             , PS.IS_FROM_POOL
             , PS.RANK_CODE
             , PS.PROJECT_FACTOR
+            , PS.BUDGET
             , PS.POOL_RATE
             , PS.OVER_TIME_FACTOR
             , PS.APPROVED
@@ -208,7 +218,7 @@ var queries = {
     FROM PERSON_STATS PS LEFT JOIN PAYROLL PY ON PS.PERSON_ID = PY.PERSON_ID AND PS.PERIOD_DATE = PY.PERIOD_DATE
     WHERE PY.PERIOD_DATE IS NULL OR PS.APPROVED = "Y" OR (PS.APPROVED = "N" AND PY.APPROVED = "N")`,
     
-    getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
+    getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, NONPOOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, BUDGET, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch" ) LAST_MOD
                     FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
 

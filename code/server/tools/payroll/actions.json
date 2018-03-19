@@ -1,0 +1,53 @@
+[
+{
+    "actionName": "addTimesheet",
+    "date": "2018-03-13",
+    "role": "operator",
+    "arg": {
+        "personId": 5,
+        "from": "2018-01-10 08:00:00",
+        "to": "2018-01-10 14:30:00",
+        "break": "10"
+    }
+},
+{
+    "actionName": "addTimesheet",
+    "date": "2018-03-13",
+    "role": "operator",
+    "arg": {
+        "personId": 5,
+        "from": "2018-01-11 08:00:00",
+        "to": "2018-01-11 16:00:00"
+    }
+},
+{
+    "actionName": "createOrder",
+    "date": "2018-03-14",
+    "role": "operator",
+    "arg": {
+        "workNo": "TEST1",
+        "typeCode": "1.1",
+        "complexityCode": "STD",
+        "comment": "simple test WO",
+        "itemId": 2,
+        "ventureId": 2
+    }
+ },
+ {
+     "actionName": "updateOrder",
+     "date": "2018-03-14",
+     "role": "operator",
+     "arg": {
+         "workNo": "TEST1",
+         "statusCode": "CL"
+     }
+  },
+{
+    "actionName": "assignOrder",
+    "date": "2018-03-14",
+    "role": "operator",
+    "arg": {
+        "workNo": "TEST1",
+        "personId": "51"
+    }
+}]
