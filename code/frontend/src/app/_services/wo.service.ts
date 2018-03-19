@@ -157,9 +157,8 @@ export class WOService {
         }
 
         if (order.complexity && order.complexity > 0) {
-            console.log('Complexity read from backend: '+order.complexity);
-        }
-        else if (order.complexityCode && order.typeCode && order.officeCode) {
+            //console.log('Complexity read from backend: '+order.complexity);
+        } else if (order.complexityCode && order.typeCode && order.officeCode) {
             let workType: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, order.complexityCode);
             if (workType && workType.complexity) {
                 console.log('Complexity read from workType parametrization: '+workType.complexity);
@@ -173,9 +172,8 @@ export class WOService {
             order.price = undefined;
         }
 
-        console.log("test order.comment: "+order.comment+" -> ");
         if (order.comment) {
-            console.log("test order.comment: inside ");
+            //console.log("test order.comment: inside ");
             order.comments = new Comments(order.comment);
             order.sComments = JSON.stringify(order.comments);
         }

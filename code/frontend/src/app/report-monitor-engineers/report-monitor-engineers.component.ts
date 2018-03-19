@@ -38,6 +38,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     chartUtilizationData: any;
     chartShareData: any;
+    chartEarnedData: any;
     chartsReady: boolean;
 
     constructor(private woService:WOService,
@@ -142,7 +143,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
         this.chartsReady = false;
-        this.chartUtilizationData = {labels: ['Obciążenie %'], datasets: []};
+        this.chartUtilizationData = {labels: ['Wydajność %'], datasets: []};
+        this.chartEarnedData = {labels: ['Wypracowany budżet'], datasets: []};
         this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
         this.reports = [];
 
@@ -190,9 +192,9 @@ export class ReportMonitorEngineersComponent implements OnInit {
         for (let report of reports) {
             this.calculateUtilization(report);
         }
-        console.log("all done: "+JSON.stringify(reports));
-        console.log("all done: "+JSON.stringify(this.chartUtilizationData));
-        console.log("all done: "+JSON.stringify(this.chartShareData));
+        //console.log("all done: "+JSON.stringify(reports));
+        //console.log("all done: "+JSON.stringify(this.chartUtilizationData));
+        //console.log("all done: "+JSON.stringify(this.chartShareData));
 
         this.chartsReady = true;
     }
@@ -218,21 +220,21 @@ export class ReportMonitorEngineersComponent implements OnInit {
             if (userData.declaredTime === 0) {
                 this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
                 this.setMark(userData, this.noTimesheets);
-                userData.timeUtilizationPercentage = "brak deklaracji czasu!";
+                userData.timeUtilizationPercentage = this.noTimesheets;
             } else {
                 let utilization: number = Math.round(((100 * userData.expectedTime) / userData.declaredTime));
-                userData.timeUtilizationPercentage = ""+utilization;
+                userData.timeUtilizationPercentage = utilization;
                 this.setMark(userData, utilization);
             }
 
 
         } else if (!userData.declaredTime || userData.declaredTime === 0) {
-            userData.timeUtilizationPercentage = "nieobecność"; //holidays
+            userData.timeUtilizationPercentage = this.holidays; //holidays
             userData.expectedTime = 0;
             this.setMark(userData, this.holidays);
             userData.noOrdersDone = 0;
         } else {
-            userData.timeUtilizationPercentage = "0%"; //nothing done
+            userData.timeUtilizationPercentage = 0; //nothing done
             this.setMark(userData, 0);
             userData.expectedTime = 0;
             userData.noOrdersDone = 0;
@@ -261,7 +263,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         } else if (utilization > 0) {
             this.setIcon(userData, "fa fa-thumbs-down", "red");
         } else if (utilization == 0) {
-            this.setIcon(userData, "fa fa-exclamation", "darkred");
+            this.setIcon(userData, "fa fa-exclamation", "#902828");
         } else if (utilization == this.holidays) {
             this.setIcon(userData, "fa fa-hotel", "grey");
         } else if (utilization == this.noTimesheets) {
@@ -276,6 +278,20 @@ export class ReportMonitorEngineersComponent implements OnInit {
             this.chartShareData.datasets[0].data.push(userData.expectedTime);
             this.chartShareData.datasets[0].backgroundColor.push(userData.iconColor);
             this.chartShareData.labels.push(userData.firstName + " " + userData.lastName);
+        }
+
+        {
+            userData.earnedMoney = 0;
+            for(let order of userData.workOrders) {
+                if (order.doneDate) {
+                    let doneDate: Date = this.toolsService.parseDate(order.doneDate);
+                    if (this.afterDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= this.beforeDate.getTime()) {
+                        //console.log("chartEarnedData: "+order.doneDate)
+                        userData.earnedMoney += order.price;
+                    }
+                }
+            }
+            this.chartEarnedData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [userData.earnedMoney] });
         }
 
     }

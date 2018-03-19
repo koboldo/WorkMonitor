@@ -37,16 +37,25 @@
 
 
 <div *ngIf="chartsReady">
-    <p-panel header="Utylizacja i udziały">
-        <div class="ui-grid-row">
-            <div class="ui-grid-col-6">
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p-panel header="Wydajność">
                 <p-chart type="bar" [data]="chartUtilizationData" ></p-chart>
-            </div>
-            <div class="ui-grid-col-6">
-                <p-chart type="polarArea" [data]="chartShareData"></p-chart>
-            </div>
+            </p-panel>
         </div>
-    </p-panel>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-6">
+            <p-panel header="Zakładany czas w godzinach obliczony na podstawie pracochłonności wykonanych WO">
+                <p-chart type="polarArea" [data]="chartShareData"></p-chart>
+            </p-panel>
+        </div>
+        <div class="ui-grid-col-6">
+            <p-panel header="Wypracowany budżet w PLN">
+                <p-chart type="bar" [data]="chartEarnedData"></p-chart>
+            </p-panel>
+        </div>
+    </div>
 </div>
 
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
@@ -59,22 +68,47 @@
         </p-header>
         <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
 
-        <p-column [sortable]="true" field="icon" header="Ocena" [style]="{'text-align':'center', 'width':'50px'}">
+        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Ocena" [style]="{'text-align':'center', 'width':'60px'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
-                <span class="ui-inputgroup-addon" [style.color]="report['iconColor']"><i [class]="report[col.field]"></i></span>
+                <span class="ui-inputgroup-addon" [style.color]="report.iconColor"><i [class]="report.icon"></i></span>
             </ng-template>
         </p-column>
-        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Obciążenie [%]" [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Wydajność" [style]="{'text-align':'right'}">
+            <ng-template let-col let-userData="rowData" pTemplate="body">
+                <span *ngIf="userData?.timeUtilizationPercentage >= 0" style="padding: 3px">{{userData.timeUtilizationPercentage}}%</span>
+                <span *ngIf="userData?.timeUtilizationPercentage === noTimesheets" style="padding: 3px">Brak deklaracji czasu pracy</span>
+                <span *ngIf="userData?.timeUtilizationPercentage === holidays" style="padding: 3px">Urlop</span>
+            </ng-template>
+        </p-column>
 
 
         <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
         <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
-        <p-column [sortable]="true" field="role" header="Rola" ></p-column>
-        <p-column [sortable]="true" field="office" header="Biuro" ></p-column>
+        <p-column [sortable]="true" field="role" header="Rola" [style]="{'text-align':'center'}"></p-column>
+        <p-column [sortable]="true" field="office" header="Biuro" [style]="{'text-align':'center'}"></p-column>
+        <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'55px'}">
+            <ng-template let-col let-user="rowData" pTemplate="body">
+                <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+            </ng-template>
+        </p-column>
 
-        <p-column [sortable]="true" field="declaredTime" header="Zadeklarowano h"  [style]="{'text-align':'right'}"></p-column>
-        <p-column [sortable]="true" field="expectedTime" header="Zakładano h" [style]="{'text-align':'right'}"></p-column>
-        <p-column [sortable]="true" field="noOrdersDone" header="Ukończono" [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="declaredTime" header="Czas zadeklarowany"  [style]="{'text-align':'right'}">
+            <ng-template let-col let-report="rowData" pTemplate="body">
+                <span>{{report[col.field]}} godz.</span>
+            </ng-template>
+        </p-column>
+        <p-column [sortable]="true" field="expectedTime" header="Czas zakładany" [style]="{'text-align':'right'}">
+            <ng-template let-col let-report="rowData" pTemplate="body">
+                <span>{{report[col.field]}} godz.</span>
+            </ng-template>
+        </p-column>
+        <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
+        <p-column [sortable]="true" field="earnedMoney" header="Wypracowany budżet" [style]="{'text-align':'right'}">
+            <ng-template let-col let-report="rowData" pTemplate="body">
+                <span>{{report[col.field] | currency: 'PLN'}}</span>
+            </ng-template>
+        </p-column>
 
 
 
