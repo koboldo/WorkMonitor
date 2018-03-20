@@ -44,6 +44,7 @@ export class UserPayroll {
     leaveTime: number;
     workTime: number;
     poolWorkTime: number;
+    nonpoolWorkTime: number;
     overTime: number;
 
     leaveDue: number;
