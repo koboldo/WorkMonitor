@@ -10,29 +10,21 @@ var logger = require('../logger').getLogger('monitor');
 
 var queries = {
     getTimesheet: 
-    `SELECT PERSON_ID, ROUND(CAST(USED_TIME AS DOUBLE)/3600.0,2) USED_TIME, BREAK/60 BREAK, IS_LEAVE, DATETIME(FROM_DATE,"unixepoch") AS FROM_DATE, DATETIME(TO_DATE,"unixepoch") AS TO_DATE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
+    `SELECT PERSON_ID, ROUND(CAST(USED_TIME AS DOUBLE)/3600.0,2) USED_TIME, BREAK/60 BREAK, IS_LEAVE, DATETIME(FROM_DATE,"unixepoch","localtime") AS FROM_DATE, DATETIME(TO_DATE,"unixepoch","localtime") AS TO_DATE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
     FROM TIME_SHEET TS LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.MODIFIED_BY = PM.ID WHERE %(personId)s AND %(workDate)s`,
-    getAllTimesheets: 
-    // `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
-    // MY_FROM_DATE(T) AS (VALUES ((%(workDateAfter)s/86400)*86400)),
-    // MY_TO_DATE(T) AS (VALUES ((%(workDateBefore)s/86400)*86400))    
-    // SELECT P.ID PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , DATETIME(COALESCE(TS.FROM_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") FROM_DATE, DATETIME(COALESCE(TS.TO_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
-    // FROM MYL M1, MYL M2, MYL M3, MY_FROM_DATE FD, MY_TO_DATE TD, PERSON P 
-    //     LEFT JOIN TIME_SHEET TS ON P.ID = TS.PERSON_ID AND SWD = TS.WORK_DATE LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.CREATED_BY = PM.ID
-    // WHERE SWD <= (TD.T)*1 AND (FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N)) NOT IN (SELECT H.HDATE FROM HOLIDAYS H) %(personId)s
-    // ORDER BY 1,3`,
+    getTimesheets: 
     `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
-    MY_FROM_DATE(T) AS (VALUES ((%(workDateAfter)s/86400)*86400)),
-    MY_TO_DATE(T) AS (VALUES ((%(workDateBefore)s/86400)*86400))    
-    SELECT P.ID PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , DATETIME(COALESCE(TS.FROM_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") FROM_DATE, DATETIME(COALESCE(TS.TO_DATE,FD.T+86400*(M3.N*100+M2.N*10+M1.N)),"unixepoch") TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
+    MY_FROM_DATE(T) AS (VALUES (%(workDateAfter)s)),
+    MY_TO_DATE(T) AS (VALUES (%(workDateBefore)s))    
+    SELECT P.ID PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , COALESCE(DATETIME(TS.FROM_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) FROM_DATE, COALESCE(DATETIME(TS.TO_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE, (PC.FIRST_NAME || " " || PC.LAST_NAME) CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) MODIFIED_BY 
     FROM MYL M1, MYL M2, MYL M3, MY_FROM_DATE FD, MY_TO_DATE TD, PERSON P 
         LEFT JOIN TIME_SHEET TS ON P.ID = TS.PERSON_ID AND SWD = TS.WORK_DATE LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.CREATED_BY = PM.ID
     WHERE SWD <= (TD.T)*1 %(personId)s
     ORDER BY 1,3`,    
     insertLeave:
     `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
-    MY_FROM_DATE(T) AS (VALUES ((STRFTIME("%%s","%(FROM_DATE)s")/86400)*86400)),
-    MY_TO_DATE(T) AS (VALUES ((STRFTIME("%%s","%(TO_DATE)s")/86400)*86400))
+    MY_FROM_DATE(T) AS (VALUES (STRFTIME("%%s","%(FROM_DATE)s","start of day"))),
+    MY_TO_DATE(T) AS (VALUES (STRFTIME("%%s","%(TO_DATE)s","start of day")))
     INSERT INTO TIME_SHEET(
         PERSON_ID, WORK_DATE, USED_TIME, FROM_DATE, TO_DATE, IS_LEAVE, CREATED_BY, BREAK )
     SELECT
@@ -46,15 +38,11 @@ var queries = {
 var filters = {
     getTimesheet: {
         personId: 'TS.PERSON_ID = %(personId)s',
-        workDate: 'TS.WORK_DATE = (STRFTIME("%%s","%(workDate)s")/86400)*86400',
-    },
-    // getTimesheets: {
-    //     workDateBefore: 'AND (WORK_DATE/86400) <= (STRFTIME("%%s","%(workDateBefore)s")/86400)',
-    //     workDateAfter: 'AND (WORK_DATE/86400) >= (STRFTIME("%%s","%(workDateAfter)s")/86400)',
-    // }
+        workDate: 'TS.WORK_DATE = STRFTIME("%%s","%(workDate)s","start of day")',
+    },    
     getTimesheets: {
-        workDateBefore: 'STRFTIME("%%s","%(workDateBefore)s")',
-        workDateAfter: 'STRFTIME("%%s","%(workDateAfter)s")',
+        workDateBefore: 'STRFTIME("%%s","%(workDateBefore)s","start of day")',
+        workDateAfter: 'STRFTIME("%%s","%(workDateAfter)s","start of day")',
         personId: 'AND P.ID = %(personId)s'
     },
     insertLeave:{
@@ -70,10 +58,10 @@ var timeSheets_db = {
     readAll: function(params, cb) {
         var db = dbUtil.getDatabase();
         
-        var query = dbUtil.prepareFiltersByInsertion(queries.getAllTimesheets,params,filters.getTimesheets);
-        var getAllTimesheetsStat = db.prepare(query);
-		getAllTimesheetsStat.all(function(err, rows) {
-            getAllTimesheetsStat.finalize();
+        var query = dbUtil.prepareFiltersByInsertion(queries.getTimesheets,params,filters.getTimesheets);
+        var getTimesheetsStat = db.prepare(query);
+		getTimesheetsStat.all(function(err, rows) {
+            getTimesheetsStat.finalize();
             db.close();
 			if(err) return logErrAndCall(err,cb);
 			
@@ -84,7 +72,7 @@ var timeSheets_db = {
             cb(null,rows);
 		});        
     },
-    
+
     read: function(params, cb) {
         var db = dbUtil.getDatabase();
         var query = dbUtil.prepareFiltersByInsertion(queries.getTimesheet,params,filters.getTimesheet);
@@ -101,10 +89,10 @@ var timeSheets_db = {
     create: function(timeSheet, cb) {
         
         let workDateCopy = timeSheet.WORK_DATE;
-        timeSheet.WORK_DATE = `(STRFTIME("%s","${timeSheet.WORK_DATE}")/86400)*86400`;
+        timeSheet.WORK_DATE = `STRFTIME('%s','${timeSheet.WORK_DATE}','start of day')`;
 
-        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = `STRFTIME("%s","${timeSheet.FROM_DATE}")`; 
-        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = `STRFTIME("%s","${timeSheet.TO_DATE}")`;       
+        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = `STRFTIME('%s','${timeSheet.FROM_DATE}','utc')`; 
+        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = `STRFTIME('%s','${timeSheet.TO_DATE}','utc')`;       
         if(timeSheet.BREAK)     timeSheet.BREAK = `${timeSheet.BREAK}*60`;
 
         var mydb = dbUtil.getDatabase();
