@@ -3,6 +3,7 @@
 
 var util = require('util');
 var XLSX = require('excel4node');
+var moment = require('moment');
 var logger = require('./logger').getLogger('monitor'); 
 
 let local_util = {
@@ -73,7 +74,8 @@ let local_util = {
                 let order = allProtocols[protocol].ORDERS[orderIdx];
                 cnt++;
                 ws.cell(2+cnt,1).string(cnt.toString()).style(styles.borderCell);
-                ws.cell(2+cnt,2).string(order.LAST_MOD.toString()).style(styles.borderCell);
+                // ws.cell(2+cnt,2).string(order.LAST_MOD.toString()).style(styles.borderCell);
+                ws.cell(2+cnt,2).date(moment.utc(order.LAST_MOD.toString(),'X').local().toDate()).style(styles.borderCell);
                 ws.cell(2+cnt,3).string(order.WORK_NO).style(styles.borderCell);
                 ws.cell(2+cnt,4).string(order.ITEM_NO).style(styles.borderCell);
                 ws.cell(2+cnt,5).string(order.INITIALS).style(styles.borderCell);
