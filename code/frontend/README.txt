@@ -2,7 +2,7 @@
 
 npm install
 
-# this executes ng serve with proxy 
+# this executes ng serve with proxy to backend
 npm start
 
 
