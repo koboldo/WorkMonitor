@@ -12,7 +12,7 @@
         </div>
       </p-header>
       <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
-      <p-column [sortable]="true" field="workNo" header="WO"  [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="workNo" header="Zlecenie"  [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="status" header="Status" [style]="{'text-align':'center', 'width':'60px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
         <ng-template let-col let-order="rowData" pTemplate="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>

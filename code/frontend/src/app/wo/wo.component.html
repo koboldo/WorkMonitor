@@ -45,7 +45,7 @@
     <!-- sortField="lastModDate" -->
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"
-                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="WO">
+                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="Zlecenia">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -55,7 +55,7 @@
       </p-header>
       <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
       <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="WO" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <!--<p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
       <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
@@ -136,7 +136,7 @@
             <div class="ui-grid-col-6"></div>
 
             <div class="ui-grid-col-2">
-              <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+              <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-1"></div>
           </div>
@@ -144,7 +144,7 @@
       </p-footer>
 
       <ng-template pTemplate="emptymessage">
-        Brak WO...
+        Brak zleceń...
       </ng-template>
 
     </p-dataTable>
@@ -164,7 +164,7 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="ventureRepresentative">Zleceniodawca</label></div>
         <div class="ui-grid-col-10">
-          <p-autoComplete id="ventureRepresentative" name="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" pTooltip="Od lokalizacji wybranego zleceniodawcy zależeć będzie logika nadawania numerów WO" tooltipPosition="top"></p-autoComplete> <!-- [forceSelection]="true" -->
+          <p-autoComplete id="ventureRepresentative" name="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" pTooltip="Od lokalizacji wybranego zleceniodawcy zależeć będzie logika nadawania numerów zleceń" tooltipPosition="top"></p-autoComplete> <!-- [forceSelection]="true" -->
         </div>
       </div>
 
@@ -178,7 +178,7 @@
       <hr>
 
       <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="newOrder && assignedVentureRepresentative && assignedVentureRepresentative?.user?.officeCode !== 'WAW'">
-        <div class="ui-grid-col-2"><label for="generategroup">Generuj WO</label></div>
+        <div class="ui-grid-col-2"><label for="generategroup">Generuj numer zlecenia</label></div>
         <div class="form-group ui-grid-col-10">
           <p-radioButton name="generategroup" value="Y" [(ngModel)]="generateWorkNoFlag" label="TAK"></p-radioButton>
           <p-radioButton name="generategroup" value="N" [(ngModel)]="generateWorkNoFlag" label="NIE"></p-radioButton>
@@ -186,7 +186,7 @@
       </div>
 
       <div class="ui-grid-row" style="margin-top: 10px; " *ngIf="!newOrder || assignedVentureRepresentative?.user?.officeCode === 'WAW' || generateWorkNoFlag === 'N'">
-        <div class="ui-grid-col-2"><label for="workNo">Numer WO*</label></div>
+        <div class="ui-grid-col-2"><label for="workNo">Numer zlecenia*</label></div>
         <div class="ui-grid-col-10 ui-fluid"><input pInputText [disabled]="!assignedVentureRepresentative" id="workNo" name="workNo" [(ngModel)]="editedOrder.workNo" width="auto" [required]="true" minlength="2" [pTooltip]="'Uzupełnij jeśli posiadasz numer zlecenia w innym przypadku pozostaw wartość '+this.toolsService.NO_WO" tooltipPosition="top"/></div>
       </div>
 
@@ -202,7 +202,7 @@
           </div>
         </div> 
       <div class="ui-grid-row" style="margin-top: 2px;">
-        <div class="ui-grid-col-2"><label for="orderType">Typ WO*</label></div>
+        <div class="ui-grid-col-2"><label for="orderType">Typ zlecenia*</label></div>
         <div class="ui-grid-col-5">
           <!-- TODO bug [forceSelection]="true" -->
             <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
@@ -219,7 +219,7 @@
 
           <div *ngFor="let addWorkType of additionalWorkTypes; let i = index">
               <div class="ui-grid-row" *ngIf="i===0 || additionalWorkTypes[i-1]?.code" style="margin-top: 5px;">
-                  <div class="ui-grid-col-2"><label for="additionalOrderType">Dod. {{i+2}} WO*</label></div>
+                  <div class="ui-grid-col-2"><label for="additionalOrderType">Dod. {{i+2}} Zl.*</label></div>
                   <div class="ui-grid-col-5">
                       <!-- TODO bug [forceSelection]="true" -->
                       <p-autoComplete [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'"></p-autoComplete>
@@ -247,14 +247,14 @@
           <div class="ui-grid-col-2"><label for="comment">Poprzednie komentarze</label></div>
           <div class="ui-grid-col-10">
             <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-            <textarea readonly="readonly" pInputTextarea id="comment" name="comment" [(ngModel)]="comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Dotychczasowe komentarze dotyczące WO..."></textarea>
+            <textarea readonly="readonly" pInputTextarea id="comment" name="comment" [(ngModel)]="comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Dotychczasowe komentarze dotyczące zlecenia..."></textarea>
           </div>
         </div>
           <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-2"><label for="newComment">Dodaj komentarz</label></div>
             <div class="ui-grid-col-10">
               <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-                <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
+                <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
 
               <!--<textarea *ngIf="status.code === 'SU' || status.code === 'CA'" required [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
                 <textarea *ngIf="status.code !== 'SU' && status.code !== 'CA'" [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>-->
@@ -271,7 +271,7 @@
         <div class="ui-grid-col-2"><label for="description">Opis</label></div>
         <div class="ui-grid-col-10">
           <!--<input pInputText id="description" [(ngModel)]="editedOrder.description" />-->
-          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" name="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący WO..." [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
+          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" name="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący zlecenia..." [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
         </div>
       </div>
       <hr>
@@ -280,7 +280,7 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="itemNo">Numer obiektu</label></div>
         <div class="ui-grid-col-10">
-              <p-autoComplete placeholder="Numer obiektu np. stacji/kandydata" id="itemNo" name="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onBlur)="updateRelatedItem($event.target.value)" (onKeyUp)="updateRelatedItem($event.target.value)" (onFocus)="copyRelatedItem($event.target.value)" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" [forceSelection]="false" pTooltip="Uzupełnij nowy obiekt lub wybierz istniejący z listy. Obiekt wybrany z listy można zmodyfikowac/uzupełnić, co bedzie miało wpływ na inne WO powiązane z tym obiektem, ale po wybraniu z listy nie można już definiować nowego. Możesz też przypisać lub zmienić później tj. po utworzeniu WO." tooltipPosition="top"></p-autoComplete>
+              <p-autoComplete placeholder="Numer obiektu np. stacji/kandydata" id="itemNo" name="itemNo" [(ngModel)]="relatedItem" [suggestions]="suggestedRelatedItems" (onBlur)="updateRelatedItem($event.target.value)" (onKeyUp)="updateRelatedItem($event.target.value)" (onFocus)="copyRelatedItem($event.target.value)" (completeMethod)="suggestRelatedItem($event)" [dropdown]="true" field="itemNo" [forceSelection]="false" pTooltip="Uzupełnij nowy obiekt lub wybierz istniejący z listy. Obiekt wybrany z listy można zmodyfikowac/uzupełnić, co bedzie miało wpływ na inne zlecenia powiązane z tym obiektem, ale po wybraniu z listy nie można już definiować nowego. Możesz też przypisać lub zmienić później tj. po utworzeniu WO." tooltipPosition="top"></p-autoComplete>
         </div>
       </div>
       <div *ngIf="relatedItem?.id && isRelatedItemChanged(relatedItem)" class="ui-grid-row" style="margin-top: 0px;" >
@@ -355,11 +355,11 @@
             <div class="ui-grid-col-8"><input pInputText id="mdCapex" [(ngModel)]="editedOrder.mdCapex" disabled="true"/></div>
         </div>
         <div class="ui-grid-row" style="margin-top: 20px;">
-            <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
+            <div class="ui-grid-col-4"><label for="workNo">Numer Zl.</label></div>
             <div class="ui-grid-col-8"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" disabled="true"/></div>
         </div>
         <div class="ui-grid-row" style="margin-top: 20px;">
-            <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
+            <div class="ui-grid-col-4"><label for="type">Typ Zl.</label></div>
             <div class="ui-grid-col-8"><input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/></div>
         </div>
       <div class="ui-grid-row" style="margin-top: 20px;">

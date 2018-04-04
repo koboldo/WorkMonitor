@@ -78,9 +78,9 @@ export class AuthenticationService {
     private buildMenu(user:User):any {
 
         let allItems = [
-            {label: 'Praca z WO', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-            {label: 'Zawieszone WO', icon: 'fa-trash-o', routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR"]},
-            {label: 'Moje WO', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
+            {label: 'Zlecenia', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+            {label: 'Zawieszone', icon: 'fa-trash-o', routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR"]},
+            {label: 'Moje zlecenia', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
             {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
             {label: 'Wynagrodzenie', icon: 'fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
@@ -91,7 +91,7 @@ export class AuthenticationService {
             {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR"]},
             {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
-            {label: 'Parametryzacja WO', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
+            {label: 'Parametryzacja zleceń', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
             /*{label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 

@@ -6,8 +6,8 @@
   <div class="ui-grid-row">
     <div class="ui-grid-col-6">
       <p-fieldset legend="Instrukcja">
-        <p>1. Aby utworzyć protokół z wykonanych WO (tych w stanie Wydane) należy zaznaczyć w tabeli te WO, które mają zostać dołączone do protokołu i kliknąć przycisk pod tabelą.</p>
-        <p>2. Aby pobrać jeszcze raz protokół już utworzony, należy wpisać jego numer do pola obok i kliknąć przycisk "Generuj ponownie". Ta funkcja pozwala zmodyfikować protokół (usunąć z niego wybrane WO) jeśli przed powtórną generacją w zakładce "Praca z WO" cofnięto status WO zawartego w protokole na "Wydane"</p>
+        <p>1. Aby utworzyć protokół z wykonanych zleceń (tych w stanie Wydane) należy zaznaczyć w tabeli te zlecenia, które mają zostać dołączone do protokołu i kliknąć przycisk pod tabelą.</p>
+        <p>2. Aby pobrać jeszcze raz protokół już utworzony, należy wpisać jego numer do pola obok i kliknąć przycisk "Generuj ponownie". Ta funkcja pozwala zmodyfikować protokół (usunąć z niego wybrane zlecenia) jeśli przed powtórną generacją w zakładce "Zlecenia" cofnięto status WO zawartego w protokole na "Wydane"</p>
       </p-fieldset>
     </div>
     <div class="ui-grid-col-6">
@@ -47,7 +47,7 @@
       </p-header>
       <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
       <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+      <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
       <!--<p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
@@ -119,7 +119,7 @@
               </div>
             </p-header>
             <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-            <p-column [sortable]="true" field="workNo" header="WO" ></p-column>
+            <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
             <p-column [sortable]="true" field="type" header="Typ" ></p-column>
             <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
             <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>

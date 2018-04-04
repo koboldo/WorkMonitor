@@ -1,6 +1,6 @@
 <div class="ui-grid-row" style="max-width: 900px;">
     <div class="ui-grid-col-6" style="margin-top: 10px;">
-        <p-fieldset legend="Detale zamówienia"
+        <p-fieldset legend="Detale zlecenia"
                     *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
             <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
                 <div class="ui-grid-col-4">Dodano:</div>
@@ -156,7 +156,7 @@
                     <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
 
-                    <p-column [sortable]="true" field="workNo" header="WO" [style]="{'width':'90px'}"></p-column>
+                    <p-column [sortable]="true" field="workNo" header="Zlecenie" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
                     <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
@@ -165,7 +165,7 @@
                     <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
 
                     <ng-template pTemplate="emptymessage">
-                        Brak historycznych danych o WO...
+                        Brak historycznych danych o zleceniach...
                     </ng-template>
 
                 </p-dataTable>

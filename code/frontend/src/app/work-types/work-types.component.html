@@ -65,14 +65,14 @@
             <div class="ui-grid-row" style="margin-top: 10px;">
               <div class="ui-grid-col-4"><label for="typeCode">Typ*</label></div>
               <div class="ui-grid-col-8">
-                  <input [disabled]="!newWorkType" pInputText id="typeCode" class="form-control" name="typeCode" [(ngModel)]="editedWorkType.typeCode" placeholder="Typ WO" required/>
+                  <input [disabled]="!newWorkType" pInputText id="typeCode" class="form-control" name="typeCode" [(ngModel)]="editedWorkType.typeCode" placeholder="Typ zlecenia" required/>
                   <div *ngIf="f.submitted && !typeCode?.valid" class="help-block">Typ jest wymagany</div>
               </div>
             </div>
               <div class="ui-grid-row" style="margin-top: 10px;">
                   <div class="ui-grid-col-4"><label for="description">Opis typu*</label></div>
                   <div class="ui-grid-col-8">
-                      <input pInputText id="description" class="form-control" name="description" [(ngModel)]="editedWorkType.description" placeholder="Opis WO" required minLength="3"/>
+                      <input pInputText id="description" class="form-control" name="description" [(ngModel)]="editedWorkType.description" placeholder="Opis zlecenia" required minLength="3"/>
                       <div *ngIf="f.submitted && !description?.valid" class="help-block">Opis jest wymagany</div>
                   </div>
               </div>
