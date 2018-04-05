@@ -2,7 +2,7 @@
 import { Observable } from 'rxjs/Observable';
 import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
-import { AlertService, AuthenticationService, DictService, AutoLogoutService } from './_services/index';
+import { AlertService, AuthenticationService, DictService, AutoLogoutService, WorkTypeService } from './_services/index';
 
 import { User } from './_models/index';
 
@@ -23,11 +23,13 @@ export class AppComponent {
 
     constructor(private authService:AuthenticationService,
                 private dictService: DictService,
+                private workTypeService: WorkTypeService,
                 private autoLogoutService: AutoLogoutService) {
 
     }
 
     ngOnInit() {
+        this.workTypeService.init();
         this.authService.userAsObs.subscribe((user: User) => setTimeout(() => this.setUser(user)));
         this.authService.menuItemsAsObs.subscribe(menuItems => setTimeout(() => this.items = menuItems));
     }
@@ -36,7 +38,6 @@ export class AppComponent {
     private setUser(user:User):void {
         this.user = user;
         if (user) {
-
             this.roles = this.dictService.getRoleObs(user.roleCode);
             this.office = this.dictService.getOfficeObs(user.officeCode);
         }

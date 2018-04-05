@@ -34,10 +34,13 @@ export class MyWoComponent implements OnInit {
                 private authSerice:AuthenticationService,
                 private toolsService: ToolsService
     ) {
-
     }
 
     ngOnInit() {
+        this.authSerice.userAsObs.subscribe(user => console.log(user));
+
+        this.workTypeService.getWorkTypes().subscribe(workTypes => console.log("NOW:"+JSON.stringify(workTypes)));
+
         this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 

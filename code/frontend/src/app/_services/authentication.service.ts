@@ -79,7 +79,7 @@ export class AuthenticationService {
 
         let allItems = [
             {label: 'Zlecenia', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-            {label: 'Zawieszone', icon: 'fa-trash-o', routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR"]},
+            {label: 'Zawieszone', icon: 'fa-trash-o', routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
             {label: 'Moje zlecenia', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
             {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
             {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},

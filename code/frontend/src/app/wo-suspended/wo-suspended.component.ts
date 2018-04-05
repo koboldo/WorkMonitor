@@ -18,6 +18,7 @@ export class WoSuspendedComponent implements OnInit {
     engineers:User[] = [];
 
     items:MenuItem[] = [];
+    operator: User;
 
     orders:Order[];
     selectedOrder:Order;
@@ -26,18 +27,31 @@ export class WoSuspendedComponent implements OnInit {
     constructor(private woService:WOService,
                 private userService:UserService,
                 private dictService:DictService,
+                private authSerice:AuthenticationService,
                 private toolsService:ToolsService) {
     }
 
     ngOnInit() {
+        this.items = [
+            {label: 'Przywróć/Wnów', icon: 'fa-check', disabled: true, command: (event) => this.recover()}
+        ];
+
+        this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
         this.dictService.init();
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
-        this.items = [
-            {label: 'Przywróć/Wnów', icon: 'fa-check', command: (event) => this.recover()}
-        ];
-
         this.search();
+    }
+
+    private assignOperator(operator:User):void {
+        console.log('operator: '+JSON.stringify(operator));
+        this.operator = operator;
+        if (operator && operator.roleCode && operator.roleCode.indexOf('OP') > -1) {
+            for(let item of this.items) {
+                item.disabled = false;
+            }
+        }
+
     }
 
     search() {
