@@ -40,7 +40,7 @@ var queries = {
         WHERE ID NOT IN (
             SELECT ID
             FROM WORK_ORDER_HIST, TIME_PARAMS TP
-            WHERE LAST_MOD < TP.TIME_AFTER
+            WHERE STATUS_CODE = "CO" AND LAST_MOD < TP.TIME_AFTER
         )
     )
     , WO_FILTER AS (
@@ -266,9 +266,7 @@ var payroll_db = {
             });
 
         calls.push(
-            function(_cb) {
-                console.log('query for payroll');
-    
+            function(_cb) {    
                 var getParams = {};
                 getParams.personId = params.personId;
                 if(params.history == 'N') getParams.periodDate = params.periodDate;

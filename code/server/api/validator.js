@@ -5,7 +5,7 @@ var logger = require('./logger').getLogger('monitor');
 
 var validator = {
     validateIncoming: function(req, res, next) {
-        if(logger.isDebugEnabled()) logger.debug('incoming ' + req.method + ' ' + req.path);
+        if(logger.isDebugEnabled()) logger.debug('incoming ' + req.method + ' ' + req.path + ' ' + JSON.stringify(req.query));
         if(logger.isDebugEnabled()) logger.debug(JSON.stringify(req.body));
         
         try {
@@ -69,8 +69,8 @@ function checkIfPayrollCanBeViewed2(req) {
 }
 
 function checkIfModificationCanBeDone(req) {
-    if(['/api/v1/persons','/api/v1/timesheets'].indexOf(req.path) < 0 && ['POST','PUT'].indexOf(req.method) >= 0) {
-        if([].concat(req.context.role).filter((r)=>['OP','PR','MG'].indexOf(r) >= 0).length == 0) {
+    if(req.method != 'GET' && !((req.path.startsWith('/api/v1/orders/') && req.method == 'PUT') || (req.path == '/api/v1/timesheets' && req.method == 'POST'))){
+        if([].concat(req.context.role).filter((r)=>['OP','PR'].indexOf(r) >= 0).length == 0) {
             throw new Error('niedozwolona zmiana');
         }
     }

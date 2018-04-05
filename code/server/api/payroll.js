@@ -66,9 +66,22 @@ var payrolls = {
                 return;
             }
             var payroll = mapper.mapList(mapper.payroll.mapToJson,payrollRows);
+            filterPayrollFields(req.context,payroll);
             resp.json(payroll); 
         });
     }
+};
+
+function filterPayrollFields(context, payroll) {
+    var currPayroll = null;
+    payroll.list.filter((p)=>p.personId == context.id).forEach((p)=>currPayroll = p);
+    payroll.list.forEach((p)=>{
+        if(![].concat(context.role).some((p)=>['PR','OP'].indexOf(p)>=0) && (currPayroll == null || 
+            (currPayroll.rankCode != 'SEN' && currPayroll.isFromPool != 'Y' )))  {
+            delete p.budget;
+            delete p.poolRate;
+        }
+    });
 };
 
 module.exports = payrolls;
