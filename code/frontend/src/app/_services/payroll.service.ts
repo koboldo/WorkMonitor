@@ -61,7 +61,7 @@ export class PayrollService {
                 payroll.user = users.get(payroll.personId);
                 payroll.modifiedByUser = users.get(payroll.modifiedBy);
                 payroll.rank = this.dictService.getRank(payroll.rankCode);
-                payroll.formattedPoolRate = ""+payroll.poolRate.toFixed(2);
+                payroll.formattedPoolRate = payroll.poolRate? ""+payroll.poolRate.toFixed(2): "-";
                 payroll.formattedOverTimeFactor = payroll.overTimeFactor * 100 + "%";
             }
             return payrolls;
