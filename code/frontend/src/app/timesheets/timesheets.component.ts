@@ -19,8 +19,8 @@ export class TimesheetsComponent implements OnInit {
     users:User[];
     usersWithSheets:UserWithSheet[] = <UserWithSheet[]> [];
 
-    sEmptySheet: string = "BRAK";
-    sWeekendSheet: string = "Weekend";
+    sEmptySheet: string = 'BRAK';
+    sWeekendSheet: string = 'Weekend';
     warns: string[];
     timeRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$');
     hourRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3])$');
@@ -53,15 +53,15 @@ export class TimesheetsComponent implements OnInit {
 
 
     onEditInit(event) {
-        console.log("about edit !" + JSON.stringify(event.data));
+        console.log('about edit !' + JSON.stringify(event.data));
 
         if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
             event.data.timesheetFrom === this.sWeekendSheet && event.data.timesheetTo === this.sWeekendSheet) {
             //cleaning BRAK values
-            event.data.timesheetFrom = "";
-            event.data.timesheetTo = "";
+            event.data.timesheetFrom = '';
+            event.data.timesheetTo = '';
             event.data.timesheetBreakInMinutes = 15;
-            event.data.color = "#2399e5";
+            event.data.color = '#2399e5';
         }
     }
 
@@ -70,27 +70,27 @@ export class TimesheetsComponent implements OnInit {
     }
 
     onEdit(event) {
-        console.log("edit !" + JSON.stringify(event.data));
+        console.log('edit !' + JSON.stringify(event.data));
 
         if (event.data.timesheetFrom.length === 2) {
             if (this.hourRegexp.test(event.data.timesheetFrom)) {
-                event.data.timesheetFrom+=":";
+                event.data.timesheetFrom+=':';
             } else {
-                event.data.timesheetFrom="";
+                event.data.timesheetFrom='';
             }
         } else if (event.data.timesheetFrom.length > 5) {
-            console.log("Too long from");
+            console.log('Too long from');
             event.data.timesheetFrom = event.data.timesheetFrom.substr(0, 5);
         }
 
         if (event.data.timesheetTo.length === 2) {
             if (this.hourRegexp.test(event.data.timesheetTo)) {
-                event.data.timesheetTo+=":";
+                event.data.timesheetTo+=':';
             } else {
-                event.data.timesheetTo="";
+                event.data.timesheetTo='';
             }
         } else if (event.data.timesheetTo.length > 5) {
-            console.log("Too long to");
+            console.log('Too long to');
             event.data.timesheetTo = event.data.timesheetTo.substr(0, 5);
         }
 
@@ -98,19 +98,19 @@ export class TimesheetsComponent implements OnInit {
     }
 
     private restore(userWithSheet: UserWithSheet) {
-        if (userWithSheet.copy.usedTime == 0 && "00:00" == userWithSheet.copy.from.substr(11, 5) && "00:00" == userWithSheet.copy.to.substr(11, 5)) {
+        if (userWithSheet.copy.usedTime == 0 && '00:00' == userWithSheet.copy.from.substr(11, 5) && '00:00' == userWithSheet.copy.to.substr(11, 5)) {
             userWithSheet.timesheetBreakInMinutes = this.sEmptySheet;
             userWithSheet.timesheetWorkDate = userWithSheet.copy.from.substr(0, 10);
             userWithSheet.timesheetFrom = this.sEmptySheet;
             userWithSheet.timesheetTo = this.sEmptySheet;
             userWithSheet.timesheetUsedTime = userWithSheet.copy.usedTime;
-            userWithSheet.color = "#902828";
+            userWithSheet.color = '#902828';
 
             if (this.isWeekend(userWithSheet.copy.from)) {
                 userWithSheet.timesheetBreakInMinutes = this.sWeekendSheet;
                 userWithSheet.timesheetFrom = this.sWeekendSheet;
                 userWithSheet.timesheetTo = this.sWeekendSheet;
-                userWithSheet.color = "grey";
+                userWithSheet.color = 'grey';
             }
 
 
@@ -123,44 +123,44 @@ export class TimesheetsComponent implements OnInit {
 
             if (userWithSheet.copy.createdBy && userWithSheet.copy.modifiedBy &&
                 userWithSheet.copy.createdBy === userWithSheet.copy.modifiedBy &&
-                userWithSheet.copy.createdBy === userWithSheet.firstName+" "+userWithSheet.lastName) {
+                userWithSheet.copy.createdBy === userWithSheet.firstName+' '+userWithSheet.lastName) {
 
-                userWithSheet.color = "#28902f";
+                userWithSheet.color = '#28902f';
             } else {
-                userWithSheet.color = "#286090";
+                userWithSheet.color = '#286090';
             }
         }
 
         userWithSheet.isLeave = userWithSheet.copy.isLeave;
-        if (userWithSheet.isLeave === "Y") {
-            userWithSheet.timesheetBreakInMinutes = "Urlop";
-            userWithSheet.timesheetFrom = "Urlop";
-            userWithSheet.timesheetTo = "Urlop";
-            userWithSheet.color = "#444433";
+        if (userWithSheet.isLeave === 'Y') {
+            userWithSheet.timesheetBreakInMinutes = 'Urlop';
+            userWithSheet.timesheetFrom = 'Urlop';
+            userWithSheet.timesheetTo = 'Urlop';
+            userWithSheet.color = '#444433';
         }
 
 
 
-        userWithSheet.status = "OK";
+        userWithSheet.status = 'OK';
     }
 
     private getTimesheet(userWithSheet: UserWithSheet): Timesheet {
-        let from: string = userWithSheet.timesheetWorkDate+" "+userWithSheet.timesheetFrom+":00";
-        let to: string = userWithSheet.timesheetWorkDate+" "+userWithSheet.timesheetTo+":00";
+        let from: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetFrom+':00';
+        let to: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetTo+':00';
         let timesheet: Timesheet = new Timesheet(userWithSheet.id, from, to);
         timesheet.break = userWithSheet.timesheetBreakInMinutes;
         return timesheet;
     }
 
     onEditComplete(event) {
-        console.log("edited !" + JSON.stringify(event.data));
+        console.log('edited !' + JSON.stringify(event.data));
         if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && event.data.timesheetFrom!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetFrom)) {
-            this.alertService.warn("Nie zmieniono deklaracji ze względu na nieprawidlową wartość: "+event.data.timesheetFrom);
+            this.alertService.warn('Nie zmieniono deklaracji ze względu na nieprawidlową wartość: '+event.data.timesheetFrom);
             this.restore(event.data);
         }
 
         if (event.data.timesheetTo && event.data.timesheetTo!== this.sEmptySheet && event.data.timesheetTo!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetTo)) {
-            this.alertService.warn("Nie zmieniono deklaracji ze względu na nieprawidlową wartość: "+event.data.timesheetTo);
+            this.alertService.warn('Nie zmieniono deklaracji ze względu na nieprawidlową wartość: '+event.data.timesheetTo);
             this.restore(event.data);
         }
 
@@ -168,21 +168,23 @@ export class TimesheetsComponent implements OnInit {
             if (event.data.timesheetFrom <= event.data.timesheetTo) {
                 let newTimesheet: Timesheet = this.getTimesheet(event.data);
                 if (newTimesheet.break != event.data.copy.break || newTimesheet.from != event.data.copy.from || newTimesheet.to != event.data.copy.to) {
-                    event.data.status = "PROGRESS";
+                    event.data.status = 'PROGRESS';
+                    if (newTimesheet.break === '') {
+                        newTimesheet.break = '0';
+                    }
                     this.timesheetService.upsert(newTimesheet).subscribe(timesheet => this.updateTable(timesheet, event.data.rowid));
-                    //this.alertService.info("TODO call backend " + JSON.stringify(newTimesheet));
                 } else {
-                    console.log("Content is identical, nothing todo");
+                    console.log('Content is identical, nothing todo');
                 }
 
             } else {
-                this.alertService.warn("Nie zmieniono deklaracji ze względu na czas pracy mniejszy niż zero!");
+                this.alertService.warn('Nie zmieniono deklaracji ze względu na czas pracy mniejszy niż zero!');
                 this.restore(event.data);
             }
         } else if ((event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom)) || (event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo))) {
-            event.data.status = "EDITED";
+            event.data.status = 'EDITED';
         } else {
-            console.log("Nie wypelniono poprawnie timesheetu "+JSON.stringify(event.data));
+            console.log('Nie wypelniono poprawnie timesheetu '+JSON.stringify(event.data));
             this.restore(event.data);
         }
     }
@@ -192,7 +194,7 @@ export class TimesheetsComponent implements OnInit {
     search() {
         let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
         let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
-        console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
+        console.log('Searching for '+this.afterDate+'='+sAfterDate+', '+this.beforeDate+'='+sBeforeDate);
 
         this.userService.getStaff()
             .mergeMap(staff => this.callTimesheets(staff, sAfterDate, sBeforeDate))
@@ -200,14 +202,14 @@ export class TimesheetsComponent implements OnInit {
     }
 
     private callTimesheets(staff: User[], after:string, before:string):Observable<Timesheet[]> {
-        console.log("Got "+staff.length+" staff!");
+        console.log('Got '+staff.length+' staff!');
         this.users = staff;
         return this.timesheetService.getByDates(after, before);
     }
 
 
     private combine(timesheets:Timesheet[], users:User[]):void {
-        console.log("combine "+JSON.stringify(timesheets) +"\n"+JSON.stringify(users));
+        console.log('combine '+JSON.stringify(timesheets) +'\n'+JSON.stringify(users));
 
         this.usersWithSheets = [];
         for (let timesheet of timesheets) {
@@ -215,10 +217,10 @@ export class TimesheetsComponent implements OnInit {
             let userWithSheet = this.createUserWithSheet(timesheet, users, this.usersWithSheets.length);
 
             if (userWithSheet != null) {
-                console.log("pushing " + JSON.stringify(userWithSheet));
+                console.log('pushing ' + JSON.stringify(userWithSheet));
                 this.usersWithSheets.push(userWithSheet);
             } else {
-                console.log("User not found "+timesheet.personId);
+                console.log('User not found '+timesheet.personId);
             }
         }
 
@@ -243,12 +245,12 @@ export class TimesheetsComponent implements OnInit {
     }
 
     private updateTable(timesheet:Timesheet, rowid:number):void {
-        console.log("Updating table after data from server:" +JSON.stringify(timesheet));
+        console.log('Updating table after data from server:' +JSON.stringify(timesheet));
 
         let userWithSheet = this.createUserWithSheet(timesheet, this.users, rowid);
 
         if (userWithSheet == null) {
-            this.alertService.error("Nie znaleziono pracownika "+timesheet.personId+" po aktualizacji timesheet!");
+            this.alertService.error('Nie znaleziono pracownika '+timesheet.personId+' po aktualizacji timesheet!');
             return;
         }
 
@@ -263,7 +265,7 @@ export class TimesheetsComponent implements OnInit {
             }
         }
 
-        console.log("Nie znaleziono pracownika o id "+id+" na liscie rol");
+        console.log('Nie znaleziono pracownika o id '+id+' na liscie rol');
         return null;
     }
 
@@ -276,7 +278,7 @@ export class TimesheetsComponent implements OnInit {
     //YYYY-MM-DD
     private isWeekend(workDate:string):boolean {
         let myDate:Date = this.toolsService.parseDate(workDate);
-        console.log("Data dla "+workDate+" to "+ myDate.toISOString());
+        console.log('Data dla '+workDate+' to '+ myDate.toISOString());
         return myDate.getDay() == 6 || myDate.getDay() == 0;
     }
 }

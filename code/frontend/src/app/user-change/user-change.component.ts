@@ -172,11 +172,12 @@ export class UserChangeComponent implements OnInit {
                     }
                 }
                 this.mapToRoles(allowedRoles);
-
+                this.userService.getAllButPR().subscribe(users => this.setUsersAndSelectedUser(users, id));
             } else {
                 this.mapToRoles(this.dictService.getRoles());
+                this.userService.getAll().subscribe(users => this.setUsersAndSelectedUser(users, id));
             }
-            this.userService.getManagedUsers(user.roleCode, true).subscribe(users => this.setUsersAndSelectedUser(users, id));
+
         }
     }
 
