@@ -16,9 +16,6 @@ export class UserService {
         console.log("created UserService");
     }
 
-    getAll() {
-        return this.http.get('/api/v1/persons').map((response: Response) => response.json());
-    }
 
     getById(id: number) {
         return this.http.get('/api/v1/persons/' + id).map((response: Response) => response.json());
@@ -117,6 +114,14 @@ export class UserService {
 
     public getEngineersAndVentureRepresentatives(): Observable<User[]> {
         return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "VE"]));
+    }
+
+    public getAllButPR(): Observable<User[]> {
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "VE"]));
+    }
+
+    getAll() {
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["PR", "MG", "EN", "OP", "VE"]));
     }
 
     public getManagedUsers(role: string[], fetchVentures: boolean): Observable<User[]> {

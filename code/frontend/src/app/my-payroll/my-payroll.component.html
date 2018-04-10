@@ -12,11 +12,11 @@
       </div>
     </div>
 
-    <div class="ui-grid-row" style="margin-top: 10px;">
+    <div class="ui-grid-row" style="margin-top: 10px;" *ngIf="currentPayroll[0]">
       <div class="ui-grid-col-11">
 
         <span style="margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{currentPayroll[0].periodDate}}</span>
-        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'#286090'">{{currentPayroll[0].overTimeFactor}}</span>
+        <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Współczynnik nadgodzin:</span><span [style.color]="'#286090'">{{currentPayroll[0].overTimeFactor}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{currentPayroll[0].lastMod}}</span>
         <div *ngIf="currentPayroll[0]?.rankCode !== 'YOU'">
@@ -26,7 +26,8 @@
 
 
     </div>
-    <p-dataTable [value]="currentPayroll" sortField="periodDate"
+    <p-dataTable *ngIf="currentPayroll[0]"
+                 [value]="currentPayroll" sortField="periodDate"
                  rowGroupMode="rowspan"
                  #currentDt
                  [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
@@ -101,10 +102,11 @@
         <div>
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
           <span [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
-          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
+          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Współczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
 <!--          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>-->
-            <div *ngIf="currentPayroll[0]?.rankCode !== 'YOU'">
+
+            <div *ngIf="rowData && rowData.rankCode !== 'YOU'">
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.formattedPoolRate}}</span>
             </div>
         </div>

@@ -6,11 +6,10 @@
     </div>
     <div style="overflow: hidden; height: 150px;  z-index: 2;">
         <img src="assets/projects-banner-m2.png" style="position:relative;" width="100%" height="184px">
-        <div *ngIf="user?.firstName" style="position: absolute; top:50px; right: 50px; z-index: 3; font-weight: bold; color: #f0f3f5">
+        <div *ngIf="user?.firstName" style="position: absolute; top:40px; right: 50px; z-index: 3; font-weight: bold; color: #f0f3f5">
+            <a style="float: right" href="logout">Wyloguj</a><br>
             {{user?.firstName}} ({{roles | async}}) @ {{office | async}}<br>
-            <div style="float: right">Sesja {{getMinutesBeforeLogout() | async}} minut.</div><br>
-            <a style="float: right" href="logout">Wyloguj</a>
-
+            <div style="float: right">Sesja {{getMinutesBeforeLogout() | async}} minut.</div>
             <user-attendance-register *ngIf="user?.firstName" [user]="user"></user-attendance-register>
 
         </div>
@@ -31,7 +30,9 @@
 
 <!-- credits -->
 <div class="text-center">
-    <p>WERSJA 1.2.1 Faza II ( <a href="https://www.primefaces.org/primeng/#/" target="_top">Powered by primeng</a> )
+    <p>WERSJA 1.2.3 Faza II ( <a href="https://www.primefaces.org/primeng/#/" target="_top">Powered by primeng</a> )
+        <!-- 1.2.3 - modyfikacja VE (region), poprawka do timesheet break empty, poprawka do payroll - currentPaylod[0] could be null  -->
+        <!-- 1.2.2 - poprawka do payroll - brak widocznosci stawki puli - bez formatowania  -->
         <!-- 1.2.1 - poprawka brak opisow my-order, dodanie suspended w  -->
         <!-- polirole, rozliczenie, protokol (excel), wprowadzenie wielu WO -->
     </p>
