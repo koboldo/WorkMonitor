@@ -33,7 +33,10 @@ var timeSheets = {
             return;
         }
 
-        delete req.body.isLeave;
+        if([].concat(req.context.role).indexOf('OP') < 0)  {
+            delete req.body.isLeave;
+        }  
+        
         req.body.createdBy = req.context.id;
         req.body.modifiedBy = req.context.id;
  
