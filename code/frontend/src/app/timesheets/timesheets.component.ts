@@ -21,9 +21,11 @@ export class TimesheetsComponent implements OnInit {
 
     sEmptySheet: string = 'BRAK';
     sWeekendSheet: string = 'Weekend';
+    sLeave: string = 'Urlop';
     warns: string[];
     timeRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$');
     hourRegexp: RegExp =  new RegExp('^([0-9]|0[0-9]|1[0-9]|2[0-3])$');
+    leaveRegexp: RegExp =  new RegExp('^([NY])$');
 
     afterDate:Date;
     beforeDate:Date;
@@ -133,9 +135,9 @@ export class TimesheetsComponent implements OnInit {
 
         userWithSheet.isLeave = userWithSheet.copy.isLeave;
         if (userWithSheet.isLeave === 'Y') {
-            userWithSheet.timesheetBreakInMinutes = 'Urlop';
-            userWithSheet.timesheetFrom = 'Urlop';
-            userWithSheet.timesheetTo = 'Urlop';
+            userWithSheet.timesheetBreakInMinutes = this.sLeave;
+            userWithSheet.timesheetFrom = this.sLeave;
+            userWithSheet.timesheetTo = this.sLeave;
             userWithSheet.color = '#444433';
         }
 
@@ -143,6 +145,7 @@ export class TimesheetsComponent implements OnInit {
 
         userWithSheet.status = 'OK';
     }
+
 
     private getTimesheet(userWithSheet: UserWithSheet): Timesheet {
         let from: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetFrom+':00';
@@ -152,19 +155,34 @@ export class TimesheetsComponent implements OnInit {
         return timesheet;
     }
 
+
+    private getLeaveCancelledTimesheet(userWithSheet: UserWithSheet): Timesheet {
+        let timesheet: Timesheet = new Timesheet(userWithSheet.id, userWithSheet.timesheetWorkDate+' 08:00', userWithSheet.timesheetWorkDate+' 08:00');
+        timesheet.break = '0';
+        timesheet.isLeave = 'N';
+        return timesheet;
+    }
+
     onEditComplete(event) {
         console.log('edited !' + JSON.stringify(event.data));
-        if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && event.data.timesheetFrom!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetFrom)) {
+        if (this.leaveRegexp.test(event.data.isLeave) && event.data.isLeave==='N' && event.data.copy.isLeave!=='N') {
+            this.alertService.info('Usuwam urlop '+event.data.timesheetWorkDate+' dla '+event.data.firstName+' '+event.data.lastName+' ...');
+            event.data.status = 'PROGRESS';
+            let newTimesheet: Timesheet = this.getLeaveCancelledTimesheet(event.data);
+            this.timesheetService.upsert(newTimesheet).subscribe(timesheet => this.updateTable(timesheet, event.data.rowid));
+        }
+
+        else if (event.data.timesheetFrom && event.data.timesheetFrom!== this.sEmptySheet && event.data.timesheetFrom!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetFrom) && !this.leaveRegexp.test(event.data.isLeave)) {
             this.alertService.warn('Nie zmieniono deklaracji ze względu na nieprawidlową wartość: '+event.data.timesheetFrom);
             this.restore(event.data);
         }
 
-        if (event.data.timesheetTo && event.data.timesheetTo!== this.sEmptySheet && event.data.timesheetTo!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetTo)) {
+        else if (event.data.timesheetTo && event.data.timesheetTo!== this.sEmptySheet && event.data.timesheetTo!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetTo)) {
             this.alertService.warn('Nie zmieniono deklaracji ze względu na nieprawidlową wartość: '+event.data.timesheetTo);
             this.restore(event.data);
         }
 
-        if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)) {
+        else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)  && this.leaveRegexp.test(event.data.isLeave)) {
             if (event.data.timesheetFrom <= event.data.timesheetTo) {
                 let newTimesheet: Timesheet = this.getTimesheet(event.data);
                 if (newTimesheet.break != event.data.copy.break || newTimesheet.from != event.data.copy.from || newTimesheet.to != event.data.copy.to) {
@@ -173,6 +191,9 @@ export class TimesheetsComponent implements OnInit {
                         newTimesheet.break = '0';
                     }
                     this.timesheetService.upsert(newTimesheet).subscribe(timesheet => this.updateTable(timesheet, event.data.rowid));
+                } else if (this.leaveRegexp.test(event.data.isLeave) && event.data.isLeave==='Y' && event.data.copy.isLeave!=='Y') {
+                    this.alertService.warn('Nie można dodawać urlopu w tabeli!');
+                    this.restore(event.data);
                 } else {
                     console.log('Content is identical, nothing todo');
                 }

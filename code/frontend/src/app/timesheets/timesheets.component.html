@@ -60,7 +60,7 @@
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" header="Urlop" field="isLeave" [style]="{'width': '70px'}" [filter]="true" filterPlaceholder="Filtruj">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Urlop" field="isLeave" [style]="{'width': '70px'}" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.isLeave}}</div>
         </ng-template>
