@@ -31,10 +31,11 @@ try {
 var auth = {
     
     authenticate: function(req, res) {
-    	// if(logger.isDebugEnabled()) logger.debug('req: method' +req.method+' url:'+req.originalUrl +' body:'+ JSON.stringify(req.body));
         var user = req.body.email;
         var passwd = (req.body.password) ? req.body.password : '';
         var passwdSha1 = sha1(passwd);
+        
+        if(logger.isDebugEnabled()) logger.debug('authentication for ' + user + ' with hash ' + passwdSha1);
         
         var db = dbUtil.getDatabase();
         var authStat = db.prepare(authQuery).bind([user, passwdSha1]).get(function(err,userRow) {
@@ -42,12 +43,14 @@ var auth = {
             db.close();
 
             if(err) {
+                if(logger.isDebugEnabled()) logger.debug('authentication failed with error ' + err.message);
                 return res.status(400).json({ 
                                     sucess: false,
                                     message: err.message});
             }
             
             if(userRow == null) {
+                if(logger.isDebugEnabled()) logger.debug('authentication failed, no user with hash found');
                 return res.status(403).json({
                                 success: false,
                                 message: "authetication failed"
