@@ -88,9 +88,9 @@ export function commentCancelOrHoldAsString(comments: Comments): string {
 
     for(let comment of comments.comments) {
         if (comment.reason === 'Anulowanie') {
-            return comment.sCreatedBy + ": \"" + comment.text + "\"";
+            return comment.sCreatedBy + ": \"" + (comment.text? comment.text: '') + "\"";
         }
     }
-    return comments.comments[comments.comments.length-1].text;
+    return comments.comments[comments.comments.length-1]? comments.comments[comments.comments.length-1].text: '';
 
 }
