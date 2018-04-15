@@ -55,11 +55,11 @@ var queries = {
     
     )
     , PERIOD_STATS AS (
-        SELECT COALESCE(
+        SELECT CAST(COALESCE(
             (SELECT SUM(PRICE)
             FROM PERIOD_WO
             WHERE IS_FROM_POOL = "Y")
-            ,0) BUDGET
+            ,0) * 415 AS DOUBLE) / 1000.0 BUDGET
     )
     , PERSON_TIME AS (
         SELECT 
