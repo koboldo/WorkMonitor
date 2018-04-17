@@ -238,9 +238,25 @@ export class WoComponent implements OnInit {
         return false;
     }
 
+    fillPrice(event: any, index: number): void {
+        console.log("fillPrice "+JSON.stringify(event));
 
+        if (this.workTypesDetails && this.workTypesDetails.length > 0) {
+            for (let workTypeDetails of this.workTypesDetails) {
+                let sPrice:string = <string> '' + workTypeDetails.price;
+                if ((workTypeDetails.typeCode === event.code || event.code === undefined) && workTypeDetails.officeCode === this.assignedVentureRepresentative.user.officeCode && workTypeDetails.complexityCode === 'STD') {
+                    if (index < 0) {
+                        this.price = new CodeValue(sPrice, sPrice + ' PLN');
+                    } else {
+                        this.additionalPrices[index] = new CodeValue(sPrice, sPrice + ' PLN');
+                    }
+                    console.log("fillPrice found " + sPrice);
+                }
+            }
+        }
+    }
 
-    suggestType(event) {
+    suggestType(event): void {
         let suggestedTypes:CodeValue[] = [];
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.workTypes && this.workTypes.length > 0) {
@@ -254,7 +270,7 @@ export class WoComponent implements OnInit {
         console.log('suggestedTypes: ' + JSON.stringify(this.suggestedTypes));
     }
 
-    suggestEngineer(event) {
+    suggestEngineer(event): void {
         let suggestedEngineers:SearchUser[] = [];
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.engineers && this.engineers.length > 0) {
@@ -419,10 +435,10 @@ export class WoComponent implements OnInit {
         order.status = this.dictService.getWorkStatus(order.statusCode);
 
         if (this.newComment && this.newComment.length > 0) {
-            let reason: string = (order.statusCode === 'SU' || order.statusCode === 'CA') ? "Anulowanie" : "Edycja";
-            if (!order.comments) {
+            if (this.newOrder || order.comments) {
                 order.comments = new Comments(null);
             }
+            let reason: string = (order.statusCode === 'SU' || order.statusCode === 'CA') ? "Anulowanie" : "Edycja";
             commentAdd(order.comments, reason, this.operator, this.newComment);
         }
 
