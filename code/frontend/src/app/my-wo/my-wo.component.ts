@@ -5,6 +5,10 @@ import 'rxjs/add/operator/switchMap';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
+//add comment
+import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
+import { Subscriber } from 'rxjs';
+//end add comment
 
 @Component({
     selector: 'app-my-wo',
@@ -24,7 +28,13 @@ export class MyWoComponent implements OnInit {
 
     displayFinishDialog: boolean;
     displayDetailsDialog: boolean;
-
+    
+    //add comment
+    newComment: string;
+    displayAddComment: boolean;
+    operator:User;
+    commentOrder:Order;
+    // end add comment
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -38,17 +48,37 @@ export class MyWoComponent implements OnInit {
 
     ngOnInit() {
         this.authSerice.userAsObs.subscribe(user => console.log(user));
-
         this.workTypeService.getWorkTypes().subscribe(workTypes => console.log("NOW:"+JSON.stringify(workTypes)));
-
         this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
-
         this.items = [
-            {label: 'Zakończ zlecenie', icon: 'fa-check', command: (event) => this.finishWork()}
+            {label: 'Zakończ zlecenie', icon: 'fa-check', command: (event) => this.finishWork()},
+            {label: 'Dodaj komentarz', icon: 'fa-pencil-square-o',  command: (event) => this.addComment()},
         ];
-
     }
+    
+// add comment
+   private addComment():void{
+       this.displayAddComment=true;    
+    }
+    saveComment (selectedOrder): void{           
+        if (this.newComment && this.newComment.length > 0) {
+            this.addCommentToOrder(this.selectedOrder,this.newComment);            
+        }
+        this.displayAddComment=false;
+        this.newComment=null;  
+    }
+   private addCommentToOrder (order: Order, newComment: string) :void {
+        let reason: string = "Komentarz";
+        if (!order.comments) {
+            order.comments = new Comments(null);
+        }
+        commentAdd(order.comments, reason, this.engineer, newComment);
+        this.woService.updateOrder(order).subscribe(order=>this.search());
+        this.alertService.info('Pomyślnie dodano komentarz do zlecenia: ' + order.workNo);
+        newComment=null; 
+   }
+// end add comment
 
     search() {
         if (this.engineer.id) {

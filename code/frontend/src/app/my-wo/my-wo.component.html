@@ -92,9 +92,133 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zakończ"></button>
-      </div>
+        <!-- <button width="200px" type="button" pButton icon="fa-check" (click)="" label="Dodaj komentarz"></button> -->
+      </div>     
     </p-footer>
   </p-dialog>
-
-
+  <!-- add comment -->
+  <p-dialog  [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="900">  
+      <div class="ui-grid-row" style="max-width: 900px;">  
+      <div class="ui-grid-col-6" style="margin-top: 10px;">
+          <p-fieldset legend="Detale zlecenia" *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment"> 
+              <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
+                  <div class="ui-grid-col-4">Dodano:</div>
+                  <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.creationDate}}</span>
+                  </div>
+              </div>
+              <div class="ui-grid-row" *ngIf="selectedOrder?.lastModDate">
+                  <div class="ui-grid-col-4">Modyfikacja:</div>
+                  <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.lastModDate}}</span></div>
+              </div>
+              <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
+              <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
+                  <div class="ui-grid-col-4">Typ:</div>
+                  <div class="ui-grid-col-8">
+                      <!-- <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span> -->
+                      <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
+                  </div>
+              </div>
+              <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
+                  <div class="ui-grid-col-4">Złożoność:</div>
+                  <div class="ui-grid-col-8">
+                      <span class="ui-inputgroup-addon"><i
+                              [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                      <span style="padding: 3px; font-style: italic;">Wycena {{selectedOrder?.complexity}} godzin</span>
+                  </div>
+              </div>
+              <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+                  <div class="ui-grid-col-4">Status:</div>
+                  <div class="ui-grid-col-8">
+                      <span class="ui-inputgroup-addon"><i [class]=""></i></span>
+                      <span style="padding: 3px; font-style: italic;">{{selectedOrder?.status}}</span>
+                  </div>
+              </div>
+              <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.status">
+                  <div class="ui-grid-col-4">Wartość zamówienia:</div>
+                  <div class="ui-grid-col-8">
+                      <span style="font-style: italic;">{{selectedOrder?.price}} PLN</span>
+                  </div>
+              </div>
+              <div class="ui-grid-row" *ngIf="selectedOrder?.status">
+                  <div class="ui-grid-col-4">Numer protokołu:</div>
+                  <div class="ui-grid-col-8">
+                      <span style="font-style: italic;">{{selectedOrder?.protocolNo}}</span>
+                  </div>
+              </div>
+              <div style="margin-bottom: 5px; margin-top: 5px;" class="ui-grid-row" *ngIf="selectedOrder?.isFromPool">
+                  <div class="ui-grid-col-4">W ramach puli:</div>
+                  <div class="ui-grid-col-8">
+                      <span class="ui-inputgroup-addon"><i
+                              [class]="selectedOrder.isFromPool=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
+                      <span style="padding: 3px; font-style: italic;">{{selectedOrder?.isFromPool == 'Y' ? 'TAK' : 'NIE'}}</span>
+                  </div>
+              </div>
+              <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
+              <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row">
+                  <strong>Wykonawcy</strong>
+                </div>
+              <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+                  <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+                  <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+                  <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+              </div>
+          </p-fieldset>
+      </div>
+      <div class="ui-grid-col-6">
+          <div *ngIf="selectedOrder?.ventureDisplay || selectedOrder?.ventureCompany" class="ui-grid-row"
+               style="margin-top: 10px;">
+              <p-fieldset legend="Inwestor">
+                  {{selectedOrder?.ventureDisplay}} @ {{selectedOrder?.ventureCompany}}
+              </p-fieldset>
+          </div>
+          <div class="ui-grid-row" style="margin-top: 10px;">
+              <p-fieldset legend="Obiekt inwestycji">
+                  <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo || selectedOrder?.relatedItems[0]?.address || selectedOrder?.relatedItems[0]?.mdBuildingType || selectedOrder?.relatedItems[0]?.description || selectedOrder?.relatedItems[0]?.mdConstructionCategory;else noRelatedItem">
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.itemNo" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Numer:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.itemNo}}</div>
+                      </div>
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.address" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Adres:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.address}}</div>
+                      </div>
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.mdBuildingType" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Typ budynku:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdBuildingType}}</div>
+                      </div>
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.mdConstructionCategory" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Konstrukcja:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.mdConstructionCategory}}</div>
+                      </div>
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.description" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Opis:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.description}}</div>
+                      </div>
+                      <div *ngIf="selectedOrder?.relatedItems[0]?.creationDate" class="ui-grid-row">
+                          <div class="ui-grid-col-4">Dodano:</div>
+                          <div class="ui-grid-col-8">{{selectedOrder?.relatedItems[0]?.creationDate}}</div>
+                      </div>
+                  </div>
+                  <ng-template #noRelatedItem><strong style="color: darkorange;">Nie przypisano...</strong></ng-template>
+              </p-fieldset>
+          </div>
+      </div>
+      <br>   
+  </div> 
+ <br>   
+<p-fieldset legend="Dodaj komentarz do zlecenia">
+  <div class="ui-grid-row" style="margin-top: 10px;">
+    <div class="ui-grid-col-2"><label for="newComment">Dodaj komentarz</label></div>
+    <div class="ui-grid-col-10">
+        <textarea [disabled]="false" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="3" [cols]="80"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
+    </div>
+  </div>
+</p-fieldset>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button width="200px" type="button" pButton icon="fa-check" (click)="saveComment()" label="Zakończ"></button>
+      </div>     
+    </p-footer>
+  </p-dialog>
+  <!--end add comment   -->
 </p-panel>
