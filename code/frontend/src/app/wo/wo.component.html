@@ -205,7 +205,7 @@
         <div class="ui-grid-col-2"><label for="orderType">Typ zlecenia*</label></div>
         <div class="ui-grid-col-5">
           <!-- TODO bug [forceSelection]="true" -->
-            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
+            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
         </div>
 
           <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
@@ -222,7 +222,7 @@
                   <div class="ui-grid-col-2"><label for="additionalOrderType">Dod. {{i+2}} Zl.*</label></div>
                   <div class="ui-grid-col-5">
                       <!-- TODO bug [forceSelection]="true" -->
-                      <p-autoComplete [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'"></p-autoComplete>
+                      <p-autoComplete [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, i)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'"></p-autoComplete>
                   </div>
 
                   <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="additionalPrices">Wartość zlecenia</label></div>
