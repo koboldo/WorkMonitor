@@ -60,7 +60,7 @@ export class MyWoComponent implements OnInit {
    private addComment():void{
        this.displayAddComment=true;    
     }
-    saveComment (selectedOrder): void{           
+    saveComment (): void{
         if (this.newComment && this.newComment.length > 0) {
             this.addCommentToOrder(this.selectedOrder,this.newComment);            
         }
