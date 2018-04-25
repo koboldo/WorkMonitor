@@ -6,7 +6,7 @@ import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index'
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 //add comment
-import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
+import { Comments, commentAsSimpleString, commentAsString, commentAdd,commentCancelOrHoldAsString } from '../_models/comment';
 import { Subscriber } from 'rxjs';
 //end add comment
 
@@ -32,7 +32,6 @@ export class MyWoComponent implements OnInit {
     //add comment
     newComment: string;
     displayAddComment: boolean;
-    operator:User;
     commentOrder:Order;
     // end add comment
 
@@ -57,7 +56,7 @@ export class MyWoComponent implements OnInit {
         ];
     }
     
-// add comment
+//add comment
    private addComment():void{
        this.displayAddComment=true;    
     }
@@ -78,7 +77,14 @@ export class MyWoComponent implements OnInit {
         this.alertService.info('Pomyślnie dodano komentarz do zlecenia: ' + order.workNo);
         newComment=null; 
    }
-// end add comment
+   public getCancelOrHoldComment(order: Order): string {
+    if (order.comments) {
+        return commentCancelOrHoldAsString(order.comments);
+    } else {
+        return '';
+    }
+}
+//end add comment
 
     search() {
         if (this.engineer.id) {

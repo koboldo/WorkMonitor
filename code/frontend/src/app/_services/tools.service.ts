@@ -81,7 +81,9 @@ export class ToolsService {
 
     public getOrderColor(typeCode :string) :string {
 
-        if (typeCode === "OT")
+        if (typeCode === undefined || typeCode === null)
+            return "black";
+        else if (typeCode === "OT")
             return "grey";
         else if (typeCode.startsWith("0."))
             return "#d1e0e0";
