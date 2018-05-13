@@ -228,7 +228,7 @@ export class WoComponent implements OnInit {
     }
 
     isStatusAllowed(order: Order, statusCode: string) {
-        if (statusCode === 'IS' && this.toolsService.isReadyForProtocol(order)) {
+        if (statusCode === 'IS' && this.toolsService.isReadyForProtocol(order,false)) {
             return true;
         } else if (order.assignee && order.assignee.length > 0) {
             return true;

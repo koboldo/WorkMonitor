@@ -26,6 +26,14 @@ export class WoClearingComponent implements OnInit {
     engineers:User[] = [];
     vrs:User[] = [];
 
+    //filt for protocol
+    public ordersNotReady:Order[];
+    public ordersReadyForProtocol:Order[];
+    public displayOrderNotReadyDialog:boolean;
+    public displayDetailsDialog:boolean;
+    public selectedOrder: Order;
+    // end filt for protocol
+
     constructor(private woService:WOService,
                 private userService:UserService,
                 private dictService:DictService,
@@ -37,9 +45,33 @@ export class WoClearingComponent implements OnInit {
         this.dictService.init();
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
-
         this.search();
+        this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
     }
+
+    // filtr for protocol 
+    private addToTable (ordersNotReady:Order[]) :void
+    {
+        this.ordersNotReady=[];
+        this.ordersReadyForProtocol=[];
+        for (let order of ordersNotReady )
+        {      
+            if (!this.toolsService.isReadyForProtocol(order,true))
+            {
+                this.ordersNotReady.push(order)            
+            }
+            else
+            {
+                this.ordersReadyForProtocol.push(order);
+            }       
+        }
+        this.mapVentureRepresentative(this.ordersNotReady,this.vrs);
+        this.mapVentureRepresentative(this.ordersReadyForProtocol,this.vrs);
+    }
+    public showWoDetails(event) {
+        this.displayDetailsDialog=true;
+    }
+    // end filtr for protocol
 
     fetchProtocol() {
         if (!this.protocolNo) {

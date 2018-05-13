@@ -41,6 +41,8 @@ export class Order {
     comment: string;
     sComments: string; //user to filter
 
+    frontProcessingDesc:string
+
     constructor(public workNo:string,
                 public statusCode:string,
                 public status:string,
