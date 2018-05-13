@@ -39,6 +39,8 @@ import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
 import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
+// protocol filter
+import {WoListComponent} from './wo-list/wo-list.component';
 
 @NgModule({
     imports: [
@@ -75,7 +77,8 @@ import { MyPayrollComponent } from './my-payroll/my-payroll.component';
         WoSuspendedComponent,
         UsersDisplayComponent,
         UsersPayrollComponent,
-        MyPayrollComponent
+        MyPayrollComponent,
+        WoListComponent
     ],
     providers: [
         AlertService,
