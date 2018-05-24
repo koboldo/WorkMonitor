@@ -68,7 +68,7 @@ export class WoClearingComponent implements OnInit {
         this.mapVentureRepresentative(this.ordersNotReady,this.vrs);
         this.mapVentureRepresentative(this.ordersReadyForProtocol,this.vrs);
     }
-    public showWoDetails(event) {
+    public showWoDetails() {
         this.displayDetailsDialog=true;
     }
     // end filtr for protocol
