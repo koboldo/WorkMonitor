@@ -218,7 +218,7 @@ export class TimesheetsComponent implements OnInit {
         console.log('Searching for '+this.afterDate+'='+sAfterDate+', '+this.beforeDate+'='+sBeforeDate);
 
         this.userService.getStaff()
-            .mergeMap(staff => this.callTimesheets(staff, sAfterDate, sBeforeDate))
+            .mergeMap(staff => this.callTimesheets(this.filterNotActive(staff), sAfterDate, sBeforeDate))
             .subscribe((timesheets:Timesheet[]) => this.combine(timesheets, this.users));
     }
 
@@ -301,6 +301,19 @@ export class TimesheetsComponent implements OnInit {
         let myDate:Date = this.toolsService.parseDate(workDate);
         console.log('Data dla '+workDate+' to '+ myDate.toISOString());
         return myDate.getDay() == 6 || myDate.getDay() == 0;
+    }
+
+    private filterNotActive(staff:User[]): User[]{
+        let workingStaff: User[] = [];
+
+        for(let user of staff) {
+            if (user && user.isActive === 'Y') {
+                workingStaff.push(user);
+            }
+        }
+
+        return workingStaff;
+
     }
 }
 

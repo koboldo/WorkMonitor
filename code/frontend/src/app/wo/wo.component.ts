@@ -435,7 +435,7 @@ export class WoComponent implements OnInit {
         order.status = this.dictService.getWorkStatus(order.statusCode);
 
         if (this.newComment && this.newComment.length > 0) {
-            if (this.newOrder || order.comments) {
+            if (this.newOrder || !order.comments) {
                 order.comments = new Comments(null);
             }
             let reason: string = (order.statusCode === 'SU' || order.statusCode === 'CA') ? "Anulowanie" : "Edycja";
