@@ -10,7 +10,7 @@
         <p>2. Aby pobrać jeszcze raz protokół już utworzony, należy wpisać jego numer do pola obok i kliknąć przycisk "Generuj ponownie". Ta funkcja pozwala zmodyfikować protokół (usunąć z niego wybrane zlecenia) jeśli przed powtórną generacją w zakładce "Zlecenia" cofnięto status WO zawartego w protokole na "Wydane"</p>
         <p>3. Aby wyświetlić zlecenia nie gotowe do protokołu należy klinkąć przycisk "Zlecenia nie gotowe"</p>
         <!--PROTOCOL FILTER --> 
-        <button type="button" pButton (click)="showWoDetails(order)" label="Zlecenia nie gotowe"></button>
+        <button type="button" pButton (click)="showWoDetails()" label="Zlecenia nie gotowe"></button>
         <p-dialog [(visible)]="displayDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
         <app-wo-list [ListToDisplay]="ordersNotReady"></app-wo-list>
         </p-dialog>

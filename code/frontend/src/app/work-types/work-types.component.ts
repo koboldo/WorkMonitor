@@ -70,13 +70,20 @@ export class WorkTypesComponent implements OnInit {
 
     save(): void {
         if (this.newWorkType) {
-            this.insert(this.editedWorkType);
+            if (this.editedWorkType.officeCode === 'ALL') {
+                for(let office of this.offices) {
+                    if (office.value !== 'ALL') {
+                        this.editedWorkType.officeCode = office.value;
+                        this.insert(this.editedWorkType);
+                    }
+                }
+            } else {
+                this.insert(this.editedWorkType);
+            }
         } else {
             this.update(this.editedWorkType);
         }
         this.displayEditDialog = false;
-
-        this.workService.refreshCache().subscribe(workTypes => this.workTypes = workTypes);
     }
 
     private update(workType: WorkType):void {
@@ -91,9 +98,12 @@ export class WorkTypesComponent implements OnInit {
 
     private processResult(result:any):any {
         console.log("Received "+JSON.stringify(result));
+        this.workService.refreshCache().subscribe(workTypes => this.workTypes = workTypes);
     }
 
     private mapToOffices(pairs:CodeValue[]):void {
+        let all: CodeValue = new CodeValue('ALL', 'WSZYSTKIE');
+        pairs.unshift(all);
         this.showOffices = this.toolsService.mapToSelectItem(pairs, this.offices);
     }
 
