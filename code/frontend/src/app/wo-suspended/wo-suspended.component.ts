@@ -4,9 +4,10 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
-import { Comments, commentCancelOrHoldAsString } from '../_models/comment';
+import { Comments, commentCancelOrHoldAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
+
 
 @Component({
     selector: 'app-wo-suspended',
@@ -24,16 +25,25 @@ export class WoSuspendedComponent implements OnInit {
     selectedOrder:Order;
     displayDetailsDialog: boolean;
 
+     //add comment
+     newComment: string;
+     displayAddComment: boolean;
+     commentOrder:Order;
+     // end add comment
+
     constructor(private woService:WOService,
                 private userService:UserService,
                 private dictService:DictService,
                 private authSerice:AuthenticationService,
-                private toolsService:ToolsService) {
+                private toolsService:ToolsService,
+                private alertService:AlertService,
+            ) {
     }
 
     ngOnInit() {
         this.items = [
-            {label: 'Przywróć/Wnów', icon: 'fa-check', disabled: true, command: (event) => this.recover()}
+            {label: 'Przywróć/Wnów', icon: 'fa-check', disabled: true, command: (event) => this.recover()},
+            {label: 'Dodaj komentarz', icon: 'fa-pencil-square-o',  command: (event) => this.addComment()},
         ];
 
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
@@ -42,6 +52,31 @@ export class WoSuspendedComponent implements OnInit {
 
         this.search();
     }
+
+//add comment
+private addComment():void{
+    this.displayAddComment=true;    
+ }
+ saveComment (): void{
+     if (this.newComment && this.newComment.length > 0) {
+         this.addCommentToOrder(this.selectedOrder,this.newComment);            
+     }
+     this.displayAddComment=false;
+     this.newComment=null;  
+ }
+private addCommentToOrder (order: Order, newComment: string) :void {
+     let reason: string = 'Anulowanie';
+     if (!order.comments) {
+         order.comments = new Comments(null);
+     }
+     commentAdd(order.comments, reason, this.operator, newComment);
+     this.woService.updateOrder(order).subscribe(order=>this.search());
+     this.alertService.info('Pomyślnie dodano komentarz do zlecenia: ' + order.workNo);
+     newComment=null;
+     
+}
+
+//end add comment
 
     private assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
@@ -68,10 +103,13 @@ export class WoSuspendedComponent implements OnInit {
 
     public getCancelOrHoldComment(order: Order): string {
         if (order.comments) {
+            
             return commentCancelOrHoldAsString(order.comments);
         } else {
+            
             return '';
         }
+        
     }
 
     onRowSelect(event) {
