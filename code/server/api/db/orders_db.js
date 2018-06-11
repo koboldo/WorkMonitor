@@ -54,8 +54,8 @@ var filters = {
     getOrders: {
         type: 'TYPE_CODE = "%(type)s"',
         status: 'STATUS_CODE = "%(status)s"',
-        lastModBefore: 'LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s","utc")',
-        lastModAfter: 'LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s","utc")',
+        lastModBefore: 'WO.LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s","utc")',
+        lastModAfter: 'WO.LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s","utc")',
         personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
     },
     calculateTotalPrice: {

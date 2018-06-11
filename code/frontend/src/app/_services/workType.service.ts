@@ -83,8 +83,8 @@ export class WorkTypeService {
         return workTypes;
     }
 
-    public getWorkTypeDescription(key: string): string {
-        let workType:WorkType = this.getWorkType(key, 'WAW', 'STD');
+    public getWorkTypeDescription(order: Order): string {
+        let workType:WorkType = this.getWorkType(order.typeCode, order.officeCode? order.officeCode : 'CEN', 'STD');
         if (workType) {
             return workType.description;
         }

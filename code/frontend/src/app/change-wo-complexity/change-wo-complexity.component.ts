@@ -143,7 +143,7 @@ export class ChangeWoComplexityComponent implements OnInit {
     private saveOrder():void {
 
         this.editedOrder.status = this.dictService.getWorkStatus(this.editedOrder.statusCode);
-        this.editedOrder.type = this.workTypeService.getWorkTypeDescription(this.editedOrder.typeCode);
+        this.editedOrder.type = this.workTypeService.getWorkTypeDescription(this.editedOrder);
 
         this.storeOrder(this.editedOrder);
 
