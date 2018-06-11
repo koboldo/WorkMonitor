@@ -1,4 +1,5 @@
 import { User } from '../_models/index';
+import { forEach } from '@angular/router/src/utils/collection';
 
 export const PREFIX:string = "__"
 /*
@@ -83,14 +84,27 @@ export function commentAsSimpleString(comments: Comments): string {
     return result;
 }
 
-//
-export function commentCancelOrHoldAsString(comments: Comments): string {
+export function DisplayTextCommentAsString(comments: Comments): string {
+    
+    return comments.comments[(comments.comments.length)-1].text
+}
 
-    for(let comment of comments.comments) {
-        if (comment.reason === 'Anulowanie') {
-            return comment.sCreatedBy + ": \"" + (comment.text? comment.text: '') + "\"";
+
+
+export function commentCancelOrHoldAsString(comments: Comments): string {
+    let comentsTab : string [] = [];
+    comments.comments.forEach(element => {
+        if (element.reason=== 'Anulowanie')
+        {
+            comentsTab.push(' '+element.sCreatedBy+": \"" +(element.text? element.text: '')+ "\"" );                       
         }
+
+    });
+    if (comentsTab.length>0)
+    {
+        return comentsTab.toString();
     }
     return comments.comments[comments.comments.length-1]? comments.comments[comments.comments.length-1].text: '';
+    
 
 }
