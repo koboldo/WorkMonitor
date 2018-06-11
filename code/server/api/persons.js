@@ -5,6 +5,7 @@ var util = require('util');
 var mapper = require('./mapper');
 var persons_db = require('./db/persons_db');
 var moment = require('moment');
+var logger = require('./logger').getLogger('monitor');
 
 var persons = {
     
@@ -68,6 +69,7 @@ var persons = {
         
         var personId = req.params.id;
         var pe = filterPersonFields(req.context, req.body);
+        pe.modifiedBy = req.context.id;
         var personSql = mapper.person.mapToSql(pe);
 
         persons_db.update(personId, personSql,function(err, result){
@@ -140,6 +142,33 @@ var persons = {
             if(result != null) res.status(200).json(rv);
             else res.status(404).end();
         });
+    },
+    
+    readHistory: function(req, res) {
+    	logger.info("reading history...");
+    	
+    	//RODO
+    	if([].concat(req.context.role).indexOf('PR') < 0) {
+    		res.status(403).json({status:'error', message: 'request processing failed, history'});
+    		return;
+    	} 
+    	
+        var personId = req.params.id;
+        logger.debug("reading history for "+personId);
+        
+        persons_db.readHistory(personId,function(err,histPersonRows){
+        	if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            
+            var persons = mapper.mapList(mapper.person.mapToJson, histPersonRows);
+            var personsFiltered = [];
+            persons.list.forEach((person)=>{
+                personsFiltered.push(filterPersonFields(req.context,person));
+            });
+            res.json({list:personsFiltered});           
+        });
     }
 };
 
@@ -147,7 +176,9 @@ function filterPersonFields(context, person) {
     if([].concat(context.role).indexOf('PR') < 0)  {
         delete person.agreementCode;
         delete person.projectFactor;
-        delete person.isFromPool;
+        delete person.salary;
+        delete person.salaryRate;
+        delete person.leaveRate;
     }
     return person;
 };

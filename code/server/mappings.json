@@ -2,6 +2,7 @@
 	"person": {
 		"sqlToJson": {
 			"ID": "id",
+			"EXCEL_ID": "excelId",
 			"FIRST_NAME": "firstName",
 			"LAST_NAME": "lastName",
 			"OFFICE_CODE": "officeCode",
@@ -10,7 +11,11 @@
 			"EMAIL": "email",
 			"PASSWORD": "password",
 			"IS_ACTIVE": "isActive",
-			"LAST_MOD": "lastMod",
+			"IS_EMPLOYED": "isEmployed",
+			"CREATED": "creationDate",
+			"HIST_CREATED": "histCreationDate",
+			"MODIFIED_BY": "modifiedBy",
+			"LAST_MOD": "lastModDate",
 			"WORK_ORDERS": "workOrders",
 			"PROJECT_FACTOR": "projectFactor",
 			"IS_FROM_POOL": "isFromPool",

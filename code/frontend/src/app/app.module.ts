@@ -41,6 +41,7 @@ import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 // protocol filter
 import {WoListComponent} from './wo-list/wo-list.component';
+import { UserHistoryComponent } from './user-history/user-history.component';
 
 @NgModule({
     imports: [
@@ -78,7 +79,8 @@ import {WoListComponent} from './wo-list/wo-list.component';
         UsersDisplayComponent,
         UsersPayrollComponent,
         MyPayrollComponent,
-        WoListComponent
+        WoListComponent,
+        UserHistoryComponent
     ],
     providers: [
         AlertService,

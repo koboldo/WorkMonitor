@@ -24,6 +24,7 @@ export class UsersDisplayComponent implements OnInit {
     users:User[] = [];
     selectedUser: User;
 
+    displayUserHistoryDialog: boolean;
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -40,6 +41,12 @@ export class UsersDisplayComponent implements OnInit {
     ngOnInit():void {
         this.dictService.init();
         this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
+    }
+
+    public showUserHistory(event, user: User): void {
+        console.log('showUserHistory... '+JSON.stringify(user));
+        this.selectedUser = user;
+        this.displayUserHistoryDialog=true;
     }
 
     public add():void {

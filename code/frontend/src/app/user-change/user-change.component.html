@@ -12,8 +12,18 @@
   </div>
 
   <div *ngIf="selectedUser?.user" class="container">
+
     <hr>
     <h2>Modyfikacja {{selectedUser?.user?.firstName}} {{selectedUser?.user?.lastName}}</h2>
+
+    <div *ngIf="operator?.roleCode?.indexOf('PR') != -1">
+      <button type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-search" label="Historia"></button>
+      <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+        <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
+      </p-dialog>
+      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-window-close" label="Zakończ współprace"></button>
+    </div>
+
     <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm">
       <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
         <label for="firstName">Imie</label>
@@ -31,11 +41,18 @@
         <div *ngIf="f.submitted && !newemail?.valid" class="help-block">wymagany jest poprawny adres email</div>
       </div>
 
-      <div class="form-group">
-        <p-radioButton name="activegroup" value="Y" [(ngModel)]="selectedUser.user.isActive" label="Aktywny (Konto)"></p-radioButton>
-        <p-radioButton name="activegroup" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+
+      <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
+        <label for="excelId">Identyfikator excel</label>
+        <input id="excelId" type="text" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required minlength="3" />
+        <div *ngIf="f.submitted && !excelId?.valid" class="help-block">Identyfikator w excel jest wymagany</div>
       </div>
 
+      <div class="form-group">
+        <p-radioButton name="activegroup" value="Y" [(ngModel)]="selectedUser.user.isActive" label="Aktywny (Konto)"></p-radioButton>
+          <p-radioButton name="activegroup" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+      </div>
+      
       <div class="form-group" *ngIf="showRoles" [ngClass]="{ 'has-error': f.submitted && !(selectedUser?.user?.roleCode?.length > 0) }">
         <label for="roleCode">Funkcja w systemie</label>
         <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" name="roleCode" multiple="multiple" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required roles></p-selectButton>

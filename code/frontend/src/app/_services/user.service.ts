@@ -109,7 +109,7 @@ export class UserService {
     }
 
     public getAllStaff(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "PR"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "PR", "AN", "CL", "PA"]));
     }
 
     public getEngineersAndVentureRepresentatives(): Observable<User[]> {
@@ -121,7 +121,7 @@ export class UserService {
     }
 
     getAll() {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["PR", "MG", "EN", "OP", "VE"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["PR", "MG", "EN", "OP", "VE", "AN", "CL", "PA"]));
     }
 
     public getManagedUsers(role: string[], fetchVentures: boolean): Observable<User[]> {
@@ -133,6 +133,10 @@ export class UserService {
             }
             return this.getEngineers();
         }
+    }
+
+    public getHistoryById(id: number) {
+        return this.http.get('/api/v1/persons/history/' + id).map((response: Response) => this.getAllByRole(response.json(), ["VE", "EN", "MG", "OP", "AN", "CL"]));
     }
 
     public getVentureRepresentatives(): Observable<User[]> {

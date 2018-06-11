@@ -12,8 +12,9 @@ var logErrAndCall = require('../local_util').logErrAndCall;
 
 
 var queries = {
-	getPersons: 'SELECT ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE FROM PERSON ORDER BY LAST_NAME, FIRST_NAME ASC',
-	getPerson: 'SELECT ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE FROM PERSON WHERE ID = ?',
+	getPersons: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON ORDER BY LAST_NAME, FIRST_NAME, MODIFIED_BY ASC',
+	getPerson: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON WHERE ID = ?',
+	getPersonHistory: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, DATETIME(HIST_CREATED ,"unixepoch", "localtime") AS HIST_CREATED, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, MODIFIED_BY FROM PERSON_HIST WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
 	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID AND WO.STATUS_CODE = "AS"',
 	getPersonOrderStats:
@@ -240,6 +241,46 @@ var persons_db = {
 		dbUtil.performDelete(orderRelation,'PERSON_WO',function(err,newId){
 			if(err) return logErrAndCall(err,cb);
             cb(null,newId);
+		});
+	},
+	
+	readHistory: function(personId, cb) {
+		var db = dbUtil.getDatabase();
+		var getPersonStat = db.prepare(queries.getPersonHistory);
+		getPersonStat.bind(personId).all(function(err, rows) {
+			
+			if(err) return logErrAndCall(err,cb);
+			
+			// we need to group async funcs in order to deal in the same thread
+			var calls = [];
+			
+			rows.forEach(function(row){
+
+				if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
+
+				calls.push(function(async_cb) {
+
+					var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
+					getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+						getPersonOrderIdsStat.finalize();
+
+						var ids = [];
+						idRows.forEach((idRow) => { ids.push(idRow.ID); });
+						row.WORK_ORDERS = ids;
+						async_cb();
+					});
+				});
+			});
+			
+			async.parallelLimit(calls, 5, function(err, result) {
+                    getPersonStat.finalize();
+                    db.close();
+					if (err) {
+                        logErrAndCall(err,cb);
+					} else {
+						cb(null,rows);
+					}
+				});
 		});
 	}
 };

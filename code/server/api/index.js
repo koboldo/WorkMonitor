@@ -13,6 +13,7 @@ var payroll = require('./payroll');
 router.get('/v1/persons', persons.readAll);
 router.post('/v1/persons', persons.create);
 router.get('/v1/persons/:id', persons.read);
+router.get('/v1/persons/history/:id', persons.readHistory);
 router.put('/v1/persons/:id', persons.update);
 router.post('/v1/persons/:pid/order/:oid', persons.addOrder);
 router.delete('/v1/persons/:pid/order/:oid', persons.removeOrder);

@@ -1,5 +1,7 @@
 ﻿export class User {
     public id: number;
+    public excelId: number;
+
     public email: string;    //person
     public password: string;
     public firstName: string;
@@ -10,6 +12,7 @@
     public officeCode: string;
     public office: string;
     public isActive: string;
+    public isEmployed: string;
     public workOrders: number[];
 
     public company: string; //BOT for staff, Play for Ventures
@@ -28,6 +31,13 @@
     public salary: number;
     public salaryRate: number;
     public leaveRate: number;
+
+    creationDate: string;
+    histCreationDate: string; // only for history
+    lastModDate: string;
+    modifiedBy: number;
+
+    modifiedByUser: User;
 
 
 }

@@ -19,6 +19,17 @@
       </div>
     </p-header>
 
+    <p-column [style]="{'width':'26px','text-align':'center'}">
+      <ng-template let-userRow="rowData" pTemplate="body">
+          <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>-->
+          <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa-search"></button>
+          <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+            <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
+          </p-dialog>
+      </ng-template>
+    </p-column>
+
+
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
     <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">

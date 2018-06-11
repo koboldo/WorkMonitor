@@ -41,6 +41,7 @@ export class UserChangeComponent implements OnInit {
     /* autocompletion company */
     suggestedCompanies: string[];
     company: string;
+    displayUserHistoryDialog: boolean;
 
     rateControl = new FormControl("", [Validators.min(0)]);
 
@@ -75,6 +76,7 @@ export class UserChangeComponent implements OnInit {
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
         }
+
     }
 
     suggestUser(event) {
