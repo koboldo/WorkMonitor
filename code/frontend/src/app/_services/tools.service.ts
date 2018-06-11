@@ -72,7 +72,16 @@ export class ToolsService {
         }
 
         try {
-            return +price.replace(/\D/g, '');
+            // dot not allowed! let resultPrice = +price.replace(/\D/g, '');
+            let resultPrice: string = price.replace (/[^\d\.]/g, '');
+            //limit number of dots:
+            let dot: string[] = resultPrice.split('.');
+            if (dot.length > 2) {
+                resultPrice = dot[0]+'.'+dot[1];
+            }
+            resultPrice = parseFloat(resultPrice).toFixed(2);
+            console.log('parsing price: '+price+ ' after '+resultPrice);
+            return +resultPrice;
         } catch (e) {
             this.alertService.warn("Nie ustawiono ceny dla zlecenia "+workNo+"...");
             return undefined;

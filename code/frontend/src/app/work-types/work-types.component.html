@@ -113,7 +113,7 @@
           <!--<button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
                   width="200px" type="button" pButton icon="fa-check" (click)="save()" label="Zapisz"></button>-->
 
-            <button [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Zapisz</button>
+            <button [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity >= 0 && editedWorkType?.price >= 0)" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Zapisz</button>
         </div>
       </p-footer>
     </form>

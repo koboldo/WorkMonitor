@@ -149,7 +149,7 @@ export class WOService {
         }
 
         if (order.typeCode) {
-            order.type = this.workTypeService.getWorkTypeDescription(order.typeCode);
+            order.type = this.workTypeService.getWorkTypeDescription(order);
         }
 
         if (order.officeCode) {
