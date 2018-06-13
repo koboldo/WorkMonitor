@@ -85,8 +85,12 @@ export function commentAsSimpleString(comments: Comments): string {
 }
 
 export function DisplayTextCommentAsString(comments: Comments): string {
-    
-    return comments.comments[(comments.comments.length)-1].text
+    if (comments.comments && comments.comments.length > 0) {
+        if (comments.comments[(comments.comments.length) - 1]) {
+            return comments.comments[(comments.comments.length) - 1].text
+        }
+    }
+    return '';
 }
 
 
