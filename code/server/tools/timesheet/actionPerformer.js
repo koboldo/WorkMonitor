@@ -10,7 +10,7 @@ const moment = require('moment');
 const fs = require('fs');
 
 let host = 'localhost:8080';
-let files = ['logins.json','testActionsTS.json'];
+let files = ['logins.json','timesheets_2017.json','timesheets_2018.json'];
 
 
 function sendRequest(method, address, payload, token, cb) {

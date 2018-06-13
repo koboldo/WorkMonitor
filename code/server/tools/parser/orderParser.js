@@ -6,16 +6,38 @@ const fs = require('fs');
 // const dbUtil = require('./api/db/db_util');
 
 
-let inFilename = 'C:/MyArea/work/WorkMonitor/data/WO_WAR_LUKASZ.csv';
-let outFilename = 'C:/MyArea/work/WorkMonitor/data/WO_WAR_LUKASZ.sql';
+let inFilename = 'C:/MyArea/work/WorkMonitor/data/WO_KAT_LUKASZ.csv';
+let outFilename = 'C:/MyArea/work/WorkMonitor/data/WO_KAT_LUKASZ2.sql';
+
+// ------------------------------------------------------------
+if (!String.prototype.padStart) {
+    String.prototype.padStart = function padStart(targetLength,padString) {
+        targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+        padString = String((typeof padString !== 'undefined' ? padString : ' '));
+        if (this.length > targetLength) {
+            return String(this);
+        }
+        else {
+            targetLength = targetLength-this.length;
+            if (targetLength > padString.length) {
+                padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+            }
+            return padString.slice(0,targetLength) + String(this);
+        }
+    };
+}
 
 //{ sourceName: 'SOURCE_COLUMN', targetName: 'TARGET_COLUMN', mod: MODIFIER_FUNCTION, format: FORMAT_FUNCTION },
 let orderMappings = [
-    { sourceName: 'WORK_NO', targetName: 'WORK_NO' },
+    // { sourceName: 'WORK_NO', targetName: 'WORK_NO' },
+    { sourceName: 'WORK_NO', targetName: 'WORK_NO', mod: prepareWorkNo },
+    { sourceName: 'WORK_NO', targetName: 'MD_CAPEX' },
     { sourceName: 'PROTOCOL_NO', targetName: 'PROTOCOL_NO', mod: prepareProtocol },
+    { sourceName: 'PROTOCOL_NO', targetName: 'OFFICE_CODE', mod: prepareOfficeCode },
     { sourceName: 'PRICE', targetName: 'TOTAL_PRICE' },
     { sourceName: 'CREATED', targetName: 'CREATED', format: wrapDateInFunction },
     { sourceName: 'LAST_MOD', targetName: 'LAST_MOD', mod: checkClosedDate, format: wrapDateInFunction },
+    { sourceName: 'LAST_MOD', targetName: 'MODIFIED_BY', mod: prepareModifiedBy, format: formatInteger },
     { sourceName: 'ITEM_NO', targetName: 'ITEM_ID', format: formatSelectForItem },
     { sourceName: 'TYPE_CODE', targetName: 'COMPLEXITY_CODE', format: formatSelectForComplexityCode },
     { sourceName: 'TYPE_CODE', targetName: 'COMPLEXITY', format: formatSelectForComplexity },
@@ -37,8 +59,12 @@ function wrapDateInFunction(value, object) {
     return  `STRFTIME("%s","${value}")`;
 }
 
+function formatInteger(value, object) {
+    return value;
+}
+
 function formatSelectForVenture(value, object) {
-    return `(SELECT ID FROM PERSON WHERE INITIALS = "${value}")`;
+    return `(SELECT ID FROM PERSON WHERE LAST_NAME = "${value}")`;
 }
 
 function formatSelectForItem(value, object) {
@@ -53,6 +79,14 @@ function formatSelectForComplexity(value, object) {
     return `(SELECT COMPLEXITY FROM WORK_TYPE WHERE TYPE_CODE = "${value}")`;
 }
 
+function prepareModifiedBy(record) {
+    return 137;
+}
+
+function prepareOfficeCode(record) {
+    return "KAT";
+}
+
 function prepareItemDescription(record) {
     if(record.COMMENT_1 != '' && record.COMMENT_2 != '') return record.COMMENT_1.replace(/"/g, '\'') + '|||' + record.COMMENT_2.replace(/"/g, '\'');
     if(record.COMMENT_1 != '') return record.COMMENT_1.replace(/"/g, '\'');
@@ -64,6 +98,10 @@ function prepareProtocol(record) {
     if(/^[0-9]{1,2}.[0-9]{1,2}.[0-9]{4}/.test(record.PROTOCOL_NO) ) return null;
     if(/^[0-9]{4}.[0-9]{1,2}.[0-9]{1,2}/.test(record.PROTOCOL_NO) ) return null;
     return record.PROTOCOL_NO;
+}
+
+function prepareWorkNo(record) {
+    return "KAT-CUST_" + (++workNoseqCounter).toString().padStart(6,'0');
 }
 
 function prepareItemAddress(record) {
@@ -203,7 +241,7 @@ function handleParsingResult(records) {
         if(idx == 12) loadPricesToList(records[idx]);
 
         // if(idx < 14 || records[idx].WORK_NO == null || records[idx].WORK_NO == '') continue;
-        if(idx < 14 || !/^[0-9_]+$/.test(records[idx].WORK_NO)) continue;
+        if(idx < 14 || !/^[A-Z0-9_-]+$/.test(records[idx].WORK_NO)) continue;
         mapRecord(records[idx]);
     }
 
@@ -221,10 +259,12 @@ function formatOrders() {
     });
 }
 
+
 let orders = [];
 let itemsMap = new Map();
 let sqls = [];
 let priceList = [];
+let workNoseqCounter = 0;
 
 function main() {
     try {

@@ -1,0 +1,8 @@
+[{
+    "actionName": "login",
+    "role": "operator",
+    "arg": {
+        "email":"koboldo@gmail.com",
+        "password":"welcome1"
+    }
+}]

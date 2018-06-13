@@ -1,16 +1,25 @@
 #!/bin/bash
 # set -x 
 
+DAYS=()
+
 PERIOD_DATE_PREFIX=201801
 DAYS_TO_SWITCH=31
+for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
 
-CURRENT_DATE=$(date +%Y%m%d)
-CURRENT_TIME=$(date +%T)
+# PERIOD_DATE_PREFIX=201802
+# DAYS_TO_SWITCH=28
+# for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
 
-for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH)
+# PERIOD_DATE_PREFIX=201803
+# DAYS_TO_SWITCH=31
+# for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
+
+
+
+for DAY in ${DAYS[@]}
 do 
-	# echo $PERIOD_DATE_PREFIX$DAY
-	date +%Y%m%d -s "$PERIOD_DATE_PREFIX$DAY"
+	date +%Y%m%d -s "$DAY"
 	date +%T -s "08:00:00"
 
 	(cd ../..; nohup ./runapp.bat &)
@@ -29,5 +38,4 @@ do
 	}
 done
 
-date +%Y%m%d -s "$CURRENT_DATE"
-date +%T -s "$CURRENT_TIME"
+./setCurrentTime.sh

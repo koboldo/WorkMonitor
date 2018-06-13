@@ -1,0 +1,25 @@
+#!/bin/bash
+# set -x 
+
+DAYS=()
+
+PERIOD_DATE_PREFIX=201801
+DAYS_TO_SWITCH=31
+for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
+
+PERIOD_DATE_PREFIX=201802
+DAYS_TO_SWITCH=28
+for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
+
+PERIOD_DATE_PREFIX=201803
+DAYS_TO_SWITCH=31
+for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH); do	DAYS+=($PERIOD_DATE_PREFIX$DAY); done
+
+echo ${DAYS[@]}
+
+
+
+for DAY in $(seq -f "%02g" $DAYS_TO_SWITCH)
+do 
+	echo "$PERIOD_DATE_PREFIX$DAY"
+done
