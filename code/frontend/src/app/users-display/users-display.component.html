@@ -7,9 +7,10 @@
   <!--[(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"-->
   <p-dataTable [value]="users" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
                selectionMode="single"
+               sortField="excelId" sortOrder="1"
                [(selection)]="selectedUser"
                (onRowDblclick)="onRowDblclick($event)"
-               resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
+               resizableColumns="true" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
 
     <p-header>
       <div>
@@ -28,6 +29,8 @@
           </p-dialog>
       </ng-template>
     </p-column>
+
+    <p-column [sortable]="true" field="excelId" header="Id excel" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'25px'}"></p-column>
 
 
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
@@ -84,9 +87,11 @@
 
     <p-column [sortable]="true" field="email" header="Email" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'40px'}"></p-column>
     <p-column [sortable]="true" field="phone" header="Telefon" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}"></p-column>
+    <!--
     <p-column [sortable]="true" field="addressStreet" header="adres" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'65px'}"></p-column>
     <p-column [sortable]="true" field="addressPost" header="miejscowość" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'70px'}"></p-column>
     <p-column [sortable]="true" field="account" header="Rachunek" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'100px'}"></p-column>
+    -->
 
     <!--
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>

@@ -21,7 +21,7 @@
       <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
         <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
       </p-dialog>
-      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-window-close" label="Zakończ współprace"></button>
+      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-window-close" label="Zakończ współprace" class="orange-button"></button>
     </div>
 
     <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm">
@@ -44,7 +44,7 @@
 
       <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
         <label for="excelId">Identyfikator excel</label>
-        <input id="excelId" type="text" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required minlength="3" />
+        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required minlength="1" min="1"/>
         <div *ngIf="f.submitted && !excelId?.valid" class="help-block">Identyfikator w excel jest wymagany</div>
       </div>
 
@@ -168,8 +168,8 @@
           </div>
 
           <div *ngIf="showProjectFactor()" class="form-group" [ngClass]="{ 'has-error': f.submitted && !projectFactor?.valid }">
-            <label for="projectFactor">Współczynnik (np. 1.2)</label>
-            <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="selectedUser.user.projectFactor" #projectFactor="ngModel" required projectFactor min="0" />
+            <label for="projectFactor">Współczynnik puli (np. 1.2)</label>
+            <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="selectedUser.user.projectFactor" (ngModelChange)="changeSalaryAndLeaveRate($event)" #projectFactor="ngModel" required projectFactor min="0"/>
             <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik</div>
           </div>
 

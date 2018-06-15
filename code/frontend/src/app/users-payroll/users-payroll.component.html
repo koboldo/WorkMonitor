@@ -33,11 +33,13 @@
             </div>
 
         </div>
-        <p-dataTable [value]="currentPayroll" sortField="periodDate"
+        <p-dataTable [value]="currentPayroll"
+                     sortField="user.excelId" sortOrder="1"
                      rowGroupMode="rowspan"
                      #currentDt
                      [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
 
+            <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -250,8 +252,11 @@
         <p-dataTable [value]="approvedPayroll" sortField="periodDate"
                      rowGroupMode="rowspan"
                      #approvedDt
+                     sortField="user.excelId" sortOrder="1"
                      [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px"
                      csvSeparator=";" [exportFilename]="'wynagrodzenie_'+approvedPayroll[0].periodDate">
+
+            <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">

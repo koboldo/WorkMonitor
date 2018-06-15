@@ -124,6 +124,12 @@ export class UserChangeComponent implements OnInit {
         console.log('suggestedCompanies: ' + JSON.stringify(this.suggestedCompanies));
     }
 
+    changeSalaryAndLeaveRate(newPoolFactor: number) {
+        console.log('Pool factor changed: '+JSON.stringify(newPoolFactor));
+        this.selectedUser.user.salaryRate = +parseFloat(''+(22.5*newPoolFactor)).toFixed(3);
+        this.selectedUser.user.leaveRate  = +parseFloat(''+(22.5*newPoolFactor)).toFixed(3);
+    }
+
     changeUser() {
         this.loading = true;
 
@@ -135,7 +141,8 @@ export class UserChangeComponent implements OnInit {
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
-                this.router.navigate(['']); //navigate home
+                this.router.navigate(['employees']);
+                //this.router.navigate(['']); //navigate home
             },
                 error => {
                 this.alertService.error('Nie udalo się zmienić użytkownika' + error);

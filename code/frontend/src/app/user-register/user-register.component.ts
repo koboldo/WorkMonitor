@@ -72,11 +72,14 @@ export class UserRegisterComponent implements OnInit {
 
         if (this.user.isFromPool == 'Y' && this.operator.roleCode.indexOf('PR') == -1) {
             this.user.projectFactor = 0.8;
+            this.user.salaryRate = +parseFloat(''+(22.5*this.user.projectFactor)).toFixed(3);
+            this.user.leaveRate = +parseFloat(''+(22.5*this.user.projectFactor)).toFixed(3);
         } 
 
         this.user.roleCode.forEach(element => {
-            if (element==='VE')
-            this.user.isEmployed='N';
+            if (element==='VE') {
+                this.user.isEmployed = 'N';
+            }
         });
         
         this.userService.create(this.user)
