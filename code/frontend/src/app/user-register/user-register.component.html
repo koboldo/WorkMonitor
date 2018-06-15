@@ -91,6 +91,12 @@
                         <input id="addressPost" type="text" class="form-control" name="addressPost" [(ngModel)]="user.addressPost" #addressPost="ngModel" required addressPost minlength="7"/>
                         <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">wymagany jest poprawny kod pocztowy oraz miejscowość</div>
                     </div>
+                
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid  }">
+                        <label for="excelId">Identyfikator excel</label>
+                        <input id="excelId" type="text" class="form-control" name="excelId" [(ngModel)]="user.excelId" #excelId="ngModel"  required excelId minlength="1" pattern="^[1-9]+" />
+                        <div *ngIf="f.submitted && !excelId?.valid " class="help-block">Identyfikator w excel jest wymagany (liczba >0)</div>
+                    </div>
 
                     <div class="form-group" *ngIf="showRanks">
                         <label for="rankCode">Zaszeregowanie (powiązane ze sposobem wynagradzania)</label>
@@ -139,6 +145,12 @@
             <div class="form-group">
                 <p-radioButton name="activegroup" value="Y" [(ngModel)]="user.isActive" label="Aktywny (Konto - może się logować)"></p-radioButton>
                 <p-radioButton name="activegroup" value="N" [(ngModel)]="user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+            </div>
+            <div *ngIf="user.roleCode.indexOf('VE') == -1">
+                <div class="form-group">
+                    <p-radioButton name="employgroup" value="Y" [(ngModel)]="user.isEmployed" label="Jest pracownikiem"></p-radioButton>
+                    <p-radioButton name="employgroup" value="N" [(ngModel)]="user.isEmployed" label="Nie jest pracownikiem"></p-radioButton>
+                </div>
             </div>
 
 

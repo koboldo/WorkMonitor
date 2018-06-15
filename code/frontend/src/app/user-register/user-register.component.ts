@@ -45,6 +45,7 @@ export class UserRegisterComponent implements OnInit {
         this.user.roleCode = ['EN'];
         this.user.officeCode = 'WAW';
         this.user.isActive = 'Y';
+        this.user.isEmployed= 'Y';
     }
 
     ngOnInit():void {
@@ -73,6 +74,11 @@ export class UserRegisterComponent implements OnInit {
             this.user.projectFactor = 0.8;
         } 
 
+        this.user.roleCode.forEach(element => {
+            if (element==='VE')
+            this.user.isEmployed='N';
+        });
+        
         this.userService.create(this.user)
             .subscribe(
                 data => {
