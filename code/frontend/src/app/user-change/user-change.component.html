@@ -21,9 +21,59 @@
       <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
         <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
       </p-dialog>
-      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-window-close" label="Zakończ współprace" class="orange-button"></button>
+      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="ShowDismissDialog()" icon="fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
     </div>
-
+<!-- Modal dismiss-->
+    <p-dialog  [header]="'Zakończenie współpracy z ' +selectedUser.user.firstName + ' '+selectedUser.user.lastName" [(visible)]="displayDismissDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">  
+        <p-fieldset legend="Dane pracownika" > 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Imię:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.firstName}}</div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Nazwisko:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.lastName}}</div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Adres e-mail:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.email}}</div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Identyfikator Exced ID:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.excelId}}</div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Funkcja w systemie:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.role}}</div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">Biuro macierzyste:</div>
+                <div class="ui-grid-col-8">{{selectedUser.user.office}}</div>
+            </div>
+            <br/>            
+        </p-fieldset>
+        <br/>
+        <p-fieldset legend="Zakończyć współpracę ?">         
+          <div class="ui-grid-row" align="center">
+              <div class="ui-grid-col-12" align="center">
+                <p >Zakończenie współpracy spowoduje usunięcie wszystkich danych pracownika czy jesteś pewien że chcesz zakończyć współpracę? </p>
+              </div>             
+          </div>
+          <br/>
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4" align="center">
+              <button type="button" pButton (click)="DissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
+            </div>
+            <div class="ui-grid-col-8" align="center">
+              <button type="button" pButton (click)="displayDismissDialog=false" icon="fa-window-close" label="Anuluj" class="ui-button-info"></button>
+            </div>
+        </div>
+        <br/>
+      </p-fieldset>
+  <br/>
+      </p-dialog> 
+        
+<!-- Modal dismiss-->
     <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm">
       <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
         <label for="firstName">Imie</label>
