@@ -79,7 +79,7 @@ export class MyWoComponent implements OnInit {
    }
 
 public getCancelOrHoldComment(order: Order): string {
-    if (order.comments) {
+    if (order && order.comments) {
         return DisplayTextCommentAsString(order.comments);
     } else {
         return '';
