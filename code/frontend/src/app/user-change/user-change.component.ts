@@ -76,11 +76,11 @@ export class UserChangeComponent implements OnInit {
 
     }
 
-    public ShowDismissDialog ()
+    public showDismissDialog ()
     {
         this.displayDismissDialog=true;        
     }
-    public DissmisWorker ()
+    public dissmisWorker ()
     {
         this.selectedUser.user.isEmployed='N';
         this.selectedUser.user.isActive='N';
@@ -88,6 +88,7 @@ export class UserChangeComponent implements OnInit {
         this.selectedUser.user.phone="000 000 000";
         this.selectedUser.user.addressPost="usunięto";;
         this.selectedUser.user.addressStreet="usunięto";
+        this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
         this.userService.update(this.selectedUser.user)
             .subscribe(
                 data => {

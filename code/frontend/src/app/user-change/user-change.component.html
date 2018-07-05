@@ -21,7 +21,8 @@
       <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
         <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
       </p-dialog>
-      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1" type="button" pButton (click)="ShowDismissDialog()" icon="fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
+      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'Y'" type="button" pButton (click)="showDismissDialog()" icon="fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
+      <p *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p>
     </div>
 <!-- Modal dismiss-->
     <p-dialog  [header]="'Zakończenie współpracy z ' +selectedUser.user.firstName + ' '+selectedUser.user.lastName" [(visible)]="displayDismissDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">  
@@ -62,7 +63,7 @@
           <br/>
           <div class="ui-grid-row">
             <div class="ui-grid-col-4" align="center">
-              <button type="button" pButton (click)="DissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
+              <button type="button" pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
             </div>
             <div class="ui-grid-col-8" align="center">
               <button type="button" pButton (click)="displayDismissDialog=false" icon="fa-window-close" label="Anuluj" class="ui-button-info"></button>
