@@ -464,7 +464,6 @@ export class WoComponent implements OnInit {
 
         let workTypeParam: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, 'STD');
         if (workTypeParam && workTypeParam.complexity >= 0) {
-            order.complexity = workTypeParam.complexity;
             order.type = this.workTypeService.getWorkTypeDescription(order);
         } else {
             console.log("workTypeParam = "+JSON.stringify(workTypeParam));
