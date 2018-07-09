@@ -95,7 +95,7 @@
 
       <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
         <label for="excelId">Identyfikator excel</label>
-        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required minlength="1" min="1"/>
+        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required min="0"/>
         <div *ngIf="f.submitted && !excelId?.valid" class="help-block">Identyfikator w excel jest wymagany</div>
       </div>
 

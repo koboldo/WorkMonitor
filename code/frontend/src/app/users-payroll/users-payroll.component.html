@@ -40,6 +40,7 @@
                      [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
 
             <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
+            <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -133,7 +134,7 @@
                     </ng-template>
                     <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
 
-
+                    <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                             <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
