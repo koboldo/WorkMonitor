@@ -110,7 +110,11 @@
                              rowGroupMode="subheader" groupField="periodDate" expandableRowGroups="true" [sortableRowGroup]="false"
                              [style]="{'margin-top':'20px'}" scrollable="true" scrollHeight="600px"
                              #historicalDt
-                             csvSeparator=";" [exportFilename]="'wynagrodzenia_historyczne'">
+                             csvSeparator=";" [exportFilename]="'wynagrodzenia_historyczne'"
+                             selectionMode="multiple"
+                             [selection]="selectedPeriod"
+                             selectionOnly="true"
+                             >
 
 
                     <ng-template pTemplate="rowgroupheader" let-rowData>
@@ -126,11 +130,15 @@
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{calculatePayrollCost(rowData.periodDate) | currency:'PLN'}}</span>
                         </div>
 
-                        <div style="float: right; max-width: 5%;">
+                        <div style="float: right; max-width: 10%;">
                             <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
                             <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
+                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="Export do csv" (click)="Export(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
                         </div>
 
+                        <!-- <div style="float: right; max-width: 10%;">
+                        <button type="button" pButton icon="fa-file-o" iconPos="left" label="Export" (click)="Export(rowData.periodDate,historicalDt)"></button>
+                        </div> -->
                     </ng-template>
                     <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
 

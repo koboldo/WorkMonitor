@@ -4,7 +4,7 @@ import { CurrencyPipe } from '@angular/common';
 
 import { AlertService, UserService, DictService, AuthenticationService, PayrollService } from '../_services/index';
 import { User, CodeValue, SearchUser, UserPayroll } from '../_models/index';
-import {SelectItem} from 'primeng/primeng'
+import {SelectItem, DataTable} from 'primeng/primeng'
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime.js';
 import { Observable }    from 'rxjs/Observable';
@@ -36,7 +36,7 @@ export class UsersPayrollComponent implements OnInit {
 
     displayApproveDialog: boolean;
     displayApproveResultDialog: boolean;
-
+    selectedPayrolls: UserPayroll[];
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -51,6 +51,18 @@ export class UsersPayrollComponent implements OnInit {
     ngOnInit():void {
         this.dictService.init();
         this.authService.userAsObs.subscribe(user => this.initAll(user));
+    }
+
+    // eksport do CSV
+    public Export(text:string, table: DataTable)
+    {
+        this.selectedPayrolls=[];
+                this.historicalPayrolls.forEach(element => {
+                    if (element.periodDate==text)
+                    this.selectedPayrolls.push(element)
+                });
+                table.selection=this.selectedPayrolls;
+        table.exportCSV({selectionOnly:true});
     }
 
     private searchPayrolls():void {
