@@ -57,6 +57,8 @@ var filters = {
         lastModBefore: 'WO.LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s","utc")',
         lastModAfter: 'WO.LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s","utc")',
         personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
+        firstCoBefore: 'WO.ID IN (SELECT Q.ID FROM ( SELECT WO.ID, WO.LAST_MOD FROM WORK_ORDER WO WHERE STATUS_CODE = "CO" UNION ALL SELECT WOH.ID, WOH.LAST_MOD FROM WORK_ORDER_HIST WOH WHERE STATUS_CODE = "CO" ) Q GROUP BY Q.ID HAVING MIN(Q.LAST_MOD) <= CAST(STRFTIME("%%s","%(firstCoBefore)s","utc","+1 day","-1 second") AS INTEGER) )',
+        firstCoAfter: 'WO.ID IN (SELECT Q.ID FROM ( SELECT WO.ID, WO.LAST_MOD FROM WORK_ORDER WO WHERE STATUS_CODE = "CO" UNION ALL SELECT WOH.ID, WOH.LAST_MOD FROM WORK_ORDER_HIST WOH WHERE STATUS_CODE = "CO" ) Q GROUP BY Q.ID HAVING MIN(Q.LAST_MOD) >= CAST(STRFTIME("%%s","%(firstCoAfter)s","utc") AS INTEGER))',
     },
     calculateTotalPrice: {
         dateAfter: '%(dateAfter)s',
@@ -81,7 +83,6 @@ var orders_db = {
         var db = dbUtil.getDatabase();
         // TODO: filtrowanie
         var readFilters = dbUtil.prepareFilters(params,filters.getOrders);
-        // var query = queries.getOrders + readFilters;
         var query = sprintf(queries.getOrders, readFilters);
         
         if(logger.isDebugEnabled()) logger.debug('query for getting orders: ' + query);

@@ -552,7 +552,7 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="person" path="/api/v1/persons/3" id="20272d17-0a2c-4afc-8d2b-60d8b1dba272">
+		<con:resource name="person" path="/api/v1/persons/52" id="20272d17-0a2c-4afc-8d2b-60d8b1dba272">
 			<con:settings/>
 			<con:parameters/>
 			<con:method name="read person" id="5744f725-1c0a-4269-b81c-003c71f67646" method="GET">
@@ -1399,7 +1399,7 @@
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="status codes table" path="/api/v1/codes/WORK_STATUS" id="e725ee92-36da-41f8-89af-130ae90cd1a8">
+		<con:resource name="status codes table" path="/api/v1/codes/RANK" id="e725ee92-36da-41f8-89af-130ae90cd1a8">
 			<con:settings/>
 			<con:parameters/>
 			<con:method name="read codes" id="59026121-1213-4dac-b62b-8c5d0ea5a0de" method="GET">
@@ -2561,7 +2561,7 @@
 					<con:params/>
 					<con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Response</con:element>
 				</con:representation>
-				<con:request name="read work type - success" id="bce8acd3-b124-4190-b1c8-3353aba364e1" mediaType="application/json">
+				<con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403</con:status><con:params/><con:element xmlns:ns="http://localhost/api/v1/workTypes/1">ns:Fault</con:element></con:representation><con:request name="read work type - success" id="bce8acd3-b124-4190-b1c8-3353aba364e1" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -2862,7 +2862,7 @@
 					<con:jmsPropertyConfig/>
 					<con:parameters>
   <con:entry key="workDateAfter" value="2018-01-01"/>
-  <con:entry key="workDateBefore" value="2018-01-05"/>
+  <con:entry key="workDateBefore" value="2018-01-12"/>
 </con:parameters>
 					<con:parameterOrder>
 						<con:entry>workDateAfter</con:entry>
@@ -2937,9 +2937,9 @@
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-	"personId": 5,
-	"from": "2018-01-10 08:00:00",
-	"to": "2018-01-10 14:30:00",
+	"personId": 137,
+	"from": "2018-03-29 08:00:00",
+	"to": "2018-03-29 14:30:00",
 	"break": "10"
 }</con:request>
 					<con:originalUri>http://jdmiddleware.pl/api/v1/timesheets</con:originalUri>
@@ -3031,20 +3031,21 @@
 						<con:description xsi:nil="true"/>
 					</con:parameter>
 				</con:parameters>
-				<con:request name="read all time for person - success" id="cad91a09-8f01-44e7-a073-186d83d59c39" mediaType="application/json">
+				<con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://localhost/api/v1/timesheets">tim:Response</con:element></con:representation><con:request name="read all time for person - success" id="cad91a09-8f01-44e7-a073-186d83d59c39" mediaType="application/json">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request/>
-					<con:credentials>
+					<con:originalUri>http://localhost/api/v1/timesheets</con:originalUri><con:credentials>
 						<con:authType>No Authorization</con:authType>
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-  <con:entry key="workDateAfter" value="2017-11-01"/>
-  <con:entry key="workDateBefore" value="2017-11-05"/>
+  <con:entry key="workDateAfter" value="2018-01-01"/>
+  <con:entry key="workDateBefore" value="2018-01-30"/>
+  <con:entry key="personId" value="83"/>
 </con:parameters>
 					<con:parameterOrder>
 						<con:entry>workDateAfter</con:entry>
@@ -3366,7 +3367,24 @@
 						<con:entry>dateAfter</con:entry>
 					</con:parameterOrder>
 				</con:request>
-			</con:method>
+			<con:request name="report person orders (default filter) - success" id="26b5a2c6-b8a9-4b9a-83b6-24405a3d4009" mediaType="application/json">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request/>
+					<con:originalUri>http://localhost/api/v1/persons/3/orders</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters><entry key="dateBefore" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+					<con:parameterOrder>
+						<con:entry>dateBefore</con:entry>
+						<con:entry>dateAfter</con:entry>
+					</con:parameterOrder>
+				</con:request></con:method>
 		</con:resource>
 		<con:resource name="report orders total price" path="/api/v1/report/ordersTotalPrice" id="01df1ba1-5ebb-46e8-940b-24b5d6fc4108">
 			<con:settings/>
@@ -3578,15 +3596,11 @@
   <con:entry key="personId" value=""/>
   <con:entry key="periodDate" value=""/>
 </con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll for given month with approval - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
-  <con:entry key="approved" value="Y"/>
-  <con:entry key="overTimeFactor" value="1.5"/>
+  <con:entry key="approved" value="N"/>
   <con:entry key="approval" value="Y"/>
   <con:entry key="personId" value=""/>
-  <con:entry key="periodDate" value="2018-03-01"/>
-</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
-  <con:entry key="personId" value=""/>
-  <con:entry key="history" value="Y"/>
-</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="payroll self service" path="/api/v1/payroll/51" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters><con:parameter><con:name>history</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get payroll - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get payroll with history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface>
+  <con:entry key="periodDate" value="2018-01-01"/>
+</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="payroll self service" path="/api/v1/payroll/51" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters><con:parameter><con:name>history</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get payroll - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get payroll with history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface>
 	<con:testSuite id="b8a7d5e9-988a-4cc7-878e-2a0a57af0e95" name="Test work-monitor">
 		<con:description>Database has to be filled only with test data.
 Before running test suite again test data has to be refreshed.
@@ -3605,7 +3619,7 @@ Before running test suite again test data has to be refreshed.
 						<con:endpoint>http://localhost:8080</con:endpoint>
 						<con:request>{
 	"email": "koboldo@gmail.com",
-	"password": "welcome1"
+	"password": "00crazydog00"
 }
 </con:request>
 						<con:originalUri>http://localhost/api/v1/login</con:originalUri>
@@ -3654,7 +3668,7 @@ Before running test suite again test data has to be refreshed.
 			<con:settings/>
 			<con:testStep type="restrequest" name="read person" id="a02aef78-a7ea-4394-b95e-de0e78dda28b">
 				<con:settings/>
-				<con:config service="http://localhost:8080" methodName="read person" resourcePath="/api/v1/persons/3" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" methodName="read person" resourcePath="/api/v1/persons/52" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="read person" id="5e363b38-b821-4d89-9ff3-950707286b0a" mediaType="application/json">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -3783,7 +3797,7 @@ Before running test suite again test data has to be refreshed.
 			<con:settings/>
 			<con:testStep type="restrequest" name="update person" id="510e8955-2a85-4ff8-a562-aef5645d93e3">
 				<con:settings/>
-				<con:config service="http://localhost:8080" resourcePath="/api/v1/persons/3" methodName="update person" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" resourcePath="/api/v1/persons/52" methodName="update person" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="update person" id="d4717c70-831f-40e9-9e44-1da287061a7e" mediaType="application/json" postQueryString="false">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -3820,7 +3834,7 @@ Before running test suite again test data has to be refreshed.
 			</con:testStep>
 			<con:testStep type="restrequest" name="update person 2" id="b8a0ad4e-bde8-4b0c-98b4-4ff68d713a10">
 				<con:settings/>
-				<con:config service="http://localhost:8080" resourcePath="/api/v1/persons/3" methodName="update person" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" resourcePath="/api/v1/persons/52" methodName="update person" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="update person 2" id="d4717c70-831f-40e9-9e44-1da287061a7e" mediaType="application/json" postQueryString="false">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -4080,7 +4094,7 @@ Before running test suite again test data has to be refreshed.
 			<con:settings/>
 			<con:testStep type="restrequest" name="read codes" id="62f44099-24c9-4d73-9c36-0ef028de249c">
 				<con:settings/>
-				<con:config service="http://localhost:8080" resourcePath="/api/v1/codes/WORK_STATUS" methodName="read codes" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" resourcePath="/api/v1/codes/RANK" methodName="read codes" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="read codes" id="db3ffa06-35b5-46f4-94e7-4df2190702c6" mediaType="application/json">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -5157,7 +5171,7 @@ log.info("workNo " + workNo);
 				</con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>workNo</con:name><con:value>20180226153402186</con:value></con:property></con:properties></con:testCase><con:properties/></con:testSuite><con:properties>
 		<con:property>
 			<con:name>securityToken</con:name>
-			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkcmlhbi5wZWxjemFyQGJvdHByb2pla3QuY29tIiwiaWQiOjUxLCJyb2xlIjpbIkVOIl0sImlhdCI6MTUyMDUyMDEwMiwiZXhwIjoxNTIwNTIxOTAyfQ.9-62B_s_XbWa-y7it4Fwwl-hGuX3CNHUjyOED9RHvP8</con:value>
+			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjEzNywicm9sZSI6WyJQUiIsIk9QIl0sImlhdCI6MTUyMzUxMDEzNywiZXhwIjoxNTIzNTY0MTM3fQ.oKtH1YVflQXO651VlTQv1Qy_4k99_yhQsONQP8kbJZ8</con:value>
 		</con:property>
 	</con:properties>
 	<con:wssContainer/>

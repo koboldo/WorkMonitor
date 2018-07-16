@@ -9,6 +9,9 @@ var payrolls = {
 
     read: function(req, resp){
 
+        console.log("query " + JSON.stringify(req.query));
+        console.log("params " + JSON.stringify(req.params));
+        
         var isBoss = ([].concat(req.context.role).indexOf('PR') > -1);
 
         var params = {};
