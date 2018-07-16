@@ -94,8 +94,8 @@
                 
                     <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid  }">
                         <label for="excelId">Identyfikator excel</label>
-                        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="user.excelId" #excelId="ngModel"  required excelId minlength="1" pattern="^[1-9]+" />
-                        <div *ngIf="f.submitted && !excelId?.valid " class="help-block">Identyfikator w excel jest wymagany (liczba >0)</div>
+                        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="user.excelId" #excelId="ngModel"  required excelId minlength="1" min="0" />
+                        <div *ngIf="f.submitted && !excelId?.valid " class="help-block">Identyfikator w excel jest wymagany (liczba >= 0)</div>
                     </div>
 
                     <div class="form-group" *ngIf="showRanks">

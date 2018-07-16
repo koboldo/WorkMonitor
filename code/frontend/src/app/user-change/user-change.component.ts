@@ -43,6 +43,11 @@ export class UserChangeComponent implements OnInit {
     company: string;
     displayUserHistoryDialog: boolean;
 
+    // Dismiss worker
+    displayDismissDialog:boolean;
+
+    //
+
     rateControl = new FormControl("", [Validators.min(0)]);
 
     constructor(private router:Router,
@@ -69,6 +74,31 @@ export class UserChangeComponent implements OnInit {
         this.mapToRanks(this.dictService.getRanks());
         this.mapToAgreements(this.dictService.getAgreements());
 
+    }
+
+    public showDismissDialog ()
+    {
+        this.displayDismissDialog=true;        
+    }
+    public dissmisWorker ()
+    {
+        this.selectedUser.user.isEmployed='N';
+        this.selectedUser.user.isActive='N';
+        this.selectedUser.user.account="0000000000 0000000000 000000";
+        this.selectedUser.user.phone="000 000 000";
+        this.selectedUser.user.addressPost="usunięto";;
+        this.selectedUser.user.addressStreet="usunięto";
+        this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
+        this.userService.update(this.selectedUser.user)
+            .subscribe(
+                data => {
+                this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
+                this.router.navigate(['employees']);
+            },
+                error => {
+                this.alertService.error('Nie udalo się zakończyć współpracy' + error);
+                this.loading = false;
+            });
     }
 
     public onSelectUser(value : SearchUser): void {

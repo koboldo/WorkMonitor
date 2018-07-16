@@ -21,10 +21,13 @@ export class UsersDisplayComponent implements OnInit {
     items:MenuItem[] = [];
 
     operator:User;
+    allUsers:User[] = [];
     users:User[] = [];
     selectedUser: User;
 
+
     displayUserHistoryDialog: boolean;
+    filter1: string = 'EMPLOYED_ONLY';
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -65,11 +68,33 @@ export class UsersDisplayComponent implements OnInit {
         }
     }
 
-    private removeRolesAndGetManagedUsers(user:User):void {
-        if (user) {
-            this.operator = user;
-            this.userService.getStaff().subscribe(engineers => this.users = engineers);
+    filter(input): void {
+        console.log('radio clicked '+this.filter1+ ' '+JSON.stringify(input));
+        //this is shame, onClick is triggerd before model is changed therefore I will rely on input...
+        if (input === 'ALL') {
+            this.users = this.allUsers;
+        } else if (input === 'EMPLOYED_ONLY') {
+            this.users = [];
+            for(let user of this.allUsers) {
+                if (user.isEmployed === 'Y') {
+                    this.users.push(user);
+                }
+            }
+        } else {
+            this.users = [];
+            console.log(input + ' unimplemented!');
         }
     }
 
+    private removeRolesAndGetManagedUsers(user:User):void {
+        if (user) {
+            this.operator = user;
+            this.userService.getStaff().subscribe(engineers => this.processUsers(engineers));
+        }
+    }
+
+    private processUsers(engineers:User[]):void {
+        this.allUsers = engineers;
+        this.filter(this.filter1);
+    }
 }

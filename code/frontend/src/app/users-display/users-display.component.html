@@ -2,6 +2,11 @@
 
 <div style="margin-top: 5px" *ngIf="users" class="ui-g">
 
+  <div class="ui-g" style="width:250px;margin-bottom:10px">
+    <div class="ui-g-12"><p-radioButton name="group2" value="ALL" label="Pokaż wszystkich" [(ngModel)]="filter1" inputId="preopt1" (onClick)="filter('ALL')"></p-radioButton></div>
+    <div class="ui-g-12"><p-radioButton name="group2" value="EMPLOYED_ONLY" label="Ukryjwaj byłych pracowników" [(ngModel)]="filter1" inputId="preopt2" (onClick)="filter('EMPLOYED_ONLY')"></p-radioButton></div>
+  </div>
+
   <p-contextMenu #cm [model]="items"></p-contextMenu>
 
   <!--[(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"-->
@@ -43,6 +48,12 @@
 
     <!--<p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>-->
     <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
+      <ng-template let-col let-user="rowData" pTemplate="body">
+        <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+        <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="isEmployed" header="Pracuje" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
