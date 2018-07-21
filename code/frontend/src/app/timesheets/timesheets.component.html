@@ -89,6 +89,12 @@
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
         </ng-template>
       </p-column>
+      <!--Dodane szkolenie -->
+      <p-column  [editable]="user?.roleCode?.indexOf('OP') > -1"  [sortable]="true" field="timesheetCoaching" header="Czas szkolenia [g:mm]" [filter]="true" filterPlaceholder="Filtruj">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetCoaching}}</div>
+        </ng-template>
+      </p-column>
 
       <p-column *ngIf="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" field="status" header="Zapisano" [style]="{'width': '60px'}">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">

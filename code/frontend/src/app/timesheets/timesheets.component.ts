@@ -64,6 +64,7 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetTo = '';
             event.data.timesheetBreakInMinutes = 15;
             event.data.color = '#2399e5';
+            event.data.timesheetCoaching='';
         }
     }
 
@@ -96,7 +97,19 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetTo = event.data.timesheetTo.substr(0, 5);
         }
 
-
+        if (event.data.timesheetCoaching.length === 1) {
+            if (this.hourRegexp.test(event.data.timesheetCoaching)) {
+                event.data.timesheetCoaching+=':';
+            } 
+            else {
+                event.data.timesheetCoaching='';
+            }           
+        }
+      
+        else if (event.data.timesheetCoaching.length > 5) {
+            console.log('Too long Coaching');
+            event.data.timesheetCoaching = event.data.timesheetCoaching.substr(0, 5);
+        }
     }
 
     private restore(userWithSheet: UserWithSheet) {
@@ -106,6 +119,7 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.timesheetFrom = this.sEmptySheet;
             userWithSheet.timesheetTo = this.sEmptySheet;
             userWithSheet.timesheetUsedTime = userWithSheet.copy.usedTime;
+            userWithSheet.timesheetCoaching=this.sEmptySheet;
             userWithSheet.color = '#902828';
 
             if (this.isWeekend(userWithSheet.copy.from)) {
@@ -140,8 +154,12 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.timesheetTo = this.sLeave;
             userWithSheet.color = '#444433';
         }
-
-
+        if (userWithSheet.timesheetUsedTime<parseFloat(userWithSheet.timesheetCoaching)){
+            userWithSheet.timesheetCoaching='';
+        }
+        if ( !this.timeRegexp.test(userWithSheet.timesheetCoaching)){
+            userWithSheet.timesheetCoaching='';
+        }
 
         userWithSheet.status = 'OK';
     }
@@ -182,6 +200,14 @@ export class TimesheetsComponent implements OnInit {
             this.restore(event.data);
         }
 
+        else if (event.data.timesheetCoaching && event.data.timesheetCoaching!== this.sEmptySheet && event.data.timesheetCoaching!== this.sWeekendSheet && !this.timeRegexp.test(event.data.timesheetCoaching)) {
+            this.alertService.warn('Nie zmieniono czasu szkolenia ze względu na nieprawidlową wartość: '+event.data.timesheetCoaching);
+            this.restore(event.data);
+        }
+        else if(parseFloat(event.data.timesheetCoaching) > event.data.timesheetUsedTime){
+            this.alertService.warn('Szkolenie dłuższe od czasu pracy: '+event.data.timesheetCoaching);
+            this.restore(event.data);
+        }
         else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)  && this.leaveRegexp.test(event.data.isLeave)) {
             if (event.data.timesheetFrom <= event.data.timesheetTo) {
                 let newTimesheet: Timesheet = this.getTimesheet(event.data);
@@ -330,6 +356,7 @@ export class UserWithSheet extends User {
     timesheetBreakInMinutes: string;
     isLeave: string;
 
+    timesheetCoaching:string;
     color: string;
     status: string;
 
