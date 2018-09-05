@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -7,6 +7,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
+import { DataTable } from 'primeng/primeng';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class TimesheetsComponent implements OnInit {
     afterDate:Date;
     beforeDate:Date;
 
-
+    isEditable:boolean = true;
     user: User;
 
 
@@ -55,8 +56,8 @@ export class TimesheetsComponent implements OnInit {
 
 
     onEditInit(event) {
-        console.log('about edit !' + JSON.stringify(event.data));
-
+        console.log('about edit !' + JSON.stringify(event.data));        
+        this.addCoaching(event.data.isLeave);     
         if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
             event.data.timesheetFrom === this.sWeekendSheet && event.data.timesheetTo === this.sWeekendSheet) {
             //cleaning BRAK values
@@ -65,7 +66,7 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetBreakInMinutes = 15;
             event.data.color = '#2399e5';
             event.data.timesheetCoaching='';
-        }
+        }       
     }
 
     onEditCancel(event) {
@@ -110,6 +111,15 @@ export class TimesheetsComponent implements OnInit {
             console.log('Too long Coaching');
             event.data.timesheetCoaching = event.data.timesheetCoaching.substr(0, 5);
         }
+    }
+    
+    private addCoaching (text:string){
+        if (text==='Y'){          
+            this.isEditable=false;
+        }
+        else{
+            this.isEditable=true;           
+        }   
     }
 
     private restore(userWithSheet: UserWithSheet) {
