@@ -1515,7 +1515,7 @@
 					<con:name>personId</con:name>
 					<con:style>QUERY</con:style>
 				</con:parameter>
-			</con:parameters>
+			<con:parameter required="false" disableUrlEncoding="false"><con:name>firstCoAfter</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>firstCoBefore</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter></con:parameters>
 			<con:method name="read orders" id="939a7ab3-3c8d-4a75-aef1-be743f1b47b6" method="GET">
 				<con:settings/>
 				<con:parameters/>
@@ -1691,7 +1691,7 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="read all orders - success" id="c06d78da-cc2b-46c7-8cf7-936f6a15573f" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
@@ -1703,13 +1703,11 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters/>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+					<con:parameters>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="read all orders by type - success" id="46ca2517-a543-4150-8914-223f7dbcf936" mediaType="application/json">
 					<con:settings>
@@ -1724,14 +1722,11 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-						<entry key="type" value="AU" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="type" value="AU"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="read all orders modified before - success" id="c2737574-2c45-4d93-8989-9c8bafbb353b" mediaType="application/json">
 					<con:settings>
@@ -1746,14 +1741,11 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-						<entry key="lastModBefore" value="2017-07-16" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="lastModBefore" value="2017-07-16"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="read all orders modified in range - success" id="c2737574-2c45-4d93-8989-9c8bafbb353b" mediaType="application/json">
 					<con:settings>
@@ -1769,14 +1761,11 @@
 					<con:jmsPropertyConfig/>
 					<con:parameters>
   <con:entry key="lastModAfter" value="2017-07-10"/>
+  <con:entry key="firstCoBefore" value=""/>
   <con:entry key="lastModBefore" value="2017-07-16"/>
+  <con:entry key="firstCoAfter" value=""/>
 </con:parameters>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="read all orders by status - success" id="c2737574-2c45-4d93-8989-9c8bafbb353b" mediaType="application/json">
 					<con:settings>
@@ -1791,14 +1780,11 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-						<entry key="status" value="AS" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="status" value="AS"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="read all orders of person - success" id="c2737574-2c45-4d93-8989-9c8bafbb353b" mediaType="application/json">
 					<con:settings>
@@ -1813,16 +1799,30 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-						<entry key="personId" value="1" xmlns="http://eviware.com/soapui/config"/>
-					</con:parameters>
-					<con:parameterOrder>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>personId</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="personId" value="1"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
-			</con:method>
+			<con:request name="read all orders completed before - success" id="c2737574-2c45-4d93-8989-9c8bafbb353b" mediaType="application/json">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8080</con:endpoint>
+					<con:request/>
+					<con:originalUri>http://localhost/api/v1/orders</con:originalUri>
+					<con:credentials>
+						<con:authType>No Authorization</con:authType>
+					</con:credentials>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters>
+  <con:entry key="firstCoBefore" value="2018-05-31"/>
+  <con:entry key="firstCoAfter" value="2018-05-01"/>
+</con:parameters>
+					<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
+				</con:request></con:method>
 			<con:method name="add order" id="22847e85-b159-4a1a-9fda-54956ada8a80" method="POST">
 				<con:settings/>
 				<con:parameters/>
@@ -1916,13 +1916,11 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters/>
-					<con:parameterOrder>
-						<con:entry>personId</con:entry>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+					<con:parameters>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>personId</con:entry><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 				<con:request name="add order without workNo - success" id="89e304bd-88e0-4419-954e-51a1cbf53729" mediaType="application/json" postQueryString="false">
 					<con:settings>
@@ -1943,17 +1941,15 @@
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters/>
-					<con:parameterOrder>
-						<con:entry>personId</con:entry>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+					<con:parameters>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>personId</con:entry><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:request>
 			</con:method>
 		</con:resource>
-		<con:resource name="order" path="/api/v1/orders/2" id="645097ff-3fd6-427e-a51e-0bc42845a9a0">
+		<con:resource name="order" path="/api/v1/orders/10061" id="645097ff-3fd6-427e-a51e-0bc42845a9a0">
 			<con:settings/>
 			<con:parameters/>
 			<con:method name="read order" id="40e1bea1-89c0-46cc-a121-9c513615201c" method="GET">
@@ -2180,7 +2176,7 @@
 					<con:encoding>UTF-8</con:encoding>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-   "comment": "To są jakieś żarty"
+   "statusCode": "CL"
 }</con:request>
 					<con:originalUri>http://localhost/api/v1/orders/2</con:originalUri>
 					<con:credentials>
@@ -2717,8 +2713,8 @@
 						<con:endpoint>http://localhost:8080</con:endpoint>
 						<con:request>{
 	"personId": 51,
-	"from": "2018-05-10 08:00:00",
-	"to": "2018-05-11 14:30:00"
+	"from": "2018-08-10 08:00:00",
+	"to": "2018-08-14 14:30:00"
 }</con:request>
 						<con:originalUri>http://localhost/api/v1/timesheets/leave</con:originalUri>
 						<con:credentials>
@@ -2937,10 +2933,11 @@
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-	"personId": 137,
-	"from": "2018-03-29 08:00:00",
-	"to": "2018-03-29 14:30:00",
-	"break": "10"
+	"personId": 83,
+	"from": "2018-06-30 08:00:00",
+	"to": "2018-06-30 14:30:00",
+	"break": "10",
+	"training": "60"
 }</con:request>
 					<con:originalUri>http://jdmiddleware.pl/api/v1/timesheets</con:originalUri>
 					<con:credentials>
@@ -3043,8 +3040,8 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-  <con:entry key="workDateAfter" value="2018-01-01"/>
-  <con:entry key="workDateBefore" value="2018-01-30"/>
+  <con:entry key="workDateAfter" value="2018-07-01"/>
+  <con:entry key="workDateBefore" value="2018-07-30"/>
   <con:entry key="personId" value="83"/>
 </con:parameters>
 					<con:parameterOrder>
@@ -3596,11 +3593,11 @@
   <con:entry key="personId" value=""/>
   <con:entry key="periodDate" value=""/>
 </con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll for given month with approval - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
-  <con:entry key="approved" value="N"/>
+  <con:entry key="approved" value="Y"/>
   <con:entry key="approval" value="Y"/>
   <con:entry key="personId" value=""/>
-  <con:entry key="periodDate" value="2018-01-01"/>
-</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="payroll self service" path="/api/v1/payroll/51" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters><con:parameter><con:name>history</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get payroll - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get payroll with history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface>
+  <con:entry key="periodDate" value="2018-06-01"/>
+</con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get all payroll history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>periodDate</con:entry><con:entry>overTimeFactor</con:entry><con:entry>personId</con:entry><con:entry>approval</con:entry><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="payroll self service" path="/api/v1/payroll/51" id="897d37dd-6b6c-46d8-9449-9361f4c72a1f"><con:settings/><con:parameters><con:parameter><con:name>history</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:method name="get payroll" id="bce389a7-b109-4d2e-aa2b-29332cbf1fce" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>403 404 500</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pay="http://localhost/api/v1/report/payroll">pay:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="get payroll - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request><con:request name="get payroll with history - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="history" value="Y" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>history</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface>
 	<con:testSuite id="b8a7d5e9-988a-4cc7-878e-2a0a57af0e95" name="Test work-monitor">
 		<con:description>Database has to be filled only with test data.
 Before running test suite again test data has to be refreshed.
@@ -3910,7 +3907,7 @@ Before running test suite again test data has to be refreshed.
 			<con:settings/>
 			<con:testStep type="restrequest" name="update order" id="286a4725-4682-4115-b1c5-96aaf1168687">
 				<con:settings/>
-				<con:config service="http://localhost:8080" resourcePath="/api/v1/orders/2" methodName="update order" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" resourcePath="/api/v1/orders/10061" methodName="update order" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="update order" id="2b3d7c78-4a8e-4e2d-9d01-6ee80471b4bc" mediaType="application/json" postQueryString="false">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -4250,7 +4247,7 @@ Before running test suite again test data has to be refreshed.
 			<con:settings/>
 			<con:testStep type="restrequest" name="read order" id="8105d5b2-7080-4726-9a67-3d2d765a1603">
 				<con:settings/>
-				<con:config service="http://localhost:8080" resourcePath="/api/v1/orders/2" methodName="read order" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<con:config service="http://localhost:8080" resourcePath="/api/v1/orders/10061" methodName="read order" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:restRequest name="read order" id="4e3993dc-d5ff-4386-b9a0-8b2dcaffc586" mediaType="application/json">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
@@ -4399,14 +4396,11 @@ Before running test suite again test data has to be refreshed.
 						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 						<con:jmsPropertyConfig/>
 						<con:parameters>
-							<entry key="status" value="AS" xmlns="http://eviware.com/soapui/config"/>
-						</con:parameters>
-						<con:parameterOrder>
-							<con:entry>status</con:entry>
-							<con:entry>lastModBefore</con:entry>
-							<con:entry>personId</con:entry>
-							<con:entry>lastModAfter</con:entry>
-						</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="status" value="AS"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+						<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 					</con:restRequest>
 				</con:config>
 			</con:testStep>
@@ -4441,14 +4435,11 @@ Before running test suite again test data has to be refreshed.
 						<con:jmsPropertyConfig/>
 						<con:parameters>
   <con:entry key="lastModAfter" value="2017-10-06"/>
+  <con:entry key="firstCoBefore" value=""/>
   <con:entry key="lastModBefore" value="2017-10-07"/>
+  <con:entry key="firstCoAfter" value=""/>
 </con:parameters>
-						<con:parameterOrder>
-							<con:entry>status</con:entry>
-							<con:entry>lastModBefore</con:entry>
-							<con:entry>personId</con:entry>
-							<con:entry>lastModAfter</con:entry>
-						</con:parameterOrder>
+						<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 					</con:restRequest>
 				</con:config>
 			</con:testStep>
@@ -4491,14 +4482,11 @@ Before running test suite again test data has to be refreshed.
 						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 						<con:jmsPropertyConfig/>
 						<con:parameters>
-							<entry key="type" value="AU" xmlns="http://eviware.com/soapui/config"/>
-						</con:parameters>
-						<con:parameterOrder>
-							<con:entry>status</con:entry>
-							<con:entry>lastModBefore</con:entry>
-							<con:entry>personId</con:entry>
-							<con:entry>lastModAfter</con:entry>
-						</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="type" value="AU"/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+						<con:parameterOrder><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>personId</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 					</con:restRequest>
 				</con:config>
 			</con:testStep>
@@ -4550,14 +4538,11 @@ Before running test suite again test data has to be refreshed.
 						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 						<con:jmsPropertyConfig/>
 						<con:parameters>
-							<entry key="personId" value="" xmlns="http://eviware.com/soapui/config"/>
-						</con:parameters>
-						<con:parameterOrder>
-							<con:entry>personId</con:entry>
-							<con:entry>status</con:entry>
-							<con:entry>lastModBefore</con:entry>
-							<con:entry>lastModAfter</con:entry>
-						</con:parameterOrder>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="personId" value=""/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+						<con:parameterOrder><con:entry>personId</con:entry><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 					</con:restRequest>
 				</con:config>
 			</con:testStep>
@@ -5161,17 +5146,15 @@ log.info("workNo " + workNo);
 					</con:credentials>
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
-					<con:parameters/>
-					<con:parameterOrder>
-						<con:entry>personId</con:entry>
-						<con:entry>status</con:entry>
-						<con:entry>lastModBefore</con:entry>
-						<con:entry>lastModAfter</con:entry>
-					</con:parameterOrder>
+					<con:parameters>
+  <con:entry key="firstCoBefore" value=""/>
+  <con:entry key="firstCoAfter" value=""/>
+</con:parameters>
+					<con:parameterOrder><con:entry>personId</con:entry><con:entry>status</con:entry><con:entry>lastModBefore</con:entry><con:entry>lastModAfter</con:entry><con:entry>type</con:entry><con:entry>firstCoBefore</con:entry><con:entry>firstCoAfter</con:entry></con:parameterOrder>
 				</con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>workNo</con:name><con:value>20180226153402186</con:value></con:property></con:properties></con:testCase><con:properties/></con:testSuite><con:properties>
 		<con:property>
 			<con:name>securityToken</con:name>
-			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjEzNywicm9sZSI6WyJQUiIsIk9QIl0sImlhdCI6MTUyMzUxMDEzNywiZXhwIjoxNTIzNTY0MTM3fQ.oKtH1YVflQXO651VlTQv1Qy_4k99_yhQsONQP8kbJZ8</con:value>
+			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjEzNywicm9sZSI6WyJQUiIsIk9QIl0sImlhdCI6MTUzMTc1MjUyMiwiZXhwIjoxNTMxODA2NTIyfQ.a-5xI62SFu_IZbbLKOzkQRosih29HjIQWh4Osma7sRQ</con:value>
 		</con:property>
 	</con:properties>
 	<con:wssContainer/>
