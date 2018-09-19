@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { User, Timesheet, SearchUser } from '../_models/index';
 import { TimesheetService, ToolsService, AlertService } from '../_services/index';
+import { Calendar } from '../_models/calendar';
 
 @Component({
     selector: 'user-leave',
@@ -17,7 +18,7 @@ export class UserLeaveComponent implements OnInit {
 
     afterDate:Date;
     beforeDate:Date;
-
+    pl:Calendar;
 
     constructor(private timesheetService:TimesheetService,
                 private alertService:AlertService,
@@ -25,6 +26,7 @@ export class UserLeaveComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.pl=new Calendar();
     }
 
     public showEdit(): void {
