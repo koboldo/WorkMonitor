@@ -54,7 +54,7 @@ var filters = {
     getOrders: {
         type: 'TYPE_CODE = "%(type)s"',
         status: 'STATUS_CODE = "%(status)s"',
-        lastModBefore: 'WO.LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s","utc")',
+        lastModBefore: 'WO.LAST_MOD <= STRFTIME("%%s","%(lastModBefore)s","+1 day","-1 second","utc")',
         lastModAfter: 'WO.LAST_MOD >= STRFTIME("%%s","%(lastModAfter)s","utc")',
         personId: 'WO.ID in (SELECT WO_ID FROM PERSON_WO WHERE PERSON_ID = %(personId)s)',
         firstCoBefore: 'WO.ID IN (SELECT Q.ID FROM ( SELECT WO.ID, WO.LAST_MOD FROM WORK_ORDER WO WHERE STATUS_CODE = "CO" UNION ALL SELECT WOH.ID, WOH.LAST_MOD FROM WORK_ORDER_HIST WOH WHERE STATUS_CODE = "CO" ) Q GROUP BY Q.ID HAVING MIN(Q.LAST_MOD) <= CAST(STRFTIME("%%s","%(firstCoBefore)s","utc","+1 day","-1 second") AS INTEGER) )',
