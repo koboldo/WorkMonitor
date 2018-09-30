@@ -9,6 +9,7 @@
           <i class="fa fa-search"></i>
           <input #gb type="text" pInputText size="50" placeholder="Filtruj">
           <button type="button" pButton icon="fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
+          <button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa-list" iconPos="left" ></button>
         </div>
       </p-header>
       <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
@@ -227,3 +228,7 @@
   </p-dialog>
   <!--end add comment-->
 </p-panel>
+
+<p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
+        <app-group-status-change [ListToDisplay]="orders" [Operator]="engineer" (closeModalEvent)="onClose($event)"></app-group-status-change>
+      </p-dialog>
