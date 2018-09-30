@@ -13,7 +13,7 @@ var insertSeq = 'INSERT INTO SEQUENCER (SEQ_NAME,SEQ_VAL) VALUES ( $NAME , ( SEL
 var querySeq = 'SELECT SEQ_VAL FROM SEQUENCER WHERE ROWID = ?';
 
 var columnsToSkip = ['ID','LAST_MOD','CREATED'];
-var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK'];
+var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK','TRAINING'];
 
 var db_util = {
     

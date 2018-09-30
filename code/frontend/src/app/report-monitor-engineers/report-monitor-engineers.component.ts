@@ -7,6 +7,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { User, UserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
+import { Calendar } from '../_models/calendar';
 
 declare var jquery:any;
 declare var $ :any;
@@ -40,6 +41,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     chartShareData: any;
     chartEarnedData: any;
     chartsReady: boolean;
+    pl:Calendar;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -54,6 +56,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.afterDate = toolsService.getCurrentDateDayOperation(-31);
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.future = toolsService.getCurrentDateDayOperation(+10).toISOString().substring(0, 10);
+        this.pl=new Calendar();
     }
 
     ngOnInit() {

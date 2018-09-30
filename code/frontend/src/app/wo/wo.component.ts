@@ -9,6 +9,7 @@ import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '..
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
 import { MenuItem } from 'primeng/primeng';
+import { Calendar } from '../_models/calendar';
 
 @Component({
     selector: 'app-wo',
@@ -71,6 +72,7 @@ export class WoComponent implements OnInit {
     newComment: string;
 
     operator:User;
+    pl:Calendar;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -89,6 +91,7 @@ export class WoComponent implements OnInit {
             {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', disabled: true, command: (event) => this.add()}
         ];
         this.relatedItem = <RelatedItem>{};
+        this.pl=new Calendar();
     }
 
     ngOnInit() {
@@ -101,7 +104,7 @@ export class WoComponent implements OnInit {
         this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
 
-        this.search();
+        this.search();     
     }
 
     private assignOperator(operator:User):void {

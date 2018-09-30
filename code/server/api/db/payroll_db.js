@@ -18,21 +18,22 @@ var queries = {
                ( ( (TL.TIME_BEFORE - TL.TIME_AFTER + 1) / 86400) - COUNT(1) ) * 86400 PERIOD_LENGTH
           FROM HOLIDAYS,
                (
-                   SELECT STRFTIME('%%s', PERIOD_DATE, 'start of month') TIME_AFTER,
-                          STRFTIME('%%s', PERIOD_DATE, 'start of month', '+1 month', '-1 day', '+86399 second') TIME_BEFORE
-                   FROM QUERY_PARAMS
+                SELECT 
+                    CAST(STRFTIME('%%s', PERIOD_DATE, 'start of month') AS INTEGER) TIME_AFTER,
+                    CAST(STRFTIME('%%s', PERIOD_DATE, 'start of month', '+1 month', '-1 day', '+86399 second') AS INTEGER) TIME_BEFORE
+                FROM QUERY_PARAMS
                ) TL
           WHERE HDATE BETWEEN TL.TIME_AFTER AND TL.TIME_BEFORE
     )
     , WO_INIT AS (
-        SELECT ID, WORK_NO, PRICE, COMPLEXITY, ROWID, IS_FROM_POOL
+        SELECT ID, WORK_NO, PRICE, COMPLEXITY, ROWID, LAST_MOD, IS_FROM_POOL
         FROM (
-            SELECT WO.ID, WO.WORK_NO, WO.PRICE, WO.COMPLEXITY, WO.ROWID, WO.IS_FROM_POOL
+            SELECT WO.ID, WO.WORK_NO, WO.PRICE, WO.COMPLEXITY, (WO.ROWID*100000000) ROWID, WO.LAST_MOD, WO.IS_FROM_POOL
             FROM WORK_ORDER WO, TIME_PARAMS TP
             WHERE STATUS_CODE = "CO"
                 AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
             UNION ALL
-            SELECT WOH.ID, WOH.WORK_NO, WOH.PRICE, WOH.COMPLEXITY, (WOH.ROWID*10000000) ROWID, WOH.IS_FROM_POOL
+            SELECT WOH.ID, WOH.WORK_NO, WOH.PRICE, WOH.COMPLEXITY, WOH.ROWID, WOH.LAST_MOD, WOH.IS_FROM_POOL
             FROM WORK_ORDER_HIST WOH, TIME_PARAMS TP
             WHERE STATUS_CODE = "CO"
                 AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
@@ -44,18 +45,18 @@ var queries = {
         )
     )
     , WO_FILTER AS (
-        SELECT ID, MIN(ROWID) ROWID
+        SELECT ID, MIN(LAST_MOD) LAST_MOD
         FROM WO_INIT
         GROUP BY ID
     )
     , PERIOD_WO AS (
-        SELECT WI.ID, WI.WORK_NO, WI.PRICE, WI.COMPLEXITY, WI.IS_FROM_POOL
-        FROM WO_INIT WI, WO_FILTER WF
-        WHERE WI.ID = WF.ID AND WI.ROWID = WF.ROWID
+        SELECT WI.ID, WI.WORK_NO, WI.PRICE, WI.COMPLEXITY, WI.IS_FROM_POOL, PW.PERSON_ID
+        FROM WO_INIT WI, WO_FILTER WF, PERSON_WO PW
+        WHERE WI.ID = WF.ID AND WI.LAST_MOD = WF.LAST_MOD AND WI.ID = PW.WO_ID
     
     )
     , PERIOD_STATS AS (
-        SELECT CAST(COALESCE(
+       SELECT CAST(COALESCE(
             (SELECT SUM(PRICE)
             FROM PERIOD_WO
             WHERE IS_FROM_POOL = "Y")
@@ -64,15 +65,15 @@ var queries = {
     , PERSON_TIME AS (
         SELECT 
             PERSON_ID
-            , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "N" THEN USED_TIME ELSE 0 END) AS DOUBLE) / 3600.0, 2) WORK_TIME
+            , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "N" THEN USED_TIME - TRAINING ELSE 0 END) AS DOUBLE) / 3600.0, 2) WORK_TIME
             , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "Y" THEN USED_TIME ELSE 0 END) AS DOUBLE) / 3600.0, 2) LEAVE_TIME
+            , ROUND(CAST (SUM(CASE WHEN IS_LEAVE = "N" THEN TRAINING ELSE 0 END) AS DOUBLE) / 3600.0, 2) TRAINING_TIME
         FROM TIME_SHEET, TIME_PARAMS TP
         WHERE WORK_DATE BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
         GROUP BY PERSON_ID
     )
     , PERSON_NONPOOL_WO_TIME AS (
-        
-        SELECT PW.PERSON_ID, SUM(PRWO.COMPLEXITY) NONPOOL_TIME
+        SELECT PW.PERSON_ID, ROUND(SUM(PRWO.COMPLEXITY),2) NONPOOL_TIME
         FROM PERIOD_WO PRWO JOIN PERSON_WO PW ON PRWO.ID = PW.WO_ID
         WHERE PRWO.IS_FROM_POOL = "N"
         GROUP BY PW.PERSON_ID
@@ -82,6 +83,7 @@ var queries = {
             Q.ID PERSON_ID
             , Q.TIME_AFTER PERIOD_DATE
             , Q.WORK_TIME
+            , Q.TRAINING_TIME
             , Q.LEAVE_TIME
             , Q.NONPOOL_WORK_TIME
             , CASE WHEN Q.POOL_WORK_TIME > 0 THEN Q.POOL_WORK_TIME ELSE 0 END POOL_WORK_TIME
@@ -93,28 +95,34 @@ var queries = {
             , Q.SALARY
             , Q.SALARY_RATE
             , Q.LEAVE_RATE
+            , Q.COMPLETED_WO
         FROM (
             SELECT
                 P.ID
                 , TP.TIME_AFTER
                 , COALESCE(PT.WORK_TIME,0) WORK_TIME
                 , COALESCE(PT.LEAVE_TIME,0) LEAVE_TIME
-                , CASE WHEN P.IS_FROM_POOL = "Y" THEN PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0) ELSE 0 END POOL_WORK_TIME
+                , COALESCE(PT.TRAINING_TIME,0) TRAINING_TIME
+                , CASE WHEN P.IS_FROM_POOL = "Y" THEN ROUND(PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0),2) ELSE 0 END POOL_WORK_TIME
                 , CASE WHEN P.IS_FROM_POOL = "Y" THEN COALESCE(PNPT.NONPOOL_TIME,0) ELSE COALESCE(PT.WORK_TIME,0) END NONPOOL_WORK_TIME
                 , CASE WHEN P.IS_FROM_POOL = "Y" THEN (PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0))*P.PROJECT_FACTOR ELSE 0 END POOL_RATE_COMPONENT
-                , (PT.WORK_TIME + PT.LEAVE_TIME - TP.PERIOD_LENGTH) OVER_TIME
+                , (PT.WORK_TIME + PT.LEAVE_TIME + PT.TRAINING_TIME - TP.PERIOD_LENGTH) OVER_TIME
                 , P.IS_FROM_POOL
                 , P.RANK_CODE
                 , P.PROJECT_FACTOR
                 , COALESCE(P.SALARY,0) SALARY
                 , COALESCE(P.SALARY_RATE,0) SALARY_RATE
                 , COALESCE(P.LEAVE_RATE,0) LEAVE_RATE
+                , (SELECT GROUP_CONCAT(PWO.ID,"|") FROM PERIOD_WO PWO JOIN PERSON_WO PW ON PWO.ID = PW.WO_ID WHERE PW.PERSON_ID = P.ID) COMPLETED_WO 
             FROM PERSON P 
                 LEFT JOIN PERSON_TIME PT ON P.ID = PT.PERSON_ID 
                 LEFT JOIN PERSON_NONPOOL_WO_TIME PNPT ON P.ID = PNPT.PERSON_ID
                 JOIN TIME_PARAMS TP
                 JOIN QUERY_PARAMS QP
             WHERE (P.ROLE_CODE LIKE '%%EN%%' OR P.ROLE_CODE LIKE '%%MG%%') AND P.RANK_CODE IS NOT NULL
+            AND CASE WHEN P.IS_FROM_POOL == "Y" 
+                THEN P.IS_EMPLOYED == "Y" OR (SELECT COUNT(1) FROM PERIOD_WO PW WHERE PW.PERSON_ID = P.ID) 
+                ELSE P.IS_EMPLOYED == "Y" END
         ) Q
     )
     , PERIOD_POOL_RATE AS (
@@ -132,13 +140,15 @@ var queries = {
             , Q.PERIOD_DATE
             , Q.LEAVE_TIME        
             , Q.WORK_TIME
-            , Q.POOL_WORK_TIME
+            , Q.TRAINING_TIME
             , Q.NONPOOL_WORK_TIME
+            , Q.POOL_WORK_TIME
             , Q.OVER_TIME
             , Q.LEAVE_DUE
+            , Q.TRAINING_DUE
             , Q.WORK_DUE
             , Q.OVER_DUE
-            , Q.LEAVE_DUE + Q.WORK_DUE + Q.OVER_DUE TOTAL_DUE
+            , Q.WORK_DUE + Q.LEAVE_DUE + Q.TRAINING_DUE + Q.OVER_DUE TOTAL_DUE
             , Q.IS_FROM_POOL
             , Q.RANK_CODE
             , Q.PROJECT_FACTOR
@@ -146,16 +156,19 @@ var queries = {
             , Q.POOL_RATE
             , Q.OVER_TIME_FACTOR
             , Q.APPROVED
+            , Q.COMPLETED_WO
             , Q.MODIFIER_ID
         FROM (
             SELECT PSI.PERSON_ID
                 , PSI.PERIOD_DATE
                 , PSI.WORK_TIME
                 , PSI.LEAVE_TIME
+                , PSI.TRAINING_TIME
                 , PSI.POOL_WORK_TIME
                 , PSI.NONPOOL_WORK_TIME
                 , PSI.OVER_TIME
                 , ROUND(PSI.LEAVE_TIME * PSI.LEAVE_RATE, 2) LEAVE_DUE
+                , ROUND(PSI.TRAINING_TIME * PSI.LEAVE_RATE, 2) TRAINING_DUE
                 , ROUND(CASE 
                     WHEN PSI.RANK_CODE = "YOU" OR PSI.RANK_CODE = "DZI" THEN PSI.WORK_TIME * PSI.SALARY_RATE
                     WHEN PSI.RANK_CODE = "REG" AND PSI.IS_FROM_POOL = "N" THEN PSI.WORK_TIME * PSI.SALARY_RATE
@@ -174,16 +187,17 @@ var queries = {
                     END, 2) OVER_DUE
                 , PSI.IS_FROM_POOL
                 , PSI.RANK_CODE
-                , PSI.PROJECT_FACTOR
+                , PSI.PROJECT_FACTOR 
+                , PSI.COMPLETED_WO
                 , PPR.BUDGET
                 , PPR.POOL_RATE
                 , QP.OVER_TIME_FACTOR
                 , QP.APPROVED
                 , QP.MODIFIER_ID
         FROM PERSON_STATS_INIT PSI JOIN PERIOD_POOL_RATE PPR JOIN QUERY_PARAMS QP
-            WHERE CASE WHEN QP.PERSON_ID = 0 THEN 1
-            WHEN PSI.PERSON_ID = QP.PERSON_ID THEN 1
-            ELSE 0 END
+        WHERE CASE WHEN QP.PERSON_ID = 0 THEN 1
+                     WHEN PSI.PERSON_ID = QP.PERSON_ID THEN 1
+                     ELSE 0 END
         ) Q
     )
     
@@ -192,11 +206,13 @@ var queries = {
                     PERIOD_DATE,
                     LEAVE_TIME,
                     WORK_TIME,
+                    TRAINING_TIME,
                     POOL_WORK_TIME,
                     NONPOOL_WORK_TIME,
                     OVER_TIME,
                     LEAVE_DUE,
                     WORK_DUE,
+                    TRAINING_DUE,
                     OVER_DUE,
                     TOTAL_DUE,
                     IS_FROM_POOL,
@@ -206,31 +222,36 @@ var queries = {
                     POOL_RATE,
                     OVER_TIME_FACTOR,
                     APPROVED,
+                    COMPLETED_WO,
                     MODIFIED_BY)
-                    
+                
+    
     SELECT  PS.PERSON_ID
-            , PS.PERIOD_DATE
-            , PS.LEAVE_TIME        
-            , PS.WORK_TIME
-            , PS.POOL_WORK_TIME
-            , PS.NONPOOL_WORK_TIME
-            , PS.OVER_TIME
-            , PS.LEAVE_DUE
-            , PS.WORK_DUE
-            , PS.OVER_DUE
-            , PS.TOTAL_DUE
-            , PS.IS_FROM_POOL
-            , PS.RANK_CODE
-            , PS.PROJECT_FACTOR
-            , PS.BUDGET
-            , PS.POOL_RATE
-            , PS.OVER_TIME_FACTOR
-            , PS.APPROVED
-            , PS.MODIFIER_ID
+           , PS.PERIOD_DATE
+           , PS.LEAVE_TIME        
+           , PS.WORK_TIME
+           , PS.TRAINING_TIME
+           , PS.POOL_WORK_TIME
+           , PS.NONPOOL_WORK_TIME
+           , PS.OVER_TIME
+           , PS.LEAVE_DUE
+           , PS.WORK_DUE
+           , PS.TRAINING_DUE
+           , PS.OVER_DUE
+           , PS.TOTAL_DUE
+           , PS.IS_FROM_POOL
+           , PS.RANK_CODE
+           , PS.PROJECT_FACTOR
+           , PS.BUDGET
+           , PS.POOL_RATE
+           , PS.OVER_TIME_FACTOR
+           , PS.APPROVED
+           , PS.COMPLETED_WO
+           , PS.MODIFIER_ID
     FROM PERSON_STATS PS LEFT JOIN PAYROLL PY ON PS.PERSON_ID = PY.PERSON_ID AND PS.PERIOD_DATE = PY.PERIOD_DATE
     WHERE PY.PERIOD_DATE IS NULL OR PS.APPROVED = "Y" OR (PS.APPROVED = "N" AND PY.APPROVED = "N")`,
     
-    getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, POOL_WORK_TIME, NONPOOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, BUDGET, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch", "localtime" ) LAST_MOD
+    getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, TRAINING_TIME, POOL_WORK_TIME, NONPOOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, TRAINING_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, COMPLETED_WO, BUDGET, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch", "localtime" ) LAST_MOD
                     FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
 
@@ -245,7 +266,7 @@ var filters = {
     getPayroll: {
         personId: 'AND CASE %(personId)s WHEN 0 THEN 1 ELSE PERSON_ID = %(personId)s END',
         periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")',
-        history: 'AND PERIOD_DATE <= STRFTIME("%%s", "now", "start of month","-1 month")'
+        history: 'AND PERIOD_DATE <= CAST(STRFTIME("%%s", "now", "start of month","-1 month") AS INTEGER)'
     }
 };
 
@@ -259,6 +280,7 @@ var payroll_db = {
         calls.push(
             function(_cb){
                 var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                // if(logger.isDebugEnabled()) logger.debug('query for payroll: ' + query);
                 var calculatePayrollStat = db.prepare(query);
                 calculatePayrollStat.get(function(err, result){
                     calculatePayrollStat.finalize();

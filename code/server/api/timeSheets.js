@@ -35,6 +35,7 @@ var timeSheets = {
 
         if([].concat(req.context.role).indexOf('OP') < 0)  {
             delete req.body.isLeave;
+            delete req.body.training;
         }  
         
         req.body.createdBy = req.context.id;
