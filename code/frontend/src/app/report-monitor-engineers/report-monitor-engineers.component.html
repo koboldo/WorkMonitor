@@ -95,12 +95,12 @@
 
         <p-column [sortable]="true" field="declaredTime" header="Czas zadeklarowany"  [style]="{'text-align':'right'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
-                <span>{{report[col.field]}} godz.</span>
+                <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="expectedTime" header="Czas zakładany" [style]="{'text-align':'right'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
-                <span>{{report[col.field]}} godz.</span>
+                <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
