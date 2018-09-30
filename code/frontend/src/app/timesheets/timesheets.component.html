@@ -84,7 +84,13 @@
         </ng-template>
       </p-column>
 
-      <p-column [sortable]="true" field="timesheetUsedTime" header="Godziny" [filter]="true" filterPlaceholder="Filtruj">
+      <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Szkolenie [g:mm]" field="timesheetTrainingInGMM" [filter]="true" filterPlaceholder="Filtruj">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTrainingInGMM}}</div>
+        </ng-template>
+      </p-column>
+
+      <p-column [sortable]="true" field="timesheetUsedTime" header="Obecność" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
         </ng-template>

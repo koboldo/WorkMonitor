@@ -65,9 +65,20 @@ export class UsersPayrollComponent implements OnInit {
         table.exportCSV({selectionOnly:true});
     }
 
-    private searchPayrolls():void {
-        this.payrollService.getCurrent(this.users).subscribe(userPayrolls => this.currentPayroll = userPayrolls);
+    public onTabOpen(event):void {
+        console.log('open ' + event.index);
+        this.searchPayrolls(false);
+    }
+
+    private saveCurrentAndSearchHist(userPayrolls:UserPayroll[]):void {
+        this.currentPayroll = userPayrolls;
         this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.processHistorical(userPayrolls));
+    }
+
+    private searchPayrolls(refresh: boolean):void {
+        if (refresh || this.historicalPayrolls === undefined || this.currentPayroll === undefined) {
+            this.payrollService.getCurrent(this.users).subscribe(userPayrolls => this.saveCurrentAndSearchHist(userPayrolls));
+        }
     }
 
     public routeToWorkMonitor():void {
@@ -127,7 +138,7 @@ export class UsersPayrollComponent implements OnInit {
         this.approvedPayrollCost = this.calculatePayrollCostFromPayrolls(approvedPayroll, approvedPayroll[0].periodDate);
 
         this.displayApproveResultDialog = true;
-        this.searchPayrolls();
+        this.searchPayrolls(true);
     }
 
     private initAll(user:User):void {
@@ -144,7 +155,7 @@ export class UsersPayrollComponent implements OnInit {
         for (let user of staff) {
             this.users.set(user.id, user);
         }
-        this.searchPayrolls();
+        //this.searchPayrolls();
     }
 
     private processHistorical(payrolls:UserPayroll[]):void {

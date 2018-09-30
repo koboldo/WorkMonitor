@@ -1,6 +1,7 @@
 
-<p-accordion>
-    <p-accordionTab header="Bieżace" [selected]="false" *ngIf="currentPayroll">
+<p-accordion (onOpen)="onTabOpen($event)">
+    <p-accordionTab header="Bieżace" [selected]="false">
+        <div *ngIf="currentPayroll">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
@@ -62,10 +63,16 @@
             <p-column header="Czas pracy" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Szkolenia" field="trainingTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    {{userPayroll[col.field] | currency:'PLN'}}
+                </ng-template>
+            </p-column>
+            <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
@@ -92,10 +99,11 @@
             </ng-template>
 
         </p-dataTable>
-
+        </div>
     </p-accordionTab>
 
-    <p-accordionTab header="Historyczne" [selected]="false" *ngIf="historicalPayrolls">
+    <p-accordionTab header="Historyczne" [selected]="false">
+        <div *ngIf="historicalPayrolls">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
@@ -119,7 +127,7 @@
 
                     <ng-template pTemplate="rowgroupheader" let-rowData>
 
-                        <div style="float: left; max-width: 95%;">
+                        <div style="float: left; max-width: 90%;">
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
                             <span [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
@@ -133,7 +141,7 @@
                         <div style="float: right; max-width: 10%;">
                             <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
                             <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
-                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="Export do csv" (click)="Export(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
+                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="Export(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
                         </div>
 
                         <!-- <div style="float: right; max-width: 10%;">
@@ -162,10 +170,16 @@
                     <p-column header="Czas pracy" field="workTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
                     <p-column header="Czas dla puli" field="poolWorkTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
                     <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+                    <p-column header="Szkolenia" field="trainingTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
                     <p-column header="Nadgodziny" field="overTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
                     <p-column header="Urlop" field="leaveTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
                     <p-column header="Obecnosc PLN" field="workDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                            {{userPayroll[col.field] | currency:'PLN'}}
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
@@ -194,7 +208,7 @@
                 </p-dataTable>
             </div>
         </div>
-
+    </div>
     </p-accordionTab>
 
 </p-accordion>
@@ -287,10 +301,16 @@
             <p-column header="Czas pracy" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Szkolenia" field="trainingTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                    {{userPayroll[col.field] | currency:'PLN'}}
+                </ng-template>
+            </p-column>
+            <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
