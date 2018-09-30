@@ -7,7 +7,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
-
+import { Calendar } from '../_models/calendar';
 
 @Component({
     selector: 'app-timesheets',
@@ -32,7 +32,7 @@ export class TimesheetsComponent implements OnInit {
 
 
     user: User;
-
+    pl:Calendar;
 
     constructor(private userService:UserService,
                 private timesheetService:TimesheetService,
@@ -51,6 +51,7 @@ export class TimesheetsComponent implements OnInit {
     ngOnInit() {
         this.authSerice.userAsObs.subscribe(user => this.user = user);
         this.search();
+        this.pl=new Calendar();
     }
 
 

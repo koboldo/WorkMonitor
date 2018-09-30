@@ -6,6 +6,7 @@ import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index'
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
+import { Calendar } from '../_models/calendar';
 
 
 @Component({
@@ -36,6 +37,7 @@ export class ChangeWoComplexityComponent implements OnInit {
     statuses:CodeValue[] = [];
 
     newComment: string;
+    pl:Calendar;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -46,6 +48,7 @@ export class ChangeWoComplexityComponent implements OnInit {
                 private authSerice:AuthenticationService) {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-161); //TODO change
         this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
+        this.pl=new Calendar();
     }
 
     ngOnInit() {
