@@ -57,6 +57,8 @@
             <span *ngIf="userPayroll.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">brak</span>
         </ng-template>
       </p-column>
+
+      <p-column header="Szkolenia" field="trainingTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
       <p-column header="Nadgodziny" field="overTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
       <p-column header="Urlop" field="leaveTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
@@ -64,6 +66,11 @@
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
           {{userPayroll[col.field] | currency:'PLN'}}
         </ng-template>
+      </p-column>
+      <p-column header="Szkolenia PLN" field="trainingDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+          <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+               {{userPayroll[col.field] | currency:'PLN'}}
+          </ng-template>
       </p-column>
       <p-column header="Nadgodziny PLN" field="overDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -138,12 +145,18 @@
                 <span *ngIf="userPayroll.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">brak</span>
             </ng-template>
         </p-column>
+        <p-column header="Szkolenia" field="trainingTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
         <p-column header="Nadgodziny" field="overTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
       <p-column header="Urlop" field="leaveTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
       <p-column header="Obecnosc PLN" field="workDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
           {{userPayroll[col.field] | currency:'PLN'}}
+        </ng-template>
+      </p-column>
+      <p-column header="Szkolenia PLN" field="trainingDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
+        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+            {{userPayroll[col.field] | currency:'PLN'}}
         </ng-template>
       </p-column>
       <p-column header="Nadgodziny PLN" field="overDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">

@@ -64,6 +64,7 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetFrom = '';
             event.data.timesheetTo = '';
             event.data.timesheetBreakInMinutes = 15;
+            event.data.timesheetTrainingInGMM = '';
             event.data.color = '#2399e5';
         }
     }
@@ -82,7 +83,7 @@ export class TimesheetsComponent implements OnInit {
                 event.data.timesheetFrom='';
             }
         } else if (event.data.timesheetFrom.length > 5) {
-            console.log('Too long from');
+            this.alertService.warn('Zbyt długie pole od '+event.data.timesheetFrom);
             event.data.timesheetFrom = event.data.timesheetFrom.substr(0, 5);
         }
 
@@ -93,16 +94,33 @@ export class TimesheetsComponent implements OnInit {
                 event.data.timesheetTo='';
             }
         } else if (event.data.timesheetTo.length > 5) {
-            console.log('Too long to');
+            this.alertService.warn('Zbyt długie pole do '+event.data.timesheetFrom);
             event.data.timesheetTo = event.data.timesheetTo.substr(0, 5);
         }
 
+        if (event.data.timesheetTrainingInGMM.length === 1) {
+            if (this.hourRegexp.test(event.data.timesheetTrainingInGMM)) {
+                event.data.timesheetTrainingInGMM+=':';
+            }
+            else {
+                event.data.timesheetTrainingInGMM='';
+            }
+        } else if (event.data.timesheetTrainingInGMM.length > 4) {
+            this.alertService.warn('Zbyt długie pole szkolenie '+event.data.timesheetTrainingInGMM);
+            if (event.data.timesheetTrainingInGMM.indexOf(':') === 1) {
+                event.data.timesheetTrainingInGMM = event.data.timesheetTrainingInGMM.substr(0, 4);
+            } else {
+                event.data.timesheetTrainingInGMM = '0';
+            }
+
+        }
 
     }
 
     private restore(userWithSheet: UserWithSheet) {
         if (userWithSheet.copy.usedTime == 0 && '00:00' == userWithSheet.copy.from.substr(11, 5) && '00:00' == userWithSheet.copy.to.substr(11, 5)) {
             userWithSheet.timesheetBreakInMinutes = this.sEmptySheet;
+            userWithSheet.timesheetTrainingInGMM = this.sEmptySheet;
             userWithSheet.timesheetWorkDate = userWithSheet.copy.from.substr(0, 10);
             userWithSheet.timesheetFrom = this.sEmptySheet;
             userWithSheet.timesheetTo = this.sEmptySheet;
@@ -111,6 +129,7 @@ export class TimesheetsComponent implements OnInit {
 
             if (this.isWeekend(userWithSheet.copy.from)) {
                 userWithSheet.timesheetBreakInMinutes = this.sWeekendSheet;
+                userWithSheet.timesheetTrainingInGMM = this.sWeekendSheet;
                 userWithSheet.timesheetFrom = this.sWeekendSheet;
                 userWithSheet.timesheetTo = this.sWeekendSheet;
                 userWithSheet.color = 'grey';
@@ -119,6 +138,7 @@ export class TimesheetsComponent implements OnInit {
 
         } else {
             userWithSheet.timesheetBreakInMinutes = userWithSheet.copy.break;
+            userWithSheet.timesheetTrainingInGMM = this.toolsService.convertMinutesToGMM(userWithSheet.copy.training);
             userWithSheet.timesheetWorkDate = userWithSheet.copy.from.substr(0, 10);
             userWithSheet.timesheetFrom = userWithSheet.copy.from.substr(11, 5);
             userWithSheet.timesheetTo = userWithSheet.copy.to.substr(11, 5);
@@ -137,6 +157,7 @@ export class TimesheetsComponent implements OnInit {
         userWithSheet.isLeave = userWithSheet.copy.isLeave;
         if (userWithSheet.isLeave === 'Y') {
             userWithSheet.timesheetBreakInMinutes = this.sLeave;
+            userWithSheet.timesheetTrainingInGMM = this.sLeave;
             userWithSheet.timesheetFrom = this.sLeave;
             userWithSheet.timesheetTo = this.sLeave;
             userWithSheet.color = '#444433';
@@ -148,11 +169,12 @@ export class TimesheetsComponent implements OnInit {
     }
 
 
-    private getTimesheet(userWithSheet: UserWithSheet): Timesheet {
+    private getTimesheet(userWithSheet: UserWithSheet, trainingInMinutes: number): Timesheet {
         let from: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetFrom+':00';
         let to: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetTo+':00';
         let timesheet: Timesheet = new Timesheet(userWithSheet.id, from, to);
         timesheet.break = userWithSheet.timesheetBreakInMinutes;
+        timesheet.training = ''+trainingInMinutes;
         return timesheet;
     }
 
@@ -160,11 +182,15 @@ export class TimesheetsComponent implements OnInit {
     private getLeaveCancelledTimesheet(userWithSheet: UserWithSheet): Timesheet {
         let timesheet: Timesheet = new Timesheet(userWithSheet.id, userWithSheet.timesheetWorkDate+' 08:00', userWithSheet.timesheetWorkDate+' 08:00');
         timesheet.break = '0';
+        timesheet.training = '0';
         timesheet.isLeave = 'N';
         return timesheet;
     }
 
     onEditComplete(event) {
+
+        let trainingInMinutes: number = event.data.timesheetTrainingInGMM.indexOf(':') == 1 ? parseInt(this.toolsService.convertGMMToMinutes(event.data.timesheetTrainingInGMM), 10) : 0;
+
         console.log('edited !' + JSON.stringify(event.data));
         if (this.leaveRegexp.test(event.data.isLeave) && event.data.isLeave==='N' && event.data.copy.isLeave!=='N') {
             this.alertService.info('Usuwam urlop '+event.data.timesheetWorkDate+' dla '+event.data.firstName+' '+event.data.lastName+' ...');
@@ -183,13 +209,26 @@ export class TimesheetsComponent implements OnInit {
             this.restore(event.data);
         }
 
+        else if (trainingInMinutes > 0 && (!event.data.timesheetUsedTime || event.data.timesheetUsedTime === 0) ) {
+            this.alertService.warn('Nie zmieniono deklaracji - wprowadzono szkolenie ['+trainingInMinutes+'][min], brak czasu pracy!');
+            this.restore(event.data);
+        }
+
+        else if (event.data.timesheetUsedTime && parseInt(this.toolsService.convertHoursDecimalToMinutes(event.data.timesheetUsedTime, 0.01), 10) < trainingInMinutes) {
+            this.alertService.warn('Nie zmieniono deklaracji - szkolenie ['+trainingInMinutes+'][min] dłuższe niż czas pracy ['+this.toolsService.convertHoursDecimalToMinutes(event.data.timesheetUsedTime, 0.01)+'][min] !');
+            this.restore(event.data);
+        }
+
         else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)  && this.leaveRegexp.test(event.data.isLeave)) {
             if (event.data.timesheetFrom <= event.data.timesheetTo) {
-                let newTimesheet: Timesheet = this.getTimesheet(event.data);
-                if (newTimesheet.break != event.data.copy.break || newTimesheet.from != event.data.copy.from || newTimesheet.to != event.data.copy.to) {
+                let newTimesheet: Timesheet = this.getTimesheet(event.data, trainingInMinutes);
+                if (newTimesheet.break != event.data.copy.break || newTimesheet.from != event.data.copy.from || newTimesheet.to != event.data.copy.to || newTimesheet.training != event.data.copy.training) {
                     event.data.status = 'PROGRESS';
                     if (newTimesheet.break === '') {
                         newTimesheet.break = '0';
+                    }
+                    if (newTimesheet.training === '') {
+                        newTimesheet.training = '0';
                     }
                     this.timesheetService.upsert(newTimesheet).subscribe(timesheet => this.updateTable(timesheet, event.data.rowid));
                 } else if (this.leaveRegexp.test(event.data.isLeave) && event.data.isLeave==='Y' && event.data.copy.isLeave!=='Y') {
@@ -329,6 +368,7 @@ export class UserWithSheet extends User {
     timesheetFrom: string;
     timesheetTo: string;
     timesheetBreakInMinutes: string;
+    timesheetTrainingInGMM: string;
     isLeave: string;
 
     color: string;

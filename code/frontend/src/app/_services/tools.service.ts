@@ -264,4 +264,23 @@ export class ToolsService {
         return true;
     }
 
+    public convertGMMToMinutes(gMM: string): string {
+        let hours: number = parseInt(gMM.substr(0,1), 10);
+        var minutes: number = parseInt(gMM.substr(2,2), 10);
+        return ''+((hours*60) + minutes);
+    }
+
+    public convertHoursDecimalToMinutes(input: string, additive: number): string {
+        let inputDecimal : number = parseFloat(input)+additive; //FIXME trick to enable comparing - this is floored somewhere on backend
+        return ''+(inputDecimal*60);
+    }
+
+    public convertMinutesToGMM(input: string): string {
+        let minNum: number = parseInt(input, 10);
+        let hours: number = Math.floor(minNum / 60);
+        let minutes: number = minNum - (hours * 60);
+        let minutesPadded: string = minutes < 10 ? '0'+minutes : ''+minutes;
+        return ''+hours+':'+minutesPadded;
+    }
+
 }
