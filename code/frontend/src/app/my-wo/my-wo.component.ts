@@ -33,7 +33,7 @@ export class MyWoComponent implements OnInit {
     newComment: string;
     displayAddComment: boolean;
     commentOrder:Order;
-    // end add comment
+    displayChangeStatusDialog:boolean;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -56,7 +56,16 @@ export class MyWoComponent implements OnInit {
         ];
     }
     
-//add comment
+
+    showChangeStatusDialog() {
+        this.displayChangeStatusDialog=true;
+    }
+
+    onClose(isVisible: boolean){
+        this.displayChangeStatusDialog = isVisible;
+        this.search();
+       }
+
    private addComment():void{
        this.displayAddComment=true;    
     }

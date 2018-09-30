@@ -73,6 +73,7 @@ export class WoComponent implements OnInit {
 
     operator:User;
     pl:Calendar;
+    displayChangeStatusDialog:boolean;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -106,6 +107,16 @@ export class WoComponent implements OnInit {
 
         this.search();     
     }
+
+    showChangeStatusDialog() {
+        this.displayChangeStatusDialog=true;
+    }
+
+    onClose(isVisible: boolean){
+        this.displayChangeStatusDialog = isVisible;
+        this.search();
+       }
+ 
 
     private assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
