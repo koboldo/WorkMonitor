@@ -160,6 +160,16 @@ export class ToolsService {
         return "fa question";
     }
 
+    public isStatusAllowed(order: Order, statusCode: string): boolean {
+        if (statusCode === 'IS' && this.isReadyForProtocol(order,false)) {
+            return true;
+        } else if (order.assignee && order.assignee.length > 0) {
+            return true;
+        } else if (statusCode === 'OP' || statusCode === 'CL' || statusCode === 'SU') {
+            return true;
+        }
+        return false;
+    }
 
     public isStatusLowerThanProtocol(statusCode: string): boolean{
         return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
