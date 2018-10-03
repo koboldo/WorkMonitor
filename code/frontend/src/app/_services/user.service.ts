@@ -92,8 +92,8 @@ export class UserService {
         return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order).map((response:Response) => response.json());
     }
 
-    delete(id: number) {
-        return this.http.delete('/api/v1/persons' + id).map((response: Response) => response.json());
+    public deleteRelation(user:User, order:Order):Observable<any> {
+        return this.http.delete('/api/v1/persons/' + user.id + '/order/' + order.id).map((response:Response) => response.json());
     }
 
     public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<UserReport[]> {

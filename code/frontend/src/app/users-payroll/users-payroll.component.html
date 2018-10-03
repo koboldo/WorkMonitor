@@ -1,6 +1,7 @@
 
-<p-accordion>
-    <p-accordionTab header="Bieżace" [selected]="false" *ngIf="currentPayroll">
+<p-accordion (onOpen)="onTabOpen($event)">
+    <p-accordionTab header="Bieżace" [selected]="false">
+        <div *ngIf="currentPayroll">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
@@ -98,10 +99,11 @@
             </ng-template>
 
         </p-dataTable>
-
+        </div>
     </p-accordionTab>
 
-    <p-accordionTab header="Historyczne" [selected]="false" *ngIf="historicalPayrolls">
+    <p-accordionTab header="Historyczne" [selected]="false">
+        <div *ngIf="historicalPayrolls">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
@@ -206,7 +208,7 @@
                 </p-dataTable>
             </div>
         </div>
-
+    </div>
     </p-accordionTab>
 
 </p-accordion>

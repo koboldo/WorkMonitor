@@ -73,6 +73,7 @@ export class WoComponent implements OnInit {
 
     operator:User;
     pl:Calendar;
+    displayChangeStatusDialog:boolean;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -106,6 +107,16 @@ export class WoComponent implements OnInit {
 
         this.search();     
     }
+
+    showChangeStatusDialog() {
+        this.displayChangeStatusDialog=true;
+    }
+
+    onClose(isVisible: boolean){
+        this.displayChangeStatusDialog = isVisible;
+        this.search();
+    }
+ 
 
     private assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
@@ -221,24 +232,13 @@ export class WoComponent implements OnInit {
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.statuses && this.statuses.length > 0) {
             for (let status of this.statuses) {
-                if (status.paramChar.toLowerCase().indexOf(queryIgnoreCase) > -1 && this.isStatusAllowed(this.editedOrder, status.code)) {
+                if (status.paramChar.toLowerCase().indexOf(queryIgnoreCase) > -1 && this.toolsService.isStatusAllowed(this.editedOrder, status.code)) {
                     suggestedStatuses.push(status);
                 }
             }
         }
         this.suggestedStatuses = suggestedStatuses;
         console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
-    }
-
-    isStatusAllowed(order: Order, statusCode: string) {
-        if (statusCode === 'IS' && this.toolsService.isReadyForProtocol(order,false)) {
-            return true;
-        } else if (order.assignee && order.assignee.length > 0) {
-            return true;
-        } else if (statusCode === 'OP' || statusCode === 'CL' || statusCode === 'SU') {
-            return true;
-        }
-        return false;
     }
 
     fillPrice(event: any, index: number): void {
@@ -507,6 +507,10 @@ export class WoComponent implements OnInit {
     }
 
     private saveOrderSubscribeCallback(order: Order, that: WoComponent) {
+        if (order.statusCode === 'OP') {
+            that.removeAssignment(order, that);
+        }
+
         if (that.additionalWorkTypes.length > 0 && that.additionalWorkTypes[0].code !== '') {
             console.log('Still work todo, up to '+that.additionalWorkTypes.length +", order.workNo: "+order.workNo);
             let nextOrder: Order = JSON.parse(JSON.stringify(order));
@@ -519,6 +523,21 @@ export class WoComponent implements OnInit {
             console.log('No more order to save, refreshing...');
             that.refresh();
         }
+    }
+
+    public removeAssignment(order: Order, that: WoComponent): void {
+        if (order.assignee && order.assignee.length > 0 && !order.assigneeFull) {
+            order.assigneeFull = that.toolsService.getEngineers(order.assignee, that.engineers)
+        }
+
+        if (order.assigneeFull && order.assigneeFull.length > 0) {
+
+            let user: User = order.assigneeFull.shift();
+            console.log('About to clean assignment for '+order.statusCode+' assignments: '+order.assigneeFull.length+' userId: '+user.id+'...');
+
+            that.userService.deleteRelation(user, order).subscribe(result => that.removeAssignment(order, that));
+        }
+
     }
 
     //this can differ when creating many orders in one dialog
