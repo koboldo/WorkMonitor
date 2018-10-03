@@ -18,6 +18,14 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         }, 600000); //10min
     }
 
+    private removeAll(): void {
+        console.log('Cache size '+Object.keys(this.cache).length);
+        for(let cacheUrlInfinix of this.cacheUrlInfinixArr) {
+            delete this.cache[cacheUrlInfinix];
+        }
+        console.log('Cache cleaned!');
+    }
+
     private remove(cacheUrlInfinix): void {
         delete this.cache[cacheUrlInfinix];
         console.log('Removed from cache '+cacheUrlInfinix);
@@ -35,6 +43,10 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let url: string = request.urlWithParams;
         let cacheKey : string = this.getCachedInfinix(url);
+
+        if (url.indexOf('/login') >= 0) {
+            this.removeAll();
+        }
 
         if (request.method !== "GET") {
             if (cacheKey) {
