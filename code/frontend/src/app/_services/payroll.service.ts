@@ -3,7 +3,7 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order } from '../_models/index';
 import { UserPayroll } from '../_models/userPayroll';
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
+import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -14,26 +14,26 @@ import 'rxjs/add/observable/forkJoin';
 @Injectable()
 export class PayrollService {
 
-    constructor(private http: HttpInterceptor, private dictService: DictService) {
+    constructor(private http: HttpBotWrapper, private dictService: DictService) {
         console.log("created PayrollService");
     }
 
     public getCurrent(users: Map<number, User>): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll')
-            .map((response: Response) => this.getJoined(response.json(), users));
+            .map((response: Response) => this.getJoined(response, users));
     }
 
     public getHistorical(users: Map<number, User>): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll?history=Y')
-            .map((response: Response) => this.getJoined(response.json(), users));
+            .map((response: Response) => this.getJoined(response, users));
     }
 
     public approve(users: Map<number, User>, periodDate: string, overTimeFactor: number): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll?periodDate='+periodDate+'&overTimeFactor='+overTimeFactor+'&approved=Y')
-            .map((response: Response) => this.getJoined(response.json(), users));
+            .map((response: Response) => this.getJoined(response, users));
     }
 
     public getCurrentPersonal(user: User): Observable<UserPayroll[]> {
@@ -41,7 +41,7 @@ export class PayrollService {
         users.set(user.id, user);
 
         return this.http.get('/api/v1/payroll/'+user.id)
-            .map((response: Response) => this.getJoined(response.json(), users));
+            .map((response: Response) => this.getJoined(response, users));
     }
 
     public getHistoricalPersonal(user: User): Observable<UserPayroll[]>  {
@@ -49,7 +49,7 @@ export class PayrollService {
         users.set(user.id, user);
 
         return this.http.get('/api/v1/payroll/'+user.id+'?history=Y')
-            .map((response: Response) => this.getJoined(response.json(), users));
+            .map((response: Response) => this.getJoined(response, users));
     }
 
 

@@ -83,7 +83,7 @@ export class WoComponent implements OnInit {
                 private alertService:AlertService,
                 private authSerice:AuthenticationService,
                 private toolsService: ToolsService) {
-        this.lastModAfter = toolsService.getCurrentDateDayOperation(-161); //TODO change
+        this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
         this.items = [
             {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', disabled: true, command: (event) => this.assign(true)},

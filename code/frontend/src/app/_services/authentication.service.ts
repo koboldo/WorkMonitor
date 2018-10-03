@@ -1,5 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
@@ -15,6 +16,7 @@ export class AuthenticationService {
     private menuItems = new BehaviorSubject<MenuItem[]>(null);
     private user = new BehaviorSubject<User>(null);
     private authOptions: RequestOptions;
+    private httpHeaders: HttpHeaders;
 
     get isLogged(): boolean {
         return this.isLoggedFlag;
@@ -30,6 +32,10 @@ export class AuthenticationService {
 
     public getAuthOptions(): RequestOptions {
         return this.authOptions;
+    }
+
+    public getHttpHeaders(): HttpHeaders {
+        return this.httpHeaders
     }
 
 
@@ -65,6 +71,8 @@ export class AuthenticationService {
         let headers: Headers = new Headers({ 'Content-Type': 'application/json' });
         headers.append("x-access-token",  token);
         this.authOptions = new RequestOptions({ headers: headers });
+
+        this.httpHeaders = new HttpHeaders({'Content-Type':'application/json','x-access-token':token});
 
     }
 

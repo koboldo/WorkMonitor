@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
-import { AuthenticationService } from '../_services/index';
+import { AuthenticationService, HttpBotWrapper }    from '../_services/index';
 import { User } from '../_models/user';
 
 @Component({
@@ -17,13 +16,13 @@ export class ProgressComponent implements OnInit {
 
     isInProgress: boolean;
 
-    constructor(private httpInterceptor:HttpInterceptor, private authService: AuthenticationService) {
+    constructor(private httpBotWrapper:HttpBotWrapper, private authService: AuthenticationService) {
     }
 
 
 
     ngOnInit() {
-        this.subscription = this.httpInterceptor.getProgress().subscribe(progress => setTimeout(() => this.handleProgress(progress)));
+        this.subscription = this.httpBotWrapper.getProgress().subscribe(progress => setTimeout(() => this.handleProgress(progress)));
         this.subLogin = this.authService.userAsObs.subscribe(user => this.clean(user));
     }
 
@@ -37,7 +36,7 @@ export class ProgressComponent implements OnInit {
     public clean(user: User):void {
         console.log("Cleaning progress cause user has changed!" + JSON.stringify(user));
         this.isInProgress = false;
-        this.httpInterceptor.cleanProgress();
+        this.httpBotWrapper.cleanProgress();
     }
 
 

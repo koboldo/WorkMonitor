@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 import { Order } from '../_models/order';
 import { WorkType } from '../_models/index';
 import { DictService } from '../_services/dict.service';
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
+import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import 'rxjs/add/operator/mergeMap';
 import { CodeValue } from '../_models/code';
 
@@ -18,7 +18,7 @@ export class WorkTypeService {
     private cache: WorkType[];
     private initialized: boolean;
 
-    constructor(private http: HttpInterceptor) {
+    constructor(private http: HttpBotWrapper) {
         console.log("RelatedItemService options");
     }
 
@@ -27,7 +27,7 @@ export class WorkTypeService {
 
             console.log("Initializing workTypeService!");
             this.http.get('/api/v1/workTypes')
-                .subscribe((response:Response) => this.cacheAndGet(response.json().list));
+                .subscribe((response:Response) => this.cacheAndGet(response['list']));
 
         }
         this.initialized = true;
@@ -44,21 +44,18 @@ export class WorkTypeService {
     }
 
     private getAllWorkTypesInternal(refreshCache: boolean) : Observable<WorkType[]> {
-        if (this.cache && !refreshCache) {
-            return new BehaviorSubject<WorkType[]>(this.cache).asObservable();
-        }
-        return this.http.get('/api/v1/workTypes')
-            .map((response: Response) => this.cacheAndGet(response.json().list));
+       return this.http.get('/api/v1/workTypes')
+            .map((response: Response) => this.cacheAndGet(response['list']));
     }
 
     addWorkType(workType: WorkType): Observable<any> {
         return this.http.post('/api/v1/workTypes', JSON.stringify(workType))
-            .map((response: Response) => response.json().created);
+            .map((response: Response) => response['created']);
     }
 
     updateWorkType(workType: WorkType): Observable<any> {
         return this.http.put('/api/v1/workTypes/'+workType.id, JSON.stringify(workType))
-            .map((response: Response) => response.json().updated);
+            .map((response: Response) => response['updated']);
     }
 
     /*
@@ -97,7 +94,7 @@ export class WorkTypeService {
             return new BehaviorSubject<CodeValue[]>(this.processWorkTypes(null)).asObservable();
         }
         return this.http.get('/api/v1/workTypes')
-            .map((response: Response) => this.processWorkTypes(response.json().list));
+            .map((response: Response) => this.processWorkTypes(response['list']));
     }
 
     private processWorkTypes(workTypes: WorkType[]): CodeValue[] {
