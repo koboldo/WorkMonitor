@@ -38,7 +38,7 @@
     </div>
 
   </div>
-  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
+  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmiany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
     <app-group-status-change [ListToDisplay]="orders" [Operator]="operator" [parent]="this" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
@@ -136,13 +136,15 @@
             </div>
 
             <div class="ui-grid-col-2">  </div>
+            <div class="ui-grid-col-2">
+              <button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>   
+            </div>
             <div class="ui-grid-col-2"> </div>
-            <div class="ui-grid-col-1"> </div>
 
             <div class="ui-grid-col-2">
               <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
-            <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
+            <div class="ui-grid-col-1"></div>
           </div>
         </div>
       </p-footer>
