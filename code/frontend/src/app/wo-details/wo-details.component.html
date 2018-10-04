@@ -11,6 +11,11 @@
                 <div class="ui-grid-col-4">Modyfikacja:</div>
                 <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.lastModDate}}</span></div>
             </div>
+            <div class="ui-grid-row" *ngIf="selectedOrder?.modifiedBy">
+                <div class="ui-grid-col-4">Modyfikował(a):</div>
+                <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.modifiedBy}}</span></div>
+            </div>
+
             <hr *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate">
 
             <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
