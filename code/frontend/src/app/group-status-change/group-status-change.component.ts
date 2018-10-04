@@ -13,6 +13,7 @@ export class GroupStatusChangeComponent implements OnInit {
     ordersToChange:Order [];
     selectedOrders:Order [];
     ordersNotChange:Order [] = [];
+    copyOrdersToChange:Order [] = [];
     operator:User;
 
     /* autocompletion statuses */
@@ -32,7 +33,6 @@ export class GroupStatusChangeComponent implements OnInit {
 
     ngOnInit() {
         this.statuses = this.dictService.getWorkStatuses();
-
     }
 
     @Input()
@@ -41,6 +41,7 @@ export class GroupStatusChangeComponent implements OnInit {
     @Input()
     set ListToDisplay(orders:Order[]) {
         this.ordersToChange = orders;
+        this.copyOrdersToChange=orders;
     }
 
     get ListToDisplay():Order[] {
@@ -62,8 +63,17 @@ export class GroupStatusChangeComponent implements OnInit {
         this.closeModalEvent.emit(false);
     }
 
+    filter(event) {
+        let filteredOrders:Order[]=[];
+        this.copyOrdersToChange.forEach(element => {
+            if (this.toolsService.isStatusAllowed(element, this.status.code)) {
+                filteredOrders.push(element);
+            }
+        });
+        this.ordersToChange=filteredOrders;
+    }
+
     suggestStatus(event) {
-        if (this.operator.roleCode.indexOf('OP') > -1) {
             let suggestedStatuses:CodeValue[] = [];
             let queryIgnoreCase:string = event.query ? event.query.toLowerCase() : event.query;
             if (this.statuses && this.statuses.length > 0) {
@@ -74,20 +84,6 @@ export class GroupStatusChangeComponent implements OnInit {
             }
             this.suggestedStatuses = suggestedStatuses;
             console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
-        }
-        else {
-            let suggestedStatuses:CodeValue[] = [];
-            let queryIgnoreCase:string = event.query ? event.query.toLowerCase() : event.query;
-            if (this.statuses && this.statuses.length > 0) {
-                for (let status of this.statuses) {
-                    if (status.paramChar.toLowerCase().indexOf(queryIgnoreCase) > -1 && status.code === "CO")
-                        suggestedStatuses.push(status);
-                }
-            }
-            this.suggestedStatuses = suggestedStatuses;
-            console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
-        }
-
     }
 
     addCommment(order:Order):void {
@@ -102,6 +98,13 @@ export class GroupStatusChangeComponent implements OnInit {
     }
 
     public changeStatus() {
+        if ((this.operator.roleCode.indexOf('OP') == -1))
+        {
+            for (let status of this.statuses) {
+                    if (status.code === "CO")
+                    this.status=status
+            }
+        }
         if (!this.selectedOrders || this.selectedOrders.length < 1) {
 
             this.newComment = null;
@@ -111,7 +114,6 @@ export class GroupStatusChangeComponent implements OnInit {
         } else if (this.status && this.status.code) {
 
             let order:Order = this.selectedOrders.shift();
-            let ordersChange:Order [] = [];
 
             if (this.toolsService.isStatusAllowed(order, this.status.code)) {
                 order.statusCode = this.status.code;
@@ -124,7 +126,7 @@ export class GroupStatusChangeComponent implements OnInit {
 
                 this.woService.updateOrder(order).subscribe(
                     succes => {
-                        this.alertService.info('Pomyślnie zmieniono status zlecenia ' + order.workNo);
+                        this.operator.roleCode.indexOf('OP') == -1 ? this.alertService.success('Pomyślnie zakończono zlecenie ' + order.workNo) :this.alertService.info('Pomyślnie zmieniono status zlecenia ' + order.workNo) ;
                         this.changeStatus();
                     },
                     err => {
