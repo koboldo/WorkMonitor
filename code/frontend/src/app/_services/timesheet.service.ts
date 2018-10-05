@@ -12,11 +12,10 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class TimesheetService {
+
     constructor(private http: HttpBotWrapper, private dictService: DictService) {
         console.log("TimesheetService created");
     }
-
-
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
         return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)

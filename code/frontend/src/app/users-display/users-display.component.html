@@ -25,7 +25,7 @@
       </div>
     </p-header>
 
-    <p-column [style]="{'width':'26px','text-align':'center'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'26px','text-align':'center'}">
       <ng-template let-userRow="rowData" pTemplate="body">
           <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>-->
           <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa-search"></button>
@@ -71,24 +71,24 @@
       </ng-template>
     </p-column>
 
-    <p-column [sortable]="true" field="projectFactor" header="Wspł." [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'30px'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="projectFactor" header="Wspł." [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'30px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="user.isFromPool=='Y'" [style.color]="'green'" class="ui-inputgroup-addon">{{user[col.field]}}</span>
         <span *ngIf="user.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">{{user[col.field]}}</span>
       </ng-template>
     </p-column>
 
-    <p-column [sortable]="true" field="salary" header="Wynagrodzenie" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="salary" header="Wynagrodzenie" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="user.salary!==0" class="ui-inputgroup-addon">{{user[col.field] | currency:'PLN'}}</span>
       </ng-template>
     </p-column>
-    <p-column [sortable]="true" field="salaryRate" header="Stawka gwarantowana" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="salaryRate" header="Stawka gwarantowana" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="!user.salary || user.salary===0" class="ui-inputgroup-addon">{{user.salaryRate | currency:'PLN'}}</span>
       </ng-template>
     </p-column>
-    <p-column [sortable]="true" field="leaveRate" header="Urlop" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="leaveRate" header="Urlop" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="!user.salary || user.salary===0" class="ui-inputgroup-addon">{{user.leaveRate | currency:'PLN'}}</span>
       </ng-template>

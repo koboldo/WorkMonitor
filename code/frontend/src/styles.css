@@ -9,4 +9,9 @@ div.text-center {
     text-align: center;
 }
 
+.ui-fieldset, .ui-fieldset .ui-fieldset-legend {
+    padding: 0.2em 1em;
+}
+
+
 

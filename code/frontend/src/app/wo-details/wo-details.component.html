@@ -1,7 +1,7 @@
 <div class="ui-grid-row" style="max-width: 900px;">
     <div class="ui-grid-col-6" style="margin-top: 10px;">
         <p-fieldset legend="Detale zlecenia"
-                    *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
+                    *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.comment">
             <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
                 <div class="ui-grid-col-4">Dodano:</div>
                 <div class="ui-grid-col-8"><span style="font-style: italic;">{{selectedOrder?.creationDate}}</span>
@@ -64,15 +64,6 @@
                 </div>
             </div>
 
-            <hr *ngIf="selectedOrder?.type || selectedOrder?.complexity || selectedOrder?.status ">
-
-            <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row">
-                <strong>Wykonawcy</strong></div>
-            <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
-                <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
-                <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
-                <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
-            </div>
         </p-fieldset>
     </div>
 
@@ -81,6 +72,16 @@
              style="margin-top: 10px;">
             <p-fieldset legend="Inwestor">
                 {{selectedOrder?.ventureDisplay}} @ {{selectedOrder?.ventureCompany}}
+            </p-fieldset>
+        </div>
+        <div *ngIf="selectedOrder?.assigneeFull && selectedOrder?.assigneeFull?.length > 0" class="ui-grid-row"
+             style="margin-top: 10px;">
+            <p-fieldset legend="Wykonawcy">
+                <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
+                    <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
+                    <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+                    <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+                </div>
             </p-fieldset>
         </div>
         <div class="ui-grid-row" style="margin-top: 10px;">

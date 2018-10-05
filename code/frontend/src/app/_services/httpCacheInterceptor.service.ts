@@ -8,7 +8,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     private cache: { [name: string]: AsyncSubject<HttpEvent<any>> } = {};
 
-    private cacheUrlInfinixArr: string[] = ['/api/v1/codes', '/api/v1/persons', '/api/v1/workTypes'];
+    private cacheUrlInfinixArr: string[] = ['/api/v1/persons', '/api/v1/workTypes', '/api/v1/codes/ROLE', '/api/v1/codes/OFFICE', '/api/v1/codes/RANK', '/api/v1/codes/AGREEMENT_TYPE', '/api/v1/codes/COMPLEXITY'];
 
     private put(cacheUrlInfinix: string, subject: AsyncSubject<HttpEvent<any>>) {
         console.log("Adding to cache "+cacheUrlInfinix);

@@ -86,11 +86,11 @@ export class AuthenticationService {
             // {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
             {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
             {label: 'Wynagrodzenia', icon: 'fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]},
-            {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR"]},
+            {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
             {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
             {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
             //{label: 'Parametryzacja zleceń', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
-            {label: 'Parametryzacja zleceń', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
+            {label: 'Parametryzacja zleceń', icon: 'fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
             /*{label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 
