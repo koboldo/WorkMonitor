@@ -11,6 +11,8 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
+    @Input() entryMode:boolean;
+
     private timesheet: Timesheet;
 
     constructor(private timesheetService:TimesheetService,

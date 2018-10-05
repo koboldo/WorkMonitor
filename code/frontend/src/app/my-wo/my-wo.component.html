@@ -9,7 +9,7 @@
           <i class="fa fa-search"></i>
           <input #gb type="text" pInputText size="50" placeholder="Filtruj">
           <button type="button" pButton icon="fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
-          <button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa-list" iconPos="left" ></button>
+          <button type="button" pButton [disabled]="orders?.length < 1" (click)="showChangeStatusDialog()" label="Zakończ zlecenia" icon="fa-list" iconPos="left" style="float: right;"></button>
         </div>
       </p-header>
       <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
@@ -229,6 +229,6 @@
   <!--end add comment-->
 </p-panel>
 
-<p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
-        <app-group-status-change [ListToDisplay]="orders" [Operator]="engineer" (closeModalEvent)="onClose($event)"></app-group-status-change>
-      </p-dialog>
+<p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zakończenia" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
+    <app-group-status-change [listToDisplay]="orders" [operator]="engineer" [operatorMode]="false" (closeModalEvent)="onClose($event)"></app-group-status-change>
+</p-dialog>

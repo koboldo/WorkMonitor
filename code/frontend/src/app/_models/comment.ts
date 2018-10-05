@@ -47,6 +47,17 @@ export class Comments {
 
 //its a shame it cannot be object funtions as the contructor does not create object instance with them!
 
+export function formatCommentDate(d: Date) {
+    let mm = (d.getMonth() + 1) < 10 ? '0'+(d.getMonth() + 1): (d.getMonth() + 1);
+    let dd = d.getDate()<10 ? '0'+d.getDate(): d.getDate();
+    let yy = d.getFullYear();
+
+    let HH = d.getHours() < 10 ? '0'+d.getHours() : d.getHours();
+    let MM = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
+
+    return yy + '-' + mm + '-' + dd+ ' ' + HH + ':' + MM;
+}
+
 export function commentToDbContent(comments: Comments) {
     console.log("returning comment db representation: "+JSON.stringify(comments.comments));
     try {
@@ -61,7 +72,7 @@ export function commentToDbContent(comments: Comments) {
 export function commentAdd(comments: Comments, reason: string, createdBy: User, content: string): void {
     let index: number = comments.comments.length;
     let now = new Date();
-    let sNow = now.toISOString().substr(0, 16).replace('T', ' ').replace('-', '.');
+    let sNow = formatCommentDate(now);
     let comment: Comment = <Comment> {index: 1, reason: reason, date: sNow, createdBy: createdBy.id, sCreatedBy: createdBy.firstName+' '+createdBy.lastName, text: content};
     comments.comments.push(comment);
 }

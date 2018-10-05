@@ -74,7 +74,7 @@ export class WoComponent implements OnInit {
     operator:User;
     pl:Calendar;
     displayChangeStatusDialog:boolean;
-
+    
     constructor(private woService:WOService,
                 private userService:UserService,
                 private itemService:RelatedItemService,
@@ -104,7 +104,7 @@ export class WoComponent implements OnInit {
 
         this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
-
+       
         this.search();     
     }
 
