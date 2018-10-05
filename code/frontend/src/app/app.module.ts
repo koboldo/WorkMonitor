@@ -2,15 +2,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
 import { HttpModule } from '@angular/http';
-
 import { BaseRequestOptions } from '@angular/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent }  from './app.component';
 import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpInterceptor } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -40,12 +40,13 @@ import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 // protocol filter
-import {WoListComponent} from './wo-list/wo-list.component';
+import { WoListComponent } from './wo-list/wo-list.component';
 import { UserHistoryComponent } from './user-history/user-history.component';
 import { GroupStatusChangeComponent } from './group-status-change/group-status-change.component';
 
 @NgModule({
     imports: [
+        HttpClientModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
@@ -98,8 +99,12 @@ import { GroupStatusChangeComponent } from './group-status-change/group-status-c
         ToolsService,
         TimesheetService,
         PayrollService,
-        HttpInterceptor,
-        {provide: LOCALE_ID, useValue: 'pl-PL'}
+        HttpBotWrapper,
+        {provide: LOCALE_ID, useValue: 'pl-PL'},
+        {provide: HTTP_INTERCEPTORS,
+            useClass: HttpCacheInterceptor,
+            multi: true,
+        }
     ],
     bootstrap: [AppComponent]
 })

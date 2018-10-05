@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 
 import { CodeValue } from '../_models/code';
 import { User } from '../_models/user';
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
+import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 
 @Injectable()
 export class DictService {
@@ -19,7 +19,7 @@ export class DictService {
     private ranks: CodeValue[];
     private initialized: boolean = false;
 
-    constructor(private http: HttpInterceptor) {
+    constructor(private http: HttpBotWrapper) {
     }
 
     // call after login!
@@ -36,34 +36,34 @@ export class DictService {
             this.ranks = [];
 
             this.http.get('/api/v1/codes/WORK_STATUS')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.workStatuses));
+                .subscribe((response:Response) => this.setCodes(response, this.workStatuses));
 
 
             this.http.get('/api/v1/codes/COMPLEXITY')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.complexities));
+                .subscribe((response:Response) => this.setCodes(response, this.complexities));
 
             this.http.get('/api/v1/codes/ROLE')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.roles));
+                .subscribe((response:Response) => this.setCodes(response, this.roles));
 
             this.http.get('/api/v1/codes/OFFICE')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.offices))
+                .subscribe((response:Response) => this.setCodes(response, this.offices))
 
             this.http.get('/api/v1/codes/RANK')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.ranks));
+                .subscribe((response:Response) => this.setCodes(response, this.ranks));
 
             this.http.get('/api/v1/codes/AGREEMENT_TYPE')
-                .subscribe((response:Response) => this.setCodes(response.json(), this.agreements))
+                .subscribe((response:Response) => this.setCodes(response, this.agreements))
         }
         this.initialized = true;
 
     }
 
     public getRolesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.mapCodeValue(response.json()))
+        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.mapCodeValue(response))
     }
 
     public getOfficesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.mapCodeValue(response.json()))
+        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.mapCodeValue(response))
     }
 
 
@@ -79,7 +79,7 @@ export class DictService {
 
     // called just after login
     public getRoleObs(keys: string[]): Observable<string[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.getKeys(response.json(), keys))
+        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.getKeys(response, keys))
     }
 
     private getKeys(response:any, keys:string[]):string[] {
@@ -94,7 +94,7 @@ export class DictService {
     }
 
     public getOfficeObs(key: string): Observable<string> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.getKey(response.json(), key))
+        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.getKey(response, key))
     }
 
     private getKey(response:any, key:string):string {

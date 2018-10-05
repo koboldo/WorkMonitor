@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order, Timesheet } from '../_models/index';
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
+import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -12,7 +12,7 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class TimesheetService {
-    constructor(private http: HttpInterceptor, private dictService: DictService) {
+    constructor(private http: HttpBotWrapper, private dictService: DictService) {
         console.log("TimesheetService created");
     }
 
@@ -20,12 +20,12 @@ export class TimesheetService {
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
         return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)
-            .map((response: Response) => this.getTimesheets(response.json()))
+            .map((response: Response) => this.getTimesheets(response))
     }
 
     upsert(timesheet: Timesheet): Observable<Timesheet> {
         console.log("upserting "+JSON.stringify(timesheet));
-        return this.http.post('/api/v1/timesheets', timesheet).map((response: Response) => response.json().timesheet);
+        return this.http.post('/api/v1/timesheets', timesheet).map((response: Response) => response['timesheet']);
     }
 
     upsertAttendanceFrom(personId: number): Observable<any> {
@@ -34,7 +34,7 @@ export class TimesheetService {
             from: "now"
         };
         console.log("upserting "+JSON.stringify(from));
-        return this.http.post('/api/v1/timesheets', from).map((response: Response) => response.json());
+        return this.http.post('/api/v1/timesheets', from);
     }
 
     upsertAttendanceTo(personId: number): Observable<any> {
@@ -43,7 +43,7 @@ export class TimesheetService {
             to: "now"
         };
         console.log("upserting "+JSON.stringify(to));
-        return this.http.post('/api/v1/timesheets', to).map((response: Response) => response.json());
+        return this.http.post('/api/v1/timesheets', to);
     }
 
     addLeave(personId: number, from: string, to: string): Observable<any> {
@@ -54,7 +54,7 @@ export class TimesheetService {
         };
 
         console.log("adding Leave "+JSON.stringify(leave));
-        return this.http.post('/api/v1/timesheets/leave', leave).map((response: Response) => response.json());
+        return this.http.post('/api/v1/timesheets/leave', leave);
     }
 
 

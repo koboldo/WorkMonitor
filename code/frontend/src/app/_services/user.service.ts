@@ -2,7 +2,7 @@
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order, UserReport } from '../_models/index';
-import { HttpInterceptor } from '../_services/httpInterceptor.service';
+import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -12,35 +12,35 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class UserService {
-    constructor(private http: HttpInterceptor, private dictService: DictService) {
+    constructor(private http: HttpBotWrapper, private dictService: DictService) {
         console.log("created UserService");
     }
 
 
     getById(id: number) {
-        return this.http.get('/api/v1/persons/' + id).map((response: Response) => response.json());
+        return this.http.get('/api/v1/persons/' + id).map((response: Response) => response);
     }
 
     create(user: User) {
-        return this.http.post('/api/v1/persons', user).map((response: Response) => response.json());
+        return this.http.post('/api/v1/persons', user).map((response: Response) => response);
     }
 
     update(user: User) {
         let strippedUser: User = JSON.parse(JSON.stringify(user));
         strippedUser.workOrders = undefined;
-        return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).map((response: Response) => response.json());
+        return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).map((response: Response) => response);
     }
 
     sendResetEmail(email: string): Observable<any> {
         let msg: any = {};
         msg.email = email;
-        return this.http.post('/pwdreset', msg).map((response: Response) => response.json());
+        return this.http.post('/pwdreset', msg).map((response: Response) => response);
     }
 
 
     resetPassword(userId:string, hash:string, newPassword:string):any {
         let msg: any = {id: userId, password: newPassword, hash: hash};
-        return this.http.put('/pwdreset', msg).map((response: Response) => response.json());
+        return this.http.put('/pwdreset', msg).map((response: Response) => response);
     }
 
     assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
@@ -58,7 +58,7 @@ export class UserService {
         for(let assigneeId of assigneeIds) {
             observableBatch.push(
                 this.http.delete('/api/v1/persons/' + assigneeId + '/order/'+orderId, this.authService.getAuthOptions()).
-                map((response:Response) => this.getRelationDeleteResult(response.json()))
+                map((response:Response) => this.getRelationDeleteResult(response))
             );
         }
 
@@ -89,39 +89,39 @@ export class UserService {
     }
 
     private addRelation(detach: boolean, user:User, order:Order):Observable<any> {
-        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order).map((response:Response) => response.json());
+        return this.http.post('/api/v1/persons/' + user.id + '/order/' + order.id+(detach?"?detach=true":""), order);
     }
 
     public deleteRelation(user:User, order:Order):Observable<any> {
-        return this.http.delete('/api/v1/persons/' + user.id + '/order/' + order.id).map((response:Response) => response.json());
+        return this.http.delete('/api/v1/persons/' + user.id + '/order/' + order.id).map((response:Response) => response);
     }
 
     public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<UserReport[]> {
-        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Response) => (response.json().list));
+        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Response) => (response['list']));
     }
 
     public getEngineers(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["MG", "EN"]));
     }
 
     public getStaff(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["MG", "EN", "OP"]));
     }
 
     public getAllStaff(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "PR", "AN", "CL", "PA"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["MG", "EN", "OP", "PR", "AN", "CL", "PA"]));
     }
 
     public getEngineersAndVentureRepresentatives(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "VE"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["MG", "EN", "VE"]));
     }
 
     public getAllButPR(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["MG", "EN", "OP", "VE"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["MG", "EN", "OP", "VE"]));
     }
 
     getAll() {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["PR", "MG", "EN", "OP", "VE", "AN", "CL", "PA"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["PR", "MG", "EN", "OP", "VE", "AN", "CL", "PA"]));
     }
 
     public getManagedUsers(role: string[], fetchVentures: boolean): Observable<User[]> {
@@ -136,11 +136,11 @@ export class UserService {
     }
 
     public getHistoryById(id: number) {
-        return this.http.get('/api/v1/persons/history/' + id).map((response: Response) => this.getAllByRole(response.json(), ["VE", "EN", "MG", "OP", "AN", "CL"]));
+        return this.http.get('/api/v1/persons/history/' + id).map((response: Response) => this.getAllByRole(response, ["VE", "EN", "MG", "OP", "AN", "CL"]));
     }
 
     public getVentureRepresentatives(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response.json(), ["VE"]));
+        return this.http.get('/api/v1/persons').map((response: Response) => this.getAllByRole(response, ["VE"]));
     }
 
     private hasAnyRole(sourceRoleCodes: string[], user: User): boolean {
