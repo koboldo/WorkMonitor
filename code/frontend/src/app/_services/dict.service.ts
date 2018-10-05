@@ -1,5 +1,4 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable }    from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
@@ -36,34 +35,34 @@ export class DictService {
             this.ranks = [];
 
             this.http.get('/api/v1/codes/WORK_STATUS')
-                .subscribe((response:Response) => this.setCodes(response, this.workStatuses));
+                .subscribe((response:Object) => this.setCodes(response, this.workStatuses));
 
 
             this.http.get('/api/v1/codes/COMPLEXITY')
-                .subscribe((response:Response) => this.setCodes(response, this.complexities));
+                .subscribe((response:Object) => this.setCodes(response, this.complexities));
 
             this.http.get('/api/v1/codes/ROLE')
-                .subscribe((response:Response) => this.setCodes(response, this.roles));
+                .subscribe((response:Object) => this.setCodes(response, this.roles));
 
             this.http.get('/api/v1/codes/OFFICE')
-                .subscribe((response:Response) => this.setCodes(response, this.offices))
+                .subscribe((response:Object) => this.setCodes(response, this.offices))
 
             this.http.get('/api/v1/codes/RANK')
-                .subscribe((response:Response) => this.setCodes(response, this.ranks));
+                .subscribe((response:Object) => this.setCodes(response, this.ranks));
 
             this.http.get('/api/v1/codes/AGREEMENT_TYPE')
-                .subscribe((response:Response) => this.setCodes(response, this.agreements))
+                .subscribe((response:Object) => this.setCodes(response, this.agreements))
         }
         this.initialized = true;
 
     }
 
     public getRolesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.mapCodeValue(response))
+        return  this.http.get('/api/v1/codes/ROLE').map((response: Object) => this.mapCodeValue(response))
     }
 
     public getOfficesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.mapCodeValue(response))
+        return  this.http.get('/api/v1/codes/OFFICE').map((response: Object) => this.mapCodeValue(response))
     }
 
 
@@ -79,7 +78,7 @@ export class DictService {
 
     // called just after login
     public getRoleObs(keys: string[]): Observable<string[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Response) => this.getKeys(response, keys))
+        return  this.http.get('/api/v1/codes/ROLE').map((response: Object) => this.getKeys(response, keys))
     }
 
     private getKeys(response:any, keys:string[]):string[] {
@@ -94,7 +93,7 @@ export class DictService {
     }
 
     public getOfficeObs(key: string): Observable<string> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Response) => this.getKey(response, key))
+        return  this.http.get('/api/v1/codes/OFFICE').map((response: Object) => this.getKey(response, key))
     }
 
     private getKey(response:any, key:string):string {

@@ -1,5 +1,4 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { User, Order, Timesheet } from '../_models/index';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
@@ -19,12 +18,12 @@ export class TimesheetService {
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
         return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+"&workDateBefore="+workDateBefore)
-            .map((response: Response) => this.getTimesheets(response))
+            .map((response: Object) => this.getTimesheets(response))
     }
 
     upsert(timesheet: Timesheet): Observable<Timesheet> {
         console.log("upserting "+JSON.stringify(timesheet));
-        return this.http.post('/api/v1/timesheets', timesheet).map((response: Response) => response['timesheet']);
+        return this.http.post('/api/v1/timesheets', timesheet).map((response: Object) => response['timesheet']);
     }
 
     upsertAttendanceFrom(personId: number): Observable<any> {

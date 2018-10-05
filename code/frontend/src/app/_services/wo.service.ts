@@ -1,5 +1,4 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable }    from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
@@ -24,31 +23,31 @@ export class WOService {
     getOrdersByWorkNo(workNo: string):Observable<Order> {
 
         return this.http.get('/api/v1/orders/external/'+workNo)
-            .map((response: Response) => this.getWorkOrder(<Order> response))
+            .map((response: Object) => this.getWorkOrder(<Order> response))
     }
     */
 
     getOrdersByStatus(status: string):Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?status='+status)
-            .map((response: Response) => this.getWorkOrders(response))
+            .map((response: Object) => this.getWorkOrders(response))
     }
 
     getOrdersByDates(lastModAfter: string, lastModBefore: string) : Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter+"&lastModBefore="+lastModBefore)
-            .map((response: Response) => this.getWorkOrders(response))
+            .map((response: Object) => this.getWorkOrders(response))
     }
 
     getAssignedOrders(personId: number) : Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?personId='+personId+"&status=AS")
-            .map((response: Response) => this.getWorkOrders(response))
+            .map((response: Object) => this.getWorkOrders(response))
     }
 
     updateOrder(order: Order) : Observable<Order> {
         return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)))
-            .map((response: Response) => response['updated'])
+            .map((response: Object) => response['updated'])
             .mergeMap(updatedId => this.getOrderById(order.id));
     }
 
@@ -59,18 +58,18 @@ export class WOService {
 
     addOrder(order: Order) : Observable<Order> {
         return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)))
-            .map((response: Response) => response['created'])
+            .map((response: Object) => response['created'])
             .mergeMap(createdId => this.getOrderById(createdId));
     }
 
     getOrderHistoryById(id:number):Observable<OrderHistory[]> {
         return this.http.get('/api/v1/orders/history/' + id)
-            .map((response:Response) => this.getWorkOrders(response));
+            .map((response:Object) => this.getWorkOrders(response));
     }
 
     getRelatedItem(id: number): Observable<any> {
         return this.http.get('/api/v1/relatedItems/' + id)
-            .map((response:Response) => this.getItem(response));
+            .map((response:Object) => this.getItem(response));
     }
 
     prepareProtocol(ids: number[]) : Observable<any> {
@@ -85,12 +84,12 @@ export class WOService {
         }
 
         return this.http.get('/api/v1/report/protocol?ids='+flatIds)
-            .map((response: Response) => this.getProtocol(response))
+            .map((response: Object) => this.getProtocol(response))
     }
 
     fetchProtocol(protocolNo: string) : Observable<any> {
         return this.http.get('/api/v1/report/protocol?protocolNo='+protocolNo)
-            .map((response: Response) => this.getProtocol(response))
+            .map((response: Object) => this.getProtocol(response))
     }
 
 

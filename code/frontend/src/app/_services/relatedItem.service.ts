@@ -1,5 +1,5 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+
 import { Observable }    from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
@@ -18,18 +18,18 @@ export class RelatedItemService {
 
     getAllItems() : Observable<RelatedItem[]> {
         return this.http.get('/api/v1/relatedItems')
-            .map((response: Response) => response['list']);
+            .map((response: Object) => response['list']);
     }
 
     updateItem(item: RelatedItem) : Observable<RelatedItem> {
         return this.http.put('/api/v1/relatedItems/'+item.id, JSON.stringify(item))
-            .map((response: Response) => response['updated'])
+            .map((response: Object) => response['updated'])
             .mergeMap(updatedId => this.getItemById(item.id));
     }
 
     addItem(item: RelatedItem) : Observable<RelatedItem> {
         return this.http.post('/api/v1/relatedItems', JSON.stringify(item))
-            .map((response: Response) => response['created'])
+            .map((response: Object) => response['created'])
             .mergeMap(createdId => this.getItemById(createdId));
     }
 

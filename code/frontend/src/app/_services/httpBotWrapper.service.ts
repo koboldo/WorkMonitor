@@ -1,6 +1,4 @@
-import { Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from "@angular/http";
-import { HttpClient } from '@angular/common/http';
-import { HttpEvent } from "@angular/common/http";
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 import { Observable, AsyncSubject } from "rxjs/Rx";
 import { Subject } from 'rxjs/Subject';
@@ -73,26 +71,26 @@ export class HttpBotWrapper {
     private cache: { [name: string]: AsyncSubject<HttpEvent<any>> } = {};
 
 
-    public get(url: string, options?: RequestOptionsArgs): Observable<any> {
+    public get(url: string): Observable<Object> {
         this.incrementProgress(this.getProgressKey(url));
         return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()})
-            .do(response => this.decrementProgress(this.getProgressKey(url)))
+            .do(object => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
     }
 
-    public post(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
+    public post(url: string, object:any): Observable<Object> {
         return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
     }
 
-    public put(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
+    public put(url: string, object:any): Observable<Object> {
         return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
     }
 
-    public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
+    public delete(url: string): Observable<Object> {
         return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))

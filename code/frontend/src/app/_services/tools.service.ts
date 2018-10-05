@@ -1,5 +1,4 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { DatePipe }         from '@angular/common';
 import { Observable }       from 'rxjs/Observable';
 

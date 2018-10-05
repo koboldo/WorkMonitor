@@ -1,6 +1,4 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
-
 import { User, Order } from '../_models/index';
 import { UserPayroll } from '../_models/userPayroll';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
@@ -21,19 +19,19 @@ export class PayrollService {
     public getCurrent(users: Map<number, User>): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll')
-            .map((response: Response) => this.getJoined(response, users));
+            .map((response: Object) => this.getJoined(response, users));
     }
 
     public getHistorical(users: Map<number, User>): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll?history=Y')
-            .map((response: Response) => this.getJoined(response, users));
+            .map((response: Object) => this.getJoined(response, users));
     }
 
     public approve(users: Map<number, User>, periodDate: string, overTimeFactor: number): Observable<UserPayroll[]> {
         // /payroll?periodDate=yyyy-mm-dd&overTimeFactor=XXX&approved=Y
         return this.http.get('/api/v1/payroll?periodDate='+periodDate+'&overTimeFactor='+overTimeFactor+'&approved=Y')
-            .map((response: Response) => this.getJoined(response, users));
+            .map((response: Object) => this.getJoined(response, users));
     }
 
     public getCurrentPersonal(user: User): Observable<UserPayroll[]> {
@@ -41,7 +39,7 @@ export class PayrollService {
         users.set(user.id, user);
 
         return this.http.get('/api/v1/payroll/'+user.id)
-            .map((response: Response) => this.getJoined(response, users));
+            .map((response: Object) => this.getJoined(response, users));
     }
 
     public getHistoricalPersonal(user: User): Observable<UserPayroll[]>  {
@@ -49,7 +47,7 @@ export class PayrollService {
         users.set(user.id, user);
 
         return this.http.get('/api/v1/payroll/'+user.id+'?history=Y')
-            .map((response: Response) => this.getJoined(response, users));
+            .map((response: Object) => this.getJoined(response, users));
     }
 
 

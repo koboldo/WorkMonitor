@@ -1,5 +1,4 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable }    from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -27,7 +26,7 @@ export class WorkTypeService {
 
             console.log("Initializing workTypeService!");
             this.http.get('/api/v1/workTypes')
-                .subscribe((response:Response) => this.cacheAndGet(response['list']));
+                .subscribe((response:Object) => this.cacheAndGet(response['list']));
 
         }
         this.initialized = true;
@@ -45,17 +44,17 @@ export class WorkTypeService {
 
     private getAllWorkTypesInternal(refreshCache: boolean) : Observable<WorkType[]> {
        return this.http.get('/api/v1/workTypes')
-            .map((response: Response) => this.cacheAndGet(response['list']));
+            .map((response: Object) => this.cacheAndGet(response['list']));
     }
 
     addWorkType(workType: WorkType): Observable<any> {
         return this.http.post('/api/v1/workTypes', JSON.stringify(workType))
-            .map((response: Response) => response['created']);
+            .map((response: Object) => response['created']);
     }
 
     updateWorkType(workType: WorkType): Observable<any> {
         return this.http.put('/api/v1/workTypes/'+workType.id, JSON.stringify(workType))
-            .map((response: Response) => response['updated']);
+            .map((response: Object) => response['updated']);
     }
 
     /*
@@ -94,7 +93,7 @@ export class WorkTypeService {
             return new BehaviorSubject<CodeValue[]>(this.processWorkTypes(null)).asObservable();
         }
         return this.http.get('/api/v1/workTypes')
-            .map((response: Response) => this.processWorkTypes(response['list']));
+            .map((response: Object) => this.processWorkTypes(response['list']));
     }
 
     private processWorkTypes(workTypes: WorkType[]): CodeValue[] {
