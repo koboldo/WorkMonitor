@@ -11,8 +11,6 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
-    @Input() entryMode:boolean;
-
     private timesheet: Timesheet;
 
     constructor(private timesheetService:TimesheetService,
@@ -24,8 +22,8 @@ export class UserAttendanceRegisterComponent implements OnInit {
         let today:Date = this.toolsService.getCurrentDateDayOperation(0);
 
         let sToday: string = today.toISOString().substring(0, 10);
-        this.timesheetService.getByDates(sToday, sToday)
-            .subscribe((timesheets:Timesheet[]) => this.findUser(timesheets));
+        this.timesheetService.getByIdAndDates(this.user.id, sToday, sToday)
+            .subscribe((timesheets:Timesheet[]) => this.checkUser(timesheets));
     }
 
     public isSetFrom():boolean {
@@ -50,14 +48,17 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
 
 
-    private findUser(timesheets:Timesheet[]):void {
+    private checkUser(timesheets:Timesheet[]):void {
         for (let timesheet of timesheets) {
             if (timesheet.personId === this.user.id) {
                 this.timesheet = timesheet;
                 console.log("Find user timesheet "+JSON.stringify(timesheet));
                 return;
+            } else {
+                this.alertService.error('Zly raport czasu pracy, szukano dla '+this.user.id+', znaleziono dla '+timesheet.personId+'!')
             }
         }
+        console.log('Brak czasu pracy dla '+this.user.id)
     }
 
     private updateTimesheet(result:any):void {
