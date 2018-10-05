@@ -1,10 +1,8 @@
-<div>
-  <br>
-  <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: right; cursor: pointer; color: orangered;" >Wejście</a>
-  <div *ngIf="isSetFrom()" style="float: right;" >Wejście: {{timesheet?.from?.substr(11, 5)}}</div>
+<div *ngIf="entryMode">
+  <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: left; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestruj WEJŚCIE</a>
+  <div *ngIf="isSetFrom()" style="float: left; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestrowane WEJŚCIE: {{timesheet?.from?.substr(11, 5)}}</div>
 </div>
-<div>
-  <br>
-  <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered">Wyjście</a>
-  <div *ngIf="isSetTo() && isSetFrom()" style="float: right;" >Wyjście: {{timesheet?.to?.substr(11, 5)}}</div>
+<div *ngIf="!entryMode">
+  <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold">Zarejestruj WYJŚCIE <i [class]="'fa fa-sign-out'"></i></a>
+  <div *ngIf="isSetTo() && isSetFrom()" style="float: right; font-weight: bold" >Zarejestrowane WYJŚCIE: {{timesheet?.to?.substr(11, 5)}} <i [class]="'fa fa-sign-out'"></i></div>
 </div>

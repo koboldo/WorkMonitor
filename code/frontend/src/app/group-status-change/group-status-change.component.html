@@ -68,7 +68,7 @@
     <p-dataTable [value]="ordersToChange" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
       selectionMode="multiple" [(selection)]="selectedOrders" 
       resizableColumns="true" sortOrder="-1" loadingIcon="fa-spinner"
-      [headerCheckboxToggleAllPages]="true"
+      [headerCheckboxToggleAllPages]="false"
       >
       <p-header>
         <div>
