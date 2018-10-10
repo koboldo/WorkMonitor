@@ -31,9 +31,10 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         console.log('Removed from cache '+cacheUrlInfinix);
     }
 
-    private getCachedInfinix(url: string):string {
+    private getCacheKey(url: string):string {
         for(let cacheUrlInfinix of this.cacheUrlInfinixArr) {
-            if (url.indexOf(cacheUrlInfinix) >= 0) {
+            //console.log('Cache check if '+url+' is eq '+cacheUrlInfinix);
+            if (url === cacheUrlInfinix) {
                 return cacheUrlInfinix;
             }
         }
@@ -41,42 +42,44 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        let url: string = request.urlWithParams;
-        let cacheKey : string = this.getCachedInfinix(url);
+        let url: string = request.url;
+        let cacheKey : string = this.getCacheKey(url);
 
         if (url.indexOf('/login') >= 0) {
             this.removeAll();
         }
 
         if (request.method !== "GET") {
+
             if (cacheKey) {
                 console.log('Removing '+cacheKey+' from cache due to '+request.method+' on ['+url+']...');
                 this.remove(cacheKey);
             }
             return next.handle(request);
-        }
 
-        const subject = new AsyncSubject<HttpEvent<any>>();
+        } else {
 
-        if (cacheKey) {
-            console.log('Checking cache for '+cacheKey);
+            const subject = new AsyncSubject<HttpEvent<any>>();
 
-            const cachedResponse = this.cache[cacheKey] || null;
-            if (cachedResponse) {
-                console.log('Cache hit for '+cacheKey+'!');
-                return cachedResponse.delay(0);
-            } else {
-                this.put(cacheKey, subject);
+            if (cacheKey) {
+                console.log('Checking cache for '+cacheKey);
+
+                const cachedResponse = this.cache[cacheKey] || null;
+                if (cachedResponse) {
+                    console.log('Cache hit for '+cacheKey+'!');
+                    return cachedResponse.delay(0);
+                } else {
+                    this.put(cacheKey, subject);
+                }
             }
+
+            next.handle(request).do(event => {
+                if (event instanceof HttpResponse) {
+                    subject.next(event);
+                    subject.complete();
+                }
+            }).subscribe(); // must subscribe to actually kick off request!
+            return subject;
         }
-
-        next.handle(request).do(event => {
-            if (event instanceof HttpResponse) {
-                subject.next(event);
-                subject.complete();
-            }
-        }).subscribe(); // must subscribe to actually kick off request!
-        return subject;
-
     }
 }
