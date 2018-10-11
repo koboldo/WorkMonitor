@@ -40,10 +40,10 @@ export class WoStoppedListComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private dictService:DictService,
+                public dictService:DictService,
                 private authSerice:AuthenticationService,
                 private toolsService:ToolsService,
-                private alertService:AlertService,) {
+                private alertService:AlertService) {
     }
 
     ngOnInit() {
