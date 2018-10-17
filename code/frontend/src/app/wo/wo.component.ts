@@ -96,7 +96,7 @@ export class WoComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+        this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
         this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
         this.workTypeService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);

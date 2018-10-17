@@ -45,8 +45,8 @@ export class UserChangeComponent implements OnInit {
 
     // Dismiss worker
     displayDismissDialog:boolean;
-
     //
+    show:boolean=true;
 
     rateControl = new FormControl("", [Validators.min(0)]);
 
@@ -74,6 +74,41 @@ export class UserChangeComponent implements OnInit {
         this.mapToRanks(this.dictService.getRanks());
         this.mapToAgreements(this.dictService.getAgreements());
 
+    }
+
+    checkSelect() {
+        if (this.selectedUser.user.roleCode.indexOf('CN')> -1) {
+            if (this.selectedUser.user.roleCode.length>1) {
+                this.removeRole("CN");
+            }
+            this.show=false;
+            this.selectedUser.user.isActive = 'N';
+            this.selectedUser.user.isEmployed= 'N';
+            this.selectedUser.user.isFromPool= 'N';                  
+        }
+        else if (this.selectedUser.user.roleCode.indexOf('VE')> -1) {
+            if (this.selectedUser.user.roleCode.length>1 ){
+                this.removeRole("VE");
+            }
+            this.show=false;
+            this.selectedUser.user.isEmployed= 'N'; 
+        }
+        else {
+            this.show=true;
+            this.selectedUser.user.isActive = 'Y';
+            this.selectedUser.user.isEmployed= 'Y';
+            this.selectedUser.user.isFromPool=''; 
+        }
+    }
+
+    removeRole (text:string) {
+        let info="";
+        this.selectedUser.user.roleCode=[];
+        this.selectedUser.user.roleCode.push(text);
+        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
+        if (this.selectedUser.user.roleCode.length===1) {
+            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
+        }
     }
 
     public showDismissDialog ()
@@ -106,7 +141,7 @@ export class UserChangeComponent implements OnInit {
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
         }
-
+        this.checkSelect();
     }
 
     suggestUser(event) {
