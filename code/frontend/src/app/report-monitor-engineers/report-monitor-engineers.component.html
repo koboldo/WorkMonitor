@@ -128,7 +128,7 @@
 
 <p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName +' ('+selectedReport?.timeUtilizationPercentage+'%)'" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
-        <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="4" [editable]="false" (onEventClick)="handleOrderClick($event)" [locale]="'pl'"></p-schedule>
+        <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="8" [editable]="false" (onEventClick)="handleOrderClick($event)" [locale]="'pl'"></p-schedule>
     </div>
 </p-dialog>
 

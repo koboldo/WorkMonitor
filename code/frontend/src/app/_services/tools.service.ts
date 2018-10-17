@@ -1,5 +1,4 @@
 ﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { DatePipe }         from '@angular/common';
 import { Observable }       from 'rxjs/Observable';
 
@@ -292,5 +291,13 @@ export class ToolsService {
         let minutesPadded: string = minutes < 10 ? '0'+minutes : ''+minutes;
         return ''+hours+':'+minutesPadded;
     }
+
+    public censorUser(key, value) {
+        if (key === 'modifiedByUser') {
+            return undefined;
+        }
+        return value;
+    }
+
 
 }

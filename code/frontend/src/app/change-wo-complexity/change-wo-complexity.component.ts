@@ -46,7 +46,7 @@ export class ChangeWoComplexityComponent implements OnInit {
                 private toolsService: ToolsService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService) {
-        this.lastModAfter = toolsService.getCurrentDateDayOperation(-161); //TODO change
+        this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
         this.pl=new Calendar();
     }

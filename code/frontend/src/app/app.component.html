@@ -10,13 +10,17 @@
             <a style="float: right" href="logout">Wyloguj</a><br>
             {{user?.firstName}} ({{roles | async}}) @ {{office | async}}<br>
             <div style="float: right">Sesja {{getMinutesBeforeLogout() | async}} minut.</div>
-            <user-attendance-register *ngIf="user?.firstName" [user]="user"></user-attendance-register>
 
         </div>
     </div>
+    <div *ngIf="user?.firstName">
+        <app-progress></app-progress>
+        <user-attendance-register [user]="user"></user-attendance-register>
+        <hr style="margin-top: 25px; margin-bottom: 0px;">
+    </div>
 </div>
 
-<app-progress *ngIf="user?.firstName"></app-progress>
+
 
 <div *ngIf="items">
     <p-tabMenu [model]="items" ></p-tabMenu>
@@ -30,8 +34,22 @@
 
 <!-- credits -->
 <div class="text-center">
-    <p>WERSJA 1.3.17 Faza II ( <a href="https://www.primefaces.org/primeng/#/" target="_top">Powered by primeng</a> )
 
+    <p>WERSJA 1.4.10 Faza II ( <a href="https://www.primefaces.org/primeng/#/" target="_top">Powered by primeng</a> )
+
+        <!-- 1.4.10 - cancelled tab added  -->
+        <!-- 1.4.9 - complexity bug on group add orders fixed    -->
+        <!-- 1.4.8 - censor user removed    -->
+        <!-- 1.4.7 - No person history in cache    -->
+        <!-- 1.4.6 - problem z JSON.stringify(user:User) censorUser    -->
+        <!-- 1.4.5 - problem z JSON.stringify(user:User)    -->
+        <!-- 1.4.4 - dedykowany timesheet na user-attendance-register    -->
+        <!-- 1.4.3 - poprawka analiza pracowników - wycena ze zlecenia, usuniecie typów http    -->
+        <!-- 1.4.2 - dodanie zakladki pracownicy dla operatorów, poprawka cache - nowe url, lekkie zmiany w wyglądzie ui-fieldset-legend, wo-details    -->
+        <!-- 1.4.1 - Wygaszanie cache'a   -->
+        <!-- 1.4.0 - Nowy klient HTTP, cache'ujacy interceptor   -->
+        <!-- 1.3.19 - Poprawka do grupowej zmiany statusów - zaznaczanie jedynie widocznych zleceń, male zmiany w rejestracji czasu pracy -->
+        <!-- 1.3.18 - Poprawka do grupowej zmiany statusów - logika przycisków, logika dla trybu operator, czyszczenie zmiennych  -->
         <!-- 1.3.17 - Poprawka zmiana strefy czasowej w komentarzach  -->
         <!-- 1.3.16 - Zmiana statusów - implementacja rekurencyjnie, usuwanie relacji przypisania gdy status zmieniany na Otwarte  -->
         <!-- 1.3.15 - Zmiana statusów zleceń branch ChangeOrdersGroupStatus  -->

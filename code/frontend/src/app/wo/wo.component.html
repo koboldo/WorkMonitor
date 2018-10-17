@@ -39,7 +39,7 @@
 
   </div>
   <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
-    <app-group-status-change [ListToDisplay]="orders" [Operator]="operator" [parent]="this" (closeModalEvent)="onClose($event)"></app-group-status-change>
+    <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-contextMenu #cm [model]="items"></p-contextMenu>

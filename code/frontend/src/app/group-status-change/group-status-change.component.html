@@ -1,11 +1,11 @@
-<div class="ui-grid-row">
+<div *ngIf="operatorMode" class="ui-grid-row">
   <div class="ui-grid-col-6">
     <p-fieldset legend="Nowy Status">
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
           <div class="ui-grid-col-2"><label for="status">Status</label></div>
           <div class="ui-grid-col-6">
               <!--  [forceSelection]="true" does not work -->
-              <p-autoComplete id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>
+              <p-autoComplete id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" (onSelect)="filter($event)"></p-autoComplete>
               <!--  -->
               <!-- [disabled]="!assignedVentureRepresentative"  -->
             
@@ -33,7 +33,7 @@
           </div> 
           <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-4">
-                <button type="button" pButton [disabled]="!status?.code" icon="fa-file-o" iconPos="left" label="Zmień statusy" (click)="changeStatus()"></button>
+                <button type="button" pButton [disabled]="!status?.code || selectedOrders?.length < 1" icon="fa-file-o" iconPos="left" label="Zmień statusy" (click)="changeOrdersStatus(true)"></button>
             </div>           
           </div>      
     </p-fieldset>
@@ -44,10 +44,22 @@
           <p>1. W celu zmiany statusu zleceń należy wybrać status </p>
           <p>2. Następnie należy wybrać zlecenia w których chcemy zmienić status, zaznaczając checkBox w pierwszej kolumnie </p>
           <p>3. Nstępnie należy klinkąć przycisk "Zmień statusy"</p>
-          </div>    
+        </div>    
     </p-fieldset>
   </div>
+</div>
 
+<div *ngIf="!operatorMode" class="ui-grid-row">
+    <div class="ui-grid-col-6">
+        <p-fieldset legend="Zakończ zlecenia">
+          <p>W celu zakończenia zleceń należy wybrać zlecenia poprzez zazanczenie checkBox w pierwszej kolumnie </p>
+          <p>Następnie kliknać przycisk "Zakończ zlecenia"</p>
+            <div class="ui-grid-col-4">
+                <button type="button" pButton [disabled]="selectedOrders?.length < 1" icon="fa-file-o" iconPos="left" label="Zakończ zlecenia" (click)="closeOrders()"></button>
+            </div> 
+        </p-fieldset>
+    </div>
+  
 </div>
 
 <div class="ui-grid-row">
@@ -56,7 +68,7 @@
     <p-dataTable [value]="ordersToChange" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
       selectionMode="multiple" [(selection)]="selectedOrders" 
       resizableColumns="true" sortOrder="-1" loadingIcon="fa-spinner"
-      [headerCheckboxToggleAllPages]="true"
+      [headerCheckboxToggleAllPages]="false"
       >
       <p-header>
         <div>

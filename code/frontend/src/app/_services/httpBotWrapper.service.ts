@@ -1,6 +1,6 @@
-import { Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from "@angular/http"
-import { Injectable } from "@angular/core"
-import { Observable } from "rxjs/Rx"
+import { HttpClient, HttpEvent } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { Observable, AsyncSubject } from "rxjs/Rx";
 import { Subject } from 'rxjs/Subject';
 import { AlertService, AuthenticationService } from '../_services/index';
 import { Router } from '@angular/router';
@@ -12,13 +12,11 @@ import "rxjs/add/operator/map"
 
 
 @Injectable()
-export class HttpInterceptor {
+export class HttpBotWrapper {
 
 
     constructor(
-        backend: XHRBackend,
-        options: RequestOptions,
-        public http: Http,
+        public http: HttpClient,
         private alertService: AlertService,
         private authSerivce: AuthenticationService,
         private router: Router
@@ -70,28 +68,30 @@ export class HttpInterceptor {
         this.subject.next(this.progress);
     }
 
-    public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+    private cache: { [name: string]: AsyncSubject<HttpEvent<any>> } = {};
+
+
+    public get(url: string): Observable<Object> {
         this.incrementProgress(this.getProgressKey(url));
+        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()})
+            .do(object => this.decrementProgress(this.getProgressKey(url)))
+            .catch(e => this.handleError(e, url))
+    }
 
-        return this.http.get(url, this.authSerivce.getAuthOptions())
+    public post(url: string, object:any): Observable<Object> {
+        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
     }
 
-    public post(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.http.post(url, object, this.authSerivce.getAuthOptions())
+    public put(url: string, object:any): Observable<Object> {
+        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
     }
 
-    public put(url: string, object:any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.http.put(url, object, this.authSerivce.getAuthOptions())
-            .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(e => this.handleError(e, url))
-    }
-
-    public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.http.delete(url, this.authSerivce.getAuthOptions())
+    public delete(url: string): Observable<Object> {
+        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()})
             .do(response => this.decrementProgress(this.getProgressKey(url)))
             .catch(e => this.handleError(e, url))
 

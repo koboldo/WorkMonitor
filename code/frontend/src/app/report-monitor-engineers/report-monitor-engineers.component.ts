@@ -213,7 +213,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 order.status = this.dictService.getWorkStatus(order.statusCode);
 
                 if (order.doneDate) {
-                    userData.expectedTime += this.getEffort(userData.officeCode, order.typeCode, order.complexityCode);
+                    userData.expectedTime += this.getEffort(userData.officeCode, order);
                     userData.noOrdersDone++;
                 } else {
                     console.log("Order "+order.workNo +" has not been completed yet, thus is not taken into account!");
@@ -246,14 +246,20 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     }
 
-    private getEffort(officeCode: string, typeCode: string, complexityCode: string): number {
-        for(let workType of this.workTypes) {
-            if (workType.complexityCode === complexityCode && workType.typeCode === typeCode && workType.officeCode === officeCode) {
-                return workType.complexity;
+    private getEffort(officeCode: string, order: Order): number {
+        if (order.complexity) {
+            return order.complexity;
+        } else {
+
+            for(let workType of this.workTypes) {
+                if (workType.complexityCode === order.complexityCode && workType.typeCode === order.typeCode && workType.officeCode === officeCode) {
+                    this.alertService.warn('Brak wyceny dla '+order.workNo+ ' zastosowano wycenę z parametryzacji '+workType.complexity);
+                    return workType.complexity;
+                }
             }
+            this.alertService.error("Nie można wyliczyć raportu - nie znaleziono w bazie wyceny dla zadania o parametrach "+officeCode+","+order.typeCode+","+order.complexityCode);
+            return 0;
         }
-        this.alertService.error("Nie można wyliczyć raportu - nie znaleziono w bazie wyceny dla zadania o parametrach "+officeCode+","+typeCode+","+complexityCode);
-        return 0;
     }
 
 

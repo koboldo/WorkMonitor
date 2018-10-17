@@ -48,6 +48,7 @@ export class UserHistoryComponent implements OnInit {
   private processUserHistory(history:User[]):any {
     this.userHistory = history;
 
+    //let current: User = JSON.parse(JSON.stringify(this._selectedUser, this.toolsService.censorUser));
     let current: User = JSON.parse(JSON.stringify(this._selectedUser));
     current.histCreationDate = this.CURRENT_EOF;
     this.userHistory.push(current); //add current record
