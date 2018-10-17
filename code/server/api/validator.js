@@ -1,12 +1,13 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var logger = require('./logger').getLogger('monitor'); 
+// var logger = require('./logger').getLogger('monitor'); 
+var logger = require('./logger').logger; 
 
 var validator = {
     validateIncoming: function(req, res, next) {
-        if(logger.isDebugEnabled()) logger.debug('incoming ' + req.method + ' ' + req.path + ' ' + JSON.stringify(req.query));
-        if(logger.isDebugEnabled()) logger.debug(JSON.stringify(req.body));
+        if(logger().isDebugEnabled()) logger().debug('incoming ' + req.method + ' ' + req.path + ' ' + JSON.stringify(req.query));
+        if(logger().isDebugEnabled()) logger().debug('payload ' + JSON.stringify(req.body));
         
         try {
             checkIfTimesheetCanBeModified(req);
@@ -16,8 +17,8 @@ var validator = {
             checkIfPayrollCanBeViewed2(req);
             checkIfModificationCanBeDone(req);
         } catch (error) {
-            logger.warn('validation error: ' + error.message);
-            logger.warn(error.stack.split("\n")[1]);
+            logger().warn('validation error: ' + error.message);
+            logger().warn(error.stack.split("\n")[1]);
             return res.status(403).json({status: 'error', message: error.message});
         }
 

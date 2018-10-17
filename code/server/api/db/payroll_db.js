@@ -1,12 +1,13 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var dbUtil = require('./db_util');
-var async = require('async');
-var logErrAndCall = require('../local_util').logErrAndCall;
-var logger = require('../logger').getLogger('monitor'); 
+const dbUtil = require('./db_util');
+const async = require('async');
+const logErrAndCall = require('../local_util').logErrAndCall;
+// const logger = require('../logger').getLogger('monitor'); 
+const addCtx = require('../logger').addCtx;
 
-var queries = {
+const queries = {
     calculatePayroll: 
     `WITH
     QUERY_PARAMS AS (
@@ -255,7 +256,7 @@ var queries = {
                     FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
 };
 
-var filters = {
+const filters = {
     calculatePayroll: {
         overTimeFactor: '%(overTimeFactor)s',
         periodDate: '%(periodDate)s',
@@ -270,56 +271,52 @@ var filters = {
     }
 };
 
-var payroll_db = {
+const payroll_db = {
     read: function(params,cb){
         
-        var db = dbUtil.getDatabase();
+        const db = dbUtil.getDatabase();
         
-        var calls = [];
+        const calls = [];
 
         calls.push(
             function(_cb){
-                var query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                const query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
                 // if(logger.isDebugEnabled()) logger.debug('query for payroll: ' + query);
-                var calculatePayrollStat = db.prepare(query);
-                calculatePayrollStat.get(function(err, result){
+                const calculatePayrollStat = db.prepare(query);
+                calculatePayrollStat.get(addCtx(function(err, result){
                     calculatePayrollStat.finalize();
 
                     
                     if(err) _cb(err);
                     else _cb(null,result);
-                });
+                }));
             });
 
         calls.push(
             function(_cb) {    
-                var getParams = {};
+                const getParams = {};
                 getParams.personId = params.personId;
                 if(params.history == 'N') getParams.periodDate = params.periodDate;
                 else getParams.history = 'Y';
     
-                var query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,getParams,filters.getPayroll);
-                var getPayrollStat = db.prepare(query);
-                getPayrollStat.all(function(err,rows){
+                const query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,getParams,filters.getPayroll);
+                const getPayrollStat = db.prepare(query);
+                getPayrollStat.all(addCtx(function(err,rows){
                     getPayrollStat.finalize();
     
                     if(err) _cb(err);
                     else _cb(null,rows);
-                });
+                }));
             });
 
-        async.series(calls,function(err, result){
+        async.series(calls,addCtx(function(err, result){
             db.close();
 
             if(err) logErrAndCall(err,cb);
             else {
                 cb(null,result[result.length-1]);
             }
-        });
-    },
-
-    readHistory: function(personId){
-
+        }));
     }
 };
 

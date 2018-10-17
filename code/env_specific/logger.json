@@ -3,10 +3,17 @@
 		"monitor": {
 			"type": "file",
 			"filename": "monitor.log",
-            "format": "%r [%t] %p %c %x - %m%n"
+			"layout": {
+				"type": "pattern",
+				"pattern": "%d %p %X{traceId} - %m"
+			}
 		},
         "monitor-con": {
-			"type": "console"
+			"type": "console",
+			"layout": {
+				"type": "pattern",
+				"pattern": "%d %p %X{traceId} - %m"
+			}			
 		}
 	},
 	"categories": {

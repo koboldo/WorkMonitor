@@ -1,46 +1,45 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var util = require('util');
-var mapper = require('./mapper');
-var persons_db = require('./db/persons_db');
-var moment = require('moment');
-var logger = require('./logger').getLogger('monitor');
+const mapper = require('./mapper');
+const moment = require('moment');
+const persons_db = require('./db/persons_db');
+const addCtx = require('./logger').addCtx;
 
-var persons = {
+const persons = {
     
      readAll: function(req,res) {
         
-        persons_db.readAll(function(err, personRows){
+        persons_db.readAll(addCtx(function(err, personRows){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
-            var persons = mapper.mapList(mapper.person.mapToJson, personRows);
-            var personsFiltered = [];
+            const persons = mapper.mapList(mapper.person.mapToJson, personRows);
+            const personsFiltered = [];
             persons.list.forEach((person)=>{
                 personsFiltered.push(filterPersonFields(req.context,person));
             });
             res.json({list:personsFiltered});
-        });
+        }));
     },
     
     read: function(req, res) {
-        persons_db.read(req.params.id, function(err, personRow){
+        persons_db.read(req.params.id, addCtx(function(err, personRow){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             if(personRow) {
-                var person = mapper.person.mapToJson(personRow);
-                var personFiltered = filterPersonFields(req.context,person);
+                const person = mapper.person.mapToJson(personRow);
+                const personFiltered = filterPersonFields(req.context,person);
                 res.json(personFiltered);
             } else {
                 res.status(404).end();
             }
-        });
+        }));
     },
     
     readOrders: function(req,res) {
@@ -51,33 +50,33 @@ var persons = {
         if(req.query.dateBefore == null) 
             req.query.dateBefore = moment().startOf('month').add(1,'month').add(-1,'second').format('YYYY-MM-DD');
 
-        persons_db.readOrders(req.query, function(err, personRows){
+        persons_db.readOrders(req.query, addCtx(function(err, personRows){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var persons = mapper.mapList(mapper.person.mapToJson, personRows);
+            const persons = mapper.mapList(mapper.person.mapToJson, personRows);
             persons.list.forEach((person) => {
-                var orders = mapper.mapList(mapper.order.mapToJson, person.workOrders);
+                const orders = mapper.mapList(mapper.order.mapToJson, person.workOrders);
                 person.workOrders = orders.list;
             });
             res.json(persons);
-        });
+        }));
     },
 
     update: function(req, res) {
         
-        var personId = req.params.id;
-        var pe = filterPersonFields(req.context, req.body);
+        const personId = req.params.id;
+        const pe = filterPersonFields(req.context, req.body);
         pe.modifiedBy = req.context.id;
-        var personSql = mapper.person.mapToSql(pe);
+        const personSql = mapper.person.mapToSql(pe);
 
-        persons_db.update(personId, personSql,function(err, result){
+        persons_db.update(personId, personSql,addCtx(function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = {};
+            const rv = {};
             if(result == 1) {
                 rv.updated = result;
                 res.status(200);
@@ -86,66 +85,65 @@ var persons = {
                 res.status(404);
             } 
             res.json(rv);
-        });
+        }));
     },
     
     create: function(req, res) {
     
-        var personSql = mapper.person.mapToSql(req.body);
+        const personSql = mapper.person.mapToSql(req.body);
         personSql.PASSWORD = 'justASimpleText';
         
-        persons_db.create(personSql, function(err,result) {
+        persons_db.create(personSql, addCtx(function(err,result) {
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var rv = { created: result };
+            const rv = { created: result };
             if(result != null) res.status(201).json(rv);
             else res.status(404).end();
-        });
+        }));
     },
 
     addOrder: function(req, res) {
         
-        var orderRelation = {};
+        const orderRelation = {};
         orderRelation.PERSON_ID = req.params.pid;
         orderRelation.WO_ID = req.params.oid;
 
-        var detach = (req.query.detach != null) ? JSON.parse(req.query.detach) : false;
+        const detach = (req.query.detach != null) ? JSON.parse(req.query.detach) : false;
 
-        persons_db.addOrder(orderRelation, detach, function(err, result){
+        persons_db.addOrder(orderRelation, detach, addCtx(function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var rv = { created: result };
+            const rv = { created: result };
             if(result != null) res.status(201).json(rv);
             else res.status(404).end();
-        });
+        }));
     },
 
     removeOrder: function(req, res) {
         
-        var orderRelation = {};
+        const orderRelation = {};
         orderRelation.PERSON_ID = req.params.pid;
         orderRelation.WO_ID = req.params.oid;
 
-        persons_db.deleteOrder(orderRelation,function(err, result){
+        persons_db.deleteOrder(orderRelation,addCtx(function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var rv = { deleted: result };
+            const rv = { deleted: result };
             if(result != null) res.status(200).json(rv);
             else res.status(404).end();
-        });
+        }));
     },
     
     readHistory: function(req, res) {
-    	logger.info("reading history...");
     	
     	//RODO
     	if([].concat(req.context.role).indexOf('PR') < 0) {
@@ -153,22 +151,20 @@ var persons = {
     		return;
     	} 
     	
-        var personId = req.params.id;
-        logger.debug("reading history for "+personId);
-        
-        persons_db.readHistory(personId,function(err,histPersonRows){
+        const personId = req.params.id;
+        persons_db.readHistory(personId,addCtx(function(err,histPersonRows){
         	if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
-            var persons = mapper.mapList(mapper.person.mapToJson, histPersonRows);
-            var personsFiltered = [];
+            const persons = mapper.mapList(mapper.person.mapToJson, histPersonRows);
+            const personsFiltered = [];
             persons.list.forEach((person)=>{
                 personsFiltered.push(filterPersonFields(req.context,person));
             });
             res.json({list:personsFiltered});           
-        });
+        }));
     }
 };
 
@@ -181,6 +177,6 @@ function filterPersonFields(context, person) {
         delete person.leaveRate;
     }
     return person;
-};
+}
 
 module.exports = persons;

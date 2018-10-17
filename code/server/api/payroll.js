@@ -1,20 +1,21 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var moment = require('moment');
-var mapper = require('./mapper');
-var payroll_db = require('./db/payroll_db');
+const moment = require('moment');
+const mapper = require('./mapper');
+const payroll_db = require('./db/payroll_db');
+const addCtx = require('./logger').addCtx;
 
-var payrolls = {
+const payrolls = {
 
     read: function(req, resp){
 
-        console.log("query " + JSON.stringify(req.query));
-        console.log("params " + JSON.stringify(req.params));
+        // console.log("query " + JSON.stringify(req.query));
+        // console.log("params " + JSON.stringify(req.params));
         
-        var isBoss = ([].concat(req.context.role).indexOf('PR') > -1);
+        const isBoss = ([].concat(req.context.role).indexOf('PR') > -1);
 
-        var params = {};
+        const params = {};
 
         if(req.query.history == 'Y' && (req.query.periodDate || req.query.overTimeFactor || req.query.approved)) {
             resp.status(400).json({status:'error', message: 'wykluczające się parametry'});
@@ -63,20 +64,20 @@ var payrolls = {
 
         params.modifierId = req.context.id;
 
-        payroll_db.read(params, function(err, payrollRows){
+        payroll_db.read(params, addCtx(function(err, payrollRows){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var payroll = mapper.mapList(mapper.payroll.mapToJson,payrollRows);
+            const payroll = mapper.mapList(mapper.payroll.mapToJson,payrollRows);
             filterPayrollFields(req.context,payroll);
             resp.json(payroll); 
-        });
+        }));
     }
 };
 
 function filterPayrollFields(context, payroll) {
-    var currPayroll = null;
+    let currPayroll = null;
     payroll.list.filter((p)=>p.personId == context.id).forEach((p)=>currPayroll = p);
     payroll.list.forEach((p)=>{
         if(![].concat(context.role).some((p)=>['PR','OP'].indexOf(p)>=0) && (currPayroll == null || 
@@ -85,6 +86,6 @@ function filterPayrollFields(context, payroll) {
             delete p.poolRate;
         }
     });
-};
+}
 
 module.exports = payrolls;

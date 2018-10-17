@@ -1,14 +1,16 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var util = require('util');
-var dbUtil = require('./db_util');
-var async = require('async');
-var sprintf = require("sprintf-js").sprintf;
-var logErrAndCall = require('../local_util').logErrAndCall;
-var logger = require('../logger').getLogger('monitor'); 
+const util = require('util');
+const dbUtil = require('./db_util');
+const async = require('async');
+const sprintf = require("sprintf-js").sprintf;
+const logErrAndCall = require('../local_util').logErrAndCall;
+// var logger = require('../logger').getLogger('monitor'); 
+const logger = require('../logger').logger; 
+const addCtx = require('../logger').addCtx;
 
-var queries = {
+const queries = {
 	getOrders: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID %s ORDER BY WO.LAST_MOD DESC',
 	getOrder: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WO.ID = ?',
 	getOrderByExtId: ' SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WORK_NO = ?',
@@ -50,7 +52,7 @@ var queries = {
 };
 
 // js object used by sprintf function to prepare WHERE condition
-var filters = {
+const filters = {
     getOrders: {
         type: 'TYPE_CODE = "%(type)s"',
         status: 'STATUS_CODE = "%(status)s"',
@@ -77,25 +79,25 @@ var filters = {
     }
 };
 
-var orders_db = {
+const orders_db = {
     
     readAll: function(params, cb) {
-        var db = dbUtil.getDatabase();
+        const db = dbUtil.getDatabase();
         // TODO: filtrowanie
-        var readFilters = dbUtil.prepareFilters(params,filters.getOrders);
-        var query = sprintf(queries.getOrders, readFilters);
+        const readFilters = dbUtil.prepareFilters(params,filters.getOrders);
+        const query = sprintf(queries.getOrders, readFilters);
         
-        if(logger.isDebugEnabled()) logger.debug('query for getting orders: ' + query);
+        if(logger().isDebugEnabled()) logger().debug('query for getting orders: ' + query);
 
-        var getOrdersStat = db.prepare(query);
-        getOrdersStat.all(function(err,rows) {
+        const getOrdersStat = db.prepare(query);
+        getOrdersStat.all(addCtx(function(err,rows) {
 
             var calls = [];
             rows.forEach(row => {
                 if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
                 calls.push((async_cb)=>{
                     var getOrderItemsStat = db.prepare(queries.getOrderItems);
-                    getOrderItemsStat.bind(row.ITEM_ID).all((err, rows) => {
+                    getOrderItemsStat.bind(row.ITEM_ID).all(addCtx((err, rows) => {
                         getOrderItemsStat.finalize();
                         if(err) { 
                             async_cb(err); 
@@ -103,11 +105,11 @@ var orders_db = {
                             row.RELATED_ITEMS = rows;
                             async_cb();
                         }
-                    });
+                    }));
                 });
             });
 
-			async.parallelLimit(calls, 5, function(err, result) {
+			async.parallelLimit(calls, 5, addCtx(function(err, result) {
                 getOrdersStat.finalize();
                 db.close();
                 if (err) {
@@ -115,15 +117,15 @@ var orders_db = {
                 } else {
                     cb(null,rows);
                 }
-            });
-        });
+            }));
+        }));
     },
     
     read: function(orderId, orderExtId, cb) {
         //TODO: parameter validation
-        var db = dbUtil.getDatabase();
+        const db = dbUtil.getDatabase();
         
-        var getOrderStat;
+        let getOrderStat;
         if(orderId != null)  {
             getOrderStat = db.prepare(queries.getOrder);
             getOrderStat.bind(orderId);
@@ -132,7 +134,7 @@ var orders_db = {
             getOrderStat.bind(orderExtId);            
         }
         
-		getOrderStat.get(function(err, row) {
+		getOrderStat.get(addCtx(function(err, row) {
             getOrderStat.finalize();
             db.close();
 			if(err) return logErrAndCall(err,cb);
@@ -144,8 +146,8 @@ var orders_db = {
 
             if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
             
-            var getOrderItemsStat = db.prepare(queries.getOrderItems);
-            getOrderItemsStat.bind(row.ITEM_ID).all((err, rows) => {
+            const getOrderItemsStat = db.prepare(queries.getOrderItems);
+            getOrderItemsStat.bind(row.ITEM_ID).all(addCtx((err, rows) => {
                 getOrderItemsStat.finalize();
                 if(err) { 
                     logErrAndCall(err,cb);
@@ -153,15 +155,15 @@ var orders_db = {
                     row.RELATED_ITEMS = rows;
                     cb(null,row);
                 }
-            });
-		});
+            }));
+		}));
     },
     
     readHistory: function(orderId, cb){
-        var db = dbUtil.getDatabase();
-        var getOrderHistStat = db.prepare(queries.getOrderHistory);
+        const db = dbUtil.getDatabase();
+        const getOrderHistStat = db.prepare(queries.getOrderHistory);
         getOrderHistStat.bind(orderId);
-        getOrderHistStat.all((err, rows) => {
+        getOrderHistStat.all(addCtx((err, rows) => {
             getOrderHistStat.finalize();
             db.close();
 
@@ -170,44 +172,40 @@ var orders_db = {
             } else {
                 cb(null,rows);
             }
-        });
+        }));
     },
 
     update: function(orderId, orderExtId, order, cb) {
 
-        var idObj = {};
+        const idObj = {};
         if(orderId != null) {
-            // idObj.name = 'ID';
-            // idObj.value = orderId;
             idObj.ID = orderId;
         } 
         if(orderExtId != null) {
-            // idObj.name = 'WORK_NO';
-            // idObj.value = orderExtId;
             idObj.WORK_NO = '"' + orderExtId + '"';
         }
 
-        if(logger.isDebugEnabled()) logger.debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));        
-        dbUtil.performUpdate(idObj, order, 'WORK_ORDER', function(err,result) {
+        if(logger().isDebugEnabled()) logger().debug('update order of id ' + util.inspect(idObj) + ' with object: ' + util.inspect(order));        
+        dbUtil.performUpdate(idObj, order, 'WORK_ORDER', addCtx(function(err,result) {
             if(err) return logErrAndCall(err,cb);
             cb(null,result);
-        });
+        }));
     },
     
     create: function(order, cb) {
 
-        var missingWorkNo = (order.WORK_NO) ? false : true;
-        var officeCode;
-        var seqNo;
-        var isFromPool;
+        const missingWorkNo = (order.WORK_NO) ? false : true;
+        let officeCode;
+        let seqNo;
+        let isFromPool;
 
-        var calls = [];
+        const calls = [];
 
-        calls.push(function(_cb){
+        calls.push(addCtx(function(_cb){
             var db = dbUtil.getDatabase();
             var getOfficeCodeStat = db.prepare(queries.getOfficeCode);
             getOfficeCodeStat.bind(order.VENTURE_ID);
-            getOfficeCodeStat.get(function(err,result){
+            getOfficeCodeStat.get(addCtx(function(err,result){
                 getOfficeCodeStat.finalize();
                 db.close();
                 
@@ -216,14 +214,14 @@ var orders_db = {
                     officeCode = result.OFFICE_CODE;
                     _cb(null);
                 }
-            });
-        });
+            }));
+        }));
 
-        calls.push(function(_cb){
+        calls.push(addCtx(function(_cb){
             var db = dbUtil.getDatabase();
             var getIsFromPoolStat = db.prepare(queries.getIsFromPool);
             getIsFromPoolStat.bind([order.TYPE_CODE,order.COMPLEXITY_CODE,officeCode]);
-            getIsFromPoolStat.get(function(err,result){
+            getIsFromPoolStat.get(addCtx(function(err,result){
                 getIsFromPoolStat.finalize();
                 db.close();
 
@@ -232,34 +230,34 @@ var orders_db = {
                     isFromPool = result.IS_FROM_POOL;
                     _cb(null);
                 }
-            });
+            }));
 
-        });
+        }));
 
         if(!order.WORK_NO) {
             calls.push((_cb)=>{
-                dbUtil.getNextSeq('WO_SEQ',function(err, seqVal){
+                dbUtil.getNextSeq('WO_SEQ',addCtx(function(err, seqVal){
                     if(err) _cb(err);
                     else {
                         seqNo = seqVal;
                         _cb(null);
                     }
-                });
+                }));
             });
         }
         
         async.series(
             calls,
-            function(err, result) {
+            addCtx(function(err, result) {
                 if(err) cb(err);
                 else {
-                    console.log('office code ' + officeCode + ' isFromPool ' + isFromPool);
+                    if(logger().isDebugEnabled()) logger().debug('office code ' + officeCode + ' isFromPool ' + isFromPool);
                     if(missingWorkNo) order.WORK_NO = officeCode + seqNo;
                     order.OFFICE_CODE = officeCode;
                     order.IS_FROM_POOL = isFromPool;
                     order.STATUS_CODE = 'OP';
 
-                    if(logger.isDebugEnabled()) logger.debug('insert order with object: ' + util.inspect(order));
+                    if(logger().isDebugEnabled()) logger().debug('insert order with object: ' + util.inspect(order));
             
                     dbUtil.performInsert(order, 'WORK_ORDER', null, function(err, newId){
                         if(err) return logErrAndCall(err,cb);
@@ -267,8 +265,7 @@ var orders_db = {
                     });
                 }
             }
-        );
-
+        ));
     },
 /*
     calculateTotalPriceForCompleted: function(params,cb) {
@@ -287,11 +284,11 @@ var orders_db = {
 */
     prepareOrdersForProtocol: function(idlist, protocolNo, cb) {
         
-        var protNo = protocolNo;
-        var calls = [];
+        let protNo = protocolNo;
+        const calls = [];
 
         if(idlist) {
-            calls.push(function(_cb){
+            calls.push(addCtx(function(_cb){
                 var db = dbUtil.getDatabase();
                 var params =  {idList: idlist};
                 var query = dbUtil.prepareFiltersByInsertion(queries.checkOrdersForProtocol,params,filters.checkOrdersForProtocol);
@@ -301,70 +298,69 @@ var orders_db = {
                     db.close();
                     
                     if(rows.length > 0) {
-                        var checkErr = new Error('Zamówienia o niewłaściwym statusie lub posiadające już numer protokołu: ' + rows.map((r)=>{return r.WORK_NO;}).join(','));
+                        const checkErr = new Error('Zamówienia o niewłaściwym statusie lub posiadające już numer protokołu: ' + rows.map((r)=>{return r.WORK_NO;}).join(','));
                         checkErr.type = 'custom';
                         _cb(checkErr);
                     } else if(err) _cb(err);
                     else _cb(null);
                 });
-            });
+            }));
             
-            calls.push(function(_cb){
-                dbUtil.getNextSeq('PROTOCOL_NO_SEQ',function(err, seqVal){
+            calls.push(addCtx(function(_cb){
+                dbUtil.getNextSeq('PROTOCOL_NO_SEQ',addCtx(function(err, seqVal){
                     if(err) _cb(err);
                     else  _cb(null,seqVal);
-                });
-            });
+                }));
+            }));
             
-            calls.push(function(seqVal,_cb){
+            calls.push(addCtx(function(seqVal,_cb){
                 
                 protNo = 
                 'A' + new Date().getFullYear().toString().substr(-2) + '/'
                       + ((new Date().getMonth() < 10) ? '0' : '') + new Date().getMonth().toString()
                       + '/' + seqVal;
-                console.log('protNo ' + protNo);
+                if(logger().isDebugEnabled()) logger().debug('protocol nuber ' + protNo);
                 
-                var db = dbUtil.getDatabase();
-                var params =  {
+                const db = dbUtil.getDatabase();
+                const params =  {
                     idList: idlist,
                     protocolNo: protNo
                 };
-                var update = dbUtil.prepareFiltersByInsertion(queries.updateOrdersForProtocol,params,filters.updateOrdersForProtocol);
-                var updateOrdersStat = db.prepare(update);      
-                updateOrdersStat.run(function(err,rows){
+                const update = dbUtil.prepareFiltersByInsertion(queries.updateOrdersForProtocol,params,filters.updateOrdersForProtocol);
+                const updateOrdersStat = db.prepare(update);      
+                updateOrdersStat.run(addCtx(function(err,rows){
                     updateOrdersStat.finalize();
                     db.close();
                     
                     if(err) _cb(err);
                     else _cb();
-                });
-            });
+                }));
+            }));
         } 
 
-        calls.push(function(_cb){
-            var db = dbUtil.getDatabase();
-            var params =  {
+        calls.push(addCtx(function(_cb){
+            const db = dbUtil.getDatabase();
+            const params =  {
                             idList: (idlist) ? idlist : '',
                             protocolNo: (protocolNo) ? protocolNo : ''
                         };
-            var query = dbUtil.prepareFiltersByInsertion(queries.getOrdersForProtocol,params,filters.getOrdersForProtocol);
-            var getOrdersForProtocolStat = db.prepare(query);
-            getOrdersForProtocolStat.all(function(err,rows) {
+            const query = dbUtil.prepareFiltersByInsertion(queries.getOrdersForProtocol,params,filters.getOrdersForProtocol);
+            const getOrdersForProtocolStat = db.prepare(query);
+            getOrdersForProtocolStat.all(addCtx(function(err,rows) {
                 getOrdersForProtocolStat.finalize();
                 db.close();
                 
                 if(err) return logErrAndCall(err,cb);
                 _cb(null,rows);
-            });
-        });
+            }));
+        }));
 
         async.waterfall(
             calls,
-            function(err, result) {                
+            addCtx(function(err, result) {                
                 if(err) return logErrAndCall(err,cb);
                 cb(null,[protNo,result]);
-            }
-        );
+            }));
     }
 };
 

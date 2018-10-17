@@ -1,119 +1,122 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var util = require('util');
-var mapper = require('./mapper');
-var orders_db = require('./db/orders_db');
-var prepareProtocol = require('./local_util').prepareProtocol;
-var orders = {
+const mapper = require('./mapper');
+const orders_db = require('./db/orders_db');
+const prepareProtocol = require('./local_util').prepareProtocol;
+const cls = require('continuation-local-storage');
+// const logger = require('./logger').getLogger('monitor'); 
+const logger = require('./logger').logger; 
+const addCtx = require('./logger').addCtx;
+
+const orders = {
     
     readAll: function(req,resp) {
-        
-        orders_db.readAll(req.query, function(err, orderRows){
+        orders_db.readAll(req.query, addCtx(function(err, orderRows){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
-            var orders = mapper.mapList(mapper.order.mapToJson, orderRows);
+            let orders = mapper.mapList(mapper.order.mapToJson, orderRows);
             orders.list.forEach((order) => {
                 mapOrderItems(order);
                 filterOrderPrice(req.context, order);
             });
+            
             resp.json(orders);
-        });
+        }));
     },
     
     read: function(req, resp) {
-        var orderId = req.params.id;
-        var orderExtId = req.params.extId;        
-        orders_db.read(orderId, orderExtId, function(err, orderRow){
+        const orderId = req.params.id;
+        const orderExtId = req.params.extId;        
+        orders_db.read(orderId, orderExtId, addCtx(function(err, orderRow){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
             if(orderRow) {
-                var order = mapper.order.mapToJson(orderRow);
+                let order = mapper.order.mapToJson(orderRow);
                 mapOrderItems(order);
                 filterOrderPrice(req.context, order);
                 resp.json(order);
             } else {
                 resp.status(404).end();
             }
-        });
+        }));
     },
     
     readHistory: function(req, resp){
-        var orderId = req.params.id;
-        orders_db.readHistory(orderId,function(err,histRows){
+        const orderId = req.params.id;
+        orders_db.readHistory(orderId,addCtx(function(err,histRows){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
             
-            var orders = mapper.mapList(mapper.order.mapToJson, histRows);
+            const orders = mapper.mapList(mapper.order.mapToJson, histRows);
             orders.list.forEach((order) => {
                 filterOrderPrice(req.context, order);
             });
             resp.json(orders);            
-        });
+        }));
     },
 
     update: function(req, resp) {
         req.body.modifiedBy = req.context.id;
         delete req.body.isFromPool;
         
-        var orderId = req.params.id;
-        var orderExtId = req.params.extId;
-        var re = filterOrderPrice(req.context, req.body, true);
-        var orderSql = mapper.order.mapToSql(re);
+        const orderId = req.params.id;
+        const orderExtId = req.params.extId;
+        const re = filterOrderPrice(req.context, req.body, true);
+        const orderSql = mapper.order.mapToSql(re);
 
-
-        orders_db.update(orderId, orderExtId, orderSql,function(err, result){
+        orders_db.update(orderId, orderExtId, orderSql,addCtx(function(err, result){
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = { updated: result };
+            const rv = { updated: result };
             if(result > 0) resp.status(200);
             else resp.status(404);
             resp.json(rv);
-        });
+        }));
     },
     
     create: function(req, resp) {
-
+        
         if(!req.body.typeCode || !req.body.complexityCode || !req.body.ventureId) {
             resp.status(400).json({status:'error', message: 'missing parameters'});
             return;
         }
 
         req.body.modifiedBy = req.context.id;
-
-        var orderSql = mapper.order.mapToSql(req.body);
-        orders_db.create(orderSql, function(err,result) {
+        
+        const orderSql = mapper.order.mapToSql(req.body);
+        orders_db.create(orderSql, addCtx(function(err,result) {
             if(err) {
                 resp.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var rv = { created: result };
+            const rv = { created: result };
             if(result) resp.status(201).json(rv);
             else resp.status(404).end();
-        });
+        }));
     },
-
+    
     prepareProtocol: function(req, resp) {
 
-        var ids = null;
-        var protocolNo = null;
-
+        let ids = null;
+        let protocolNo = null;
+        
         if(!req.query.ids && !req.query.protocolNo) {
             resp.status(400).json({status: 'error', message: 'canot prepare report without ids'});
             return;
         } else {
             if(req.query.ids) {
-                console.log('checking ids');
+                if(logger().isDebugEnabled()) logger().debug('checking ids');
                 
                 ids = req.query.ids.split(',');
                 for( let id in ids) {
@@ -126,15 +129,15 @@ var orders = {
             }
             protocolNo = req.query.protocolNo;
         }
-        
-        orders_db.prepareOrdersForProtocol(ids,protocolNo,function(err, protocol){
+
+        orders_db.prepareOrdersForProtocol(ids,protocolNo,addCtx(function(err, protocol){
             if(err) {
                 if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
                 else return resp.status(500).json({status:'error', message: 'request processing failed'});
             }
             
-            var protocolNo = protocol[0];
-            var protocolRows = protocol[1];
+            const protocolNo = protocol[0];
+            const protocolRows = protocol[1];
             if(protocolRows.length == 0) {
                 return resp.status(404).json({status:'error', message: 'nie znaleziono zamówień'});
             }
@@ -143,14 +146,14 @@ var orders = {
             prepareProtocol(protocolRows,function(fileContent){
                 resp.json({ file: fileContent, name: fileName});
             });
-        });
+        }));
     }
 };
 
 function mapOrderItems(order) {
-    var mappedItems = [];
+    const mappedItems = [];
     order.relatedItems.forEach((relatedItem) => {
-        var mappedItem = mapper.relatedItem.mapToJson(relatedItem);
+        const mappedItem = mapper.relatedItem.mapToJson(relatedItem);
         mappedItems.push(mappedItem);
     });
     order.relatedItems = mappedItems;

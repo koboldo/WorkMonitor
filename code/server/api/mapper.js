@@ -88,6 +88,11 @@ var mapper = {
 		mapToSql: toolbox.produceMapper(toolbox.swap(mappings.timeSheet.sqlToJson)),
 	},
     
+    timeStats:{
+        mapToJson: toolbox.produceMapper(mappings.timeStats.sqlToJson),
+		mapToSql: toolbox.produceMapper(toolbox.swap(mappings.timeStats.sqlToJson)),
+    },
+
     relatedItem: {
         mapToJson: toolbox.produceMapper(mappings.relatedItem.sqlToJson),
         mapToSql: toolbox.produceMapper(toolbox.swap(mappings.relatedItem.sqlToJson)),
