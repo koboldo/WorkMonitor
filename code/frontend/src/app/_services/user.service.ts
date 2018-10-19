@@ -3,6 +3,7 @@
 import { User, Order, UserReport } from '../_models/index';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
+import { ToolsService } from '../_services/tools.service';
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import 'rxjs/add/operator/map';
@@ -11,7 +12,7 @@ import 'rxjs/add/observable/forkJoin';
 
 @Injectable()
 export class UserService {
-    constructor(private http: HttpBotWrapper, private dictService: DictService) {
+    constructor(private http: HttpBotWrapper, private dictService: DictService, private toolsService: ToolsService) {
         console.log("created UserService");
     }
 
@@ -25,6 +26,7 @@ export class UserService {
     }
 
     update(user: User) {
+        //let strippedUser: User = JSON.parse(JSON.stringify(user, this.toolsService.censorUser));
         let strippedUser: User = JSON.parse(JSON.stringify(user));
         strippedUser.workOrders = undefined;
         return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).map((response: Object) => response);
@@ -170,6 +172,7 @@ export class UserService {
         if (response.list && response.list.length > 0) {
             for (let user of response.list) {
 
+                //console.log("getAllByRole processing user "+JSON.stringify(user, this.toolsService.censorUser));
                 console.log("getAllByRole processing user "+JSON.stringify(user));
 
                 if (user.roleCode && user.roleCode.length && this.hasAnyRole(roleCodes, user)) {
@@ -195,6 +198,7 @@ export class UserService {
                         user.role.push(this.dictService.getRole(roleCode));
                     }
 
+                    //console.log("getAllByRole pushing user "+JSON.stringify(user, this.toolsService.censorUser));
                     console.log("getAllByRole pushing user "+JSON.stringify(user));
                     users.push(user);
 

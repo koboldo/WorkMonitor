@@ -17,6 +17,7 @@ import { ReportMonitorEngineersComponent } from './report-monitor-engineers/repo
 import { WoClearingComponent } from './wo-clearing/wo-clearing.component';
 import { WorkTypesComponent } from './work-types/work-types.component';
 import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
+import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
 import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
@@ -32,6 +33,7 @@ const appRoutes: Routes = [
     { path: 'changePerson/:id',         component: UserChangeComponent, canActivate: [AuthGuard] },
     { path: 'workOrders',               component: WoComponent,       canActivate: [AuthGuard] },
     { path: 'suspendedWorkOrders',      component: WoSuspendedComponent,       canActivate: [AuthGuard] },
+    { path: 'cancelledWorkOrders',      component: WoCancelledComponent,       canActivate: [AuthGuard] },
     { path: 'workTypes',                component: WorkTypesComponent,       canActivate: [AuthGuard] },
     { path: 'myWorkOrders',             component: MyWoComponent,     canActivate: [AuthGuard] },
     { path: 'addTimesheet',             component: TimesheetsComponent, canActivate: [AuthGuard] },

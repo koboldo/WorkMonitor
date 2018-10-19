@@ -434,8 +434,10 @@ export class WoComponent implements OnInit {
 
     private saveOrder(order: Order, saveOrderCallback: (o: Order, that: WoComponent) => any): void {
 
-        order.statusCode = this.newOrder ? 'OP' : this.status.code;
-        order.status = this.dictService.getWorkStatus(order.statusCode);
+        order.id            = this.newOrder ? undefined : order.id;
+        order.statusCode    = this.newOrder ? 'OP' : this.status.code;
+        order.complexity    = this.newOrder ? -1 : order.complexity;
+        order.status        = this.dictService.getWorkStatus(order.statusCode);
 
         if (this.newComment && this.newComment.length > 0) {
             if (this.newOrder || !order.comments) {

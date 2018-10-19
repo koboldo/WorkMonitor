@@ -292,4 +292,12 @@ export class ToolsService {
         return ''+hours+':'+minutesPadded;
     }
 
+    public censorUser(key, value) {
+        if (key === 'modifiedByUser') {
+            return undefined;
+        }
+        return value;
+    }
+
+
 }

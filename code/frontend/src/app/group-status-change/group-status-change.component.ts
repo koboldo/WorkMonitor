@@ -36,7 +36,7 @@ export class GroupStatusChangeComponent implements OnInit {
     @Input()
     parent: WoComponent;  //this is null for
 
-    @Input ()
+    @Input()
     operator: User;
 
     @Input()

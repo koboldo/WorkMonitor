@@ -137,6 +137,7 @@ export class UserChangeComponent implements OnInit {
     }
 
     public onSelectUser(value : SearchUser): void {
+        //console.log("changing company "+JSON.stringify(value, this.toolsService.censorUser));
         console.log("changing company "+JSON.stringify(value));
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
@@ -149,18 +150,20 @@ export class UserChangeComponent implements OnInit {
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
         if (this.users && this.users.length > 0) {
             for (let user of this.users) {
+                //let suggestion:string = JSON.stringify(user, this.toolsService.censorUser);
                 let suggestion:string = JSON.stringify(user);
                 console.log("suggestUser " + suggestion + " for " + JSON.stringify(event));
                 if (suggestion.toLowerCase().indexOf(queryIgnoreCase) > -1) {
                     let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
                     suggestedUsers.push(new SearchUser(displayName, user));
+                    //console.log("added suggestUser " + suggestion + " for " + JSON.stringify(user, this.toolsService.censorUser));
                     console.log("added suggestUser " + suggestion + " for " + JSON.stringify(user));
                 }
             }
         }
         this.suggestedUsers = suggestedUsers;
         //this.selectedUser = undefined;
-        console.log("suggestedUsers new " + JSON.stringify(this.suggestedUsers));
+        console.log("suggestedUsers new " + this.suggestedUsers.length);
     }
 
     public showProjectFactor() {
@@ -172,7 +175,7 @@ export class UserChangeComponent implements OnInit {
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
 
         if (this.users && this.users.length > 0) {
-            console.log('all ' + JSON.stringify(this.users));
+            console.log('all ' + this.users.length);
             for (let u of this.users) {
                 if (this.selectedUser.user.roleCode.indexOf('VE') == -1 && u.roleCode.indexOf('VE') == -1) {
                     if (u.company && u.company.toLowerCase().indexOf(queryIgnoreCase) > -1 && suggestedCompanies.indexOf(u.company) == -1) {
@@ -237,6 +240,7 @@ export class UserChangeComponent implements OnInit {
         if (user) {
             this.operator = user;
             console.log("Operator " + JSON.stringify(this.operator));
+            //console.log("Operator " + JSON.stringify(this.operator, this.toolsService.censorUser));
             if (this.operator.roleCode.indexOf('PR') == -1) {
                 let roles:CodeValue[] = this.dictService.getRoles();
                 let allowedRoles:CodeValue[] = [];
@@ -261,6 +265,7 @@ export class UserChangeComponent implements OnInit {
             let id: number = +sId;
             for(let user of users) {
                 if (user.id === id) {
+                    //console.log("found "+JSON.stringify(user, this.toolsService.censorUser));
                     console.log("found "+JSON.stringify(user));
                     let displayName:string = user.firstName + " " + user.lastName + " (" + user.role + ")";
                     this.selectedUser = new SearchUser(displayName, user);
