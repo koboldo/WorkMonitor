@@ -161,10 +161,10 @@ export class ReportMonitorEngineersComponent implements OnInit {
         console.log("Got " + reportData.length + " reports!");
 
         if (reportData && reportData.length > 0) {
-            for (let report of reportData) {
-                report.office = this.dictService.getOffice(report.officeCode);
-                report.role = this.dictService.getRole(report.roleCode);
-                report.declaredTime = 0;
+            for (let report of reportData) {            
+                    report.office = this.dictService.getOffice(report.officeCode);              
+                    report.role = this.dictService.getRole(report.roleCode);
+                    report.declaredTime = 0;     
             }
             this.reports = reportData;
         } else {

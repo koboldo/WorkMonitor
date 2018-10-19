@@ -164,7 +164,7 @@ export class ToolsService {
             return true;
         } else if (order.assignee && order.assignee.length > 0) {
             return true;
-        } else if (statusCode === 'OP' || statusCode === 'CL' || statusCode === 'SU') {
+        } else if (statusCode === 'OP' || statusCode === 'CA' || statusCode === 'SU') {
             return true;
         }
         return false;

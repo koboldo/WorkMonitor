@@ -43,8 +43,10 @@ import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 import { WoListComponent } from './wo-list/wo-list.component';
 import { UserHistoryComponent } from './user-history/user-history.component';
 import { GroupStatusChangeComponent } from './group-status-change/group-status-change.component';
+import { ContractorsComponent } from './contractors/contractors.component';
 import { WoStoppedListComponent } from './wo-stopped-list/wo-stopped-list.component';
 import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
+
 
 @NgModule({
     imports: [
@@ -86,6 +88,7 @@ import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
         WoListComponent,
         UserHistoryComponent,
         GroupStatusChangeComponent,
+        ContractorsComponent,
         WoStoppedListComponent,
         WoCancelledComponent
     ],

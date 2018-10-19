@@ -77,6 +77,7 @@ var roleMap = [
     { role: 'INŻYNIER' , code: 'EN' },
     { role: 'PRZEDSTAWICIEL' , code: 'VE' },
     { role: 'ANALITYK', code: 'AN' },
+    { role: 'ZLECENIOBIORCA', code: 'CN' },
 ]
 
 var mapRecord = (oldRecord) => {
