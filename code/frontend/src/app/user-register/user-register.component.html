@@ -20,7 +20,7 @@
 
             <div class="form-group" *ngIf="showRoles">
                 <label for="roleCode">Funkcja w systemie</label>
-                <p-selectButton id="roleCode" name="roleCode" [options]="roles" multiple="multiple" [(ngModel)]="user.roleCode" required #roleCode="ngModel"></p-selectButton>
+                <p-selectButton id="roleCode" name="roleCode" [options]="roles" multiple="multiple" [(ngModel)]="user.roleCode" required #roleCode="ngModel" (onChange)="checkSelect()"></p-selectButton>
                 <div *ngIf="f.submitted && !roleCode?.valid" class="help-block">Rola jest wymagana</div>
             </div>
 
@@ -32,7 +32,7 @@
                 <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
             </div>
 
-            <div *ngIf="user.roleCode.indexOf('VE') > -1" style="width: 100%; margin-bottom: 10px;">
+            <div *ngIf="show" style="width: 100%; margin-bottom: 10px;">
                 <label for="company">Firma Zlecająca</label>
                 <div class="ui-fluid">
                     <p-autoComplete
@@ -67,6 +67,35 @@
                         <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
                     </div>
                 </div>-->
+            <div *ngIf="!show">
+                <div style="margin-bottom: 10px;">
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
+                        <label for="account">Nr konta</label>
+                        <input id="account" type="text" class="form-control" name="account" [(ngModel)]="user.account" #account="ngModel" account minlength="26"/>
+                        <div *ngIf="f.submitted && !account?.valid" class="help-block">numer rachunku jest niepoprawny</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !phone?.valid }">
+                        <label for="phone">Telefon</label>
+                        <input id="phone" type="text" class="form-control" name="phone" [(ngModel)]="user.phone" #phone="ngModel" phone minlength="9" />
+                        <div *ngIf="f.submitted && !phone?.valid" class="help-block">numer telefonu jest niepoprawny</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressStreet?.valid }">
+                        <label for="addressStreet">Ulica nr domu/lokal</label>
+                        <input id="addressStreet" type="text" class="form-control" name="addressStreet" [(ngModel)]="user.addressStreet" #addressStreet="ngModel" addressStreet minlength="5"/>
+                        <div *ngIf="f.submitted && !addressStreet?.valid" class="help-block">adres Ulica nr domu(/numer lokalu) jest niepoprawny</div>
+                    </div>
+
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressPost?.valid }">
+                        <label for="addressPost">Kod, miejscowość</label>
+                        <input id="addressPost" type="text" class="form-control" name="addressPost" [(ngModel)]="user.addressPost" #addressPost="ngModel"  addressPost minlength="7"/>
+                        <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">kod pocztowy oraz miejscowość jest nipoprawna</div>
+                    </div>
+                </div>
+            </div>
+
+                <div *ngIf="show">
                 <div style="margin-bottom: 10px;">
                     <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
                         <label for="account">Nr konta</label>
@@ -91,8 +120,11 @@
                         <input id="addressPost" type="text" class="form-control" name="addressPost" [(ngModel)]="user.addressPost" #addressPost="ngModel" required addressPost minlength="7"/>
                         <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">wymagany jest poprawny kod pocztowy oraz miejscowość</div>
                     </div>
+                </div>
                 
-                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid  }">
+
+                <!-- <div *ngIf="user.roleCode.indexOf('CN') == -1"> -->
+                    <div  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid  }">
                         <label for="excelId">Identyfikator excel</label>
                         <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="user.excelId" #excelId="ngModel"  required excelId minlength="1" min="0" />
                         <div *ngIf="f.submitted && !excelId?.valid " class="help-block">Identyfikator w excel jest wymagany (liczba >= 0)</div>
@@ -120,7 +152,7 @@
                         <input pInputText id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="user.leaveRate" #leaveRate="ngModel" required leaveRate min="0" pattern="^[0-9]\d*(\.\d+)?$"/>
                         <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0)</div>
                     </div>
-
+                
                     <!--<div class="form-group" *ngIf="showAgreements">
                         <label for="agreementCode">Główna umowa</label>
                         <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="user.agreementCode" required #agreementCode="ngModel"></p-selectButton>
@@ -138,15 +170,15 @@
                         <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="user.projectFactor" #projectFactor="ngModel" required projectFactor />
                         <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik</div>
                     </div>
-
                 </div>
-            </div>
+                </div>
+          
 
-            <div class="form-group">
+            <div *ngIf="user.roleCode.indexOf('CN') == -1" class="form-group">
                 <p-radioButton name="activegroup" value="Y" [(ngModel)]="user.isActive" label="Aktywny (Konto - może się logować)"></p-radioButton>
                 <p-radioButton name="activegroup" value="N" [(ngModel)]="user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
             </div>
-            <div *ngIf="user.roleCode.indexOf('VE') == -1">
+            <div *ngIf="show">                    
                 <div class="form-group">
                     <p-radioButton name="employgroup" value="Y" [(ngModel)]="user.isEmployed" label="Jest pracownikiem"></p-radioButton>
                     <p-radioButton name="employgroup" value="N" [(ngModel)]="user.isEmployed" label="Nie jest pracownikiem"></p-radioButton>

@@ -22,7 +22,8 @@
         <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
       </p-dialog>
       <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'Y'" type="button" pButton (click)="showDismissDialog()" icon="fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
-      <p *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p>
+      <!-- <p *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p> -->
+      <p *ngIf="show && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p>
     </div>
 <!-- Modal dismiss-->
     <p-dialog  [header]="'Zakończenie współpracy z ' +selectedUser.user.firstName + ' '+selectedUser.user.lastName" [(visible)]="displayDismissDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">  
@@ -93,7 +94,7 @@
       </div>
 
 
-      <div *ngIf="selectedUser.user.roleCode.indexOf('VE') == -1"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
+      <div *ngIf="show"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
         <label for="excelId">Identyfikator excel</label>
         <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required min="0"/>
         <div *ngIf="f.submitted && !excelId?.valid" class="help-block">Identyfikator w excel jest wymagany</div>
@@ -106,7 +107,7 @@
       
       <div class="form-group" *ngIf="showRoles" [ngClass]="{ 'has-error': f.submitted && !(selectedUser?.user?.roleCode?.length > 0) }">
         <label for="roleCode">Funkcja w systemie</label>
-        <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" name="roleCode" multiple="multiple" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" required roles></p-selectButton>
+        <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" name="roleCode" multiple="multiple" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" (onChange)="checkSelect()" required roles></p-selectButton>
         <div *ngIf="f.submitted && !(selectedUser?.user?.roleCode?.length > 0)" class="help-block">Rola jest wymagana</div>
       </div>
 
@@ -117,7 +118,7 @@
         <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
       </div>
 
-      <div *ngIf="selectedUser.user.roleCode.indexOf('VE') > -1">
+      <div *ngIf="show">
         <div style="margin-bottom: 10px; width: 100%; ">
           <label for="company">Firma zleceniodawcy</label>
           <div class="ui-fluid form-group" [ngClass]="{ 'has-error': f.submitted && !company?.valid }">
@@ -155,6 +156,35 @@
             <div *ngIf="f.submitted && !company?.valid" class="help-block">Firma jest wymagana</div>
           </div>
         </div>-->
+
+        <div *ngIf="!show">
+          <div style="margin-bottom: 10px;">
+              <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
+                  <label for="account">Nr konta</label>
+                  <input id="account" type="text" class="form-control" name="account" [(ngModel)]="selectedUser.user.account" #account="ngModel" account minlength="26"/>
+                  <div *ngIf="f.submitted && !account?.valid" class="help-block">numer rachunku jest niepoprawny</div>
+              </div>
+
+              <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !phone?.valid }">
+                  <label for="phone">Telefon</label>
+                  <input id="phone" type="text" class="form-control" name="phone" [(ngModel)]="selectedUser.user.phone" #phone="ngModel" phone minlength="9" />
+                  <div *ngIf="f.submitted && !phone?.valid" class="help-block">numer telefonu jest niepoprawny</div>
+              </div>
+
+              <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressStreet?.valid }">
+                  <label for="addressStreet">Ulica nr domu/lokal</label>
+                  <input id="addressStreet" type="text" class="form-control" name="addressStreet" [(ngModel)]="selectedUser.user.addressStreet" #addressStreet="ngModel" addressStreet minlength="5"/>
+                  <div *ngIf="f.submitted && !addressStreet?.valid" class="help-block">adres Ulica nr domu(/numer lokalu) jest niepoprawny</div>
+              </div>
+
+              <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !addressPost?.valid }">
+                  <label for="addressPost">Kod, miejscowość</label>
+                  <input id="addressPost" type="text" class="form-control" name="addressPost" [(ngModel)]="selectedUser.user.addressPost" #addressPost="ngModel"  addressPost minlength="7"/>
+                  <div *ngIf="f.submitted && !addressPost?.valid" class="help-block">kod pocztowy oraz miejscowość są niepoprawne</div>
+              </div>
+          </div>
+      </div>
+<div *ngIf="show">
         <div style="margin-bottom: 10px;">
           <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !account?.valid }">
             <label for="account">Nr konta</label>
@@ -226,7 +256,7 @@
 
         </div>
       </div>
-
+</div>
       <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">Modyfikuj</button>
         <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />

@@ -98,7 +98,10 @@ export class UserService {
     }
 
     public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<UserReport[]> {
-        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Object) => (response['list']));
+        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Object) => 
+        this.getAllUserReport(response));
+        // (response['list'])
+        
     }
 
     public getEngineers(): Observable<User[]> {
@@ -118,11 +121,19 @@ export class UserService {
     }
 
     public getAllButPR(): Observable<User[]> {
-        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["MG", "EN", "OP", "VE"]));
+        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["MG", "EN", "OP", "VE","CN"]));
     }
 
     getAll() {
-        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["PR", "MG", "EN", "OP", "VE", "AN", "CL", "PA"]));
+        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["PR", "MG", "EN", "OP", "VE", "AN", "CL", "PA","CN"]));
+    }
+
+    getContractors () {
+        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["CN", "VE"]));
+    }
+
+    getEngineersAndContractors () : Observable<User[]> {
+        return this.http.get('/api/v1/persons').map((response: Object) => this.getAllByRole(response, ["MG", "EN","CN"]));
     }
 
     public getManagedUsers(role: string[], fetchVentures: boolean): Observable<User[]> {
@@ -151,7 +162,7 @@ export class UserService {
             }
         }
     }
-
+    
     // private helper methods
     private getAllByRole(response:any, roleCodes:string[]):User[] {
         let users : User[] = [];
@@ -195,6 +206,19 @@ export class UserService {
             }
         }
 
+        return users;
+    }
+
+    private getAllUserReport(response:any):UserReport[] {
+        let users : UserReport[] = [];
+        if (response.list && response.list.length > 0) {
+            for (let user of response.list) {
+
+                if (user.roleCode!='CN'){
+                    users.push(user);
+                }   
+            }
+        }
         return users;
     }
 

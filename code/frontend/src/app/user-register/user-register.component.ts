@@ -35,6 +35,8 @@ export class UserRegisterComponent implements OnInit {
     company: string;
     operator: User;
 
+    show:boolean=true;
+
     constructor(
         private router: Router,
         private userService: UserService,
@@ -65,6 +67,41 @@ export class UserRegisterComponent implements OnInit {
         this.userService.getManagedUsers(user.roleCode, false).subscribe(staff => this.staff = staff);
     }
 
+    checkSelect() {
+        if (this.user.roleCode.indexOf('CN')> -1) {
+            if (this.user.roleCode.length>1) {
+                this.removeRole("CN");
+            }
+            this.show=false;
+            this.user.isActive = 'N';
+            this.user.isEmployed= 'N'; 
+            this.user.isFromPool='N';                
+        }
+        else if (this.user.roleCode.indexOf('VE')> -1) {
+            if (this.user.roleCode.length>1 ){
+                this.removeRole("VE");
+            }
+            this.show=false;
+            this.user.isEmployed= 'N'; 
+        }
+        else {
+            this.show=true;
+            this.user.isActive = 'Y';
+            this.user.isEmployed= 'Y'; 
+            this.user.isFromPool='';  
+        }
+    }
+
+    removeRole (text:string) {
+        let info="";
+        this.user.roleCode=[];
+        this.user.roleCode.push(text);
+        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
+        if (this.user.roleCode.length===1) {
+            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
+        }
+    }
+
     register() {
         this.loading = true;
 
@@ -76,12 +113,6 @@ export class UserRegisterComponent implements OnInit {
             this.user.leaveRate = +parseFloat(''+(22.5*this.user.projectFactor)).toFixed(3);
         } 
 
-        this.user.roleCode.forEach(element => {
-            if (element==='VE') {
-                this.user.isEmployed = 'N';
-            }
-        });
-        
         this.userService.create(this.user)
             .subscribe(
                 data => {
