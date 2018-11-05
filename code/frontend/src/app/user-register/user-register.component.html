@@ -32,7 +32,7 @@
                 <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
             </div>
 
-            <div *ngIf="show" style="width: 100%; margin-bottom: 10px;">
+            <div *ngIf="user.roleCode.indexOf('VE') > -1" style="width: 100%; margin-bottom: 10px;">
                 <label for="company">Firma Zlecająca</label>
                 <div class="ui-fluid">
                     <p-autoComplete

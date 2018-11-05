@@ -118,7 +118,7 @@
         <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
       </div>
 
-      <div *ngIf="show">
+      <div *ngIf="selectedUser.user.roleCode.indexOf('VE') > -1">
         <div style="margin-bottom: 10px; width: 100%; ">
           <label for="company">Firma zleceniodawcy</label>
           <div class="ui-fluid form-group" [ngClass]="{ 'has-error': f.submitted && !company?.valid }">
