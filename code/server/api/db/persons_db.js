@@ -1,17 +1,15 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var sqlite3 = require('sqlite3');
-var async = require('async');
-var util = require('util');
-var dbUtil = require('./db_util');
-var logger = require('../logger').getLogger('monitor');
-var logErrAndCall = require('../local_util').logErrAndCall;
+const async = require('async');
+const util = require('util');
+const dbUtil = require('./db_util');
+// const logger = require('../logger').getLogger('monitor');
+const logger = require('../logger').logger; 
+const logErrAndCall = require('../local_util').logErrAndCall;
+const addCtx = require('../logger').addCtx;
 
-// var db = new sqlite3.Database('./work-monitor.db');
-
-
-var queries = {
+const queries = {
 	getPersons: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON ORDER BY LAST_NAME, FIRST_NAME, MODIFIED_BY ASC',
 	getPerson: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON WHERE ID = ?',
 	getPersonHistory: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, DATETIME(HIST_CREATED ,"unixepoch", "localtime") AS HIST_CREATED, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, MODIFIED_BY FROM PERSON_HIST WHERE ID = ?',
@@ -30,56 +28,56 @@ var queries = {
 };
 
 // ??
-var filters = {
+const filters = {
     getPersonOrdersReport: {
         dateAfter: '%(dateAfter)s',
         dateBefore: '%(dateBefore)s'
     }
 };
 
-var persons_db = {
+const persons_db = {
 	
 	readOrders: function(params,cb){
-		var db = dbUtil.getDatabase();
-		var query = dbUtil.prepareFiltersByInsertion(queries.getPersonOrderStats,params,filters.getPersonOrdersReport);
-		var getPersonOrdersReportStat = db.prepare(query);
-		getPersonOrdersReportStat.all(function(err, rows) {
+		const db = dbUtil.getDatabase();
+		const query = dbUtil.prepareFiltersByInsertion(queries.getPersonOrderStats,params,filters.getPersonOrdersReport);
+		const getPersonOrdersReportStat = db.prepare(query);
+		getPersonOrdersReportStat.all(addCtx(function(err, rows) {
 			
 			if(err) return logErrAndCall(err,cb);
 			let persons = transformReportRows(rows);
 			cb(null,persons);
-		});
+		}));
 	},
 
 	readAll: function(cb) {
-		var db = dbUtil.getDatabase();
-		var getPersonsStat = db.prepare(queries.getPersons);
-		getPersonsStat.all(function(err, rows) {
+		const db = dbUtil.getDatabase();
+		const getPersonsStat = db.prepare(queries.getPersons);
+		getPersonsStat.all(addCtx(function(err, rows) {
 			
 			if(err) return logErrAndCall(err,cb);
 			
 			// we need to group async funcs in order to deal in the same thread
-			var calls = [];
+			const calls = [];
 			
 			rows.forEach(function(row){
 
 				if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
 
-				calls.push(function(async_cb) {
+				calls.push(addCtx(function(async_cb) {
 
-					var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
-					getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+					const getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
+					getPersonOrderIdsStat.bind(row.ID).all(addCtx(function(err,idRows){
 						getPersonOrderIdsStat.finalize();
 
-						var ids = [];
+						const ids = [];
 						idRows.forEach((idRow) => { ids.push(idRow.ID); });
 						row.WORK_ORDERS = ids;
 						async_cb();
-					});
-				});
+					}));
+				}));
 			});
 			
-			async.parallelLimit(calls, 5, function(err, result) {
+			async.parallelLimit(calls, 5, addCtx(function(err, result) {
                     getPersonsStat.finalize();
                     db.close();
 					if (err) {
@@ -87,16 +85,16 @@ var persons_db = {
 					} else {
 						cb(null,rows);
 					}
-				});
-		});
+				}));
+		}));
 	},
 
 	read: function(personId, cb) {
-		var db = dbUtil.getDatabase();
+		const db = dbUtil.getDatabase();
 				
 		// TODO: validation in middleware
-        var getPersonStat = db.prepare(queries.getPerson);
-		getPersonStat.bind(personId).get(function(err, row) {
+        const getPersonStat = db.prepare(queries.getPerson);
+		getPersonStat.bind(personId).get(addCtx(function(err, row) {
 			getPersonStat.finalize();
 			if(err) return logErrAndCall(err,cb);
 			
@@ -107,15 +105,15 @@ var persons_db = {
 
 			if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
 
-			var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
-			getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+			const getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
+			getPersonOrderIdsStat.bind(row.ID).all(addCtx(function(err,idRows){
 				getPersonOrderIdsStat.finalize();
 				
-				var ids = [];
+				const ids = [];
 				idRows.forEach((idRow) => { ids.push(idRow.ID); });
 				row.WORK_ORDERS = ids;
 				cb(null,row);
-			});
+			}));
 			// dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
 			// 	row.WORK_ORDERS = ids;
             //     getPersonOrderIdsStat.finalize();
@@ -123,50 +121,50 @@ var persons_db = {
             //     db.close();
 			// 	cb(null,row);
 			// });
-		});
+		}));
 	},
 	
 	update: function(personId, person, cb) {
-        var idObj = {};
+        const idObj = {};
         // idObj.name = 'ID';
 		// idObj.value = personId;
 		idObj.ID = personId;
 		
 		if(person.ROLE_CODE) person.ROLE_CODE = [].concat(person.ROLE_CODE).join(',');
         
-        if(logger.isDebugEnabled()) logger.debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
+        if(logger().isDebugEnabled()) logger().debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
         
-        dbUtil.performUpdate(idObj, person, 'PERSON', function(err,result) {
+        dbUtil.performUpdate(idObj, person, 'PERSON', addCtx(function(err,result) {
             if(err) return logErrAndCall(err,cb);
             cb(null,result);
-        });
+        }));
 	},
 	
 	create: function(person, cb) {
         
 		if(person.ROLE_CODE) person.ROLE_CODE = [].concat(person.ROLE_CODE).join(',');
 		
-		if(logger.isDebugEnabled()) logger.debug('insert person with object: ' + util.inspect(person));
+		if(logger().isDebugEnabled()) logger().debug('insert person with object: ' + util.inspect(person));
         
-        dbUtil.performInsert(person, 'PERSON', null, function(err, newId){
+        dbUtil.performInsert(person, 'PERSON', null, addCtx(function(err, newId){
             if(err) return logErrAndCall(err,cb);
             cb(null,newId);
-        });
+        }));
 	},
 
 	addOrder: function(orderRelation, detachExistingRelation, cb) {
-		if(logger.isDebugEnabled()) logger.debug('insert relation : ' +  util.inspect(orderRelation));
+		if(logger().isDebugEnabled()) logger().debug('insert relation : ' +  util.inspect(orderRelation));
 		
-		var mydb = dbUtil.getDatabase();
+		const mydb = dbUtil.getDatabase();
 
-		var newRelationId;
-		var isFromPool;
+		let newRelationId;
+		let isFromPool;
 
 		async.series([
-			function(_cb){
-				var getIsFromPoolStat = mydb.prepare(queries.getIsFromPool);
+			addCtx(function(_cb){
+				const getIsFromPoolStat = mydb.prepare(queries.getIsFromPool);
 				getIsFromPoolStat.bind([orderRelation.WO_ID, orderRelation.PERSON_ID]);
-				getIsFromPoolStat.get(function(err,result){
+				getIsFromPoolStat.get(addCtx(function(err,result){
 					getIsFromPoolStat.finalize();
 	
 					if(err) _cb(err);
@@ -174,54 +172,53 @@ var persons_db = {
 						isFromPool = result.IS_FROM_POOL;
 						_cb(null);
 					}
-				});
-	
-			},
+				}));
+			}),
 
-			function(_cb) {
-				dbUtil.startTx(mydb,function(err, result){
+			addCtx(function(_cb) {
+				dbUtil.startTx(mydb,addCtx(function(err, result){
 					if(err) _cb(err);
 					else _cb(null,result);
-				});
-			},
+				}));
+			}),
 
-			function(_cb) {
+			addCtx(function(_cb) {
 				if(detachExistingRelation == true) {
-					var obj = {};
+					const obj = {};
 					obj.WO_ID = orderRelation.WO_ID;
-					dbUtil.performDelete(obj,'PERSON_WO',function(err,result){
+					dbUtil.performDelete(obj,'PERSON_WO',addCtx(function(err,result){
 						if(err) _cb(err);
 						_cb(null,result);						
-					}, mydb);
+					}), mydb);
 				} else {
 					_cb(null,true);
 				}
-			},
+			}),
 
-			function(_cb) {
-				dbUtil.performInsert(orderRelation,'PERSON_WO',null,function(err,newId){
+			addCtx(function(_cb) {
+				dbUtil.performInsert(orderRelation,'PERSON_WO',null,addCtx(function(err,newId){
 					if(err) _cb(err);
 					else {
 						newRelationId = newId;
 						_cb(null,newId);
 					}
-				}, mydb);				
-			},
+				}), mydb);				
+			}),
 		
-			function(_cb){
-				var idObj = {};
+			addCtx(function(_cb){
+				const idObj = {};
 				idObj.ID = orderRelation.WO_ID;
 
-				var wo = {};
+				const wo = {};
 				wo.IS_FROM_POOL = isFromPool;
 
-				if(logger.isDebugEnabled()) logger.debug('update workorder of id ' + idObj.ID  + ' with object: ' + util.inspect(wo));
+				if(logger().isDebugEnabled()) logger().debug('update workorder of id ' + idObj.ID  + ' with object: ' + util.inspect(wo));
         
-				dbUtil.performUpdate(idObj, wo, 'WORK_ORDER', function(err,result) {
+				dbUtil.performUpdate(idObj, wo, 'WORK_ORDER', addCtx(function(err,result) {
 					if(err) _cb(err);
 					else _cb(null,result);
-				}, mydb);
-			}],
+				}), mydb);
+			})],
 
 			function(err, results) {
 				if(err) {
@@ -236,23 +233,23 @@ var persons_db = {
 	},
 	
 	deleteOrder: function(orderRelation, cb) {
-		if(logger.isDebugEnabled()) logger.debug('delete relation : ' +  util.inspect(orderRelation));
+		if(logger().isDebugEnabled()) logger().debug('delete relation : ' +  util.inspect(orderRelation));
 
-		dbUtil.performDelete(orderRelation,'PERSON_WO',function(err,newId){
+		dbUtil.performDelete(orderRelation,'PERSON_WO',addCtx(function(err,newId){
 			if(err) return logErrAndCall(err,cb);
             cb(null,newId);
-		});
+		}));
 	},
 	
 	readHistory: function(personId, cb) {
-		var db = dbUtil.getDatabase();
-		var getPersonStat = db.prepare(queries.getPersonHistory);
-		getPersonStat.bind(personId).all(function(err, rows) {
+		const db = dbUtil.getDatabase();
+		const getPersonStat = db.prepare(queries.getPersonHistory);
+		getPersonStat.bind(personId).all(addCtx(function(err, rows) {
 			
 			if(err) return logErrAndCall(err,cb);
 			
 			// we need to group async funcs in order to deal in the same thread
-			var calls = [];
+			const calls = [];
 			
 			rows.forEach(function(row){
 
@@ -260,19 +257,19 @@ var persons_db = {
 
 				calls.push(function(async_cb) {
 
-					var getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
-					getPersonOrderIdsStat.bind(row.ID).all(function(err,idRows){
+					const getPersonOrderIdsStat = db.prepare(queries.getPersonOrderIds);
+					getPersonOrderIdsStat.bind(row.ID).all(addCtx(function(err,idRows){
 						getPersonOrderIdsStat.finalize();
 
-						var ids = [];
+						const ids = [];
 						idRows.forEach((idRow) => { ids.push(idRow.ID); });
 						row.WORK_ORDERS = ids;
 						async_cb();
-					});
+					}));
 				});
 			});
 			
-			async.parallelLimit(calls, 5, function(err, result) {
+			async.parallelLimit(calls, 5, addCtx(function(err, result) {
                     getPersonStat.finalize();
                     db.close();
 					if (err) {
@@ -280,20 +277,20 @@ var persons_db = {
 					} else {
 						cb(null,rows);
 					}
-				});
-		});
+				}));
+		}));
 	}
 };
 
 function transformReportRows(rows) {
-	let personsMap = {};
+	const personsMap = {};
 	rows.forEach((row)=>{
-		let pid = row.PERSON_ID;
-		let personTransformed = (personsMap[pid]) ? true : false;
+		const pid = row.PERSON_ID;
+		const personTransformed = (personsMap[pid]) ? true : false;
 
-		let person = {};
-		let order = {};
-		for(var field in row) {
+		const person = {};
+		const order = {};
+		for(const field in row) {
 			if(!personTransformed && field.startsWith('PERSON_')) {
 				let newField = field.slice(7);
 				person[newField] = row[field];
@@ -309,7 +306,7 @@ function transformReportRows(rows) {
 		}
 		personsMap[pid].WORK_ORDERS.push(order);
 	});
-	let persons = [];
+	const persons = [];
 	for(let id in personsMap) persons.push(personsMap[id]);
 	return persons;
 }

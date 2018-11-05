@@ -102,6 +102,20 @@
 			"LAST_MOD": "lastMod"
 		}
 	},
+	"timeStats": {
+		"sqlToJson": {
+			"PERSON_ID": "personId",
+			"PERIOD_BEGINNING": "periodBeginning",
+			"PERIOD_END": "periodEnd",
+			"LEAVE_TIME": "leaveTime",
+			"WORK_TIME": "workTime",
+			"TRAINING_TIME": "trainingTime",
+			"POOL_WORK_TIME": "poolWorkTime",
+			"NONPOOL_WORK_TIME": "nonpoolWorkTime",
+			"OVER_TIME": "overTime",
+			"IS_FROM_POOL": "isFromPool"
+		}
+	},
 	"relatedItem": {
 		"sqlToJson": {
 			"ID": "id",

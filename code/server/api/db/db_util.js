@@ -2,11 +2,12 @@
 'use strict';
 
 var sqlite3 = require('sqlite3').verbose();
-// var util = require('util');
 var path = require('path');
 var async = require('async');
 var sprintf = require("sprintf-js").sprintf;
-var logger = require('../logger').getLogger('monitor'); 
+// var logger = require('../logger').getLogger('monitor'); 
+var logger = require('../logger').logger;
+const addCtx = require('../logger').addCtx;
 var logErrAndCall = require('../local_util').logErrAndCall;
 
 var insertSeq = 'INSERT INTO SEQUENCER (SEQ_NAME,SEQ_VAL) VALUES ( $NAME , ( SELECT COALESCE(MAX(SEQ_VAL),0) + 1 FROM SEQUENCER WHERE SEQ_NAME = $NAME ))';
@@ -20,7 +21,7 @@ var db_util = {
     getDatabase: function() {
         var dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db');
 
-        if(logger.isDebugEnabled()) logger.debug('connecting to db in location ' + dbPath);
+        if(logger().isDebugEnabled()) logger().debug('connecting to db in location ' + dbPath);
         var db = new sqlite3.Database(dbPath);
         db.serialize(function() {
             db.run( 'PRAGMA journal_mode = DELETE;' );
@@ -34,81 +35,81 @@ var db_util = {
         var myDB = (db == null) ? db_util.getDatabase() : db;
         var insertStr = db_util.prepareInsert(object, tableName);
         var insertStat = myDB.prepare(insertStr);      
-        insertStat.run(function(err, result){
+        insertStat.run(addCtx(function(err, result){
             insertStat.finalize();
             if(db == null) myDB.close();
             if(err){
                 return logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('inserted row id: ' + this.lastID);
+                if(logger().isDebugEnabled()) logger().debug('inserted row id: ' + this.lastID);
                 cb(null, this.lastID);
             }
-        });
+        }));
     },
     
     performUpdate: function(idObj, object, tableName, cb, db) {
         var myDB = (db == null) ? db_util.getDatabase() : db;
         var updateStr = db_util.prepareUpdate(idObj, object, tableName);
         var updateStat = myDB.prepare(updateStr);   
-        updateStat.run(function(err,result) {
+        updateStat.run(addCtx(function(err,result) {
             updateStat.finalize();
             if(db == null) myDB.close();
             if(err) {
                 logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('changes caused by update: ' + this.changes);
+                if(logger().isDebugEnabled()) logger().debug('changes caused by update: ' + this.changes);
                 cb(null,this.changes);
             }
-        });
+        }));
     },
 
     performDelete: function(idObj, tableName, cb, db) {
         var myDB = (db == null) ? db_util.getDatabase() : db;
         var deleteStr = db_util.prepareDelete(idObj,'PERSON_WO');
         var deleteStat = myDB.prepare(deleteStr);
-        deleteStat.run(function(err, result){
+        deleteStat.run(addCtx(function(err, result){
             deleteStat.finalize();
             if(db == null) myDB.close();
             if(err) {
                 logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('changes caused by delete: ' + this.changes);
+                if(logger().isDebugEnabled()) logger().debug('changes caused by delete: ' + this.changes);
                 cb(null,this.changes);
             }
-        });
+        }));
     },
     
     startTx: function(db,cb) {
-        db.run('BEGIN',(err, result)=>{
+        db.run('BEGIN',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('transaction started');
+                if(logger().isDebugEnabled()) logger().debug('transaction started');
                 cb(null,'success');
             }
-        });
+        }));
     },
 
     commitTx: function(db,cb) {
-        db.run('COMMIT',(err, result)=>{
+        db.run('COMMIT',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('transaction committed');
+                if(logger().isDebugEnabled()) logger().debug('transaction committed');
                 if(cb != null) cb(null,'success');
             }
-        });
+        }));
     },
 
     rollbackTx: function(db,cb) {
-        db.run('ROLLBACK',(err, result)=>{
+        db.run('ROLLBACK',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
-                if(logger.isDebugEnabled()) logger.debug('transaction has been rollback');
+                if(logger().isDebugEnabled()) logger().debug('transaction has been rollback');
                 if(cb != null) cb(null,'success');
             }
-        });
+        }));
     },
 
     prepareInsert: function(object, tableName) {
@@ -129,7 +130,7 @@ var db_util = {
         }
 
         var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
-        if(logger.isDebugEnabled()) logger.debug('db insert: ' + insertStr);
+        if(logger().isDebugEnabled()) logger().debug('db insert: ' + insertStr);
         return insertStr;
     },
 
@@ -157,7 +158,7 @@ var db_util = {
         }        
 
         updateStr = 'UPDATE ' + tableName + ' SET ' + updateStr + ' WHERE ' + idStr;
-        if(logger.isDebugEnabled()) logger.debug('db update: ' + updateStr);
+        if(logger().isDebugEnabled()) logger().debug('db update: ' + updateStr);
         return updateStr;
     },
     
@@ -170,7 +171,7 @@ var db_util = {
         }
         
         deleteStr = 'DELETE FROM ' + tableName + ' WHERE ' + deleteStr;
-        if(logger.isDebugEnabled()) logger.debug('db delete: ' + deleteStr);
+        if(logger().isDebugEnabled()) logger().debug('db delete: ' + deleteStr);
         return deleteStr;
     },
 
@@ -195,16 +196,18 @@ var db_util = {
     prepareFiltersByInsertion: function(query,params,queryFilters) {
         var filterInserts = {};
         for(var filter in queryFilters) {
+            logger().debug('filter ' + filter );
             var filterVal = '';
             if(params[filter]) {
                 var obj = {};
                 obj[filter] = params[filter];
                 filterVal = sprintf(queryFilters[filter], obj);
+                logger().debug('filter val ' + filterVal );
             }
             filterInserts[filter] = filterVal;
         }
 
-        if(logger.isDebugEnabled()) logger.debug('filterInserts: ' + JSON.stringify(filterInserts));
+        if(logger().isDebugEnabled()) logger().debug('filterInserts: ' + JSON.stringify(filterInserts));
         var rv = sprintf(query,filterInserts);
         return rv;
     },

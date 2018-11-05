@@ -1,16 +1,16 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var util = require('util');
 var XLSX = require('excel4node');
 var moment = require('moment');
-var logger = require('./logger').getLogger('monitor'); 
+var logger = require('./logger').logger; 
+// var logger = require('./logger').getLogger('monitor'); 
 
 let local_util = {
     logErrAndCall: function(err,cb) {
         // logger.error(util.inspect(err));
-        logger.error(err.name);
-        logger.error(err.message);
+        logger().error(err.name);
+        logger().error(err.message);
         // logger.error(err.stack)
         cb(err, null);
     }, 

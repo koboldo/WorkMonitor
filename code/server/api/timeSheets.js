@@ -1,12 +1,13 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var mapper = require('./mapper');
-var timeSheets_db = require('./db/timeSheets_db');
-var moment = require('moment');
-var parseStringToDate = require('./local_util').parseStringToDate;
+const mapper = require('./mapper');
+const timeSheets_db = require('./db/timeSheets_db');
+const moment = require('moment');
+const parseStringToDate = require('./local_util').parseStringToDate;
+const addCtx = require('./logger').addCtx;
 
-var timeSheets = {
+const timeSheets = {
 
     readAll: function(req, res) {
 
@@ -15,14 +16,14 @@ var timeSheets = {
             return;
         }
         
-        timeSheets_db.readAll(req.query, function(err, timeSheetRows){
+        timeSheets_db.readAll(req.query, addCtx(function(err, timeSheetRows){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
-            var timeSheets = mapper.mapList(mapper.timeSheet.mapToJson,timeSheetRows);
+            const timeSheets = mapper.mapList(mapper.timeSheet.mapToJson,timeSheetRows);
             res.json(timeSheets);
-        });
+        }));
     },
 
 	
@@ -43,7 +44,7 @@ var timeSheets = {
  
         if(req.body.from == 'now' || req.body.to == 'now') req.body.personId = req.context.id;
 
-        var nowDateTxt = moment().format('YYYY-MM-DD HH:mm:ss');
+        const nowDateTxt = moment().format('YYYY-MM-DD HH:mm:ss');
         if(req.body.from == 'now') req.body.from = nowDateTxt;
         if(req.body.to == 'now') req.body.to = nowDateTxt;
         if(req.body.from) req.body.workDate = req.body.from;
@@ -54,20 +55,20 @@ var timeSheets = {
             return;
         }
 
-        var timeSheetSql = mapper.timeSheet.mapToSql(req.body);
-        timeSheets_db.create(timeSheetSql, function(err,updated,row) {
+        const timeSheetSql = mapper.timeSheet.mapToSql(req.body);
+        timeSheets_db.create(timeSheetSql, addCtx(function(err,updated,row) {
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var ts = mapper.timeSheet.mapToJson(row);
-            var op = (updated) ? 'updated' : 'created';
-            var rv = {};
+            const ts = mapper.timeSheet.mapToJson(row);
+            const op = (updated) ? 'updated' : 'created';
+            const rv = {};
             rv[op] = 1;
             rv.timesheet = ts;
             res.status(201).json(rv);
-        });
+        }));
     },
 
     createLeave: function(req,res) {
@@ -77,18 +78,42 @@ var timeSheets = {
         }
         
         req.body.createdBy = req.context.id;
-        var timeSheetSql = mapper.timeSheet.mapToSql(req.body);
-        timeSheets_db.createLeave(timeSheetSql,function(err, timeSheetRows){
+        const timeSheetSql = mapper.timeSheet.mapToSql(req.body);
+        timeSheets_db.createLeave(timeSheetSql,addCtx(function(err, timeSheetRows){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
             }
 
-            var rv = {};
+            const rv = {};
             rv.created = 1;
             rv.timesheet = mapper.mapList(mapper.timeSheet.mapToJson,timeSheetRows).list;
             res.status(201).json(rv);
-        });
+        }));
+    },
+
+    readStats: function(req,res) {
+
+        if(!req.query.periodDate) {
+            req.query.periodDate = moment().format("YYYY-MM-DD");
+        } else if(!moment(req.query.periodDate, 'YYYY-MM-DD', true).isValid()) {
+            res.status(400).json({status:'error', message: 'incorrect period date'});
+            return;
+        }
+        
+        if(!req.query.personId || req.query.personId == '') {
+            req.query.personId = "0";
+        }
+        
+        timeSheets_db.readStats(req.query, addCtx(function(err, timestatRows){
+            if(err) {
+                res.status(500).json({status:'error', message: 'request processing failed'});
+                return;
+            }
+            
+            const timestats = mapper.mapList(mapper.timeStats.mapToJson,timestatRows);
+            res.json(timestats);
+        }));
     }
 
 };
