@@ -24,7 +24,7 @@
       </div>
     </p-header>
 
-    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'26px','text-align':'center'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'45px','text-align':'center'}">
       <ng-template let-userRow="rowData" pTemplate="body">
           <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa-search"></button>
           <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
@@ -33,23 +33,31 @@
       </ng-template>
     </p-column>
 
-    <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
-    <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
+    <!--<p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}">
+    </p-column>-->
+    <p-column [sortable]="true" field="office" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}">
+    </p-column>
+    <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}}</span>
         <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.lastName}}</span>
       </ng-template>
     </p-column>
-    <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
+    <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
       </ng-template>
     </p-column>
-    <p-column [sortable]="true" field="role" header="Rola" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
+    <p-column [sortable]="true" field="role" header="Rola" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}">
+      <ng-template let-col let-user="rowData" pTemplate="body">
+        <span *ngIf="user.roleCode.indexOf('CN') > -1" [style.color]="'darkblue'" class="ui-inputgroup-addon">{{user.role}}<i [class]="'fa fa-hand-o-down'" [style.margin-left]="'5px'"></i></span>
+        <span *ngIf="user.roleCode.indexOf('CN') == -1" [style.color]="'darkviolet'" class="ui-inputgroup-addon">{{user.role}}<i [class]="'fa fa-hand-o-right'" [style.margin-left]="'5px'"></i></span>
+      </ng-template>
+    </p-column>
    
-    <p-column [sortable]="true" field="email" header="Email" [filter]="true" filterPlaceholder="Filtruj" [style]="{'width':'40px'}"></p-column>
-    <p-column [sortable]="true" field="phone" header="Telefon" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}"></p-column>
+    <p-column [sortable]="true" field="email" header="Email" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
+    <p-column [sortable]="true" field="phone" header="Telefon" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
     
     <p-footer>
       <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">

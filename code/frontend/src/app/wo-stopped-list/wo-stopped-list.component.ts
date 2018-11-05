@@ -76,7 +76,7 @@ export class WoStoppedListComponent implements OnInit {
     }
 
     private addCommentToOrder(order:Order, newComment:string):void {
-        let reason:string = 'Zawieszenie';
+        let reason:string = 'Anulowanie';
         if (!order.comments) {
             order.comments = new Comments(null);
         }
