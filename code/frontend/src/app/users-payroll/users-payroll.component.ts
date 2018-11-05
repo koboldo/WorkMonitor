@@ -144,7 +144,9 @@ export class UsersPayrollComponent implements OnInit {
     private initAll(user:User):void {
         if (user) {
             this.operator = user;
-            this.userService.getAllStaff().subscribe(staff => this.usersToMapSearchPayrolls(staff));
+            //FIXME - we dont check history if one was EN once and then was changed to CN we are in trouble
+            //this.userService.getAllStaff().subscribe(staff => this.usersToMapSearchPayrolls(staff));
+            this.userService.getAll().subscribe(staff => this.usersToMapSearchPayrolls(staff));
         } else {
             console.log("Cannot init, no data on logged user!");
         }

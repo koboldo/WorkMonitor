@@ -157,6 +157,7 @@
                             <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
                         </ng-template>
                     </p-column>
+                    <p-column header="Biuro" field="user.officeCode" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
                     <p-column header="Stopień" field="rank"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
                     <p-column header="Współ." field="projectFactor"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
