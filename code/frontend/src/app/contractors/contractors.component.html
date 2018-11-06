@@ -2,11 +2,6 @@
 
 <div style="margin-top: 5px" *ngIf="users" class="ui-g">
 
-  <!-- <div class="ui-g" style="width:250px;margin-bottom:10px">
-    <div class="ui-g-12"><p-radioButton name="group2" value="ALL" label="Pokaż wszystkich" [(ngModel)]="filter1" inputId="preopt1" (onClick)="filter('ALL')"></p-radioButton></div>
-    <div class="ui-g-12"><p-radioButton name="group2" value="EMPLOYED_ONLY" label="Ukryjwaj byłych pracowników" [(ngModel)]="filter1" inputId="preopt2" (onClick)="filter('EMPLOYED_ONLY')"></p-radioButton></div>
-  </div> -->
-
   <p-contextMenu #cm [model]="items"></p-contextMenu>
 
   <p-dataTable [value]="users" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"

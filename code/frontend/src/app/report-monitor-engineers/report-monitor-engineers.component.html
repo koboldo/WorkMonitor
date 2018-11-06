@@ -1,5 +1,5 @@
 
-<p-panel header="Raport utylizacji zespołu">
+<p-panel header="Wyniki zespołu">
 
     <div class="ui-grid-row">
         <div class="ui-grid-col-12">
@@ -35,31 +35,10 @@
 </p-panel>
 
 
-
-<div *ngIf="chartsReady">
-    <div class="ui-grid-row">
-        <div class="ui-grid-col-12">
-            <p-panel header="Wydajność">
-                <p-chart type="bar" [data]="chartUtilizationData" ></p-chart>
-            </p-panel>
-        </div>
-    </div>
-    <div class="ui-grid-row">
-        <div class="ui-grid-col-6">
-            <p-panel header="Zakładany czas w godzinach obliczony na podstawie pracochłonności wykonanych WO">
-                <p-chart type="polarArea" [data]="chartShareData"></p-chart>
-            </p-panel>
-        </div>
-        <div class="ui-grid-col-6">
-            <p-panel header="Wypracowany budżet w PLN">
-                <p-chart type="bar" [data]="chartEarnedData"></p-chart>
-            </p-panel>
-        </div>
-    </div>
-</div>
-
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
-    <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedReport" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+    <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
+                 selectionMode="multiple" [(selection)]="selectedReports" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
+                 dataKey="id" resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
         <p-header>
             <div>
                 <i class="fa fa-search"></i>
@@ -68,7 +47,8 @@
         </p-header>
         <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
 
-        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Ocena" [style]="{'text-align':'center', 'width':'60px'}">
+        <p-column [style]="{'text-align':'center', 'width':'38px'}" selectionMode="multiple"></p-column>
+        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Ocena" [style]="{'text-align':'center', 'width':'70px'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
                 <span class="ui-inputgroup-addon" [style.color]="report.iconColor"><i [class]="report.icon"></i></span>
             </ng-template>
@@ -82,10 +62,10 @@
         </p-column>
 
 
-        <p-column [sortable]="true" field="firstName" header="Imie" ></p-column>
-        <p-column [sortable]="true" field="lastName" header="Nazwisko" ></p-column>
-        <p-column [sortable]="true" field="role" header="Rola" [style]="{'text-align':'center'}"></p-column>
-        <p-column [sortable]="true" field="office" header="Biuro" [style]="{'text-align':'center'}"></p-column>
+        <p-column [sortable]="true" [filter]="true" field="firstName" header="Imie" ></p-column>
+        <p-column [sortable]="true" [filter]="true" field="lastName" header="Nazwisko" ></p-column>
+        <p-column [sortable]="true" [filter]="true" field="role" header="Rola" [style]="{'text-align':'center'}"></p-column>
+        <p-column [sortable]="true" [filter]="true" field="office" header="Biuro" [style]="{'text-align':'center'}"></p-column>
         <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'55px'}">
             <ng-template let-col let-user="rowData" pTemplate="body">
                 <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
@@ -123,6 +103,46 @@
 
 </div>
 
+<div *ngIf="chartsReady">
+
+    <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
+        <p-panel [header]="'Podsumowanie od '+toolsService.formatDate(afterDate, 'yyyy-MM-dd')+' do '+toolsService.formatDate(beforeDate, 'yyyy-MM-dd')">
+            <div class="ui-grid-row" style="margin-top: 20px;">
+                <div class="ui-grid-col-1"></div>
+                <div class="ui-grid-col-5">
+                    <p>Średnio wypracowano <span style="font-weight: bolder">{{getAvgMoney() | currency: 'PLN'}}</span></p>
+                </div>
+                <div class="ui-grid-col-1"></div>
+                <div class="ui-grid-col-5">
+                    <p>Średnia wydajność <span style="font-weight: bolder">{{getAvgUtilization() | number: '1.2-2'}}%</span></p>
+                </div>
+
+            </div>
+        </p-panel>
+    </div>
+
+
+
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p-panel header="Wydajność">
+                <p-chart type="bar" [data]="chartUtilizationData" ></p-chart>
+            </p-panel>
+        </div>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-6">
+            <p-panel header="Zakładany czas w godzinach obliczony na podstawie pracochłonności wykonanych WO">
+                <p-chart type="polarArea" [data]="chartShareData"></p-chart>
+            </p-panel>
+        </div>
+        <div class="ui-grid-col-6">
+            <p-panel header="Wypracowany budżet w PLN">
+                <p-chart type="bar" [data]="chartEarnedData"></p-chart>
+            </p-panel>
+        </div>
+    </div>
+</div>
 
 <!-- defaultDate="2017-11-01" -->
 

@@ -22,6 +22,7 @@ import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 import { ContractorsComponent } from './contractors/contractors.component';
+import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
     { path: 'workTypes',                component: WorkTypesComponent,       canActivate: [AuthGuard] },
     { path: 'myWorkOrders',             component: MyWoComponent,     canActivate: [AuthGuard] },
     { path: 'addTimesheet',             component: TimesheetsComponent, canActivate: [AuthGuard] },
+    { path: 'timeStats',                component: UsersTimeStatsComponent, canActivate: [AuthGuard] },
     { path: 'workOrderComplexity',      component: ChangeWoComplexityComponent, canActivate: [AuthGuard] },
     { path: 'clearing',                 component: WoClearingComponent, canActivate: [AuthGuard] },
     { path: 'workMonitor',              component: ReportMonitorEngineersComponent, canActivate: [AuthGuard] },

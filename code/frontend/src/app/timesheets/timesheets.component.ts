@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable }    from 'rxjs/Observable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
@@ -34,7 +35,8 @@ export class TimesheetsComponent implements OnInit {
     user: User;
     pl:Calendar;
 
-    constructor(private userService:UserService,
+    constructor(private router:Router,
+                private userService:UserService,
                 private timesheetService:TimesheetService,
                 private dictService:DictService,
                 private workTypeService: WorkTypeService,

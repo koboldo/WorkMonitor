@@ -27,13 +27,13 @@ export class UsersDisplayComponent implements OnInit {
 
 
     displayUserHistoryDialog: boolean;
-    filter1: string = 'EMPLOYED_ONLY';
+    employedOnlyFilter: string = 'EMPLOYED_ONLY';
 
-    constructor(private router:Router,
-                private userService:UserService,
-                private alertService:AlertService,
-                private dictService:DictService,
-                private authService:AuthenticationService) {
+    constructor(protected router:Router,
+                protected userService:UserService,
+                protected alertService:AlertService,
+                protected dictService:DictService,
+                protected authService:AuthenticationService) {
 
         this.items = [
             {label: 'Zmień dane pracownika', icon: 'fa-pencil-square-o', disabled: false, command: (event) => this.change()}
@@ -69,11 +69,11 @@ export class UsersDisplayComponent implements OnInit {
     }
 
     filter(input): void {
-        console.log('radio clicked '+this.filter1+ ' '+JSON.stringify(input));
+        console.log('radio clicked '+this.employedOnlyFilter+ ' '+JSON.stringify(input));
         //this is shame, onClick is triggerd before model is changed therefore I will rely on input...
         if (input === 'ALL') {
             this.users = this.allUsers;
-        } else if (input === 'EMPLOYED_ONLY') {
+        } else if (input === this.employedOnlyFilter) {
             this.users = [];
             for(let user of this.allUsers) {
                 if (user.isEmployed === 'Y') {
@@ -95,6 +95,6 @@ export class UsersDisplayComponent implements OnInit {
 
     private processUsers(engineers:User[]):void {
         this.allUsers = engineers;
-        this.filter(this.filter1);
+        this.filter(this.employedOnlyFilter);
     }
 }

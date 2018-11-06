@@ -10,3 +10,4 @@ export * from './searchedUser';
 export * from './orderHistory';
 export * from './comment';
 export * from './calendar';
+export * from './timestats'

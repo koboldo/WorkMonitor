@@ -27,6 +27,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     reports: UserReport[];
     selectedReport: UserReport;
+    selectedReports: UserReport[];
 
     //scheduler
     schedulerDisplay:boolean;
@@ -76,8 +77,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
 
 
-    onRowSelect(event) {
-        console.log("selected row!" + JSON.stringify(this.selectedReport));
+    onRowDblclick(event) {
+        console.log("double clicked "+JSON.stringify(event));
+        // HACK - this used to be single selection but we reused it, now we changed to selectedReports
+        this.selectedReport = event.data;
+
         this.schedulerEvents = [];
         if (this.selectedReport.workOrders && this.selectedReport.workOrders.length > 0) {
             for(let order of this.selectedReport.workOrders) {
@@ -280,28 +284,30 @@ export class ReportMonitorEngineersComponent implements OnInit {
             this.setIcon(userData, "fa fa-question-circle", "darkgrey");
         }
 
-        if (utilization != this.holidays && utilization != this.noTimesheets) {
-            this.chartUtilizationData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [utilization] });
-        }
+        if (!this.selectedReports || this.selectedReports.length < 1 || this.isReportSelected(userData.id, this.selectedReports)) {
+            if (utilization != this.holidays && utilization != this.noTimesheets) {
+                this.chartUtilizationData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [utilization] });
+            }
 
-        if (userData.expectedTime > 0) {
-            this.chartShareData.datasets[0].data.push(userData.expectedTime);
-            this.chartShareData.datasets[0].backgroundColor.push(userData.iconColor);
-            this.chartShareData.labels.push(userData.firstName + " " + userData.lastName);
-        }
+            if (userData.expectedTime > 0) {
+                this.chartShareData.datasets[0].data.push(userData.expectedTime);
+                this.chartShareData.datasets[0].backgroundColor.push(userData.iconColor);
+                this.chartShareData.labels.push(userData.firstName + " " + userData.lastName);
+            }
 
-        {
-            userData.earnedMoney = 0;
-            for(let order of userData.workOrders) {
-                if (order.doneDate) {
-                    let doneDate: Date = this.toolsService.parseDate(order.doneDate);
-                    if (this.afterDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= this.beforeDate.getTime()) {
-                        //console.log("chartEarnedData: "+order.doneDate)
-                        userData.earnedMoney += order.price;
+            {
+                userData.earnedMoney = 0;
+                for(let order of userData.workOrders) {
+                    if (order.doneDate) {
+                        let doneDate: Date = this.toolsService.parseDate(order.doneDate);
+                        if (this.afterDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= this.beforeDate.getTime()) {
+                            //console.log("chartEarnedData: "+order.doneDate)
+                            userData.earnedMoney += order.price;
+                        }
                     }
                 }
+                this.chartEarnedData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [userData.earnedMoney] });
             }
-            this.chartEarnedData.datasets.push({label: userData.lastName, backgroundColor: userData.iconColor, borderColor:userData.iconColor, data: [userData.earnedMoney] });
         }
 
     }
@@ -314,6 +320,46 @@ export class ReportMonitorEngineersComponent implements OnInit {
         userData.iconColor = iconColor;
     }
 
+    private isReportSelected(id:number, selectedReports:UserReport[]):boolean {
+        for(let selectedReport of selectedReports) {
+            if (selectedReport.id === id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public getAvgMoney():number {
+        if (this.chartsReady && this.chartEarnedData.datasets && this.chartEarnedData.datasets.length > 0) {
+            let result: number = 0;
+            for(let dataset of this.chartEarnedData.datasets) {
+                result += +dataset.data[0];
+            }
+            return result/this.chartEarnedData.datasets.length;
+        }
+        return -1;
+    }
+
+    public getAvgUtilization(): number {
+        if (this.chartsReady && this.chartUtilizationData.datasets && this.chartUtilizationData.datasets.length > 0) {
+            let result: number = 0;
+            for(let dataset of this.chartUtilizationData.datasets) {
+                result += +dataset.data[0];
+            }
+            return result/this.chartUtilizationData.datasets.length;
+        }
+        return -1;
+    }
+
+    public filterReports(event): void {
+        console.log('onSelect event fired!'+JSON.stringify(event));
+        if (!event.type || event.type === 'checkbox') {
+            this.search()
+        } else {
+            console.log('onSelect event fired and consumed!'+JSON.stringify(event));
+        }
+    }
 }
 
 

@@ -10,7 +10,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, UserTimeStatsService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -46,6 +46,7 @@ import { GroupStatusChangeComponent } from './group-status-change/group-status-c
 import { ContractorsComponent } from './contractors/contractors.component';
 import { WoStoppedListComponent } from './wo-stopped-list/wo-stopped-list.component';
 import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
+import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 
 
 @NgModule({
@@ -90,7 +91,8 @@ import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
         GroupStatusChangeComponent,
         ContractorsComponent,
         WoStoppedListComponent,
-        WoCancelledComponent
+        WoCancelledComponent,
+        UsersTimeStatsComponent
     ],
     providers: [
         AlertService,
@@ -107,6 +109,7 @@ import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
         TimesheetService,
         PayrollService,
         HttpBotWrapper,
+        UserTimeStatsService,
         {provide: LOCALE_ID, useValue: 'pl-PL'},
         {provide: HTTP_INTERCEPTORS,
             useClass: HttpCacheInterceptor,

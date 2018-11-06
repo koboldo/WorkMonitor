@@ -11,3 +11,4 @@ export * from './workType.service';
 export * from './tools.service';
 export * from './timesheet.service';
 export * from './autoLogout.service';
+export * from './userTimeStats.service';

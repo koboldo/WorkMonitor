@@ -53,8 +53,7 @@ export class UsersPayrollComponent implements OnInit {
         this.authService.userAsObs.subscribe(user => this.initAll(user));
     }
 
-    // eksport do CSV
-    public Export(text:string, table: DataTable)
+    public exportCSV(text:string, table: DataTable)
     {
         this.selectedPayrolls=[];
                 this.historicalPayrolls.forEach(element => {

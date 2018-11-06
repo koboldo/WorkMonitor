@@ -130,7 +130,7 @@
                         <div style="float: left; max-width: 90%;">
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
                             <span [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
+                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wspólczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{rowData.budget  | currency:'PLN'}}</span>
@@ -141,7 +141,7 @@
                         <div style="float: right; max-width: 10%;">
                             <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
                             <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
-                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="Export(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
+                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
                         </div>
 
                         <!-- <div style="float: right; max-width: 10%;">
