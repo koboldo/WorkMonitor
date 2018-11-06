@@ -13,6 +13,7 @@ export class AuthenticationService {
 
     private isLoggedFlag: boolean;
     private menuItems = new BehaviorSubject<MenuItem[]>(null);
+    private hierarchyItems = new BehaviorSubject<MenuItem[]>(null);
     private user = new BehaviorSubject<User>(null);
     private httpHeaders: HttpHeaders;
 
@@ -22,6 +23,10 @@ export class AuthenticationService {
 
     get menuItemsAsObs() : Observable<MenuItem[]> {
         return this.menuItems.asObservable();
+    }
+
+    get hierarchyItemsAsObs() : Observable<MenuItem[]> {
+        return this.hierarchyItems.asObservable();
     }
 
     get userAsObs(): Observable<User> {
@@ -50,6 +55,7 @@ export class AuthenticationService {
                 if (user && user.token) {
                     this.user.next(user);
                     this.menuItems.next(this.buildMenu(user));
+                    this.hierarchyItems.next(this.buildHierarchyMenu(user));
                     this.initAuthHeaders(user.token);
                     this.isLoggedFlag = true;
                 }
@@ -68,6 +74,66 @@ export class AuthenticationService {
         this.menuItems.next(null);
         this.user.next(null);
         this.isLoggedFlag = false;
+    }
+
+    private buildHierarchyMenu(user:User):any {
+        let allItems = [
+            {
+                label: 'Zlecenia',
+                icon: 'fa-server',
+                items: [
+                    {label: 'Lista zleceń', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Zawieszone', icon: 'fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Anulowane',  icon: 'fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Moje zlecenia', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
+                    {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
+                    {label: 'Protokół', icon: 'fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]}
+                ]
+            },
+            {
+                label: 'Czas pracy',
+                icon: 'fa-clock-o',
+                items: [
+                    {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+                    {label: 'Podsumowanie czasu', icon: 'fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
+                ]
+            },
+            {
+                label: 'Raporty',
+                icon: 'fa-bar-chart',
+                items: [
+                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
+                    {label: 'Podsumowanie czasu', icon: 'fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
+                ]
+            },
+            {
+                label: 'Dane osobowe',
+                icon: 'fa-address-card',
+                items: [
+                    {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
+                    {label: 'Kontrahenci', icon: 'fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
+                    {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
+                    {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]}
+                ]
+            },
+            {
+                label: 'Ustawienia',
+                icon: 'fa-cogs',
+                items: [
+                    {label: 'Parametryzacja zleceń', icon: 'fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]}
+                ]
+            }
+        ];
+
+        for(let groupItem of allItems) {
+            if (this.hasSubItems(groupItem)) {
+                groupItem.items = groupItem.items.filter(item => this.filterItem(item, user));
+            }
+        }
+
+        allItems = allItems.filter(groupItem => this.hasSubItems(groupItem));
+
+        return allItems;
     }
 
     private buildMenu(user:User):any {
@@ -118,5 +184,9 @@ export class AuthenticationService {
             console.log("roles "+JSON.stringify(user.roleCode) +" has no access to "+item.label);
             return false;
         }
+    }
+
+    private hasSubItems(groupItem:any):boolean {
+       return groupItem.items && groupItem.items.length > 0;
     }
 }

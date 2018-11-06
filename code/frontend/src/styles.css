@@ -13,5 +13,12 @@ div.text-center {
     padding: 0.2em 1em;
 }
 
+ul.ui-menu-child {
+    white-space: nowrap;
+    width: auto !important;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 
 
