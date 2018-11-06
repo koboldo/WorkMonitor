@@ -8,7 +8,6 @@
   </div>
 
 
-  <p-contextMenu #cm [model]="items"></p-contextMenu>
 
   <!--[(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"-->
   <p-dataTable [value]="users" [rows]="50" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
@@ -17,7 +16,7 @@
                [(selection)]="selectedUsers"
                selectionMode="multiple"
                [headerCheckboxToggleAllPages]="false"
-               resizableColumns="true" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
+               resizableColumns="true" loadingIcon="fa-spinner" csvSeparator=";" exportFilename="pracownicy">
 
     <p-header>
       <div>
@@ -114,7 +113,7 @@
 
 <p-dialog [header]="'Podumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
 
-  <p-dataTable [value]="timestats" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtReport dataKey="personId" resizableColumns="true" sortField="user.excelId" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm"
+  <p-dataTable [value]="timestats" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtReport dataKey="personId" resizableColumns="true" sortField="user.excelId" sortOrder="1" loadingIcon="fa-spinner"
                csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate">
     <p-header>
       <div>

@@ -102,8 +102,7 @@ export class AuthenticationService {
                 label: 'Raporty',
                 icon: 'fa-bar-chart',
                 items: [
-                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
-                    {label: 'Podsumowanie czasu', icon: 'fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
+                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]}
                 ]
             },
             {
@@ -113,7 +112,9 @@ export class AuthenticationService {
                     {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
                     {label: 'Kontrahenci', icon: 'fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
                     {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
-                    {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]}
+                    {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
+                    {label: 'Wynagrodzenie', icon: 'fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
+                    {label: 'Wynagrodzenia', icon: 'fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]}
                 ]
             },
             {
