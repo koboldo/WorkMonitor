@@ -212,29 +212,34 @@
 
           <div class="form-group" *ngIf="showRanks" [ngClass]="{ 'has-error': f.submitted && !rankCode?.valid }">
             <label for="rankCode">Stopień (powiązane ze sposobem wynagradzania)</label>
-            <p-selectButton id="rankCode" name="rankCode" [options]="ranks" [(ngModel)]="selectedUser.user.rankCode" required #rankCode="ngModel"></p-selectButton>
+            <p-selectButton id="rankCode" name="rankCode" [options]="ranks" [(ngModel)]="selectedUser.user.rankCode" required #rankCode="ngModel" (onChange)="checkRank()"></p-selectButton>
             <!--<p-dropdown name="rankCode" [options]="ranks | async" [(ngModel)]="selectedUser.user.rankCode" required autoWidth="false" ></p-dropdown>-->
             <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Stopień jest wymagany</div>
           </div>
 
-
-          <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode === 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salary?.valid }">
-            <label for="salary">Stałe wynagrodzenie w PLN</label>
-            <input id="salary" type="number" class="form-control" name="salary" [(ngModel)]="selectedUser.user.salary" #salary="ngModel" required salary pattern="^[0-9]\d*(\.\d+)?$">
-            <div *ngIf="f.submitted && !salary?.valid" class="help-block">wymagane jest poprawne wynagrodznie (liczba > 0)</div>
+          <div *ngIf="selectedUser?.user?.rankCode!=='NONE'">
+            <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode === 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salary?.valid }">
+              <label for="salary">Stałe wynagrodzenie w PLN</label>
+              <input id="salary" type="number" class="form-control" name="salary" [(ngModel)]="selectedUser.user.salary" #salary="ngModel" required salary pattern="^[0-9]\d*(\.\d+)?$">
+              <div *ngIf="f.submitted && !salary?.valid" class="help-block">wymagane jest poprawne wynagrodznie (liczba > 0)</div>
+            </div>
+            <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salaryRate?.valid }">
+              <label for="salaryRate">Stawka gwarantowana w PLN</label>
+              <input id="salaryRate" type="number" class="form-control" name="salaryRate" [(ngModel)]="selectedUser.user.salaryRate" #salaryRate="ngModel" required salaryRate pattern="^[0-9]\d*(\.\d+)?$"/>
+              <div *ngIf="f.submitted && !salaryRate?.valid" class="help-block">wymagana jest stawka gwarantowana (liczba > 0)</div>
+            </div>
+            <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !leaveRate?.valid }">
+              <label for="leaveRate">Stała stawka za urlop PLN</label>
+              <input id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="selectedUser.user.leaveRate" #leaveRate="ngModel" required leaveRate pattern="^[0-9]\d*(\.\d+)?$"/>
+              <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0)</div>
+            </div>
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N' }">
+              <p-radioButton name="poolgroup" value="Y" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (TAK)"></p-radioButton>
+              <p-radioButton name="poolgroup" value="N" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (NIE)"></p-radioButton>
+              <div *ngIf="f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N'" class="help-block">Określenie przynależności do puli jest obowiązkowe</div>
+            </div>
           </div>
-          <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salaryRate?.valid }">
-            <label for="salaryRate">Stawka gwarantowana w PLN</label>
-            <input id="salaryRate" type="number" class="form-control" name="salaryRate" [(ngModel)]="selectedUser.user.salaryRate" #salaryRate="ngModel" required salaryRate pattern="^[0-9]\d*(\.\d+)?$"/>
-            <div *ngIf="f.submitted && !salaryRate?.valid" class="help-block">wymagana jest stawka gwarantowana (liczba > 0)</div>
-          </div>
-          <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !leaveRate?.valid }">
-            <label for="leaveRate">Stała stawka za urlop PLN</label>
-            <input id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="selectedUser.user.leaveRate" #leaveRate="ngModel" required leaveRate pattern="^[0-9]\d*(\.\d+)?$"/>
-            <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0)</div>
-          </div>
-
-
+          
           <!--<div class="form-group" *ngIf="showAgreements" [ngClass]="{ 'has-error': f.submitted && !agreementCode?.valid }">
             <label for="agreementCode">Główna umowa</label>
             <p-selectButton id="agreementCode" name="agreementCode" [options]="agreements" [(ngModel)]="selectedUser.user.agreementCode" required #agreementCode="ngModel"></p-selectButton>
@@ -242,11 +247,7 @@
             <div *ngIf="f.submitted && !agreementCode?.valid" class="help-block">Umowa jest wymagane</div>
           </div>-->
 
-          <div class="form-group" [ngClass]="{ 'has-error': f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N' }">
-            <p-radioButton name="poolgroup" value="Y" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (TAK)"></p-radioButton>
-            <p-radioButton name="poolgroup" value="N" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (NIE)"></p-radioButton>
-            <div *ngIf="f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N'" class="help-block">Określenie przynależności do puli jest obowiązkowe</div>
-          </div>
+          
 
           <div *ngIf="showProjectFactor()" class="form-group" [ngClass]="{ 'has-error': f.submitted && !projectFactor?.valid }">
             <label for="projectFactor">Współczynnik puli (np. 1.2)</label>

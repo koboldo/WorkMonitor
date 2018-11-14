@@ -72,34 +72,44 @@ export class UserRegisterComponent implements OnInit {
             if (this.user.roleCode.length>1) {
                 this.removeRole("CN");
             }
-            this.show=false;
+            this.show = false;
             this.user.isActive = 'N';
-            this.user.isEmployed= 'N'; 
-            this.user.isFromPool='N';                
+            this.user.isEmployed = 'N'; 
+            this.user.isFromPool ='N';                
         }
         else if (this.user.roleCode.indexOf('VE')> -1) {
             if (this.user.roleCode.length>1 ){
                 this.removeRole("VE");
             }
-            this.show=false;
-            this.user.isEmployed= 'N'; 
+            this.show = false;
+            this.user.isEmployed = 'N'; 
         }
         else {
-            this.show=true;
+            this.show = true;
             this.user.isActive = 'Y';
-            this.user.isEmployed= 'Y'; 
-            this.user.isFromPool='';  
+            this.user.isEmployed = 'Y'; 
+            this.user.isFromPool ='';  
         }
     }
 
     removeRole (text:string) {
-        let info="";
-        this.user.roleCode=[];
+        let info = "";
+        this.user.roleCode = [];
         this.user.roleCode.push(text);
-        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
-        if (this.user.roleCode.length===1) {
-            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
+        text === "CN" ? info = "Zleceniobiorca" : info = "Zleceniodawca" ;
+        if (this.user.roleCode.length === 1) {
+            this.alertService.warn('Uzytkownik z rolą ' + info + " może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę " + info);
         }
+    }
+
+    checkRank() {
+        if (this.user.rankCode === "NONE") {
+            this.user.isFromPool = 'N';
+        }
+        else {
+            this.user.isFromPool = '';
+        }
+      
     }
 
     register() {

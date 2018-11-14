@@ -43,10 +43,9 @@ export class UserChangeComponent implements OnInit {
     company: string;
     displayUserHistoryDialog: boolean;
 
-    // Dismiss worker
-    displayDismissDialog:boolean;
-    //
-    show:boolean=true;
+    displayDismissDialog: boolean;
+    show: boolean = true;
+    isFromPool: string;
 
     rateControl = new FormControl("", [Validators.min(0)]);
 
@@ -81,33 +80,45 @@ export class UserChangeComponent implements OnInit {
             if (this.selectedUser.user.roleCode.length>1) {
                 this.removeRole("CN");
             }
-            this.show=false;
+            this.show = false;
             this.selectedUser.user.isActive = 'N';
-            this.selectedUser.user.isEmployed= 'N';
-            this.selectedUser.user.isFromPool= 'N';                  
+            this.selectedUser.user.isEmployed = 'N';
+            this.selectedUser.user.isFromPool = 'N';                  
         }
         else if (this.selectedUser.user.roleCode.indexOf('VE')> -1) {
-            if (this.selectedUser.user.roleCode.length>1 ){
+            if (this.selectedUser.user.roleCode.length > 1 ){
                 this.removeRole("VE");
             }
-            this.show=false;
-            this.selectedUser.user.isEmployed= 'N'; 
+            this.show = false;
+            this.selectedUser.user.isEmployed = 'N';
         }
         else {
-            this.show=true;
+            this.show = true;
             this.selectedUser.user.isActive = 'Y';
-            this.selectedUser.user.isEmployed= 'Y';
-            this.selectedUser.user.isFromPool=''; 
+            this.selectedUser.user.isEmployed = 'Y';
+            this.selectedUser.user.isFromPool = this.isFromPool; 
         }
     }
 
+    checkRank() {
+     
+        if (this.selectedUser.user.rankCode === "NONE") {
+            this.selectedUser.user.isFromPool = 'N';
+        }
+        else {
+            this.selectedUser.user.isFromPool = this.isFromPool;
+        }
+      
+    }
+
+
     removeRole (text:string) {
-        let info="";
-        this.selectedUser.user.roleCode=[];
+        let info = "";
+        this.selectedUser.user.roleCode = [];
         this.selectedUser.user.roleCode.push(text);
-        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
-        if (this.selectedUser.user.roleCode.length===1) {
-            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
+        text === "CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
+        if (this.selectedUser.user.roleCode.length === 1) {
+            this.alertService.warn('Uzytkownik z rolą ' + info + " może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę " + info);
         }
     }
 
@@ -117,17 +128,17 @@ export class UserChangeComponent implements OnInit {
     }
     public dissmisWorker ()
     {
-        this.selectedUser.user.isEmployed='N';
-        this.selectedUser.user.isActive='N';
-        this.selectedUser.user.account="0000000000 0000000000 000000";
-        this.selectedUser.user.phone="000 000 000";
-        this.selectedUser.user.addressPost="usunięto";;
-        this.selectedUser.user.addressStreet="usunięto";
-        this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
+        this.selectedUser.user.isEmployed = 'N';
+        this.selectedUser.user.isActive = 'N';
+        this.selectedUser.user.account = "0000000000 0000000000 000000";
+        this.selectedUser.user.phone = "000 000 000";
+        this.selectedUser.user.addressPost = "usunięto";;
+        this.selectedUser.user.addressStreet = "usunięto";
+        this.selectedUser.user.excelId =+ ((new Date()).getFullYear() + '000' + this.selectedUser.user.excelId);
         this.userService.update(this.selectedUser.user)
             .subscribe(
                 data => {
-                this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
+                this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName + " " + this.selectedUser.user.lastName, true);
                 this.router.navigate(['employees']);
             },
                 error => {
@@ -142,7 +153,8 @@ export class UserChangeComponent implements OnInit {
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
         }
-        this.checkSelect();
+        this.isFromPool = value.user.isFromPool;
+        this.checkSelect();        
     }
 
     suggestUser(event) {
