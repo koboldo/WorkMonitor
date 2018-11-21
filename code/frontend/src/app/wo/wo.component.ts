@@ -269,6 +269,25 @@ export class WoComponent implements OnInit {
                 }
             }
         }
+        suggestedTypes.sort( function (a,b) {           
+            return parseFloat(a.code) - parseFloat(b.code);
+        });
+        suggestedTypes.sort(function (a,b) {       
+
+            if (parseFloat(a.code.split(".")[0]) === parseFloat(b.code.split(".")[0])){
+                if (parseFloat(a.code.split(".")[1]) > parseFloat(b.code.split(".")[1])) {
+                    return 1;
+                  } else if (parseFloat(b.code.split(".")[1]) > parseFloat(a.code.split(".")[1])) {
+                    return -1;
+                  } else {
+                    return 0;
+                  }
+                }
+                else {
+                    return 0;
+                }
+        }
+      );
         this.suggestedTypes = suggestedTypes;
         console.log('suggestedTypes: ' + JSON.stringify(this.suggestedTypes));
     }
