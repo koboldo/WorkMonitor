@@ -55,10 +55,14 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
         this.dictService.init();
         this.workTypeService.init();
-        this.afterDate = toolsService.getCurrentDateDayOperation(-31);
+
+        let d = new Date();
+        d.setMonth(d.getMonth() - 1);
+        this.afterDate = d;
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
         this.future = toolsService.getCurrentDateDayOperation(+10).toISOString().substring(0, 10);
         this.pl=new Calendar();
+
     }
 
     ngOnInit() {
@@ -166,8 +170,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
         if (reportData && reportData.length > 0) {
             for (let report of reportData) {            
-                    report.office = this.dictService.getOffice(report.officeCode);              
-                    report.role = this.dictService.getRole(report.roleCode);
+                    report.office = this.dictService.getOffice(report.officeCode);
+                    report.role = [];
+                    for (let roleCode of report.roleCode) {
+                        report.role.push(this.dictService.getRole(roleCode));
+                    }
                     report.declaredTime = 0;     
             }
             this.reports = reportData;

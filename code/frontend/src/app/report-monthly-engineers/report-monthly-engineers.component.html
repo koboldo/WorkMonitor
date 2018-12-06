@@ -1,0 +1,112 @@
+
+
+<div style="margin-top: 5px" *ngIf="reports" class="ui-g">
+  <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
+               selectionMode="multiple" [(selection)]="selectedReports"  (onRowSelect)="filterReports($event)" (onRowUnselect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
+               resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner"
+               csvSeparator=";" exportFilename="Raport_Miesieczny" [headerCheckboxToggleAllPages]="false"
+          >
+    <p-header>
+      <div>
+        <i class="fa fa-search"></i>
+        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+      </div>
+    </p-header>
+    <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+
+    <p-column [style]="{'text-align':'center', 'width':'38px'}" selectionMode="multiple"></p-column>
+    <p-column [sortable]="true" field="iconColor" header="Ocena" [style]="{'text-align':'center', 'width':'70px'}">
+      <ng-template let-col let-report="rowData" pTemplate="body">
+        <span class="ui-inputgroup-addon" [style.color]="report.iconColor"><i [class]="report.icon"></i></span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="timeUtilizationPercentage" header="Wydajność" [style]="{'text-align':'right'}">
+      <ng-template let-col let-report="rowData" pTemplate="body">
+        <span *ngIf="report?.timeUtilizationPercentage >= 0" style="padding: 3px">{{report.timeUtilizationPercentage}}%</span>
+        <span *ngIf="report?.timeUtilizationPercentage === noTimesheets" style="padding: 3px">Brak deklaracji czasu pracy</span>
+        <span *ngIf="report?.timeUtilizationPercentage === holidays" style="padding: 3px">Urlop</span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" [filter]="true" field="dateRange.beginDate" header="Od" >
+      <ng-template let-col let-userData="rowData" pTemplate="body">
+        <span>{{userData.dateRange.beginDate | date: 'yyyy-MM' }}</span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" [filter]="true" field="firstName" header="Imie" ></p-column>
+    <p-column [sortable]="true" [filter]="true" field="lastName" header="Nazwisko" ></p-column>
+    <p-column [sortable]="true" [filter]="true" field="role" header="Rola" [style]="{'text-align':'center'}"></p-column>
+    <p-column [sortable]="true" [filter]="true" field="office" header="Biuro" [style]="{'text-align':'center'}"></p-column>
+    <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'55px'}">
+      <ng-template let-col let-user="rowData" pTemplate="body">
+        <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+        <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+      </ng-template>
+    </p-column>
+
+    <p-column [sortable]="true" field="declaredTime" header="Czas zadeklarowany"  [style]="{'text-align':'right'}">
+      <ng-template let-col let-report="rowData" pTemplate="body">
+        <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="expectedTime" header="Czas zakładany" [style]="{'text-align':'right'}">
+      <ng-template let-col let-report="rowData" pTemplate="body">
+        <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
+      </ng-template>
+    </p-column>
+    <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
+    <p-column [sortable]="true" field="earnedMoney" header="Wypracowany budżet" [style]="{'text-align':'right'}">
+      <ng-template let-col let-report="rowData" pTemplate="body">
+        <span>{{report[col.field] | currency: 'PLN'}}</span>
+      </ng-template>
+    </p-column>
+
+
+
+    <ng-template pTemplate="emptymessage">
+      Brak raportów w zakresie dat...
+    </ng-template>
+
+    <p-footer>
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 15px;">
+          <div class="ui-grid-col-5"></div>
+          <div class="ui-grid-col-2">
+            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+          </div>
+          <div class="ui-grid-col-5"></div>
+        </div>
+      </div>
+    </p-footer>
+
+  </p-dataTable>
+
+</div>
+
+<div *ngIf="chartsReady">
+
+
+  <div class="ui-grid-row" style="margin-left: 50px; margin-right: 50px; margin-top: 10px; margin-bottom: 10px;">
+    <div class="ui-grid-col-6">
+      <p-chart type="line" [data]="lineUtilizationData" [height]="'200'" [options]="lineUtilizationOptions"></p-chart>
+    </div>
+    <div class="ui-grid-col-6">
+      <p-chart type="line" [data]="lineEarnedData" [height]="'200'" [options]="lineEarnedOptions"></p-chart>
+    </div>
+  </div>
+
+  <div class="ui-grid-row" style="margin-left: 50px; margin-right: 50px; margin-top: 10px; margin-bottom: 10px;">
+    <div class="ui-grid-col-6">
+      <p-chart type="line" [data]="avgUtilizationData" [height]="'200'" [options]="lineUtilizationOptions"></p-chart>
+    </div>
+    <div class="ui-grid-col-6">
+      <p-chart type="line" [data]="totalEarnedData" [height]="'200'" [options]="lineEarnedOptions"></p-chart>
+    </div>
+  </div>
+
+
+</div>
+
+
+
+
