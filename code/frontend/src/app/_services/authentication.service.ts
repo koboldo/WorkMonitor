@@ -102,7 +102,8 @@ export class AuthenticationService {
                 label: 'Raporty',
                 icon: 'fa-bar-chart',
                 items: [
-                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]}
+                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
+                    {label: 'Wyniki miesięczne', icon: 'fa-dashboard', routerLink: ['/monthlyPerformance'], "rolesRequired":["AN"]}
                 ]
             },
             {

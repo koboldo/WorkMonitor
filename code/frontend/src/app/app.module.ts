@@ -47,6 +47,7 @@ import { ContractorsComponent } from './contractors/contractors.component';
 import { WoStoppedListComponent } from './wo-stopped-list/wo-stopped-list.component';
 import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
+import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
 
 
 @NgModule({
@@ -92,7 +93,8 @@ import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.com
         ContractorsComponent,
         WoStoppedListComponent,
         WoCancelledComponent,
-        UsersTimeStatsComponent
+        UsersTimeStatsComponent,
+        ReportMonthlyEngineersComponent
     ],
     providers: [
         AlertService,

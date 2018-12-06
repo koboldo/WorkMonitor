@@ -35,6 +35,7 @@
 </p-panel>
 
 
+
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
     <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
                  selectionMode="multiple" [(selection)]="selectedReports" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
@@ -48,7 +49,7 @@
         <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
 
         <p-column [style]="{'text-align':'center', 'width':'38px'}" selectionMode="multiple"></p-column>
-        <p-column [sortable]="true" field="timeUtilizationPercentage" header="Ocena" [style]="{'text-align':'center', 'width':'70px'}">
+        <p-column [sortable]="true" field="icon" header="Ocena" [style]="{'text-align':'center', 'width':'70px'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
                 <span class="ui-inputgroup-addon" [style.color]="report.iconColor"><i [class]="report.icon"></i></span>
             </ng-template>

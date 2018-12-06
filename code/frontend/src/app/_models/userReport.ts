@@ -1,4 +1,5 @@
 import { Order } from '../_models/order';
+import { DateRange } from '../_models/dateRange';
 
 /*
  {
@@ -34,8 +35,8 @@ export class UserReport {
     lastName: string;
     officeCode: string;
     office: string;
-    roleCode: string;
-    role: string;
+    public roleCode: string[];
+    public role: string[];
     email: string;
 
     //timesheet
@@ -52,5 +53,12 @@ export class UserReport {
 
     // calculated by front
     earnedMoney: number;
+
+}
+
+export class MonthlyUserReport extends UserReport {
+
+    dateRange: DateRange;
+
 
 }

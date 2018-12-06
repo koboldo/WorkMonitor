@@ -59,6 +59,7 @@ const persons = {
             persons.list.forEach((person) => {
                 const orders = mapper.mapList(mapper.order.mapToJson, person.workOrders);
                 person.workOrders = orders.list;
+                person.roleCode = person.roleCode.trim().split(',');
             });
             res.json(persons);
         }));
