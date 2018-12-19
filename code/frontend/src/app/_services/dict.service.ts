@@ -1,7 +1,9 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable }    from 'rxjs/Observable';
 
-import 'rxjs/add/operator/map';
+import {map} from 'rxjs/operators';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Observable }    from 'rxjs';
+
+
 
 import { CodeValue } from '../_models/code';
 import { User } from '../_models/user';
@@ -58,11 +60,11 @@ export class DictService {
     }
 
     public getRolesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Object) => this.mapCodeValue(response))
+        return  this.http.get('/api/v1/codes/ROLE').pipe(map((response: Object) => this.mapCodeValue(response)))
     }
 
     public getOfficesObs(): Observable<CodeValue[]> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Object) => this.mapCodeValue(response))
+        return  this.http.get('/api/v1/codes/OFFICE').pipe(map((response: Object) => this.mapCodeValue(response)))
     }
 
 
@@ -78,7 +80,7 @@ export class DictService {
 
     // called just after login
     public getRoleObs(keys: string[]): Observable<string[]> {
-        return  this.http.get('/api/v1/codes/ROLE').map((response: Object) => this.getKeys(response, keys))
+        return  this.http.get('/api/v1/codes/ROLE').pipe(map((response: Object) => this.getKeys(response, keys)))
     }
 
     private getKeys(response:any, keys:string[]):string[] {
@@ -93,7 +95,7 @@ export class DictService {
     }
 
     public getOfficeObs(key: string): Observable<string> {
-        return  this.http.get('/api/v1/codes/OFFICE').map((response: Object) => this.getKey(response, key))
+        return  this.http.get('/api/v1/codes/OFFICE').pipe(map((response: Object) => this.getKey(response, key)))
     }
 
     private getKey(response:any, key:string):string {

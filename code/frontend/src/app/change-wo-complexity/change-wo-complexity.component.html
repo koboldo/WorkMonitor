@@ -53,7 +53,7 @@
       <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <p-column [sortable]="true" field="status" header="Status" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
@@ -61,14 +61,14 @@
 
 
       <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
@@ -93,12 +93,12 @@
       <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
 
       <p-column [style]="{'width':'40px','text-align':'center'}">
-        <ng-template let-order="rowData" pTemplate="body">
+        <ng-template let-order="rowData" png-template="body">
           <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
         </ng-template>
       </p-column>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak zleceń w zakresie dat...
       </ng-template>
 

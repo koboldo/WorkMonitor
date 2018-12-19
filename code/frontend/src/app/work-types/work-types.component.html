@@ -12,38 +12,38 @@
     <p-column [sortable]="true" field="typeCode" header="Typ" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
     <p-column [sortable]="true" field="description" header="Opis typu" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-      <ng-template let-col let-workType="rowData" pTemplate="body">
+      <ng-template let-col let-workType="rowData" png-template="body">
         <span [style.color]="toolsService.getOrderColor(workType.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
         <span style="padding: 3px">{{workType.description}}</span>
       </ng-template>
     </p-column>
 
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'120px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
             {{dictService.getOffice(order[col.field])}}
         </ng-template>
     </p-column>
 
     <p-column [sortable]="true" field="complexityCode" header="Złożoność" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}">
-      <ng-template let-col let-order="rowData" pTemplate="body">
+      <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span><span style="margin-left: 5px;">{{dictService.getComplexitiy(order[col.field])}}</span>
       </ng-template>
     </p-column>
 
     <p-column [sortable]="true" field="complexity" header="Pracochłonność [H]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
             <span style="margin-left: 5px;">{{order[col.field]}}</span><span> godzin</span>
         </ng-template>
     </p-column>
 
     <p-column [sortable]="true" field="price" header="Cena [PLN]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
             <span style="margin-left: 5px;">{{order[col.field] | currency:'PLN'}}</span>
         </ng-template>
     </p-column>
 
 
-    <ng-template pTemplate="emptymessage">
+    <ng-template png-template="emptymessage">
       Brak typów zleceń...
     </ng-template>
 

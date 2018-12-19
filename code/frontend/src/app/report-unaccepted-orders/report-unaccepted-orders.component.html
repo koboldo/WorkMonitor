@@ -59,7 +59,7 @@
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
       <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
@@ -79,7 +79,7 @@
       <p-column [sortable]="true" field="itemAddress" header="Adres"  hidden="true"></p-column>
       <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak zleceń w stanie wydane...
       </ng-template>
 

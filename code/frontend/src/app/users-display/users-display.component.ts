@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { AlertService, UserService, DictService, AuthenticationService } from '../_services/index';
 import { User, CodeValue, SearchUser } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime.js';
-import { Observable }    from 'rxjs/Observable';
+
+
+import { Observable }    from 'rxjs';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';

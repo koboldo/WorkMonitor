@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable ,  Subscriber } from 'rxjs';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 //add comment
 import { Comments, commentAsSimpleString, commentAsString, commentAdd,DisplayTextCommentAsString } from '../_models/comment';
-import { Subscriber } from 'rxjs';
 //end add comment
 
 @Component({

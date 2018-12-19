@@ -30,7 +30,7 @@
     <p-column [sortable]="true" field="excelId" header="Id excel" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span class="ui-inputgroup-addon">{{user.firstName}}</span>
         <span class="ui-inputgroup-addon">{{user.lastName}}</span>
       </ng-template>
@@ -38,13 +38,13 @@
 
     <!--<p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>-->
     <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
       </ng-template>
     </p-column>
     <p-column [sortable]="true" field="isEmployed" header="Pracuje" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
       </ng-template>
@@ -55,7 +55,7 @@
 
     <!--<p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'25px'}"></p-column>-->
     <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
       </ng-template>
@@ -83,7 +83,7 @@
       </div>
     </p-footer>
 
-    <ng-template pTemplate="emptymessage">
+    <ng-template png-template="emptymessage">
       Brak pracowników...
     </ng-template>
 
@@ -142,7 +142,7 @@
     <p-column [sortable]="true" field="user.officeCode" header="Biuro" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
     <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'38px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
       </ng-template>
@@ -159,7 +159,7 @@
     <p-column [sortable]="true" field="overTime" header="Nadgodziny" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
 
-    <ng-template pTemplate="emptymessage">
+    <ng-template png-template="emptymessage">
       Brak raportu podsumowania czasów...
     </ng-template>
 

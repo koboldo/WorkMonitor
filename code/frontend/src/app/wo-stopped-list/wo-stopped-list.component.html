@@ -14,14 +14,14 @@
       <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
       <p-column [sortable]="true" field="workNo" header="Zlecenie"  [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="status" header="Status" [style]="{'text-align':'center', 'width':'60px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <!--<span style="padding: 3px">{{order.status}}</span>-->
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="type" header="Typ" [style]="{'text-align':'center', 'width':'80px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
@@ -31,7 +31,7 @@
       <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'60px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <p-column field="sComments" header="Komentarz" hiddem="true" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span>{{getCancelOrHoldComment(order)}}</span>
         </ng-template>
       </p-column>
@@ -48,12 +48,12 @@
       <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
 
       <p-column [style]="{'width':'40px','text-align':'center'}">
-        <ng-template let-order="rowData" pTemplate="body">
+        <ng-template let-order="rowData" png-template="body">
           <button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>
         </ng-template>
       </p-column>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak zleceń...
       </ng-template>
 

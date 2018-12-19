@@ -44,7 +44,7 @@
             <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
                 </ng-template>
@@ -54,7 +54,7 @@
             <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
             <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                     <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                 </ng-template>
@@ -68,33 +68,33 @@
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
 
 
-            <ng-template pTemplate="emptymessage">
+            <ng-template png-template="emptymessage">
                 Brak danych...
             </ng-template>
 
@@ -125,7 +125,7 @@
                              >
 
 
-                    <ng-template pTemplate="rowgroupheader" let-rowData>
+                    <ng-template png-template="rowgroupheader" let-rowData>
 
                         <div style="float: left; max-width: 90%;">
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
@@ -152,7 +152,7 @@
 
                     <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
                             <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
                         </ng-template>
@@ -162,7 +162,7 @@
                     <p-column header="Współ." field="projectFactor"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
                     <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                             <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                         </ng-template>
@@ -176,33 +176,33 @@
                     <p-column header="Urlop" field="leaveTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
                     <p-column header="Obecnosc PLN" field="workDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
                     </p-column>
                     <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
                     </p-column>
                     <p-column header="Nadgodziny PLN" field="overDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
                     </p-column>
                     <p-column header="Urlop PLN" field="leaveDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
                     </p-column>
                     <p-column header="Suma PLN" field="totalDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                        <ng-template let-col let-userPayroll="rowData" png-template="body">
                             {{userPayroll[col.field] | currency:'PLN'}}
                         </ng-template>
                     </p-column>
 
 
-                    <ng-template pTemplate="emptymessage">
+                    <ng-template png-template="emptymessage">
                         Brak danych...
                     </ng-template>
 
@@ -283,7 +283,7 @@
             <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
                     <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
                 </ng-template>
@@ -293,7 +293,7 @@
             <p-column header="Współ." field="projectFactor" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
             <p-column header="Pula" [sortable]="true" field="isFromPool" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     <span *ngIf="userPayroll[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                     <span *ngIf="userPayroll[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                 </ng-template>
@@ -307,32 +307,32 @@
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Szkolenia PLN" field="trainingDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Nadgodziny PLN" field="overDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Urlop PLN" field="leaveDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
             <p-column header="Suma PLN" field="totalDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-                <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <ng-template let-col let-userPayroll="rowData" png-template="body">
                     {{userPayroll[col.field] | currency:'PLN'}}
                 </ng-template>
             </p-column>
 
-            <ng-template pTemplate="emptymessage">
+            <ng-template png-template="emptymessage">
                 Brak danych...
             </ng-template>
 

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
+import { Observable } from 'rxjs';
+
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_models/index';
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';

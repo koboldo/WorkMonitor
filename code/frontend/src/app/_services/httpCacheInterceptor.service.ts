@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse} from '@angular/common/http';
-import { Observable, AsyncSubject } from "rxjs/Rx";
-import { Subject } from 'rxjs/Subject';
+import { Observable, AsyncSubject ,  Subject } from "rxjs/Rx";
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {

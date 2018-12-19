@@ -1,14 +1,15 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable }    from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import 'rxjs/add/operator/map';
+import {map} from 'rxjs/operators';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Observable ,  BehaviorSubject }    from 'rxjs';
+
+
 
 import { Order } from '../_models/order';
 import { WorkType } from '../_models/index';
 import { DictService } from '../_services/dict.service';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
-import 'rxjs/add/operator/mergeMap';
+
 import { CodeValue } from '../_models/code';
 
 @Injectable()
@@ -43,18 +44,18 @@ export class WorkTypeService {
     }
 
     private getAllWorkTypesInternal(refreshCache: boolean) : Observable<WorkType[]> {
-       return this.http.get('/api/v1/workTypes')
-            .map((response: Object) => this.cacheAndGet(response['list']));
+       return this.http.get('/api/v1/workTypes').pipe(
+            map((response: Object) => this.cacheAndGet(response['list'])));
     }
 
     addWorkType(workType: WorkType): Observable<any> {
-        return this.http.post('/api/v1/workTypes', JSON.stringify(workType))
-            .map((response: Object) => response['created']);
+        return this.http.post('/api/v1/workTypes', JSON.stringify(workType)).pipe(
+            map((response: Object) => response['created']));
     }
 
     updateWorkType(workType: WorkType): Observable<any> {
-        return this.http.put('/api/v1/workTypes/'+workType.id, JSON.stringify(workType))
-            .map((response: Object) => response['updated']);
+        return this.http.put('/api/v1/workTypes/'+workType.id, JSON.stringify(workType)).pipe(
+            map((response: Object) => response['updated']));
     }
 
     /*
@@ -92,8 +93,8 @@ export class WorkTypeService {
         if (this.cache) {
             return new BehaviorSubject<CodeValue[]>(this.processWorkTypes(null)).asObservable();
         }
-        return this.http.get('/api/v1/workTypes')
-            .map((response: Object) => this.processWorkTypes(response['list']));
+        return this.http.get('/api/v1/workTypes').pipe(
+            map((response: Object) => this.processWorkTypes(response['list'])));
     }
 
     private processWorkTypes(workTypes: WorkType[]): CodeValue[] {

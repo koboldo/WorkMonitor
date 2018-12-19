@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
+
 
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
 import { Comments, commentCancelOrHoldAsString, commentAdd } from '../_models/comment';

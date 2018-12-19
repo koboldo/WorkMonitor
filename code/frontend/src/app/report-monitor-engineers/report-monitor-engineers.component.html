@@ -49,12 +49,12 @@
 
         <p-column [style]="{'text-align':'center', 'width':'38px'}" selectionMode="multiple"></p-column>
         <p-column [sortable]="true" field="timeUtilizationPercentage" header="Ocena" [style]="{'text-align':'center', 'width':'70px'}">
-            <ng-template let-col let-report="rowData" pTemplate="body">
+            <ng-template let-col let-report="rowData" png-template="body">
                 <span class="ui-inputgroup-addon" [style.color]="report.iconColor"><i [class]="report.icon"></i></span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="timeUtilizationPercentage" header="Wydajność" [style]="{'text-align':'right'}">
-            <ng-template let-col let-userData="rowData" pTemplate="body">
+            <ng-template let-col let-userData="rowData" png-template="body">
                 <span *ngIf="userData?.timeUtilizationPercentage >= 0" style="padding: 3px">{{userData.timeUtilizationPercentage}}%</span>
                 <span *ngIf="userData?.timeUtilizationPercentage === noTimesheets" style="padding: 3px">Brak deklaracji czasu pracy</span>
                 <span *ngIf="userData?.timeUtilizationPercentage === holidays" style="padding: 3px">Urlop</span>
@@ -67,32 +67,32 @@
         <p-column [sortable]="true" [filter]="true" field="role" header="Rola" [style]="{'text-align':'center'}"></p-column>
         <p-column [sortable]="true" [filter]="true" field="office" header="Biuro" [style]="{'text-align':'center'}"></p-column>
         <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'55px'}">
-            <ng-template let-col let-user="rowData" pTemplate="body">
+            <ng-template let-col let-user="rowData" png-template="body">
                 <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                 <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
             </ng-template>
         </p-column>
 
         <p-column [sortable]="true" field="declaredTime" header="Czas zadeklarowany"  [style]="{'text-align':'right'}">
-            <ng-template let-col let-report="rowData" pTemplate="body">
+            <ng-template let-col let-report="rowData" png-template="body">
                 <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="expectedTime" header="Czas zakładany" [style]="{'text-align':'right'}">
-            <ng-template let-col let-report="rowData" pTemplate="body">
+            <ng-template let-col let-report="rowData" png-template="body">
                 <span>{{report[col.field] | number: '1.2-2'}} godz.</span>
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
         <p-column [sortable]="true" field="earnedMoney" header="Wypracowany budżet" [style]="{'text-align':'right'}">
-            <ng-template let-col let-report="rowData" pTemplate="body">
+            <ng-template let-col let-report="rowData" png-template="body">
                 <span>{{report[col.field] | currency: 'PLN'}}</span>
             </ng-template>
         </p-column>
 
 
 
-        <ng-template pTemplate="emptymessage">
+        <ng-template png-template="emptymessage">
             Brak raportów w zakresie dat...
         </ng-template>
 

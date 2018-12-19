@@ -82,20 +82,20 @@
       <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
       <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
         <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
       </p-column>
       <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
         <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
         <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
@@ -109,7 +109,7 @@
 
       <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
       <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
         <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
         <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
       </ng-template>
@@ -141,7 +141,7 @@
         </div>
       </p-footer>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
       Brak zleceń...
       </ng-template>
 

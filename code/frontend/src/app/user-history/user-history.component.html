@@ -16,7 +16,7 @@
         <p-column [sortable]="true" field="excelId" header="Id excel" [hidden]="true"></p-column>
 
         <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
+          <ng-template let-col let-user="rowData" png-template="body">
             <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}}</span>
             <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.lastName}}</span>
           </ng-template>
@@ -28,7 +28,7 @@
         <p-column [sortable]="true" field="rank" header="Stopień" ></p-column>
 
         <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
+          <ng-template let-col let-user="rowData" png-template="body">
             <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
             <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
           </ng-template>
@@ -57,14 +57,14 @@
         -->
 
         <p-column [sortable]="true" field="histCreationDate" header="Do" [style]="{'text-align':'center', 'width':'120px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
+          <ng-template let-col let-user="rowData" png-template="body">
             <span *ngIf="user[col.field]==CURRENT_EOF" [style.color]="'green'" class="ui-inputgroup-addon">Bieżący</span>
             <span *ngIf="user[col.field]!=CURRENT_EOF" >{{user[col.field]}}</span>
           </ng-template>
 
         </p-column>
 
-        <ng-template let-user pTemplate="rowexpansion">
+        <ng-template let-user png-template="rowexpansion">
           <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
 
             <div *ngIf="user?.histCreationDate == CURRENT_EOF" class="ui-grid-row" style="text-align:left; font-size: smaller;">
@@ -110,13 +110,13 @@
 
         <!--<p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column>&lt;!&ndash; search &ndash;&gt;
         <p-column [sortable]="true" field="statusCode" header="Status" >
-          <ng-template let-col let-order="rowData" pTemplate="body">
+          <ng-template let-col let-order="rowData" png-template="body">
             <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
             <span style="padding: 3px">{{order.status}}</span>
           </ng-template>
         </p-column>
 -->
-        <ng-template pTemplate="emptymessage">
+        <ng-template png-template="emptymessage">
           Brak wpisów w historii...
         </ng-template>
 

@@ -60,56 +60,56 @@
 
 
       <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetWorkDate}}</div>
         </ng-template>
       </p-column>
 
       <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Urlop" field="isLeave" [style]="{'width': '70px'}" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.isLeave}}</div>
         </ng-template>
       </p-column>
 
       <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny od" field="timesheetFrom" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetFrom}}</div>
         </ng-template>
       </p-column>
 
       <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Obecny do" field="timesheetTo" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTo}}</div>
         </ng-template>
       </p-column>
 
       <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Przerwa [min]" field="timesheetBreakInMinutes" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetBreakInMinutes}}</div>
         </ng-template>
       </p-column>
 
       <p-column [editable]="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" header="Szkolenie [g:mm]" field="timesheetTrainingInGMM" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetTrainingInGMM}}</div>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="timesheetUsedTime" header="Obecność" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div [style.color]="timesheet.color" class="text-center">{{timesheet.timesheetUsedTime}}</div>
         </ng-template>
       </p-column>
 
       <p-column *ngIf="user?.roleCode?.indexOf('OP') > -1" [sortable]="true" field="status" header="Zapisano" [style]="{'width': '60px'}">
-        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+        <ng-template let-col let-timesheet="rowData" png-template="body">
           <div *ngIf="timesheet.status == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
           <div *ngIf="timesheet.status == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
           <div *ngIf="timesheet.status == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
         </ng-template>
       </p-column>
 
-      <ng-template let-timesheet pTemplate="rowexpansion">
+      <ng-template let-timesheet png-template="rowexpansion">
         <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
           <div class="ui-grid-row">
             <div *ngIf="timesheet?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
@@ -129,7 +129,7 @@
         </div>
       </ng-template>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak danych...
       </ng-template>
 

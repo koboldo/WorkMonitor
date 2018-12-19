@@ -132,7 +132,7 @@
                             <p-column [sortable]="true" field="sCreatedBy" header="Osoba" [style]="{'width':'120px'}"></p-column>
                             <p-column [sortable]="true" field="reason" header="Powód" [style]="{'width':'100px'}"></p-column>
                             <p-column [sortable]="true" field="text" header="Treść">
-                                <ng-template let-col let-comment="rowData" pTemplate="body">
+                                <ng-template let-col let-comment="rowData" png-template="body">
                                     <textarea readonly="readonly" style="color: black;" pInputTextarea [rows]="2" [cols]="30">{{comment.text}}</textarea>
                                 </ng-template>
                             </p-column>
@@ -170,7 +170,7 @@
 
                     <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
 
-                    <ng-template pTemplate="emptymessage">
+                    <ng-template png-template="emptymessage">
                         Brak historycznych danych o zleceniach...
                     </ng-template>
 

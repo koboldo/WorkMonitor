@@ -8,7 +8,6 @@
     "url": "https://git.koboldo"
   },
   "scripts": {
-
     "start": "ng serve --port 3000 --proxy proxy.conf.json",
     "start-old": "tsc && concurrently \"npm run tsc:w\" \"npm run lite:proxy\" ",
     "lite:proxy": "lite-server -c bs-config.js",
@@ -16,15 +15,16 @@
     "tsc:w": "tsc -w"
   },
   "dependencies": {
-    "@angular/animations": "^4.4.6",
-    "@angular/common": "^4.4.6",
-    "@angular/compiler": "^4.4.6",
-    "@angular/core": "^4.4.6",
-    "@angular/forms": "^4.4.6",
-    "@angular/http": "^4.4.6",
-    "@angular/platform-browser": "^4.4.6",
-    "@angular/platform-browser-dynamic": "^4.4.6",
-    "@angular/router": "^4.4.6",
+    "@angular/animations": "7.1.1",
+    "@angular/cdk": "^7.1.1",
+    "@angular/common": "7.1.1",
+    "@angular/compiler": "7.1.1",
+    "@angular/core": "7.1.1",
+    "@angular/forms": "7.1.1",
+    "@angular/http": "7.1.1",
+    "@angular/platform-browser": "7.1.1",
+    "@angular/platform-browser-dynamic": "7.1.1",
+    "@angular/router": "7.1.1",
     "bootstrap": "3.3.6",
     "chart.js": "^2.7.1",
     "core-js": "^2.4.1",
@@ -32,28 +32,33 @@
     "fullcalendar": "^3.7.0",
     "jquery": "^3.2.1",
     "moment": "^2.19.2",
-    "primeng": "^4.3.0",
-    "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "primeicons": "^1.0.0",
+    "primeng": "^7.0.3",
+    "rxjs": "^6.3.3",
+    "rxjs-compat": "^6.3.3",
+    "sqlite3": "^4.0.4",
+    "tslib": "^1.9.0",
+    "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular/cli": "1.2.4",
-    "@angular/compiler-cli": "^4.4.6",
+    "@angular-devkit/build-angular": "~0.11.0",
+    "@angular/cli": "^7.1.1",
+    "@angular/compiler-cli": "7.1.1",
     "@types/chart.js": "^2.7.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",
-    "karma": "~1.4.1",
+    "karma": "^3.1.3",
     "karma-chrome-launcher": "~2.0.0",
     "karma-cli": "~1.0.1",
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.1.0",
+    "protractor": "^5.4.1",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0"
+    "typescript": "3.1.6"
   }
 }

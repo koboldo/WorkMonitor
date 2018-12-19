@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AuthenticationService, HttpBotWrapper }    from '../_services/index';
 import { User } from '../_models/user';

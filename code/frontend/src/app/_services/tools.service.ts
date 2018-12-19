@@ -1,13 +1,13 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 import { DatePipe }         from '@angular/common';
-import { Observable }       from 'rxjs/Observable';
+import { Observable }       from 'rxjs';
 
-import 'rxjs/add/operator/map';
+
 
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { SelectItem } from 'primeng/primeng'
-import 'rxjs/add/operator/mergeMap';
+
 
 @Injectable()
 export class ToolsService {

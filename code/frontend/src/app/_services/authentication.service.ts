@@ -1,8 +1,9 @@
-﻿import { Injectable } from '@angular/core';
+
+import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/map';
+import { Observable ,  BehaviorSubject } from 'rxjs';
+
 import { User } from '../_models/user';
 import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
@@ -49,8 +50,8 @@ export class AuthenticationService {
         console.log("about to login: "+JSON.stringify(data));
 
         //proxy!!!
-        return this.http.post<User>('/login', JSON.stringify(data), {headers: new HttpHeaders({'Content-Type':'application/json'})})
-            .map(user => {
+        return this.http.post<User>('/login', JSON.stringify(data), {headers: new HttpHeaders({'Content-Type':'application/json'})}).pipe(
+            map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
                     this.user.next(user);
@@ -61,7 +62,7 @@ export class AuthenticationService {
                 }
 
                 return user;
-            });
+            }));
     }
 
     private initAuthHeaders(token: string) {

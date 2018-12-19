@@ -26,7 +26,7 @@
     </p-header>
 
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'26px','text-align':'center'}">
-      <ng-template let-userRow="rowData" pTemplate="body">
+      <ng-template let-userRow="rowData" png-template="body">
           <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>-->
           <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa-search"></button>
           <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
@@ -40,7 +40,7 @@
 
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
     <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}}</span>
         <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.lastName}}</span>
       </ng-template>
@@ -48,13 +48,13 @@
 
     <!--<p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>-->
     <p-column [sortable]="true" field="isActive" header="Aktywny" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
       </ng-template>
     </p-column>
     <p-column [sortable]="true" field="isEmployed" header="Pracuje" [filter]="true" filterPlaceholder="Y/N" filterMatchMode="contains" [style]="{'text-align':'center', 'width':'20px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
       </ng-template>
@@ -65,31 +65,31 @@
 
     <!--<p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'25px'}"></p-column>-->
     <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'35px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
         <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
       </ng-template>
     </p-column>
 
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="projectFactor" header="Wspł." [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'30px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user.isFromPool=='Y'" [style.color]="'green'" class="ui-inputgroup-addon">{{user[col.field]}}</span>
         <span *ngIf="user.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">{{user[col.field]}}</span>
       </ng-template>
     </p-column>
 
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="salary" header="Wynagrodzenie" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'50px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="user.salary!==0" class="ui-inputgroup-addon">{{user[col.field] | currency:'PLN'}}</span>
       </ng-template>
     </p-column>
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="salaryRate" header="Stawka gwarantowana" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="!user.salary || user.salary===0" class="ui-inputgroup-addon">{{user.salaryRate | currency:'PLN'}}</span>
       </ng-template>
     </p-column>
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [sortable]="true" field="leaveRate" header="Urlop" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}">
-      <ng-template let-col let-user="rowData" pTemplate="body">
+      <ng-template let-col let-user="rowData" png-template="body">
         <span *ngIf="!user.salary || user.salary===0" class="ui-inputgroup-addon">{{user.leaveRate | currency:'PLN'}}</span>
       </ng-template>
     </p-column>
@@ -111,7 +111,7 @@
 
 
     <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-      <ng-template let-col let-order="rowData" pTemplate="body">
+      <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
         <span style="padding: 3px">{{order.status}}</span>
       </ng-template>
@@ -119,14 +119,14 @@
 
 
     <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-      <ng-template let-col let-order="rowData" pTemplate="body">
+      <ng-template let-col let-order="rowData" png-template="body">
         <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
         <span style="padding: 3px">{{order.type}}</span>
       </ng-template>
     </p-column>
 
     <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
-      <ng-template let-col let-order="rowData" pTemplate="body">
+      <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
       </ng-template>
     </p-column>
@@ -140,7 +140,7 @@
 
 
     <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-      <ng-template let-col let-order="rowData" pTemplate="body">
+      <ng-template let-col let-order="rowData" png-template="body">
         <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
       </ng-template>
     </p-column>
@@ -171,7 +171,7 @@
       </div>
     </p-footer>
 
-    <ng-template pTemplate="emptymessage">
+    <ng-template png-template="emptymessage">
       Brak pracowników...
     </ng-template>
 

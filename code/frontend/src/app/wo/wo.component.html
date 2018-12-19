@@ -61,7 +61,7 @@
 
       <!--<p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
       <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
@@ -69,14 +69,14 @@
 
       <!--<p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
       <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
@@ -90,7 +90,7 @@
 
       <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
       <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-          <ng-template let-col let-order="rowData" pTemplate="body">
+          <ng-template let-col let-order="rowData" png-template="body">
             <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
             <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
           </ng-template>
@@ -111,7 +111,7 @@
 
       <!-- these are original childobject props but could not be used to filter
       <p-column [sortable]="true" header="Obiekt">
-        <ng-template let-col let-relatedItem="rowData.relatedItems[0]" pTemplate="body">
+        <ng-template let-col let-relatedItem="rowData.relatedItems[0]" png-template="body">
           <span *ngIf="relatedItem?.itemNo">{{relatedItem?.itemNo}}<br></span>
           <span *ngIf="relatedItem?.address">{{relatedItem?.address}}<br></span>
           <span *ngIf="relatedItem?.mdBuildingType">{{relatedItem?.mdBuildingType}}<br></span>
@@ -122,7 +122,7 @@
       <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [style]="{'width':'40px','text-align':'center'}">
-        <ng-template let-order="rowData" pTemplate="body">
+        <ng-template let-order="rowData" png-template="body">
           <button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>
         </ng-template>
       </p-column>
@@ -147,7 +147,7 @@
         </div>
       </p-footer>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak zleceń...
       </ng-template>
 

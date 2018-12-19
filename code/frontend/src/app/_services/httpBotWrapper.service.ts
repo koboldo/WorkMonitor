@@ -1,7 +1,7 @@
+
+import {throwError as observableThrowError,  Observable, AsyncSubject ,  Subject } from 'rxjs';
 import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Observable, AsyncSubject } from "rxjs/Rx";
-import { Subject } from 'rxjs/Subject';
 import { AlertService, AuthenticationService } from '../_services/index';
 import { Router } from '@angular/router';
 
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import "rxjs/add/operator/catch"
 import "rxjs/add/observable/throw"
 import "rxjs/add/operator/map"
+import 'rxjs/add/operator/do';
 
 
 @Injectable()
@@ -115,7 +116,7 @@ export class HttpBotWrapper {
             this.alertService.error("Wewnętrzny bląd: "+ (body !== undefined && body.message ? body.message : ""));
         }
 
-        return Observable.throw(error)
+        return observableThrowError(error)
     }
 
 }

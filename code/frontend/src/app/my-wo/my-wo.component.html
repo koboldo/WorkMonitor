@@ -16,7 +16,7 @@
 
       <p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
       <p-column [sortable]="true" field="statusCode" header="Status" >
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
           <span style="padding: 3px">{{order.status}}</span>
         </ng-template>
@@ -24,14 +24,14 @@
 
       <p-column [sortable]="true" field="type" header="typeSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
       <p-column [sortable]="true" field="typeCode" header="Typ">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
 
       <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
           <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
         </ng-template>
       </p-column>
@@ -39,7 +39,7 @@
       <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
 
       <p-column field="sComments" header="Komentarz" hiddem="true">
-        <ng-template let-col let-order="rowData" pTemplate="body">
+        <ng-template let-col let-order="rowData" png-template="body">
             <span>{{getCancelOrHoldComment(order)}}</span>
         </ng-template>
     </p-column>
@@ -56,12 +56,12 @@
       <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
 
         <p-column [style]="{'width':'40px','text-align':'center'}">
-            <ng-template let-order="rowData" pTemplate="body">
+            <ng-template let-order="rowData" png-template="body">
                 <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
             </ng-template>
         </p-column>
 
-      <ng-template pTemplate="emptymessage">
+      <ng-template png-template="emptymessage">
         Brak zleceń do bieżącej obsługi, poproś o więcej lub idź do domu...
       </ng-template>
 
