@@ -23,7 +23,7 @@
                         <div class="ui-grid-row"  style="margin-top: 15px;">
                             <div class="ui-grid-col-5"></div>
                             <div class="ui-grid-col-2">
-                                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!f?.valid"></button>
+                                <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!f?.valid"></button>
                             </div>
                             <div class="ui-grid-col-5"></div>
                         </div>
@@ -39,7 +39,7 @@
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
     <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
                  selectionMode="multiple" [(selection)]="selectedReports" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
-                 dataKey="id" resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+                 dataKey="id" resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
         <p-header>
             <div>
                 <i class="fa fa-search"></i>
@@ -85,7 +85,7 @@
             </ng-template>
         </p-column>
         <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
-        <p-column [sortable]="true" field="earnedMoney" header="Wypracowany budżet" [style]="{'text-align':'right'}">
+        <p-column [sortable]="true" field="earnedMoney" header="Wypracowany obrót" [style]="{'text-align':'right'}">
             <ng-template let-col let-report="rowData" pTemplate="body">
                 <span>{{report[col.field] | currency: 'PLN'}}</span>
             </ng-template>
@@ -138,7 +138,7 @@
             </p-panel>
         </div>
         <div class="ui-grid-col-6">
-            <p-panel header="Wypracowany budżet w PLN">
+            <p-panel header="Wypracowany obrót w PLN">
                 <p-chart type="bar" [data]="chartEarnedData"></p-chart>
             </p-panel>
         </div>
@@ -147,13 +147,13 @@
 
 <!-- defaultDate="2017-11-01" -->
 
-<p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName +' ('+selectedReport?.timeUtilizationPercentage+'%)'" [(visible)]="schedulerDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="800">
+<p-dialog *ngIf="selectedReport" [header]="selectedReport?.firstName +' '+selectedReport?.lastName +' ('+selectedReport?.timeUtilizationPercentage+'%)'" [(visible)]="schedulerDisplay" [responsive]="true" [minWidth]="800" [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
         <p-schedule [events]="schedulerEvents" [header]="schedulerHeader" [eventLimit]="8" [editable]="false" (onEventClick)="handleOrderClick($event)" [locale]="'pl'"></p-schedule>
     </div>
 </p-dialog>
 
-<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+<p-dialog [header]="selectedOrder?.workNo + (selectedOrder?.doneDate? ' wykonano': ' w realizacji...' )" [(visible)]="orderDialogDisplay" [responsive]="true" [minWidth]="800" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
 
     <div *ngIf="selectedOrder?.workNo">
         <div class="ui-grid-row">

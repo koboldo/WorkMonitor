@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
@@ -57,9 +57,9 @@ export class ChangeWoComplexityComponent implements OnInit {
         this.statuses = this.dictService.getWorkStatuses();
 
         this.items = [
-            {label: 'Zwiększ trudność', icon: 'fa-arrow-circle-up', command: (event) => this.changeComplexity(true)},
-            {label: 'Zmniejsz trudność', icon: 'fa-arrow-circle-down', command: (event) => this.changeComplexity(false)},
-            {label: 'Poprawa', icon: 'fa-bell', command: (event) => this.reassign()}
+            {label: 'Zwiększ trudność', icon: 'fa fa-arrow-circle-up', command: (event) => this.changeComplexity(true)},
+            {label: 'Zmniejsz trudność', icon: 'fa fa-arrow-circle-down', command: (event) => this.changeComplexity(false)},
+            {label: 'Poprawa', icon: 'fa fa-bell', command: (event) => this.reassign()}
         ];
 
     }

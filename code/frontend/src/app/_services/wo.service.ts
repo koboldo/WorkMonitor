@@ -1,14 +1,14 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable }    from 'rxjs/Observable';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
-import 'rxjs/add/operator/map';
 
 import { Order, OrderHistory, User, WorkType } from '../_models/index';
 import { Comments, commentToDbContent } from '../_models/comment';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
 import { WorkTypeService } from '../_services/workType.service';
-import 'rxjs/add/operator/mergeMap';
+
 
 @Injectable()
 export class WOService {
@@ -23,53 +23,51 @@ export class WOService {
     getOrdersByWorkNo(workNo: string):Observable<Order> {
 
         return this.http.get('/api/v1/orders/external/'+workNo)
-            .map((response: Object) => this.getWorkOrder(<Order> response))
+            .pipe(map(((response: Object) => this.getWorkOrder(<Order> response))
     }
     */
 
     getOrdersByStatus(status: string):Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?status='+status)
-            .map((response: Object) => this.getWorkOrders(response))
+            .pipe(map((response: Object) => this.getWorkOrders(response)))
     }
 
     getOrdersByDates(lastModAfter: string, lastModBefore: string) : Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?lastModAfter='+lastModAfter+"&lastModBefore="+lastModBefore)
-            .map((response: Object) => this.getWorkOrders(response))
+            .pipe(map((response: Object) => this.getWorkOrders(response)))
     }
 
     getAssignedOrders(personId: number) : Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?personId='+personId+"&status=AS")
-            .map((response: Object) => this.getWorkOrders(response))
+            .pipe(map((response: Object) => this.getWorkOrders(response)))
     }
 
     updateOrder(order: Order) : Observable<Order> {
         return this.http.put('/api/v1/orders/'+order.id, JSON.stringify(this.getStrippedOrder(order)))
-            .map((response: Object) => response['updated'])
-            .mergeMap(updatedId => this.getOrderById(order.id));
+            .pipe(map((response: Object) => response['updated']), mergeMap(updatedId => this.getOrderById(order.id)));
     }
 
     getOrderById(id:number):Observable<Order> {
         return this.http.get('/api/v1/orders/'+id)
-            .map((response: Order) => this.getWorkOrder(response));
+            .pipe(map((response: Order) => this.getWorkOrder(response)));
     }
 
     addOrder(order: Order) : Observable<Order> {
         return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)))
-            .map((response: Object) => response['created'])
-            .mergeMap(createdId => this.getOrderById(createdId));
+            .pipe(map((response: Object) => response['created']), mergeMap(createdId => this.getOrderById(createdId)));
     }
 
     getOrderHistoryById(id:number):Observable<OrderHistory[]> {
         return this.http.get('/api/v1/orders/history/' + id)
-            .map((response:Object) => this.getWorkOrders(response));
+            .pipe(map((response:Object) => this.getWorkOrders(response))) as Observable<OrderHistory[]>;
     }
 
     getRelatedItem(id: number): Observable<any> {
         return this.http.get('/api/v1/relatedItems/' + id)
-            .map((response:Object) => this.getItem(response));
+            .pipe(map((response:Object) => this.getItem(response)));
     }
 
     prepareProtocol(ids: number[]) : Observable<any> {
@@ -84,12 +82,12 @@ export class WOService {
         }
 
         return this.http.get('/api/v1/report/protocol?ids='+flatIds)
-            .map((response: Object) => this.getProtocol(response))
+            .pipe(map((response: Object) => this.getProtocol(response)))
     }
 
     fetchProtocol(protocolNo: string) : Observable<any> {
         return this.http.get('/api/v1/report/protocol?protocolNo='+protocolNo)
-            .map((response: Object) => this.getProtocol(response))
+            .pipe(map((response: Object) => this.getProtocol(response)))
     }
 
 

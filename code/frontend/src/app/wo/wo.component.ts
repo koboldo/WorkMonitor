@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
+import { Observable } from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_models/index';
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
@@ -86,10 +86,10 @@ export class WoComponent implements OnInit {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
         this.items = [
-            {label: 'Przypisz/Zmień wykonawce', icon: 'fa-user', disabled: true, command: (event) => this.assign(true)},
-            {label: 'Dopisz wykonawce', icon: 'fa-share', disabled: true, command: (event) => this.assign(false)},
-            {label: 'Edycja zlecenia', icon: 'fa-pencil-square-o', disabled: true, command: (event) => this.edit()},
-            {label: 'Dodaj nowe zlecenie', icon: 'fa-plus', disabled: true, command: (event) => this.add()}
+            {label: 'Przypisz/Zmień wykonawce', icon: 'fa fa-user', disabled: true, command: (event) => this.assign(true)},
+            {label: 'Dopisz wykonawce', icon: 'fa fa-share', disabled: true, command: (event) => this.assign(false)},
+            {label: 'Edycja zlecenia', icon: 'fa fa-pencil-square-o', disabled: true, command: (event) => this.edit()},
+            {label: 'Dodaj nowe zlecenie', icon: 'fa fa-plus', disabled: true, command: (event) => this.add()}
         ];
         this.relatedItem = <RelatedItem>{};
         this.pl=new Calendar();
@@ -138,8 +138,7 @@ export class WoComponent implements OnInit {
         this.woService.getOrdersByDates(
             this.lastModAfter.toISOString().substring(0, 10),
             this.lastModBefore.toISOString().substring(0, 10)
-        )
-        .mergeMap(orders => this.callVentures(orders))
+        ).pipe(mergeMap(orders => this.callVentures(orders)))
         .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
     }
 

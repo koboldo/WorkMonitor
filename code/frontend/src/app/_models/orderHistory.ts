@@ -1,6 +1,8 @@
 
 
-import { User, RelatedItem, Order } from '../_models/index';
+import { User } from '../_models/user';
+import { RelatedItem } from '../_models/relatedItem';
+import { Order } from '../_models/order';
 
 /*
  "id": 16,

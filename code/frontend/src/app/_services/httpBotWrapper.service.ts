@@ -1,14 +1,13 @@
+
+import { throwError as observableThrowError,  Observable, AsyncSubject ,  Subject } from 'rxjs';
 import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Observable, AsyncSubject } from "rxjs/Rx";
-import { Subject } from 'rxjs/Subject';
-import { AlertService, AuthenticationService } from '../_services/index';
+import { AuthenticationService } from '../_services/authentication.service';
+import { AlertService } from '../_services/alert.service';
 import { Router } from '@angular/router';
 
 // operators
-import "rxjs/add/operator/catch"
-import "rxjs/add/observable/throw"
-import "rxjs/add/operator/map"
+import { catchError, map, tap } from 'rxjs/operators';
 
 
 @Injectable()
@@ -73,27 +72,32 @@ export class HttpBotWrapper {
 
     public get(url: string): Observable<Object> {
         this.incrementProgress(this.getProgressKey(url));
-        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()})
-            .do(object => this.decrementProgress(this.getProgressKey(url)))
-            .catch(e => this.handleError(e, url))
+        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()}).pipe(
+            tap(object => this.decrementProgress(this.getProgressKey(url))),
+            catchError(e => this.handleError(e, url))
+            );
+
     }
 
     public post(url: string, object:any): Observable<Object> {
-        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()})
-            .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(e => this.handleError(e, url))
+        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe(
+            tap(response => this.decrementProgress(this.getProgressKey(url))),
+                catchError(e => this.handleError(e, url))
+        );
     }
 
     public put(url: string, object:any): Observable<Object> {
-        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()})
-            .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(e => this.handleError(e, url))
+        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe(
+            tap(response => this.decrementProgress(this.getProgressKey(url))),
+            catchError(e => this.handleError(e, url))
+        );
     }
 
     public delete(url: string): Observable<Object> {
-        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()})
-            .do(response => this.decrementProgress(this.getProgressKey(url)))
-            .catch(e => this.handleError(e, url))
+        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()}).pipe(
+            tap(response => this.decrementProgress(this.getProgressKey(url))),
+            catchError(e => this.handleError(e, url))
+        );
 
     }
 
@@ -115,7 +119,7 @@ export class HttpBotWrapper {
             this.alertService.error("Wewnętrzny bląd: "+ (body !== undefined && body.message ? body.message : ""));
         }
 
-        return Observable.throw(error)
+        return observableThrowError(error)
     }
 
 }

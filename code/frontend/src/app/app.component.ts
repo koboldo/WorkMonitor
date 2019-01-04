@@ -1,5 +1,5 @@
-﻿import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { TabMenuModule,MenuItem,MenubarModule }  from 'primeng/primeng';
 
 import { AlertService, AuthenticationService, DictService, AutoLogoutService, WorkTypeService } from './_services/index';

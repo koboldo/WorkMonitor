@@ -1,13 +1,13 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { User, Order, Timestats } from '../_models/index';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/observable/forkJoin';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
+
+
 
 @Injectable()
 export class UserTimeStatsService {
@@ -26,7 +26,7 @@ export class UserTimeStatsService {
         personIds = personIds.substr(0, personIds.length-1);
 
         return this.http.get('/api/v1/report/personTimestats?periodDate='+date+'&personId='+personIds)
-            .map((response: Object) => this.getTimestats(response, users))
+            .pipe(map((response: Object) => this.getTimestats(response, users)));
     }
 
     private getTimestats(response:any, users: User[]):any {

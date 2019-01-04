@@ -4,10 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, UserService, DictService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { User, CodeValue, SearchUser } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime.js';
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+import { Observable }    from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup, FormControl, EmailValidator, Validators, NG_VALIDATORS, Validator }     from '@angular/forms';
 
 @Component({

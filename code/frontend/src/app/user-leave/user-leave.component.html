@@ -4,14 +4,14 @@
     <div class="ui-grid-row" style="margin-top: 30px;">
         <div class="ui-grid-col-3">Wpisz urlop</div>
         <div class="ui-grid-col-3">
-            <button width="300px" type="button" pButton [icon]="'fa-user'" (click)="showEdit()" [label]="'Urlop'"></button>
+            <button width="300px" type="button" pButton [icon]="'fa fa-user'" (click)="showEdit()" [label]="'Urlop'"></button>
         </div>
     </div>
   </div>
 
 
 
-<p-dialog header="Wpisz urlop" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800" [minHeight]="600">
+<p-dialog header="Wpisz urlop" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800" [minHeight]="600">
 
     <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
 
@@ -31,7 +31,7 @@
             <p-calendar [locale]="pl" [disabled]="selectedUser==undefined || afterDate==undefined" id="beforeDate" [minDate]="afterDate" name="beforeDate" [(ngModel)]="beforeDate" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
           </div>
           <div class="ui-grid-col-2">
-            <button pButton type="button" (click)="confirmLeave()" icon="fa-user" label="Zapisz" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!isFormValid()"></button>
+            <button pButton type="button" (click)="confirmLeave()" icon="fa fa-user" label="Zapisz" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!isFormValid()"></button>
           </div>
       </div>
 

@@ -1,21 +1,21 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 import { DatePipe }         from '@angular/common';
-import { Observable }       from 'rxjs/Observable';
+import { Observable }       from 'rxjs';
 
-import 'rxjs/add/operator/map';
+
 
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { SelectItem } from 'primeng/primeng'
-import 'rxjs/add/operator/mergeMap';
+
 
 @Injectable()
 export class ToolsService {
 
     datePipe :DatePipe = new DatePipe('en-US');
 
-    public NO_WO = "XXXXX";
-    public NO_CAPEX = "YYYYY";
+    public NO_WO = 'XXXXX';
+    public NO_CAPEX = 'YYYYY';
 
     constructor(private alertService: AlertService) {
 
@@ -64,9 +64,9 @@ export class ToolsService {
     }
 
     public parsePrice(price:string, workNo: string):number {
-        console.log("parsing price " + price);
-        if (price === undefined || price === "" || price === "\"\"" || price === "{}") {
-            this.alertService.warn("Nie ustawiono ceny dla zlecenia "+workNo+"...");
+        console.log('parsing price ' + price);
+        if (price === undefined || price === '' || price === '\'\'' || price === '{}') {
+            this.alertService.warn('Nie ustawiono ceny dla zlecenia '+workNo+'...');
             return undefined;
         }
 
@@ -82,7 +82,7 @@ export class ToolsService {
             console.log('parsing price: '+price+ ' after '+resultPrice);
             return +resultPrice;
         } catch (e) {
-            this.alertService.warn("Nie ustawiono ceny dla zlecenia "+workNo+"...");
+            this.alertService.warn('Nie ustawiono ceny dla zlecenia '+workNo+'...');
             return undefined;
         }
     }
@@ -90,73 +90,75 @@ export class ToolsService {
     public getOrderColor(typeCode :string) :string {
 
         if (typeCode === undefined || typeCode === null)
-            return "black";
-        else if (typeCode === "OT")
-            return "grey";
-        else if (typeCode.startsWith("0."))
-            return "#d1e0e0";
-        else if (typeCode.startsWith("1."))
-            return "#ffffaa";
-        else if (typeCode.startsWith("2."))
-            return "yellow";
-        else if (typeCode.startsWith("3."))
-            return "orange";
-        else if (typeCode.startsWith("4."))
-            return "#b3ffff";
-        else if (typeCode.startsWith("5."))
-            return "#66a3ff";
-        else if (typeCode.startsWith("6."))
-            return "#00cccc";
-        else if (typeCode.startsWith("7."))
-            return "#0066ff";
-        else if (typeCode.startsWith("8."))
-            return "#ffccff";
-        else if (typeCode.startsWith("9."))
-            return "#d9b3ff";
-        else if (typeCode.startsWith("10."))
-            return "#800080";
-        else if (typeCode.startsWith("11."))
-            return "#88cc00";
+            return 'black';
+        else if (typeCode === 'OT')
+            return 'grey';
+        else if (typeCode === 'IN')
+            return 'darkgrey';
+        else if (typeCode.startsWith('0.'))
+            return '#d1e0e0';
+        else if (typeCode.startsWith('1.'))
+            return '#ffffaa';
+        else if (typeCode.startsWith('2.'))
+            return 'yellow';
+        else if (typeCode.startsWith('3.'))
+            return 'orange';
+        else if (typeCode.startsWith('4.'))
+            return '#b3ffff';
+        else if (typeCode.startsWith('5.'))
+            return '#66a3ff';
+        else if (typeCode.startsWith('6.'))
+            return '#00cccc';
+        else if (typeCode.startsWith('7.'))
+            return '#0066ff';
+        else if (typeCode.startsWith('8.'))
+            return '#ffccff';
+        else if (typeCode.startsWith('9.'))
+            return '#d9b3ff';
+        else if (typeCode.startsWith('10.'))
+            return '#800080';
+        else if (typeCode.startsWith('11.'))
+            return '#88cc00';
 
-        //console.log("Return default color for "+typeCode+"!");
+        //console.log('Return default color for '+typeCode+'!');
 
-        return "black";
+        return 'black';
 
     }
 
     /*
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","OP","Otwarte");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AS","Przypisane");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CO","Zakończone");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","IS","Wydane");
-     -- removed INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","AC","Zaakceptowane");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CL","Zamknięte");
-     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","SU","Zawieszone");
-     -- added INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ("WORK_STATUS","CA","Anulowane");
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','OP','Otwarte');
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','AS','Przypisane');
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','CO','Zakończone');
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','IS','Wydane');
+     -- removed INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','AC','Zaakceptowane');
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','CL','Zamknięte');
+     INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','SU','Zawieszone');
+     -- added INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','CA','Anulowane');
      */
 
     public getStatusIcon(statusCode: string) {
-        if (statusCode === "OP")
-            return "fa fa-keyboard-o";
-        else if (statusCode === "AS")
-            return "fa fa-user";
-        else if (statusCode === "CO")
-            return "fa fa-child";
-        else if (statusCode === "IS")
-            return "fa fa-paperclip";
-        else if (statusCode === "AC")
-            return "fa fa-envelope-open-o";
-        /*else if (statusCode === "CL")
-            return "fa fa-battery-4";*/
-        else if (statusCode === "CL")
-            return "fa fa-envelope-o";
-        else if (statusCode === "SU")
-            return "fa fa-ban";
-        else if (statusCode === "CA")
-            return "fa fa-trash-o";
+        if (statusCode === 'OP')
+            return 'fa fa-keyboard-o';
+        else if (statusCode === 'AS')
+            return 'fa fa-user';
+        else if (statusCode === 'CO')
+            return 'fa fa-child';
+        else if (statusCode === 'IS')
+            return 'fa fa-paperclip';
+        else if (statusCode === 'AC')
+            return 'fa fa-envelope-open-o';
+        /*else if (statusCode === 'CL')
+            return 'fa fa-battery-4';*/
+        else if (statusCode === 'CL')
+            return 'fa fa-envelope-o';
+        else if (statusCode === 'SU')
+            return 'fa fa-ban';
+        else if (statusCode === 'CA')
+            return 'fa fa-trash-o';
 
-        console.log("Return default status icon for "+statusCode+"!");
-        return "fa question";
+        console.log('Return default status icon for '+statusCode+'!');
+        return 'fa question';
     }
 
     public isStatusAllowed(order: Order, statusCode: string): boolean {
@@ -171,32 +173,32 @@ export class ToolsService {
     }
 
     public isStatusLowerThanProtocol(statusCode: string): boolean{
-        return statusCode === "OP" || statusCode === "AS" || statusCode === "CO" || statusCode === "IS" || statusCode === "AC";
+        return statusCode === 'OP' || statusCode === 'AS' || statusCode === 'CO' || statusCode === 'IS' || statusCode === 'AC';
     }
 
 
     private logReason(order:Order){
         let reason: string [] = [];
         if(order.officeCode!='KAT'&& order.workNo===this.NO_WO){
-            reason.push(" Brak numeru zlecenia ");
+            reason.push(' Brak numeru zlecenia ');
         }
         if (order.officeCode==='KAT'&& order.mdCapex===this.NO_CAPEX){
-            reason.push(" Brak numeru CAPEX ");
+            reason.push(' Brak numeru CAPEX ');
         }
         if (order.officeCode==='KAT'&& order.workNo===this.NO_WO){
-            reason.push(" Brak numeru zlecenia ");
+            reason.push(' Brak numeru zlecenia ');
         }
         if (!order.assignee){
-            reason.push(" Brak przypisanego wykonawcy ");
+            reason.push(' Brak przypisanego wykonawcy ');
         }
         if (order.itemId===undefined){
-            reason.push(" Brak przypisanego obiektu ");
+            reason.push(' Brak przypisanego obiektu ');
         }
-        if (order.typeCode!="OT"&& order.price===undefined){
-            reason.push(" Brak ceny zlecenia ");
+        if (order.typeCode!='OT'&& order.price===undefined){
+            reason.push(' Brak ceny zlecenia ');
         }
-        if (order.typeCode!="OT"&& order.price===0){
-            reason.push(" Brak ceny zlecenia ");
+        if (order.typeCode!='OT'&& order.price===0){
+            reason.push(' Brak ceny zlecenia ');
         }
         
         return reason.toString();
@@ -204,7 +206,7 @@ export class ToolsService {
     public isReadyForProtocol(order:Order, isForProtocol:boolean):boolean {
        if (isForProtocol)
        {  
-           if  (order.typeCode === "OT"){
+           if  (order.typeCode === 'OT'){
                if (order.officeCode==='KAT'){
                    if(order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.mdCapex !== this.NO_CAPEX)
                    return true;
@@ -245,7 +247,7 @@ export class ToolsService {
 
     public downloadXLSFile(fileName: string, contentBase64: string) {
 
-        console.log("download " + fileName);
+        console.log('download ' + fileName);
 
         var byteCharacters = atob(contentBase64);
         var byteNumbers = new Array(byteCharacters.length);

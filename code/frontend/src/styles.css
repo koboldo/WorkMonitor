@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* button icon was too narrow */
+body .ui-button-icon-only { width: 25px; }
 
 td.text-right {
     text-align: right;
@@ -10,7 +12,7 @@ div.text-center {
 }
 
 .ui-fieldset, .ui-fieldset .ui-fieldset-legend {
-    padding: 0.2em 1em;
+    padding: 0.2em 0.5em;
 }
 
 ul.ui-menu-child {
@@ -19,6 +21,81 @@ ul.ui-menu-child {
     margin-right: 5px;
     margin-left: 5px;
 }
+
+/* since 6 primeng no longer supports omega theme, this was copied from new supported nova-light theme */
+body .ui-messages {
+    padding: 1em;
+    margin: 1em 0; }
+body .ui-messages.ui-messages-info {
+    background-color: #7fbcec;
+    border: 0 none;
+    color: #212121; }
+body .ui-messages.ui-messages-info .ui-messages-icon {
+    color: #212121; }
+body .ui-messages.ui-messages-info .ui-messages-close {
+    color: #212121; }
+body .ui-messages.ui-messages-success {
+    background-color: #b7d8b7;
+    border: 0 none;
+    color: #212121; }
+body .ui-messages.ui-messages-success .ui-messages-icon {
+    color: #212121; }
+body .ui-messages.ui-messages-success .ui-messages-close {
+    color: #212121; }
+body .ui-messages.ui-messages-warn {
+    background-color: #ffe399;
+    border: 0 none;
+    color: #212121; }
+body .ui-messages.ui-messages-warn .ui-messages-icon {
+    color: #212121; }
+body .ui-messages.ui-messages-warn .ui-messages-close {
+    color: #212121; }
+body .ui-messages.ui-messages-error {
+    background-color: #f8b7bd;
+    border: 0 none;
+    color: #212121; }
+body .ui-messages.ui-messages-error .ui-messages-icon {
+    color: #212121; }
+body .ui-messages.ui-messages-error .ui-messages-close {
+    color: #212121; }
+body .ui-messages .ui-messages-close {
+    top: .25em;
+    right: .5em;
+    font-size: 1.5em; }
+body .ui-messages .ui-messages-icon {
+    font-size: 2em; }
+body .ui-message {
+    padding: 0.429em;
+    margin: 0; }
+body .ui-message.ui-message-info {
+    background-color: #7fbcec;
+    border: 0 none;
+    color: #212121; }
+body .ui-message.ui-message-info .ui-message-icon {
+    color: #212121; }
+body .ui-message.ui-message-success {
+    background-color: #b7d8b7;
+    border: 0 none;
+    color: #212121; }
+body .ui-message.ui-message-success .ui-message-icon {
+    color: #212121; }
+body .ui-message.ui-message-warn {
+    background-color: #ffe399;
+    border: 0 none;
+    color: #212121; }
+body .ui-message.ui-message-warn .ui-message-icon {
+    color: #212121; }
+body .ui-message.ui-message-error {
+    background-color: #f8b7bd;
+    border: 0 none;
+    color: #212121; }
+body .ui-message.ui-message-error .ui-message-icon {
+    color: #212121; }
+body .ui-message .ui-message-icon {
+    font-size: 1.25em; }
+body .ui-message .ui-message-text {
+    font-size: 1em; }
+
 
 
 

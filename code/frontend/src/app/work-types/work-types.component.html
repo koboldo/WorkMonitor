@@ -1,10 +1,10 @@
 <div style="margin-top: 5px" *ngIf="workTypes" class="ui-g">
-  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
     <p-header>
       <div>
         <i class="fa fa-search"></i>
         <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-        <button type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+        <button type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
       </div>
     </p-header>
 
@@ -57,7 +57,7 @@
 
 
 
-<p-dialog [header]="newWorkType? 'Tworzysz nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
+<p-dialog [header]="newWorkType? 'Tworzysz nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800">
     <form name="f" (ngSubmit)="f.form?.valid && save()" #f="ngForm">
         <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedWorkType">
 
@@ -111,7 +111,7 @@
       <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
           <!--<button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
-                  width="200px" type="button" pButton icon="fa-check" (click)="save()" label="Zapisz"></button>-->
+                  width="200px" type="button" pButton icon="fa fa-check" (click)="save()" label="Zapisz"></button>-->
 
             <button [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity >= 0 && editedWorkType?.price >= 0)" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Zapisz</button>
         </div>

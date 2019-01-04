@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 import { User, CodeValue, UserPayroll } from '../_models/index';
 import { UserService, DictService, AlertService, AuthenticationService, ToolsService, PayrollService } from '../_services/index';

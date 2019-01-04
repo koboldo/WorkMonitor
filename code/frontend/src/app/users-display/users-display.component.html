@@ -15,21 +15,21 @@
                sortField="excelId" sortOrder="1"
                [(selection)]="selectedUser"
                (onRowDblclick)="onRowDblclick($event)"
-               resizableColumns="true" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
+               resizableColumns="true" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="pracownicy">
 
     <p-header>
       <div>
         <i class="fa fa-search"></i>
         <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-        <button [disabled]="operator.roleCode.indexOf('PR') == -1" type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+        <button [disabled]="operator.roleCode.indexOf('PR') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
       </div>
     </p-header>
 
     <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'26px','text-align':'center'}">
       <ng-template let-userRow="rowData" pTemplate="body">
-          <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>-->
-          <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa-search"></button>
-          <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+          <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>-->
+          <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa fa-search"></button>
+          <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
             <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
           </p-dialog>
       </ng-template>
@@ -41,8 +41,7 @@
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'20px'}"></p-column>
     <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
       <ng-template let-col let-user="rowData" pTemplate="body">
-        <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}}</span>
-        <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.lastName}}</span>
+        <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{user.firstName}} {{user.lastName}}</span>
       </ng-template>
     </p-column>
 
@@ -158,13 +157,13 @@
         <div class="ui-grid-row"  style="margin-top: 15px;">
           <div class="ui-grid-col-1"></div>
           <div class="ui-grid-col-2">
-            <button type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+            <button type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
           </div>
 
           <div class="ui-grid-col-6"></div>
 
           <div class="ui-grid-col-2">
-            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
           </div>
           <div class="ui-grid-col-1"></div>
         </div>

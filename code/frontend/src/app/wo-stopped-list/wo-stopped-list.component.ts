@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
+
 
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
 import { Comments, commentCancelOrHoldAsString, commentAdd } from '../_models/comment';
@@ -48,11 +48,11 @@ export class WoStoppedListComponent implements OnInit {
 
     ngOnInit() {
         this.items = [
-            {label: 'Dodaj komentarz', icon: 'fa-pencil-square-o', command: (event) => this.addComment()}
+            {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o', command: (event) => this.addComment()}
         ];
 
         if (this.allowRecover) {
-            this.items.push({label: 'Przywróć/Wnów', icon: 'fa-check', disabled: true, command: (event) => this.recover()});
+            this.items.push({label: 'Przywróć/Wnów', icon: 'fa fa-check', disabled: true, command: (event) => this.recover()});
         }
 
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));

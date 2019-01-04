@@ -10,7 +10,8 @@ echo "Working in $PWD"...
 echo ==================
 echo
 
-ng build --base-href . -prod &&
+#angular 4 ng build --base-href . -prod &&
+ng build --base-href . --prod --configuration=production &&
 tar zcvf /tmp/botdist_${TS?}.tar.gz bot &&
 scp /tmp/botdist_${TS?}.tar.gz botconsole@bot:/tmp &&
 

@@ -24,7 +24,7 @@
             <div class="ui-grid-row"  style="margin-top: 15px;">
               <div class="ui-grid-col-4"></div>
               <div class="ui-grid-col-4">
-                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+                <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
               </div>
               <div class="ui-grid-col-4"></div>
             </div>
@@ -41,7 +41,7 @@
   </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -94,7 +94,7 @@
 
       <p-column [style]="{'width':'40px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
-          <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
+          <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></button>
         </ng-template>
       </p-column>
 
@@ -110,11 +110,11 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 
-  <p-dialog [header]="'Poprawa zlecenia '+editedOrder?.workNo" [(visible)]="displayReassignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
+  <p-dialog [header]="'Poprawa zlecenia '+editedOrder?.workNo" [(visible)]="displayReassignDialog" [responsive]="true" [minWidth]="500">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
@@ -147,13 +147,13 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-bell" (click)="doReassign()" label="Zapisz"></button>
+        <button width="200px" type="button" pButton icon="fa fa-bell" (click)="doReassign()" label="Zapisz"></button>
       </div>
     </p-footer>
 
   </p-dialog>
 
-  <p-dialog [header]="complexityIncrease? 'Zwiększenie trudności' : 'Zmniejszenie trudności'" [(visible)]="displayChangeComplexityDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="700">
+  <p-dialog [header]="complexityIncrease? 'Zwiększenie trudności' : 'Zmniejszenie trudności'" [(visible)]="displayChangeComplexityDialog" [responsive]="true"  [minWidth]="700">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer zlecenia</label></div>
@@ -192,7 +192,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton [icon]="complexityIncrease? 'fa-arrow-circle-up' : 'fa-arrow-circle-down'" (click)="doChangeComplexity()" label="Zaakceptuj"></button>
+        <button width="200px" type="button" pButton [icon]="complexityIncrease? 'fa fa-arrow-circle-up' : 'fa fa-arrow-circle-down'" (click)="doChangeComplexity()" label="Zaakceptuj"></button>
       </div>
     </p-footer>
   </p-dialog>

@@ -1,13 +1,12 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { User, Order, Timesheet } from '../_models/index';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/observable/forkJoin';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+
 
 @Injectable()
 export class TimesheetService {
@@ -18,17 +17,17 @@ export class TimesheetService {
 
     getByDates(workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
         return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+'&workDateBefore='+workDateBefore)
-            .map((response: Object) => this.getTimesheets(response))
+            .pipe(map((response: Object) => this.getTimesheets(response)));
     }
 
     getByIdAndDates(id: number, workDateAfter: string, workDateBefore: string) : Observable<Timesheet[]> {
         return this.http.get('/api/v1/timesheets?workDateAfter='+workDateAfter+'&workDateBefore='+workDateBefore+'&personId='+id)
-            .map((response: Object) => this.getTimesheets(response))
+            .pipe(map((response: Object) => this.getTimesheets(response)))
     }
 
     upsert(timesheet: Timesheet): Observable<Timesheet> {
         console.log('upserting '+JSON.stringify(timesheet));
-        return this.http.post('/api/v1/timesheets', timesheet).map((response: Object) => response['timesheet']);
+        return this.http.post('/api/v1/timesheets', timesheet).pipe(map((response: Object) => response['timesheet']));
     }
 
     upsertAttendanceFrom(personId: number): Observable<any> {

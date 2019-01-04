@@ -5,10 +5,10 @@ import { CurrencyPipe } from '@angular/common';
 import { AlertService, UserService, DictService, AuthenticationService, PayrollService } from '../_services/index';
 import { User, CodeValue, SearchUser, UserPayroll } from '../_models/index';
 import {SelectItem, DataTable} from 'primeng/primeng'
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime.js';
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+
+
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
 

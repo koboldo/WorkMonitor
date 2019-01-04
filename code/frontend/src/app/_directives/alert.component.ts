@@ -1,5 +1,5 @@
-﻿import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Message } from 'primeng/primeng';
 
 import { AlertService, AuthenticationService } from '../_services/index';

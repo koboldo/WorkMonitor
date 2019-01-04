@@ -1,14 +1,13 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable }    from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Observable ,  BehaviorSubject }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
-import 'rxjs/add/operator/map';
 
 import { Order } from '../_models/order';
 import { WorkType } from '../_models/index';
 import { DictService } from '../_services/dict.service';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
-import 'rxjs/add/operator/mergeMap';
+
 import { CodeValue } from '../_models/code';
 
 @Injectable()
@@ -44,17 +43,17 @@ export class WorkTypeService {
 
     private getAllWorkTypesInternal(refreshCache: boolean) : Observable<WorkType[]> {
        return this.http.get('/api/v1/workTypes')
-            .map((response: Object) => this.cacheAndGet(response['list']));
+            .pipe(map((response: Object) => this.cacheAndGet(response['list'])));
     }
 
     addWorkType(workType: WorkType): Observable<any> {
         return this.http.post('/api/v1/workTypes', JSON.stringify(workType))
-            .map((response: Object) => response['created']);
+            .pipe(map((response: Object) => response['created']));
     }
 
     updateWorkType(workType: WorkType): Observable<any> {
         return this.http.put('/api/v1/workTypes/'+workType.id, JSON.stringify(workType))
-            .map((response: Object) => response['updated']);
+            .pipe(map((response: Object) => response['updated']));
     }
 
     /*
@@ -93,7 +92,7 @@ export class WorkTypeService {
             return new BehaviorSubject<CodeValue[]>(this.processWorkTypes(null)).asObservable();
         }
         return this.http.get('/api/v1/workTypes')
-            .map((response: Object) => this.processWorkTypes(response['list']));
+            .pipe(map((response: Object) => this.processWorkTypes(response['list'])));
     }
 
     private processWorkTypes(workTypes: WorkType[]): CodeValue[] {
