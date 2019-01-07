@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 
-import { User, Order, UserReport } from '../_models/index';
+import { User, Order, UserReport, MonthlyUserReport } from '../_models/index';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
 import { DictService } from '../_services/dict.service';
 import { ToolsService } from '../_services/tools.service';
@@ -97,7 +97,7 @@ export class UserService {
         return this.http.delete('/api/v1/persons/' + user.id + '/order/' + order.id).map((response:Object) => response);
     }
 
-    public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<UserReport[]> {
+    public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<MonthlyUserReport[]> {
         return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).map((response: Object) => 
         this.getAllUserReport(response));
         // (response['list'])
@@ -216,7 +216,9 @@ export class UserService {
 
                 if (user.roleCode!='CN'){
                     users.push(user);
-                }   
+                } else {
+                    console.log('debug '+JSON.stringify(user));
+                }
             }
         }
         return users;
