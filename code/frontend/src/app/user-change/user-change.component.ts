@@ -208,7 +208,7 @@ export class UserChangeComponent implements OnInit {
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
-                this.router.navigate(['employees']);
+                this.selectedUser.user.roleCode.indexOf('VE') === -1 ? this.router.navigate(['employees']) : this.router.navigate(['contractors']);
                 //this.router.navigate(['']); //navigate home
             },
                 error => {

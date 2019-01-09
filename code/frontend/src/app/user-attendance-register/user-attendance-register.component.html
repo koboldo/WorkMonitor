@@ -1,8 +1,21 @@
-<div style="float: left; width: 100%; margin-left: 5px">
-  <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: left; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestruj WEJŚCIE</a>
-  <div *ngIf="isSetFrom()" style="float: left; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestrowane WEJŚCIE: {{timesheet?.from?.substr(11, 5)}}</div>
-</div>
-<div style="float: right; width: 100%; margin-top: -20px; margin-right: 5px">
-  <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold">Zarejestruj WYJŚCIE <i [class]="'fa fa-sign-out'"></i></a>
-  <div *ngIf="isSetTo() && isSetFrom()" style="float: right; font-weight: bold" >Zarejestrowane WYJŚCIE: {{timesheet?.to?.substr(11, 5)}} <i [class]="'fa fa-sign-out'"></i></div>
+
+<div *ngIf="timesheet">
+
+  <div *ngIf="unregisteredExits.length > 0" style="float: left; width: 100%; margin-left: 5px">
+    <a class="blink_me" style="float: left; color: red; font-weight: bold">
+      <i [class]="'fa fa-exclamation-triangle'"></i> Niezarejestrowane WYJŚCIA: {{unregisteredExits}}, Zgłoś się do operatora!!!
+    </a>
+  </div>
+
+  <div *ngIf="unregisteredExits.length < 1">
+    <div style="float: left; width: 100%; margin-left: 5px">
+      <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: left; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestruj WEJŚCIE</a>
+      <div *ngIf="isSetFrom()" style="float: left; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestrowane WEJŚCIE: {{timesheet?.from?.substr(11, 5)}}</div>
+    </div>
+    <div style="float: right; width: 100%; margin-top: -20px; margin-right: 5px">
+      <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold">Zarejestruj WYJŚCIE <i [class]="'fa fa-sign-out'"></i></a>
+      <div *ngIf="isSetTo() && isSetFrom()" style="float: right; font-weight: bold" >Zarejestrowane WYJŚCIE: {{timesheet?.to?.substr(11, 5)}} <i [class]="'fa fa-sign-out'"></i></div>
+    </div>
+  </div>
+
 </div>

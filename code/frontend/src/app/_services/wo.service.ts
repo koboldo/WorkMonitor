@@ -153,11 +153,11 @@ export class WOService {
             order.office = this.dictService.getOffice(order.officeCode);
         }
 
-        if (order.complexity && order.complexity > 0) {
-            //console.log('Complexity read from backend: '+order.complexity);
+        if (order.complexity != null) {
+            console.log('Complexity read from backend: '+order.complexity);
         } else if (order.complexityCode && order.typeCode && order.officeCode) {
             let workType: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, order.complexityCode);
-            if (workType && workType.complexity) {
+            if (workType && workType.complexity >= 0) {
                 console.log('Complexity read from workType parametrization: '+workType.complexity);
                 order.complexity = workType.complexity;
             } else {
