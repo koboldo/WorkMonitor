@@ -48,7 +48,7 @@
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true"  [globalFilter]="gb" #dt dataKey="id"
                  csvSeparator=";" exportFilename="niezaakceptowane.csv"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
-                 resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+                 resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -89,7 +89,7 @@
             <div class="ui-grid-col-5"></div>
 
             <div class="ui-grid-col-2">
-              <button type="button" pButton icon="fa-file-o" iconPos="left" label="raport" (click)="dt.exportCSV()"></button>
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="raport" (click)="dt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-5"></div>
           </div>

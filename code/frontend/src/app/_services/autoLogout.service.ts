@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../_services/index';
+import { AuthenticationService } from '../_services/authentication.service';
 
 const MINUTES_UNITL_AUTO_LOGOUT:number = 15 ; // in mins
 const CHECK_INTERVAL:number = 60000; // in ms

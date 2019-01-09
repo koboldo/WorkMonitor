@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
@@ -34,7 +34,7 @@ export class ReportUnacceptedOrdersComponent implements OnInit {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
         this.items = [
-            {label: 'Usuń z raportu', icon: 'fa-minus-circle', command: (event) => this.remove()}
+            {label: 'Usuń z raportu', icon: 'fa fa-minus-circle', command: (event) => this.remove()}
         ];
 
         this.search();

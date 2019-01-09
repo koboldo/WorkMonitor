@@ -25,11 +25,11 @@
                     <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
                 </div>
             </div>
-            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity >= -13">
                 <div class="ui-grid-col-4">Złożoność:</div>
                 <div class="ui-grid-col-8">
                     <span class="ui-inputgroup-addon"><i
-                            [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                            [class]="selectedOrder.complexityCode=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
                     <span style="padding: 3px; font-style: italic;">Wycena {{selectedOrder?.complexity}} godzin</span>
                 </div>
             </div>
@@ -126,7 +126,7 @@
 
 
                         <p-dataTable header="Komentarze" [value]="selectedOrder.comments.comments" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                                     sortField="date" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+                                     sortField="date" sortOrder="1" [loading]="loading" loadingIcon="fa fa-spinner">
                             <p-header>Komentarze</p-header>
                             <p-column [sortable]="true" field="date" header="Utworzono" [style]="{'width':'120px'}"></p-column>
                             <p-column [sortable]="true" field="sCreatedBy" header="Osoba" [style]="{'width':'120px'}"></p-column>
@@ -157,7 +157,7 @@
             <p-fieldset legend="Historia">
 
                 <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                             sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa-spinner">
+                             sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa fa-spinner">
                     <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>

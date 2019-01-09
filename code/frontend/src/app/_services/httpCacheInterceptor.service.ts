@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse} from '@angular/common/http';
-import { Observable, AsyncSubject } from "rxjs/Rx";
-import { Subject } from 'rxjs/Subject';
+import { Observable, AsyncSubject, Subject } from "rxjs";
+import { catchError, map, tap, delay } from 'rxjs/operators';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
@@ -67,18 +67,18 @@ export class HttpCacheInterceptor implements HttpInterceptor {
                 const cachedResponse = this.cache[cacheKey] || null;
                 if (cachedResponse) {
                     console.log('Cache hit for '+cacheKey+'!');
-                    return cachedResponse.delay(0);
+                    return cachedResponse.pipe(delay(0));
                 } else {
                     this.put(cacheKey, subject);
                 }
             }
 
-            next.handle(request).do(event => {
+            next.handle(request).pipe(tap(event => {
                 if (event instanceof HttpResponse) {
                     subject.next(event);
                     subject.complete();
                 }
-            }).subscribe(); // must subscribe to actually kick off request!
+            })).subscribe(); // must subscribe to actually kick off request!
             return subject;
         }
     }

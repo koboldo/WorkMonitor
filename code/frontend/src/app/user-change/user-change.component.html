@@ -6,8 +6,8 @@
               id="person" [(ngModel)]="selectedUser" [suggestions]="suggestedUsers"
               (completeMethod)="suggestUser($event)"
               (onSelect)="onSelectUser($event)"
+              [forceSelection]="true"
               [dropdown]="true" field="displayName" [delay]="200" [minLength]="2" [required]="true"></p-autoComplete>
-          <!-- does not work  [forceSelection]="true" -->
     </div>
   </div>
 
@@ -17,16 +17,16 @@
     <h2>Modyfikacja {{selectedUser?.user?.firstName}} {{selectedUser?.user?.lastName}}</h2>
 
     <div *ngIf="operator?.roleCode?.indexOf('PR') != -1">
-      <button type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa-search" label="Historia"></button>
-      <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+      <button type="button" pButton (click)="displayUserHistoryDialog=true" icon="fa fa-search" label="Historia"></button>
+      <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.user?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
         <app-user-history [selectedUser]="selectedUser?.user" [staff]="users"></app-user-history>
       </p-dialog>
-      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'Y'" type="button" pButton (click)="showDismissDialog()" icon="fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
+      <button *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'Y'" type="button" pButton (click)="showDismissDialog()" icon="fa fa-window-close" label="Zakończ współprace" class="ui-button-warning"></button>
       <!-- <p *ngIf="selectedUser?.user?.roleCode?.indexOf('VE') == -1 && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p> -->
       <p *ngIf="show && selectedUser?.user?.isEmployed == 'N'" style="color: #761c19">Zakończono współpracę {{selectedUser?.user?.lastModDate}}!!! Zastanów się jaki jest cel modyfikacji byłego pracownika?</p>
     </div>
 <!-- Modal dismiss-->
-    <p-dialog  [header]="'Zakończenie współpracy z ' +selectedUser.user.firstName + ' '+selectedUser.user.lastName" [(visible)]="displayDismissDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">  
+    <p-dialog  [header]="'Zakończenie współpracy z ' +selectedUser.user.firstName + ' '+selectedUser.user.lastName" [(visible)]="displayDismissDialog" [responsive]="true" [minWidth]="500">
         <p-fieldset legend="Dane pracownika" > 
             <div class="ui-grid-row">
                 <div class="ui-grid-col-4">Imię:</div>
@@ -67,7 +67,7 @@
               <button type="button" pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
             </div>
             <div class="ui-grid-col-8" align="center">
-              <button type="button" pButton (click)="displayDismissDialog=false" icon="fa-window-close" label="Anuluj" class="ui-button-info"></button>
+              <button type="button" pButton (click)="displayDismissDialog=false" icon="fa fa-window-close" label="Anuluj" class="ui-button-info"></button>
             </div>
         </div>
         <br/>

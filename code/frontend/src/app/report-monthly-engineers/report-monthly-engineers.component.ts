@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
 
 import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
@@ -139,7 +138,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
 
     this.userService.getUtilizationReportData(sAfterDate, sBeforeDate)
-        .map(reportData => this.mapEngineers(reportData, monthRange))
+        .pipe(map(reportData => this.mapEngineers(reportData, monthRange)))
         .subscribe(reportDataEnhanced => this.callAndFillTimesheets(reportDataEnhanced, monthsRange, monthRange));
   }
 
@@ -343,7 +342,12 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   }
 
   private getEffort(officeCode: string, order: Order): number {
-    if (order.complexity) {
+    if (order.typeCode === '13.0') {
+      console.log('Ignore complexity of order '+order.workNo);
+      return 0;
+    }
+
+    if (order.complexity != null) {
       return order.complexity;
     } else {
 

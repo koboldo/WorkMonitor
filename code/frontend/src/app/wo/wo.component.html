@@ -12,19 +12,19 @@
               <div class="ui-grid-col-1"></div>
               <div class="ui-grid-col-5">
                 <label for="lastModAfter">zmodyfikowano od</label>
-                <p-calendar name="lastModAfter" [locale]="pl" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                <p-calendar name="lastModAfter" [locale]="pl" [(ngModel)]="lastModAfter" [showIcon]="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
               </div>
               <!--<div class="ui-grid-col-1"></div>-->
               <div class="ui-grid-col-5">
                 <label for="lastModBefore">zmodyfikowano do</label>
-                <p-calendar name="lastModBefore" [locale]="pl" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                <p-calendar name="lastModBefore" [locale]="pl" [(ngModel)]="lastModBefore" [showIcon]="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
               </div>
               <div class="ui-grid-col-1"></div>
             </div>
             <div class="ui-grid-row"  style="margin-top: 15px; margin-bottom: 65px;">
               <div class="ui-grid-col-4"></div>
               <div class="ui-grid-col-4">
-                <button pButton type="button" (click)="search()" icon="fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+                <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Tena" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
               </div>
               <div class="ui-grid-col-4"></div>
             </div>
@@ -38,7 +38,7 @@
     </div>
 
   </div>
-  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
+  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
@@ -47,12 +47,12 @@
     <!-- sortField="lastModDate" -->
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"
-                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="Zlecenia">
+                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="Zlecenia">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
           <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+          <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
         </div>
       </p-header>
       <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
@@ -123,7 +123,7 @@
       <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [style]="{'width':'40px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
-          <button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>
+          <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
         </ng-template>
       </p-column>
 
@@ -132,7 +132,7 @@
           <div class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-1"></div>
             <div class="ui-grid-col-2">
-              <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+              <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
             </div>
 
             <div class="ui-grid-col-2">  </div>
@@ -140,9 +140,9 @@
             <div class="ui-grid-col-1"> </div>
 
             <div class="ui-grid-col-2">
-              <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+              <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
-            <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
+            <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
           </div>
         </div>
       </p-footer>
@@ -154,12 +154,12 @@
     </p-dataTable>
   </div>
 
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 
 
-  <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
+  <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
 
       <form #f="ngForm">
@@ -168,7 +168,7 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="ventureRepresentative">Zleceniodawca</label></div>
         <div class="ui-grid-col-10">
-          <p-autoComplete id="ventureRepresentative" name="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" pTooltip="Od lokalizacji wybranego zleceniodawcy zależeć będzie logika nadawania numerów zleceń" tooltipPosition="top"></p-autoComplete> <!-- [forceSelection]="true" -->
+          <p-autoComplete [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="ventureRepresentative" name="ventureRepresentative" [(ngModel)]="assignedVentureRepresentative" [suggestions]="suggestedVentureRepresentatives" (completeMethod)="suggestVentureRepresentative($event)" [dropdown]="true" field="displayName" pTooltip="Od lokalizacji wybranego zleceniodawcy zależeć będzie logika nadawania numerów zleceń" tooltipPosition="top"></p-autoComplete>
         </div>
       </div>
 
@@ -208,13 +208,19 @@
       <div class="ui-grid-row" style="margin-top: 2px;">
         <div class="ui-grid-col-2"><label for="orderType">Typ zlecenia*</label></div>
         <div class="ui-grid-col-5">
-          <!-- TODO bug [forceSelection]="true" -->
-            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia..."></p-autoComplete>
+            <p-autoComplete [forceSelection]="true" [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia...">
+              <ng-template let-orderType pTemplate="item">
+                <div class="ui-helper-clearfix">
+                  <span [style.color]="toolsService.getOrderColor(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                  <span style="padding: 3px">{{orderType.paramChar}}</span>
+                </div>
+              </ng-template>
+            </p-autoComplete>
         </div>
 
           <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="price">Wartość zlecenia</label></div>
           <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
-            <p-autoComplete [disabled]="!assignedVentureRepresentative" id="price" name="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, workType)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+            <p-autoComplete [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="price" name="price" [(ngModel)]="price" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, workType)" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
           </div>
       </div>
 
@@ -225,13 +231,19 @@
               <div class="ui-grid-row" *ngIf="i===0 || additionalWorkTypes[i-1]?.code" style="margin-top: 5px;">
                   <div class="ui-grid-col-2"><label for="additionalOrderType">Dod. {{i+2}} Zl.*</label></div>
                   <div class="ui-grid-col-5">
-                      <!-- TODO bug [forceSelection]="true" -->
-                      <p-autoComplete [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, i)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'"></p-autoComplete>
+                      <p-autoComplete [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, i)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'">
+                        <ng-template let-orderType pTemplate="item">
+                          <div class="ui-helper-clearfix">
+                            <span [style.color]="toolsService.getOrderColor(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                            <span style="padding: 3px">{{orderType.paramChar}}</span>
+                          </div>
+                        </ng-template>
+                      </p-autoComplete>
                   </div>
 
                   <div class="ui-grid-col-2" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'" style="margin-left: 15px;"><label for="additionalPrices">Wartość zlecenia</label></div>
                   <div class="ui-grid-col-3" *ngIf="operator.roleCode.indexOf('PR') != -1 || editedOrder?.typeCode != 'OT'">
-                      <p-autoComplete [disabled]="!assignedVentureRepresentative" [id]="'price'+i" [name]="'price'+i" [(ngModel)]="additionalPrices[i]" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, additionalWorkTypes[i])" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
+                      <p-autoComplete [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" [id]="'price'+i" [name]="'price'+i" [(ngModel)]="additionalPrices[i]" [suggestions]="suggestedPrice" (completeMethod)="suggestPrice($event, additionalWorkTypes[i])" [dropdown]="true" field="paramChar" [forceSelection]="false" pTooltip="Można zmienić cenę (podaj liczbę)" tooltipPosition="top"></p-autoComplete>
                   </div>
               </div>
           </div>
@@ -242,8 +254,7 @@
       <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
             <div class="ui-grid-col-2"><label for="status">Status</label></div>
             <div class="ui-grid-col-10">
-                <!--  [forceSelection]="true" does not work -->
-                <p-autoComplete [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>
+                <p-autoComplete [forceSelection]="true" [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>
             </div>
       </div>
 
@@ -251,14 +262,14 @@
           <div class="ui-grid-col-2"><label for="comment">Poprzednie komentarze</label></div>
           <div class="ui-grid-col-10">
             <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-            <textarea readonly="readonly" pInputTextarea id="comment" name="comment" [(ngModel)]="comment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Dotychczasowe komentarze dotyczące zlecenia..."></textarea>
+            <textarea readonly="readonly" pInputTextarea id="comment" name="comment" [(ngModel)]="comment" [rows]="2" [cols]="30" placeholder="Dotychczasowe komentarze dotyczące zlecenia..."></textarea>
           </div>
         </div>
           <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-2"><label for="newComment">Dodaj komentarz</label></div>
             <div class="ui-grid-col-10">
               <!--<input pInputText id="comment" [(ngModel)]="editedOrder.comment" />-->
-                <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
+                <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
 
               <!--<textarea *ngIf="status.code === 'SU' || status.code === 'CA'" required [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>
                 <textarea *ngIf="status.code !== 'SU' && status.code !== 'CA'" [disabled]="!assignedVentureRepresentative" pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący WO..."></textarea>-->
@@ -275,7 +286,7 @@
         <div class="ui-grid-col-2"><label for="description">Opis</label></div>
         <div class="ui-grid-col-10">
           <!--<input pInputText id="description" [(ngModel)]="editedOrder.description" />-->
-          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" name="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący zlecenia..." [rows]="2" [cols]="30"  autoResize="autoResize"></textarea>
+          <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" name="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący zlecenia..." [rows]="2" [cols]="30"></textarea>
         </div>
       </div>
       <hr>
@@ -316,7 +327,7 @@
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="itemDescription">Opis obiektu</label></div>
         <div class="ui-grid-col-10">
-          <textarea pInputTextarea name="itemDescription" id="itemDescription" [(ngModel)]="relatedItem.description" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Opis objektu inwestycji..."></textarea>
+          <textarea pInputTextarea name="itemDescription" id="itemDescription" [(ngModel)]="relatedItem.description" [rows]="2" [cols]="30" placeholder="Opis objektu inwestycji..."></textarea>
         </div>
       </div>
 
@@ -330,7 +341,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="submit" [disabled]="!canSaveOrders()" width="200px" type="button" pButton icon="fa-check" (click)="saveOrders()" label="Zapisz"></button>
+        <button type="submit" [disabled]="!canSaveOrders()" width="200px" type="button" pButton icon="fa fa-check" (click)="saveOrders()" label="Zapisz"></button>
       </div>
     </p-footer>
 
@@ -339,7 +350,7 @@
   </p-dialog>
 
 
-  <p-dialog [header]="isNewOrderOwner ? 'Przypisywanie/przepisywanie zlecenia': 'Dopisywanie do zlecenia'" [(visible)]="displayAssignDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="400">
+  <p-dialog [header]="isNewOrderOwner ? 'Przypisywanie/przepisywanie zlecenia': 'Dopisywanie do zlecenia'" [(visible)]="displayAssignDialog" [responsive]="true" [minWidth]="400">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
         <div class="ui-grid-row" style="margin-top: 20px;">
             <div class="ui-grid-col-4"><label for="person">Osoba</label></div>
@@ -375,7 +386,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton [icon]="isNewOrderOwner ? 'fa-user': 'fa-share'" (click)="saveAssignment()" [label]="isNewOrderOwner ? 'Przypisz': 'Dopisz'"></button>
+        <button width="200px" type="button" pButton [icon]="isNewOrderOwner ? 'fa fa-user': 'fa fa-share'" (click)="saveAssignment()" [label]="isNewOrderOwner ? 'Przypisz': 'Dopisz'"></button>
       </div>
     </p-footer>
   </p-dialog>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
+import { Observable } from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
@@ -85,7 +85,7 @@ export class WoClearingComponent implements OnInit {
 
     search() {
         this.woService.getOrdersByStatus('IS')
-            .mergeMap(orders => this.callVentures(orders))
+            .pipe(mergeMap(orders => this.callVentures(orders)))
             .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
 
         this.selectedOrders = [];

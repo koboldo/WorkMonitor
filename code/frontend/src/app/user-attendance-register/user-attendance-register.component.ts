@@ -11,7 +11,16 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
-    private timesheet: Timesheet;
+    private _timesheet: Timesheet;
+    get timesheet(): Timesheet {
+        return this._timesheet;
+    }
+
+    private _unregisteredExits: string[];
+    get unregisteredExits():string[] {
+        return this._unregisteredExits;
+    }
+
 
     constructor(private timesheetService:TimesheetService,
                 private toolsService: ToolsService,
@@ -19,20 +28,28 @@ export class UserAttendanceRegisterComponent implements OnInit {
     }
 
     ngOnInit() {
+        this._unregisteredExits = [];
+
         let today:Date = this.toolsService.getCurrentDateDayOperation(0);
 
         let sToday: string = today.toISOString().substring(0, 10);
-        this.timesheetService.getByIdAndDates(this.user.id, sToday, sToday)
-            .subscribe((timesheets:Timesheet[]) => this.checkUser(timesheets));
+
+        let checkFromDate = this.toolsService.getCurrentDateDayOperation(-24) // 3 weeks + 1 weekend
+
+        let sFrom: string = checkFromDate.toISOString().substring(0, 10);
+
+        this.timesheetService.getByIdAndDates(this.user.id, sFrom, sToday)
+            .subscribe((timesheets:Timesheet[]) => this.checkUser(timesheets, sToday));
     }
 
     public isSetFrom():boolean {
-        return this.timesheet && this.timesheet.from && this.timesheet.from.substr(11,8) != "00:00:00";
+        return this._timesheet.from && this._timesheet.from.substr(11,8) != "00:00:00";
     }
 
     public isSetTo():boolean {
-        return this.timesheet && this.timesheet.to && this.timesheet.to.substr(11,8) != "00:00:00";
+        return this._timesheet.to && this._timesheet.to.substr(11,8) != "00:00:00";
     }
+
 
     public registerFrom():void {
         console.log("From!");
@@ -48,22 +65,33 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
 
 
-    private checkUser(timesheets:Timesheet[]):void {
+    private checkUser(timesheets:Timesheet[], sToday:string):void {
         for (let timesheet of timesheets) {
             if (timesheet.personId === this.user.id) {
-                this.timesheet = timesheet;
+                if (timesheet.from && timesheet.from.startsWith(sToday)) {
+                    this._timesheet = timesheet;
+                } else if (this.checkExitNotRegistered(timesheet)) {
+                    this._unregisteredExits.push(timesheet.from.substring(0, 10));
+                }
                 console.log("Find user timesheet "+JSON.stringify(timesheet));
-                return;
             } else {
                 this.alertService.error('Zly raport czasu pracy, szukano dla '+this.user.id+', znaleziono dla '+timesheet.personId+'!')
+                return
             }
         }
-        console.log('Brak czasu pracy dla '+this.user.id)
+
+        if (!this._timesheet) {
+            console.log('Brak czasu pracy dla '+this.user.id)
+        }
+    }
+
+    private checkExitNotRegistered(timesheet: Timesheet): boolean {
+        return timesheet.isLeave === 'N' && timesheet.usedTime === 0 && !timesheet.from.endsWith('00:00:00');
     }
 
     private updateTimesheet(result:any):void {
-        if ((result.updated === 1 || result.created === 1) && result.timesheet) {
-            this.timesheet = result.timesheet;
+        if ((result.updated === 1 || result.created === 1) && result._timesheet) {
+            this._timesheet = result._timesheet;
         } else {
             console.log("Something went wrong when from or to "+JSON.stringify(result));
             this.alertService.error("Nie udalo sie zaktualizować danych!");

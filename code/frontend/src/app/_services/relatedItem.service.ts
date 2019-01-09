@@ -1,13 +1,12 @@
-﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 
-import { Observable }    from 'rxjs/Observable';
-
-import 'rxjs/add/operator/map';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 import { Order } from '../_models/order';
 import { RelatedItem } from '../_models/relatedItem';
 import { HttpBotWrapper } from '../_services/httpBotWrapper.service';
-import 'rxjs/add/operator/mergeMap';
+
 
 @Injectable()
 export class RelatedItemService {
@@ -17,25 +16,28 @@ export class RelatedItemService {
     }
 
     getAllItems() : Observable<RelatedItem[]> {
-        return this.http.get('/api/v1/relatedItems')
-            .map((response: Object) => response['list']);
+        return this.http.get('/api/v1/relatedItems').pipe(
+            map((response: Object) => response['list'])
+        );
     }
 
     updateItem(item: RelatedItem) : Observable<RelatedItem> {
-        return this.http.put('/api/v1/relatedItems/'+item.id, JSON.stringify(item))
-            .map((response: Object) => response['updated'])
-            .mergeMap(updatedId => this.getItemById(item.id));
+        return this.http.put('/api/v1/relatedItems/'+item.id, JSON.stringify(item)).pipe(
+            map((response: Object) => response['updated']),
+            mergeMap(updatedId => this.getItemById(item.id))
+        );
     }
 
     addItem(item: RelatedItem) : Observable<RelatedItem> {
-        return this.http.post('/api/v1/relatedItems', JSON.stringify(item))
-            .map((response: Object) => response['created'])
-            .mergeMap(createdId => this.getItemById(createdId));
+        return this.http.post('/api/v1/relatedItems', JSON.stringify(item)).pipe(
+            map((response: Object) => response['created']),
+            mergeMap(createdId => this.getItemById(createdId))
+        );
     }
 
     // private helper methods
 
     private getItemById(id:number):Observable<RelatedItem> {
-        return this.http.get('/api/v1/relatedItems/'+id);
+        return <Observable<RelatedItem>> this.http.get('/api/v1/relatedItems/'+id);
     }
 }

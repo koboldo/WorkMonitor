@@ -11,7 +11,7 @@
         <p>3. Aby wyświetlić zlecenia nie gotowe do protokołu należy klinkąć przycisk "Zlecenia nie gotowe"</p>
         <!--PROTOCOL FILTER --> 
         <button type="button" pButton (click)="showWoDetails()" label="Zlecenia nie gotowe"></button>
-        <p-dialog [(visible)]="displayDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+        <p-dialog [(visible)]="displayDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
         <app-wo-list [ListToDisplay]="ordersNotReady"></app-wo-list>
         </p-dialog>
 <!-- END PROTOCOL FILTER-->
@@ -31,7 +31,7 @@
                 <input id="protocolNo" type="text" class="form-control" name="protocolNo" [(ngModel)]="protocolNo" #firstName="ngModel" required minlength="3" />
               </div>
               <div class="ui-grid-col-3">
-                <button pButton type="button" (click)="fetchProtocol()" icon="fa-cog" label="Generuj ponownie" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+                <button pButton type="button" (click)="fetchProtocol()" icon="fa fa-cog" label="Generuj ponownie" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
               </div>
               <div class="ui-grid-col-2"></div>
             </div>
@@ -45,7 +45,7 @@
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
 
-    <p-dataTable [value]="ordersReadyForProtocol" [headerCheckboxToggleAllPages]="true" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="multiple" [(selection)]="selectedOrders" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner">
+    <p-dataTable [value]="ordersReadyForProtocol" [headerCheckboxToggleAllPages]="true" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="multiple" [(selection)]="selectedOrders" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -88,7 +88,7 @@
           <div class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-5"></div>
             <div class="ui-grid-col-2">
-              <button [disabled]="!(selectedOrders?.length > 0)" type="button" pButton icon="fa-check" style="float:left" (click)="showDialog()" label="Protokół"></button>
+              <button [disabled]="!(selectedOrders?.length > 0)" type="button" pButton icon="fa fa-check" style="float:left" (click)="showDialog()" label="Protokół"></button>
             </div>
             <div class="ui-grid-col-5"></div>
           </div>
@@ -99,7 +99,7 @@
   </div>
 
 
-  <p-dialog header="Modyfikacja zleceń" [(visible)]="displayClearingDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
+  <p-dialog header="Modyfikacja zleceń" [(visible)]="displayClearingDialog" [responsive]="true" [minWidth]="500" [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
 
 
@@ -118,7 +118,7 @@
         <span>{{order?.workNo}}, {{order?.type}}, {{order?.price}}, {{order?.ventureDisplay}}, {{order?.ventureCompany}}</span>
       </div>-->
 
-          <p-dataTable [value]="selectedOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" loadingIcon="fa-spinner">
+          <p-dataTable [value]="selectedOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" loadingIcon="fa fa-spinner">
             <p-header>
               <div>
                 <i class="fa fa-search"></i>
@@ -148,7 +148,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" (click)="prepareProtocol()" label="Protokół"></button>
+        <button width="200px" type="button" pButton icon="fa fa-check" (click)="prepareProtocol()" label="Protokół"></button>
       </div>
     </p-footer>
   </p-dialog>

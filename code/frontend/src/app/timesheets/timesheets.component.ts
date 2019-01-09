@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
@@ -259,8 +259,8 @@ export class TimesheetsComponent implements OnInit {
         let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
         console.log('Searching for '+this.afterDate+'='+sAfterDate+', '+this.beforeDate+'='+sBeforeDate);
 
-        this.userService.getStaff()
-            .mergeMap(staff => this.callTimesheets(this.filterNotActive(staff), sAfterDate, sBeforeDate))
+        this.userService.getStaff().pipe(
+            mergeMap(staff => this.callTimesheets(this.filterNotActive(staff), sAfterDate, sBeforeDate)))
             .subscribe((timesheets:Timesheet[]) => this.combine(timesheets, this.users));
     }
 

@@ -28,7 +28,7 @@
 
             <div class="ui-grid-col-1">
                 <div style="margin-top: 0px; margin-bottom: 10px;">
-                    <button type="button" pButton icon="fa-file-o" iconPos="left" label="Bieżące CSV" (click)="currentDt.exportCSV()"></button>
+                    <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Bieżące CSV" (click)="currentDt.exportCSV()"></button>
                     <span style="margin-right: 10px;"></span>
                 </div>
             </div>
@@ -45,8 +45,7 @@
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+                    <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
                 </ng-template>
             </p-column>
             <p-column header="Biuro" field="user.officeCode" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
@@ -108,7 +107,7 @@
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
                 <span>Pobierz całą historię: </span>
-                <button type="button" pButton icon="fa-file-o" iconPos="left" label="Historia CSV" (click)="historicalDt.exportCSV()"></button>
+                <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Historia CSV" (click)="historicalDt.exportCSV()"></button>
             </div>
         </div>
 
@@ -139,13 +138,13 @@
                         </div>
 
                         <div style="float: right; max-width: 10%;">
-                            <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
-                            <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
-                            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
+                            <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
+                            <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
+                            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
                         </div>
 
                         <!-- <div style="float: right; max-width: 10%;">
-                        <button type="button" pButton icon="fa-file-o" iconPos="left" label="Export" (click)="Export(rowData.periodDate,historicalDt)"></button>
+                        <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Export" (click)="Export(rowData.periodDate,historicalDt)"></button>
                         </div> -->
                     </ng-template>
                     <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
@@ -153,8 +152,7 @@
                     <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-                            <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-                            <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+                            <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
                         </ng-template>
                     </p-column>
                     <p-column header="Biuro" field="user.officeCode" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
@@ -216,7 +214,7 @@
 
 
 
-<p-dialog *ngIf="aSelectedPayroll?.periodDate" [header]="'Akceptacja płac za okres '+aSelectedPayroll.periodDate" [(visible)]="displayApproveDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500" [width]="800">
+<p-dialog *ngIf="aSelectedPayroll?.periodDate" [header]="'Akceptacja płac za okres '+aSelectedPayroll.periodDate" [(visible)]="displayApproveDialog" [responsive]="true" [minWidth]="500" [width]="800">
     <form name="f" (ngSubmit)="f.form?.valid && approve()" #f="ngForm">
         <div class="ui-grid ui-grid-responsive ui-fluid">
 
@@ -241,7 +239,7 @@
         <p-footer>
             <div class="form-group">
                 <div class="ui-dialog-buttonpane ui-helper-clearfix">
-                    <!--<button width="200px" type="button" pButton icon="fa-check" label="Zatwierdź"></button>-->
+                    <!--<button width="200px" type="button" pButton icon="fa fa-check" label="Zatwierdź"></button>-->
                     <button style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i>Zatwierdź</button>
                 </div>
             </div>
@@ -251,7 +249,7 @@
 
 </p-dialog>
 
-<p-dialog *ngIf="approvedPayroll" [(visible)]="displayApproveResultDialog" [header]="'Zatwierdzone płace za okres '+approvedPayroll[0].periodDate" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="1400" [width]="1400">
+<p-dialog *ngIf="approvedPayroll" [(visible)]="displayApproveResultDialog" [header]="'Zatwierdzone płace za okres '+approvedPayroll[0].periodDate" [responsive]="true" [minWidth]="1400" [width]="1400">
     <p-panel header="Zatwierdzone" *ngIf="approvedPayroll">
 
         <div class="ui-grid-row" style="margin-top: 10px;">
@@ -268,7 +266,7 @@
 
             <div class="ui-grid-col-1">
                 <div style="margin-top: 0px; margin-bottom: 10px;">
-                    <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="approvedDt.exportCSV()"></button>
+                    <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="approvedDt.exportCSV()"></button>
                 </div>
             </div>
 
@@ -284,8 +282,7 @@
 
             <p-column header="Osoba" field="user.lastName" sortable="true" [filter]="true" filterPlaceholder="Filtruj">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-                    <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+                    <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
                 </ng-template>
             </p-column>
             <p-column header="Biuro" field="user.officeCode" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>

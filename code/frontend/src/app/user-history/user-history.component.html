@@ -2,7 +2,7 @@
 
     <div style="margin-top: 5px" *ngIf="userHistory" class="ui-g">
       <!--(onRowSelect)="onRowSelect($event)"-->
-      <p-dataTable [value]="userHistory" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="histCreationDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" expandableRows="true">
+      <p-dataTable [value]="userHistory" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="histCreationDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" expandableRows="true">
         <p-header>
           <div>
             <i class="fa fa-search"></i>

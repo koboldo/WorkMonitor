@@ -3,7 +3,7 @@
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
   <p-dataTable [value]="reports" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
                selectionMode="multiple" [(selection)]="selectedReports"  (onRowSelect)="filterReports($event)" (onRowUnselect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
-               resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner"
+               resizableColumns="true" sortField="timeUtilizationPercentage" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner"
                csvSeparator=";" exportFilename="Raport_Miesieczny" [headerCheckboxToggleAllPages]="false"
           >
     <p-header>
@@ -55,7 +55,7 @@
       </ng-template>
     </p-column>
     <p-column [sortable]="true" field="noOrdersDone" header="Ukończonych WO" [style]="{'text-align':'right'}"></p-column>
-    <p-column [sortable]="true" field="earnedMoney" header="Wypracowany budżet" [style]="{'text-align':'right'}">
+    <p-column [sortable]="true" field="earnedMoney" header="Wypracowany obrót" [style]="{'text-align':'right'}">
       <ng-template let-col let-report="rowData" pTemplate="body">
         <span>{{report[col.field] | currency: 'PLN'}}</span>
       </ng-template>
@@ -72,7 +72,7 @@
         <div class="ui-grid-row"  style="margin-top: 15px;">
           <div class="ui-grid-col-5"></div>
           <div class="ui-grid-col-2">
-            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
           </div>
           <div class="ui-grid-col-5"></div>
         </div>

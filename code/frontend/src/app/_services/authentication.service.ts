@@ -1,8 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/map';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { TabMenuModule,MenuItem }  from 'primeng/primeng';
 
@@ -49,8 +48,8 @@ export class AuthenticationService {
         console.log("about to login: "+JSON.stringify(data));
 
         //proxy!!!
-        return this.http.post<User>('/login', JSON.stringify(data), {headers: new HttpHeaders({'Content-Type':'application/json'})})
-            .map(user => {
+        return this.http.post<User>('/login', JSON.stringify(data), {headers: new HttpHeaders({'Content-Type':'application/json'})}).pipe(
+            map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
                     this.user.next(user);
@@ -61,7 +60,7 @@ export class AuthenticationService {
                 }
 
                 return user;
-            });
+            }));
     }
 
     private initAuthHeaders(token: string) {
@@ -80,49 +79,49 @@ export class AuthenticationService {
         let allItems = [
             {
                 label: 'Zlecenia',
-                icon: 'fa-server',
+                icon: 'fa fa-server',
                 items: [
-                    {label: 'Lista zleceń', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Zawieszone', icon: 'fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Anulowane',  icon: 'fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Moje zlecenia', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
-                    {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
-                    {label: 'Protokół', icon: 'fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]}
+                    {label: 'Lista zleceń', icon: 'fa fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Zawieszone', icon: 'fa fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Anulowane',  icon: 'fa fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Moje zlecenia', icon: 'fa fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
+                    {label: 'Wyceny pracochłonności', icon: 'fa fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
+                    {label: 'Protokół', icon: 'fa fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]}
                 ]
             },
             {
                 label: 'Czas pracy',
-                icon: 'fa-clock-o',
+                icon: 'fa fa-clock-o',
                 items: [
-                    {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
-                    {label: 'Podsumowanie czasu', icon: 'fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
+                    {label: 'Czas pracy', icon: 'fa fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+                    {label: 'Podsumowanie czasu', icon: 'fa fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
                 ]
             },
             {
                 label: 'Raporty',
-                icon: 'fa-bar-chart',
+                icon: 'fa fa-bar-chart',
                 items: [
-                    {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
-                    {label: 'Wyniki miesięczne', icon: 'fa-dashboard', routerLink: ['/monthlyPerformance'], "rolesRequired":["AN"]}
+                    {label: 'Wydajność zespołu', icon: 'fa fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
+                    {label: 'Wyniki miesięczne', icon: 'fa fa-dashboard', routerLink: ['/monthlyPerformance'], "rolesRequired":["AN"]}
                 ]
             },
             {
                 label: 'Dane osobowe',
-                icon: 'fa-address-card',
+                icon: 'fa fa-address-card',
                 items: [
-                    {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
-                    {label: 'Kontrahenci', icon: 'fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
-                    {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
-                    {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
-                    {label: 'Wynagrodzenie', icon: 'fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
-                    {label: 'Wynagrodzenia', icon: 'fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]}
+                    {label: 'Pracownicy', icon: 'fa fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
+                    {label: 'Kontrahenci', icon: 'fa fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
+                    {label: 'Dodaj osobę', icon: 'fa fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
+                    {label: 'Zmodyfikuj osobę', icon: 'fa fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
+                    {label: 'Wynagrodzenie', icon: 'fa fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
+                    {label: 'Wynagrodzenia', icon: 'fa fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]}
                 ]
             },
             {
                 label: 'Ustawienia',
-                icon: 'fa-cogs',
+                icon: 'fa fa-cogs',
                 items: [
-                    {label: 'Parametryzacja zleceń', icon: 'fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]}
+                    {label: 'Parametryzacja zleceń', icon: 'fa fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]}
                 ]
             }
         ];
@@ -141,26 +140,26 @@ export class AuthenticationService {
     private buildMenu(user:User):any {
 
         let allItems = [
-            {label: 'Zlecenia', icon: 'fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-            {label: 'Zawieszone', icon: 'fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-            {label: 'Anulowane',  icon: 'fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-            {label: 'Moje zlecenia', icon: 'fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
-            {label: 'Wyceny pracochłonności', icon: 'fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
-            {label: 'Czas pracy', icon: 'fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
-            {label: 'Raporty obecności', icon: 'fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]},
-            {label: 'Wynagrodzenie', icon: 'fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
-            {label: 'Protokół', icon: 'fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]},
-            /*{label: 'WO do akceptacji', icon: 'fa-paperclip', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}, removed since status Accepted was removed*/
-            // {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
-            {label: 'Wydajność zespołu', icon: 'fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
-            {label: 'Wynagrodzenia', icon: 'fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]},
-            {label: 'Pracownicy', icon: 'fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
-            {label: 'Kontrahenci', icon: 'fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
-            {label: 'Dodaj osobę', icon: 'fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
-            {label: 'Zmodyfikuj osobę', icon: 'fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
-            //{label: 'Parametryzacja zleceń', icon: 'fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
-            {label: 'Parametryzacja zleceń', icon: 'fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
-            /*{label: 'Wyloguj', icon: 'fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
+            {label: 'Zlecenia', icon: 'fa fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+            {label: 'Zawieszone', icon: 'fa fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+            {label: 'Anulowane',  icon: 'fa fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+            {label: 'Moje zlecenia', icon: 'fa fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
+            {label: 'Wyceny pracochłonności', icon: 'fa fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
+            {label: 'Czas pracy', icon: 'fa fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+            {label: 'Raporty obecności', icon: 'fa fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]},
+            {label: 'Wynagrodzenie', icon: 'fa fa-money', routerLink: ['/myPayroll'], "rolesRequired":["EN", "MG", "OP"], "rolesForbidden": ["PR"]},
+            {label: 'Protokół', icon: 'fa fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]},
+            /*{label: 'WO do akceptacji', icon: 'fa fa-paperclip', routerLink: ['/unacceptedWork'], "rolesRequired":["PR"]}, removed since status Accepted was removed*/
+            // {label: 'Wydajność zespołu', icon: 'fa fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["PR"]},
+            {label: 'Wydajność zespołu', icon: 'fa fa-bar-chart', routerLink: ['/workMonitor'], "rolesRequired":["AN"]},
+            {label: 'Wynagrodzenia', icon: 'fa fa-money', routerLink: ['/payroll'], "rolesRequired":["PR"]},
+            {label: 'Pracownicy', icon: 'fa fa-address-card', routerLink: ['/employees'], "rolesRequired":["PR", "OP"]},
+            {label: 'Kontrahenci', icon: 'fa fa-handshake-o', routerLink: ['/contractors'], "rolesRequired":["PR", "OP"]},
+            {label: 'Dodaj osobę', icon: 'fa fa-user-plus', routerLink: ['/addPerson'], "rolesRequired":["OP", "PR"]},
+            {label: 'Zmodyfikuj osobę', icon: 'fa fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
+            //{label: 'Parametryzacja zleceń', icon: 'fa fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
+            {label: 'Parametryzacja zleceń', icon: 'fa fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
+            /*{label: 'Wyloguj', icon: 'fa fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 
         return allItems.filter(item => this.filterItem(item, user));

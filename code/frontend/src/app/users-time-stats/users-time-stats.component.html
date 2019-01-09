@@ -16,11 +16,11 @@
                [(selection)]="selectedUsers"
                selectionMode="multiple"
                [headerCheckboxToggleAllPages]="false"
-               resizableColumns="true" loadingIcon="fa-spinner" csvSeparator=";" exportFilename="pracownicy">
+               resizableColumns="true" loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy">
 
     <p-header>
       <div>
-        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
         <i class="fa fa-search"></i>
         <input #gb type="text" pInputText size="50" placeholder="Filtruj">
       </div>
@@ -31,8 +31,7 @@
     <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko">
       <ng-template let-col let-user="rowData" pTemplate="body">
-        <span class="ui-inputgroup-addon">{{user.firstName}}</span>
-        <span class="ui-inputgroup-addon">{{user.lastName}}</span>
+        <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{user.firstName}} {{user.lastName}}</span>
       </ng-template>
     </p-column>
 
@@ -70,13 +69,13 @@
         <div class="ui-grid-row"  style="margin-top: 15px;">
           <div class="ui-grid-col-1"></div>
           <div class="ui-grid-col-2">
-            <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+            <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
           </div>
 
           <div class="ui-grid-col-6"></div>
 
           <div class="ui-grid-col-2">
-            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
           </div>
           <div class="ui-grid-col-1"></div>
         </div>
@@ -92,13 +91,13 @@
 
 
 
-<p-dialog [header]="'Podumowanie czasów (wybór okresu)'" [(visible)]="displayDateChooserDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
+<p-dialog [header]="'Podsumowanie czasów (wybór okresu)'" [(visible)]="displayDateChooserDialog" [responsive]="true" [minWidth]="800">
 
     <div>
         <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 200px;">
           <div class="ui-grid-col-4"><label for="reportDate">*</label></div>
           <div class="ui-grid-col-8">
-            <p-dropdown placeholder="Wybierz miesiąć..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
+            <p-dropdown placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
           </div>
         </div>
 
@@ -111,9 +110,9 @@
 
 </p-dialog>
 
-<p-dialog [header]="'Podumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="800">
+<p-dialog [header]="'Podsumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1000">
 
-  <p-dataTable [value]="timestats" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtReport dataKey="personId" resizableColumns="true" sortField="user.excelId" sortOrder="1" loadingIcon="fa-spinner"
+  <p-dataTable [value]="timestats" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtReport dataKey="personId" resizableColumns="true" sortField="user.excelId" sortOrder="1" loadingIcon="fa fa-spinner"
                csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate">
     <p-header>
       <div>
@@ -169,7 +168,7 @@
           <div class="ui-grid-col-4"></div>
 
           <div class="ui-grid-col-4">
-            <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dtReport.exportCSV()"></button>
+            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dtReport.exportCSV()"></button>
           </div>
           <div class="ui-grid-col-4"></div>
         </div>

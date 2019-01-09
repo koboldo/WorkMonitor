@@ -1,4 +1,11 @@
 ﻿import { NgModule, LOCALE_ID }      from '@angular/core';
+
+import { registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
+
+registerLocaleData(localePl, 'pl');
+
+
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -17,7 +24,43 @@ import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { WoComponent } from './wo/wo.component';
 
-import { AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, ChartModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, AutoCompleteModule, ContextMenuModule, DialogModule, RadioButtonModule, CalendarModule, ButtonModule, SelectButtonModule, DataTableModule, SharedModule, PanelModule,TabViewModule,TabMenuModule,MenuItem,TreeModule,TreeNode,FieldsetModule,DropdownModule,TooltipModule,OverlayPanelModule,DataGridModule,MenubarModule }  from 'primeng/primeng';
+
+import {AccordionModule} from 'primeng/accordion'
+import {AutoCompleteModule} from 'primeng/autocomplete'
+import {ButtonModule} from 'primeng/button'
+import {CalendarModule} from 'primeng/calendar'
+import {ChartModule} from 'primeng/chart'
+import {ContextMenuModule} from 'primeng/contextmenu'
+import {DataGridModule} from 'primeng/datagrid'
+import {DataTableModule} from 'primeng/datatable'
+import {DialogModule} from 'primeng/dialog'
+import {DropdownModule} from 'primeng/dropdown'
+import {FieldsetModule} from 'primeng/fieldset'
+import {GrowlModule} from 'primeng/growl'
+import {InplaceModule} from 'primeng/inplace'
+import {InputMaskModule} from 'primeng/inputmask'
+import {InputTextareaModule} from 'primeng/inputtextarea'
+import {InputTextModule} from 'primeng/inputtext'
+import {MenubarModule} from 'primeng/menubar'
+import {MenuItem} from 'primeng/api'
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
+import {OverlayPanelModule} from 'primeng/overlaypanel'
+import {PanelModule} from 'primeng/panel'
+import {PasswordModule} from 'primeng/password'
+import {ProgressBarModule} from 'primeng/progressbar'
+import {ProgressSpinnerModule} from 'primeng/progressspinner'
+import {RadioButtonModule} from 'primeng/radiobutton'
+import {ScheduleModule} from 'primeng/schedule'
+import {SelectButtonModule} from 'primeng/selectbutton'
+import {SharedModule} from 'primeng/shared'
+import {TabMenuModule} from 'primeng/tabmenu'
+import {TabViewModule} from 'primeng/tabview'
+import {TooltipModule} from 'primeng/tooltip'
+import {TreeModule} from 'primeng/tree'
+
+import {TableModule} from 'primeng/table';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MyWoComponent } from './my-wo/my-wo.component';

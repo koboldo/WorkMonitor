@@ -31,7 +31,7 @@ export class ContractorsComponent implements OnInit {
               private authService:AuthenticationService) {
 
       this.items = [
-          {label: 'Zmień dane kontrahenta', icon: 'fa-pencil-square-o', disabled: false, command: (event) => this.change()}
+          {label: 'Zmień dane kontrahenta', icon: 'fa fa-pencil-square-o', disabled: false, command: (event) => this.change()}
       ];
 
   }

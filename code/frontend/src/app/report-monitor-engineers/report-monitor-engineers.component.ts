@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { Observable }    from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Observable }    from 'rxjs';
+import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+
+
 
 import { User, UserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
@@ -28,6 +28,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     reports: UserReport[];
     selectedReport: UserReport;
     selectedReports: UserReport[];
+    doneOrdersDialogDisplay: boolean;
 
     //scheduler
     schedulerDisplay:boolean;
@@ -83,8 +84,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     onRowDblclick(event) {
         console.log("double clicked "+JSON.stringify(event));
-        // HACK - this used to be single selection but we reused it, now we changed to selectedReports
-        this.selectedReport = event.data;
+        this.prepareAndShowCalendar(event.data);
+    }
+
+    prepareAndShowCalendar(report: UserReport) {
+        this.selectedReport = report;
 
         this.schedulerEvents = [];
         if (this.selectedReport.workOrders && this.selectedReport.workOrders.length > 0) {
@@ -119,13 +123,37 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     handleOrderClick(e: any) {
-        console.log("order clicked :"+e.calEvent.title);
-        console.log("order clicked :"+e.calEvent.orderId);
+        console.log("order clicked title:"+e.calEvent.title);
+        console.log("order clicked orderId:"+e.calEvent.orderId);
 
+        /*
+        var cache = [];
+        console.log("order event :"+JSON.stringify(e.calEvent.event, function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.indexOf(value) !== -1) {
+                    // Duplicate reference found
+                    try {
+                        // If this value does not reference a parent it can be deduped
+                        return JSON.parse(JSON.stringify(value));
+                    } catch (error) {
+                        // discard key if value cannot be deduped
+                        return;
+                    }
+                }
+                // Store value in our collection
+                cache.push(value);
+            }
+            return value;
+        }));
+        cache = null;
+        */
+
+
+        this.getAndShowOrderDetails(e.calEvent.orderId);
+    }
+
+    private getAndShowOrderDetails(orderId: number) {
         loop: for(let order of this.selectedReport.workOrders) {
-            let title = e.calEvent.title;
-            //let workNo = title.indexOf("?") > -1 ? title.substring(0, title.length-1) : title;
-            let orderId = e.calEvent.orderId;
             if (order.id === orderId) {
                 //ambigous since 12.2017 this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
                 this.woService.getOrderById(order.id).subscribe(order => this.showOrder(order));
@@ -156,13 +184,18 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
         this.chartsReady = false;
         this.chartUtilizationData = {labels: ['Wydajność %'], datasets: []};
-        this.chartEarnedData = {labels: ['Wypracowany budżet'], datasets: []};
+        this.chartEarnedData = {labels: ['Wypracowany obrót'], datasets: []};
         this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
         this.reports = [];
 
         this.userService.getUtilizationReportData(sAfterDate, sBeforeDate)
-            .mergeMap(reportData => this.mapEngineersCallTimesheets(reportData, sAfterDate, sBeforeDate))
+            .pipe(mergeMap(reportData => this.mapEngineersCallTimesheets(reportData, sAfterDate, sBeforeDate)))
             .subscribe(timesheets => this.fillTimesheets(timesheets));
+    }
+
+    public showDoneOrders(event, report: UserReport) {
+        this.selectedReport = report;
+        this.doneOrdersDialogDisplay=true;
     }
 
     private mapEngineersCallTimesheets(reportData: UserReport[], after:string, before:string):Observable<Timesheet[]> {
@@ -258,7 +291,12 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     private getEffort(officeCode: string, order: Order): number {
-        if (order.complexity) {
+        if (order.typeCode === '13.0') {
+            console.log('Ignore complexity of order '+order.workNo);
+            return 0;
+        }
+
+        if (order.complexity != null) {
             return order.complexity;
         } else {
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
+
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
@@ -41,8 +41,8 @@ export class WorkTypesComponent implements OnInit {
         this.mapToComplexities(this.dictService.getComplexities());
 
         this.items = [
-            {label: 'Dodaj', icon: 'fa-plus', command: (event) => this.add()},
-            {label: 'Zmień', icon: 'fa-pencil-square-o', command: (event) => this.change()}
+            {label: 'Dodaj', icon: 'fa fa-plus', command: (event) => this.add()},
+            {label: 'Zmień', icon: 'fa fa-pencil-square-o', command: (event) => this.change()}
         ];
     }
 

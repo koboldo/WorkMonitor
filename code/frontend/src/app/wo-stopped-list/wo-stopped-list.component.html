@@ -4,7 +4,7 @@
     <p-dataTable [value]="orders" [rows]="20" [paginator]="true"  [globalFilter]="gb" #dt dataKey="id"
                  csvSeparator=";" exportFilename="zawieszone"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
-                 resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+                 resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
@@ -49,7 +49,7 @@
 
       <p-column [style]="{'width':'40px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
-          <button type="button" pButton (click)="showWoDetails($event, order)" icon="fa-search"></button>
+          <button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>
         </ng-template>
       </p-column>
 
@@ -63,7 +63,7 @@
             <div class="ui-grid-col-5"></div>
 
             <div class="ui-grid-col-2">
-              <button type="button" pButton icon="fa-file-o" iconPos="left" label="raport" (click)="dt.exportCSV()"></button>
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="raport" (click)="dt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-5"></div>
           </div>
@@ -75,12 +75,12 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 
   <!-- add comment -->
-  <p-dialog  [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="900">
+  <p-dialog  [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment" [responsive]="true" [minWidth]="900">
     <div class="ui-grid-row" style="max-width: 900px;">
       <div class="ui-grid-col-6" style="margin-top: 10px;">
         <p-fieldset legend="Detale zlecenia" *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment">
@@ -199,7 +199,7 @@
     </p-fieldset>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" (click)="saveComment()" label="Zakończ"></button>
+        <button width="200px" type="button" pButton icon="fa fa-check" (click)="saveComment()" label="Zakończ"></button>
       </div>
     </p-footer>
   </p-dialog>

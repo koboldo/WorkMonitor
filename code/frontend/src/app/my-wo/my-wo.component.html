@@ -3,13 +3,13 @@
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <!--(onRowSelect)="onRowSelect($event)"-->
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa-spinner" [contextMenu]="cm">
+    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
       <p-header>
         <div>
           <i class="fa fa-search"></i>
           <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          <button type="button" pButton icon="fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
-          <button type="button" pButton [disabled]="orders?.length < 1" (click)="showChangeStatusDialog()" label="Zakończ zlecenia" icon="fa-list" iconPos="left" style="float: right;"></button>
+          <button type="button" pButton icon="fa fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
+          <button type="button" pButton [disabled]="orders?.length < 1" (click)="showChangeStatusDialog()" label="Zakończ zlecenia" icon="fa fa-list" iconPos="left" style="float: right;"></button>
         </div>
       </p-header>
       <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
@@ -57,7 +57,7 @@
 
         <p-column [style]="{'width':'40px','text-align':'center'}">
             <ng-template let-order="rowData" pTemplate="body">
-                <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa-search"></button>
+                <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></button>
             </ng-template>
         </p-column>
 
@@ -72,11 +72,11 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
-    <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamowienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
         <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
     </p-dialog>
 
-  <p-dialog header="Potwierdzenie wykonania zlecenia" [(visible)]="displayFinishDialog" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="500">
+  <p-dialog header="Potwierdzenie wykonania zlecenia" [(visible)]="displayFinishDialog" [responsive]="true" [minWidth]="500">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer Zl.</label></div>
@@ -97,13 +97,13 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" (click)="saveOrder()" label="Zakończ"></button>
-        <!-- <button width="200px" type="button" pButton icon="fa-check" (click)="" label="Dodaj komentarz"></button> -->
+        <button width="200px" type="button" pButton icon="fa fa-check" (click)="saveOrder()" label="Zakończ"></button>
+        <!-- <button width="200px" type="button" pButton icon="fa fa-check" (click)="" label="Dodaj komentarz"></button> -->
       </div>     
     </p-footer>
   </p-dialog>
   <!-- add comment -->
-  <p-dialog  [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment" [responsive]="true" showEffect="fade" [modal]="true" [minWidth]="900">  
+  <p-dialog  [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment" [responsive]="true" [minWidth]="900">
       <div class="ui-grid-row" style="max-width: 900px;">  
       <div class="ui-grid-col-6" style="margin-top: 10px;">
           <p-fieldset legend="Detale zlecenia" *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.assigneeFull?.length > 0 || selectedOrder?.comment"> 
@@ -222,13 +222,13 @@
 </p-fieldset>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton icon="fa-check" (click)="saveComment()" label="Zakończ"></button>
+        <button width="200px" type="button" pButton icon="fa fa-check" (click)="saveComment()" label="Zakończ"></button>
       </div>     
     </p-footer>
   </p-dialog>
   <!--end add comment-->
 </p-panel>
 
-<p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zakończenia" [minWidth]="800" [responsive]="true" showEffect="fade" [modal]="true" [blockScroll]="true">
+<p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zakończenia" [minWidth]="800" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [listToDisplay]="orders" [operator]="engineer" [operatorMode]="false" (closeModalEvent)="onClose($event)"></app-group-status-change>
 </p-dialog>

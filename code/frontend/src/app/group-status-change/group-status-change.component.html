@@ -4,8 +4,7 @@
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
           <div class="ui-grid-col-2"><label for="status">Status</label></div>
           <div class="ui-grid-col-6">
-              <!--  [forceSelection]="true" does not work -->
-              <p-autoComplete id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" (onSelect)="filter($event)"></p-autoComplete>
+              <p-autoComplete id="status" name="status" [(ngModel)]="status" [forceSelection]="true" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" (onSelect)="filter($event)"></p-autoComplete>
               <!--  -->
               <!-- [disabled]="!assignedVentureRepresentative"  -->
             
@@ -33,7 +32,7 @@
           </div> 
           <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-4">
-                <button type="button" pButton [disabled]="!status?.code || selectedOrders?.length < 1" icon="fa-file-o" iconPos="left" label="Zmień statusy" (click)="changeOrdersStatus(true)"></button>
+                <button type="button" pButton [disabled]="!status?.code || selectedOrders?.length < 1" icon="fa fa-file-o" iconPos="left" label="Zmień statusy" (click)="changeOrdersStatus(true)"></button>
             </div>           
           </div>      
     </p-fieldset>
@@ -55,7 +54,7 @@
           <p>W celu zakończenia zleceń należy wybrać zlecenia poprzez zazanczenie checkBox w pierwszej kolumnie </p>
           <p>Następnie kliknać przycisk "Zakończ zlecenia"</p>
             <div class="ui-grid-col-4">
-                <button type="button" pButton [disabled]="selectedOrders?.length < 1" icon="fa-file-o" iconPos="left" label="Zakończ zlecenia" (click)="closeOrders()"></button>
+                <button type="button" pButton [disabled]="selectedOrders?.length < 1" icon="fa fa-file-o" iconPos="left" label="Zakończ zlecenia" (click)="closeOrders()"></button>
             </div> 
         </p-fieldset>
     </div>
@@ -67,7 +66,7 @@
 
     <p-dataTable [value]="ordersToChange" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
       selectionMode="multiple" [(selection)]="selectedOrders" 
-      resizableColumns="true" sortOrder="-1" loadingIcon="fa-spinner"
+      resizableColumns="true" sortOrder="-1" loadingIcon="fa fa-spinner"
       [headerCheckboxToggleAllPages]="false"
       >
       <p-header>
