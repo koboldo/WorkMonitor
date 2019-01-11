@@ -90,8 +90,8 @@ export class UserAttendanceRegisterComponent implements OnInit {
     }
 
     private updateTimesheet(result:any):void {
-        if ((result.updated === 1 || result.created === 1) && result._timesheet) {
-            this._timesheet = result._timesheet;
+        if ((result.updated === 1 || result.created === 1) && result.timesheet) {
+            this._timesheet = result.timesheet;
         } else {
             console.log("Something went wrong when from or to "+JSON.stringify(result));
             this.alertService.error("Nie udalo sie zaktualizować danych!");

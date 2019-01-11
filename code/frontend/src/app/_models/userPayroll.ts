@@ -1,6 +1,7 @@
 import { User } from '../_models/user';
 
 /*
+     WARN data manipulation - trainingTime added to workTime in payroll.service !!!
 {
     "personId": 51,
     "periodDate": "2018-01-01",
@@ -8,6 +9,7 @@ import { User } from '../_models/user';
     "workTime": 28800,
     "poolWorkTime": 28800,
     "overTime": 0,
+    "trainingTime" 0
 
     "leaveDue": 0,
     "workDue": 0,
@@ -46,6 +48,7 @@ export class UserPayroll {
     poolWorkTime: number;
     nonpoolWorkTime: number;
     overTime: number;
+    trainingTime: number;
 
     leaveDue: number;
     workDue: number;

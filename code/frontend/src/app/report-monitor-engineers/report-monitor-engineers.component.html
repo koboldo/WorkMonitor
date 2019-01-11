@@ -214,10 +214,10 @@
                         <span style="padding: 3px">{{workTypeService.getWorkTypeDescription(order)}}</span>
                     </ng-template>
                 </p-column>
-                <p-column [sortable]="true" field="statusCode" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+                <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
                     <ng-template let-col let-order="rowData" pTemplate="body">
                         <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-                        <span style="padding: 3px">{{dictService.getWorkStatus(order.statusCode)}}</span>
+                        <span style="padding: 3px">{{order.status}}</span>
                     </ng-template>
                 </p-column>
 

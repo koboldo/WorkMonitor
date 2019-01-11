@@ -3,6 +3,7 @@ import { User } from '../_models/user';
 export class Timestats {
 
     /*
+     WARN data manipulation - trainingTime added to workTime in userTimeStats.service !!!
      "personId": 88,
      "periodBeginning": "2018-03-01",
      "periodEnd": "2018-03-31",

@@ -25,7 +25,7 @@
                     <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
                 </div>
             </div>
-            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity >= -13">
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity != null">
                 <div class="ui-grid-col-4">Złożoność:</div>
                 <div class="ui-grid-col-8">
                     <span class="ui-inputgroup-addon"><i
