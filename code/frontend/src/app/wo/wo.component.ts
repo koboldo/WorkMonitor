@@ -70,6 +70,7 @@ export class WoComponent implements OnInit {
 
     comment; string;
     newComment: string;
+    newOrderWithAssignEngener:Order;
 
     operator:User;
     pl:Calendar;
@@ -381,6 +382,8 @@ export class WoComponent implements OnInit {
 
         this.newOrder = true;
         this.displayEditDialog = true;
+
+        this.assignedEngineer = undefined;
     }
 
     edit():void {
@@ -509,8 +512,21 @@ export class WoComponent implements OnInit {
             this.itemService.addItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, true).subscribe(order => saveOrderCallback(order, this)));
         } else {
             console.log('no action on relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-            this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this));
-        }
+            this.storeOrder(this.relatedItem, order, this.newOrder, false)
+            .subscribe(order =>{
+                if (this.assignedEngineer != null){
+                    this.newOrderWithAssignEngener = order;
+                    this.editedOrder = this.newOrderWithAssignEngener;
+                    this.saveAssignment();
+                    this.updateOrderStatus(this.editedOrder.id,this.newOrder,order,this.assignedEngineer.user);
+                    saveOrderCallback(order, this);
+                }
+                else {
+                    saveOrderCallback(order, this);
+                }                             
+            });
+            
+        }     
     }
 
     private storeOrder(item:RelatedItem, order:Order, newOrder:boolean, newItem:boolean):Observable<Order> {
@@ -538,7 +554,7 @@ export class WoComponent implements OnInit {
             that.setWorkTypeAndPrice(nextOrder, that.additionalWorkTypes[0], that.additionalPrices[0]);
             that.saveOrder(nextOrder, that.saveOrderSubscribeCallback);
             that.additionalWorkTypes.shift();
-            that.additionalPrices.shift();
+            that.additionalPrices.shift();          
         } else {
             console.log('No more order to save, refreshing...');
             that.refresh();

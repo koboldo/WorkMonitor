@@ -275,6 +275,22 @@
           <textarea [disabled]="!assignedVentureRepresentative" pInputTextarea id="description" name="description" [(ngModel)]="editedOrder.description"  placeholder="Opis dotyczący zlecenia..." [rows]="2" [cols]="30"></textarea>
         </div>
       </div>
+      <!--Assign engener -->
+      <div class="ui-grid-row" style="margin-top: 20px;">
+        <div class="ui-grid-col-2"><label for="assignEngener">Wykonawca</label></div>
+        <div class="ui-grid-col-10">
+          <p-autoComplete id="assignEngener" 
+          [(ngModel)]="assignedEngineer" 
+          [suggestions]="suggestedEngineers" 
+          (completeMethod)="suggestEngineer($event)" 
+          [dropdown]="true" 
+          field="displayName" 
+          [forceSelection]="true"
+          [ngModelOptions]="{standalone: true}">
+          
+        </p-autoComplete>
+        </div>
+    </div>
       <hr>
       <!-- related item -->
 
