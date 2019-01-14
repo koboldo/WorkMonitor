@@ -393,5 +393,19 @@
     </p-footer>
   </p-dialog>
 
+  <p-table [value]="orders">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Biuro</th>
+            <th>Zlecenie</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr>
+            <td>{{order.officeCode}}</td>
+            <td>{{order.workNo}}</td>
+        </tr>
+    </ng-template>
+</p-table>
 
 </p-panel>

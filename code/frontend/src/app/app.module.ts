@@ -102,6 +102,7 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
         HttpModule,
         AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,
         BrowserAnimationsModule,
+        TableModule,
         DataTableModule,
         routing
     ],
