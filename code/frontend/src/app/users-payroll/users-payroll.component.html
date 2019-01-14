@@ -59,12 +59,12 @@
                 </ng-template>
             </p-column>
 
-            <p-column header="Czas pracy" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Czas razem" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
+            <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
             <p-column header="Szkolenia" field="trainingTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -166,12 +166,12 @@
                         </ng-template>
                     </p-column>
 
-                    <p-column header="Czas pracy" field="workTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-                    <p-column header="Czas dla puli" field="poolWorkTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-                    <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+                    <p-column header="Czas razem" field="workTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+                    <p-column header="Czas dla puli" field="poolWorkTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
+                    <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
                     <p-column header="Szkolenia" field="trainingTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-                    <p-column header="Nadgodziny" field="overTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
                     <p-column header="Urlop" field="leaveTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+                    <p-column header="Nadgodziny" field="overTime"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
                     <p-column header="Obecnosc PLN" field="workDue"  [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -297,11 +297,11 @@
             </p-column>
 
             <p-column header="Czas pracy" field="workTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Czas dla puli" field="poolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
+            <p-column header="Czas poza pulą" field="nonpoolWorkTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green', 'font-weight':'bolder'}"></p-column>
             <p-column header="Szkolenia" field="trainingTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
             <p-column header="Urlop" field="leaveTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+            <p-column header="Nadgodziny" field="overTime" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
             <p-column header="Obecnosc PLN" field="workDue" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
                 <ng-template let-col let-userPayroll="rowData" pTemplate="body">

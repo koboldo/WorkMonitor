@@ -121,7 +121,7 @@
       </div>
     </p-header>
 
-    <!--
+    <!-- WARN data manipulation - trainingTime added to workTime in userTimeStats.service !!!
       "leaveTime": 40,
       "workTime": 138.58,
       "trainingTime": 0,
@@ -150,11 +150,12 @@
     <p-column [sortable]="true" field="periodBeginning" header="Od" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="periodEnd" header="Do" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-    <p-column [sortable]="true" field="leaveTime" header="Urlop" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="workTime" header="Czas pracy" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    <p-column [sortable]="true" field="workTime" header="Czas razem" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" [style]="{'color':'green'}" field="poolWorkTime" header="Czas w puli" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" [style]="{'color':'green'}" field="nonpoolWorkTime" header="Czas poza pulą" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="trainingTime" header="Szkolenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="poolWorkTime" header="Czas w puli" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="nonpoolWorkTime" header="Czas poza pulą" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" field="leaveTime" header="Urlop" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="overTime" header="Nadgodziny" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
 

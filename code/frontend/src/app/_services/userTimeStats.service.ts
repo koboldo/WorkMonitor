@@ -35,6 +35,7 @@ export class UserTimeStatsService {
         if (response.list && response.list.length > 0) {
             for (let timestat of response.list) {
                 this.fillUser(timestat, users);
+                timestat.workTime += timestat.trainingTime;
                 timestats.push(timestat);
             }
         }
