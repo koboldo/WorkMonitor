@@ -60,7 +60,7 @@ export class ToolsService {
     }
 
     public formatDate(date: Date, format: string): string {
-        return this.datePipe.transform(date, format);
+        return this.datePipe.transform(date, format, 'pl-PL');
     }
 
     public parsePrice(price:string, workNo: string):number {

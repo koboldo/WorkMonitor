@@ -255,8 +255,8 @@ export class TimesheetsComponent implements OnInit {
 
 
     search() {
-        let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
-        let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
+        let sAfterDate: string = this.toolsService.formatDate(this.afterDate, 'yyyy-MM-dd');
+        let sBeforeDate: string = this.toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd');
         console.log('Searching for '+this.afterDate+'='+sAfterDate+', '+this.beforeDate+'='+sBeforeDate);
 
         this.userService.getStaff().pipe(
