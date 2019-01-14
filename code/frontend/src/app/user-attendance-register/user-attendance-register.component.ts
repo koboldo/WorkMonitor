@@ -11,6 +11,9 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
+    private displayBreakDialog: boolean;
+    private totalBreakInMinutes: number = 15;
+
     private _timesheet: Timesheet;
     get timesheet(): Timesheet {
         return this._timesheet;
@@ -63,13 +66,22 @@ export class UserAttendanceRegisterComponent implements OnInit {
             .subscribe(result => this.updateTimesheet(result));
     }
 
+    public registerBreak(): void {
+        console.log("register break!");
+        this.timesheetService.upsertAttendanceBreak(this.user.id, this.totalBreakInMinutes)
+            .subscribe(result => this.updateTimesheet(result));
+    }
 
+    public addBreak():void {
+        this.displayBreakDialog = true;
+    }
 
     private checkUser(timesheets:Timesheet[], sToday:string):void {
         for (let timesheet of timesheets) {
             if (timesheet.personId === this.user.id) {
                 if (timesheet.from && timesheet.from.startsWith(sToday)) {
                     this._timesheet = timesheet;
+                    this.totalBreakInMinutes = timesheet.break? +timesheet.break: 15;
                 } else if (this.checkExitNotRegistered(timesheet)) {
                     this._unregisteredExits.push(timesheet.from.substring(0, 10));
                 }
@@ -96,5 +108,6 @@ export class UserAttendanceRegisterComponent implements OnInit {
             console.log("Something went wrong when from or to "+JSON.stringify(result));
             this.alertService.error("Nie udalo sie zaktualizować danych!");
         }
+        this.displayBreakDialog = false;
     }
 }

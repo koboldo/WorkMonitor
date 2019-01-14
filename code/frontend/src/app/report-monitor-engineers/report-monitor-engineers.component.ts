@@ -177,7 +177,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.orderDialogDisplay = true;
     }
 
-    search() {
+    search(): void {
         let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
         let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
@@ -191,6 +191,15 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.userService.getUtilizationReportData(sAfterDate, sBeforeDate)
             .pipe(mergeMap(reportData => this.mapEngineersCallTimesheets(reportData, sAfterDate, sBeforeDate)))
             .subscribe(timesheets => this.fillTimesheets(timesheets));
+    }
+
+    private calculateLineCharts(): void {
+        this.chartsReady = false;
+        this.chartUtilizationData = {labels: ['Wydajność %'], datasets: []};
+        this.chartEarnedData = {labels: ['Wypracowany obrót'], datasets: []};
+        this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
+
+        this.calculateUtilizationForAll(this.reports);
     }
 
     public showDoneOrders(event, report: UserReport) {
@@ -400,7 +409,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     public filterReports(event): void {
         console.log('onSelect event fired!'+JSON.stringify(event));
         if (!event.type || event.type === 'checkbox') {
-            this.search()
+            this.calculateLineCharts();
         } else {
             console.log('onSelect event fired and consumed!'+JSON.stringify(event));
         }

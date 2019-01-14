@@ -39,6 +39,15 @@ export class TimesheetService {
         return this.http.post('/api/v1/timesheets', from);
     }
 
+    upsertAttendanceBreak(personId: number, totalBreakInMinutes: number): Observable<any> {
+        let theBreak = {
+            personId: personId,
+            break: totalBreakInMinutes
+        };
+        console.log('upserting '+JSON.stringify(theBreak));
+        return this.http.post('/api/v1/timesheets', theBreak);
+    }
+
     upsertAttendanceTo(personId: number): Observable<any> {
         let to = {
             personId: personId,
