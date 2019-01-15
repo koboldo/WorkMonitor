@@ -11,8 +11,8 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
-    private displayBreakDialog: boolean;
-    private totalBreakInMinutes: number = 15;
+    public displayBreakDialog: boolean;
+    public totalBreakInMinutes: number = 15;
 
     private _timesheet: Timesheet;
     get timesheet(): Timesheet {
