@@ -58,6 +58,8 @@ export class PayrollService {
         if (response.list && response.list.length > 0) {
             let payrolls : UserPayroll[] =  response.list;
             for (let payroll of payrolls) {
+                payroll.workTime += payroll.trainingTime;
+
                 payroll.user = users.get(payroll.personId);
                 payroll.modifiedByUser = users.get(payroll.modifiedBy);
                 payroll.rank = this.dictService.getRank(payroll.rankCode);

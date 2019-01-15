@@ -215,6 +215,9 @@ export class UserService {
             for (let user of response.list) {
 
                 if (user.roleCode!='CN'){
+                    for (let order of user.workOrders) {
+                        order.statusCode ? order.status = this.dictService.getWorkStatus(order.statusCode): '?'
+                    }
                     users.push(user);
                 } else {
                     console.log('debug '+JSON.stringify(user));

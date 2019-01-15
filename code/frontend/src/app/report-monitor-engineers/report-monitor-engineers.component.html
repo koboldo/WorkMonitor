@@ -90,7 +90,12 @@
                 <span>{{report[col.field] | currency: 'PLN'}}</span>
             </ng-template>
         </p-column>
-
+        <p-column header="Zlecenia" [style]="{'text-align':'center'}">
+            <ng-template let-report="rowData" pTemplate="body">
+                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px; margin-right: 10px;" (click)="showDoneOrders($event, report)" icon="fa fa-server"></p-button>
+                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="prepareAndShowCalendar(report)" icon="fa fa-calendar"></p-button>
+            </ng-template>
+        </p-column>
 
 
         <ng-template pTemplate="emptymessage">
@@ -182,6 +187,67 @@
                 <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
             </div>
         </div>
+    </div>
+
+
+</p-dialog>
+
+<p-dialog [header]="selectedReport?.firstName +' '+ selectedReport?.lastName+' zlecenia od '+afterDate.toISOString().substring(0, 10)+' do '+beforeDate.toISOString().substring(0, 10)" [(visible)]="doneOrdersDialogDisplay" [responsive]="true" [minWidth]="800" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+
+    <div *ngIf="selectedReport?.workOrders">
+        <div class="ui-grid-row">
+            <p-dataTable [value]="selectedReport.workOrders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt
+                         dataKey="id" resizableColumns="true" sortField="workNo" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
+                <p-header>
+                    <div>
+                        <i class="fa fa-search"></i>
+                        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+                    </div>
+                </p-header>
+                <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+
+
+                <p-column [sortable]="true" [filter]="true" field="workNo" header="Zlecenie" ></p-column>
+                <p-column [sortable]="true" field="typeCode" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+                    <ng-template let-col let-order="rowData" pTemplate="body">
+                        <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                        <span style="padding: 3px">{{workTypeService.getWorkTypeDescription(order)}}</span>
+                    </ng-template>
+                </p-column>
+                <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
+                    <ng-template let-col let-order="rowData" pTemplate="body">
+                        <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
+                        <span style="padding: 3px">{{order.status}}</span>
+                    </ng-template>
+                </p-column>
+
+                <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
+                    <ng-template let-col let-order="rowData" pTemplate="body">
+                        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                    </ng-template>
+                </p-column>
+                <p-column [sortable]="true" field="complexity" header="Wycena [H]" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
+                <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+                <p-column [sortable]="true" field="assignedDate" header="Przypisano" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+                <p-column [sortable]="true" field="doneDate" header="Zrealizowano" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+                <p-column [style]="{'text-align':'center'}">
+                    <ng-template let-order="rowData" pTemplate="body">
+                        <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="getAndShowOrderDetails(order.id)" icon="fa fa-search"></p-button>
+                    </ng-template>
+                </p-column>
+
+                <ng-template pTemplate="emptymessage">
+                    Brak zrealizowanych zadań w tym zakresie dat...
+                </ng-template>
+
+                <p-footer>
+                </p-footer>
+
+            </p-dataTable>
+        </div>
+
+
     </div>
 
 

@@ -342,7 +342,12 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   }
 
   private getEffort(officeCode: string, order: Order): number {
-    if (order.complexity) {
+    if (order.typeCode === '13.0') {
+      console.log('Ignore complexity of order '+order.workNo);
+      return 0;
+    }
+
+    if (order.complexity != null) {
       return order.complexity;
     } else {
 

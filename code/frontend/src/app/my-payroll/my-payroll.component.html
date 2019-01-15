@@ -137,17 +137,17 @@
         </ng-template>
       </p-column>
 
-        <p-column header="Czas pracy" field="workTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-        <p-column header="Czas dla puli" field="poolWorkTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-        <p-column header="Czas poza pula" field="nonpoolWorkTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}">
+        <p-column header="Czas razem" field="workTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+        <p-column header="Czas dla puli" field="poolWorkTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green'}"></p-column>
+        <p-column header="Czas poza pula" field="nonpoolWorkTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'green'}">
             <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                 <span *ngIf="userPayroll.isFromPool=='Y'" [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll[col.field]}}</span>
                 <span *ngIf="userPayroll.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">brak</span>
             </ng-template>
         </p-column>
         <p-column header="Szkolenia" field="trainingTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
+        <p-column header="Urlop" field="leaveTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
         <p-column header="Nadgodziny" field="overTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
-      <p-column header="Urlop" field="leaveTime"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'color':'#286090'}"></p-column>
 
       <p-column header="Obecnosc PLN" field="workDue"  filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">

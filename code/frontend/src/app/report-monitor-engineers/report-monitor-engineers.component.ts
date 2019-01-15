@@ -28,6 +28,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     reports: UserReport[];
     selectedReport: UserReport;
     selectedReports: UserReport[];
+    doneOrdersDialogDisplay: boolean;
 
     //scheduler
     schedulerDisplay:boolean;
@@ -83,8 +84,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
     onRowDblclick(event) {
         console.log("double clicked "+JSON.stringify(event));
-        // HACK - this used to be single selection but we reused it, now we changed to selectedReports
-        this.selectedReport = event.data;
+        this.prepareAndShowCalendar(event.data);
+    }
+
+    prepareAndShowCalendar(report: UserReport) {
+        this.selectedReport = report;
 
         this.schedulerEvents = [];
         if (this.selectedReport.workOrders && this.selectedReport.workOrders.length > 0) {
@@ -145,10 +149,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
         */
 
 
+        this.getAndShowOrderDetails(e.calEvent.orderId);
+    }
+
+    private getAndShowOrderDetails(orderId: number) {
         loop: for(let order of this.selectedReport.workOrders) {
-            let title = e.calEvent.title;
-            //let workNo = title.indexOf("?") > -1 ? title.substring(0, title.length-1) : title;
-            let orderId = e.calEvent.orderId;
             if (order.id === orderId) {
                 //ambigous since 12.2017 this.woService.getOrdersByWorkNo(order.workNo).subscribe(order => this.showOrder(order));
                 this.woService.getOrderById(order.id).subscribe(order => this.showOrder(order));
@@ -172,7 +177,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.orderDialogDisplay = true;
     }
 
-    search() {
+    search(): void {
         let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
         let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
@@ -186,6 +191,20 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.userService.getUtilizationReportData(sAfterDate, sBeforeDate)
             .pipe(mergeMap(reportData => this.mapEngineersCallTimesheets(reportData, sAfterDate, sBeforeDate)))
             .subscribe(timesheets => this.fillTimesheets(timesheets));
+    }
+
+    private calculateLineCharts(): void {
+        this.chartsReady = false;
+        this.chartUtilizationData = {labels: ['Wydajność %'], datasets: []};
+        this.chartEarnedData = {labels: ['Wypracowany obrót'], datasets: []};
+        this.chartShareData = {labels: [], datasets: [{data: [], backgroundColor: []}]};
+
+        this.calculateUtilizationForAll(this.reports);
+    }
+
+    public showDoneOrders(event, report: UserReport) {
+        this.selectedReport = report;
+        this.doneOrdersDialogDisplay=true;
     }
 
     private mapEngineersCallTimesheets(reportData: UserReport[], after:string, before:string):Observable<Timesheet[]> {
@@ -281,7 +300,12 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     private getEffort(officeCode: string, order: Order): number {
-        if (order.complexity) {
+        if (order.typeCode === '13.0') {
+            console.log('Ignore complexity of order '+order.workNo);
+            return 0;
+        }
+
+        if (order.complexity != null) {
             return order.complexity;
         } else {
 
@@ -385,7 +409,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
     public filterReports(event): void {
         console.log('onSelect event fired!'+JSON.stringify(event));
         if (!event.type || event.type === 'checkbox') {
-            this.search()
+            this.calculateLineCharts();
         } else {
             console.log('onSelect event fired and consumed!'+JSON.stringify(event));
         }
