@@ -70,7 +70,6 @@ export class WoComponent implements OnInit {
 
     comment; string;
     newComment: string;
-    newOrderWithAssignEngener:Order;
 
     operator:User;
     pl:Calendar;
@@ -515,17 +514,12 @@ export class WoComponent implements OnInit {
             this.storeOrder(this.relatedItem, order, this.newOrder, false)
             .subscribe(order =>{
                 if (this.assignedEngineer != null){
-                    this.newOrderWithAssignEngener = order;
-                    this.editedOrder = this.newOrderWithAssignEngener;
+                    this.editedOrder = order;
                     this.saveAssignment();
                     this.updateOrderStatus(this.editedOrder.id,this.newOrder,order,this.assignedEngineer.user);
-                    saveOrderCallback(order, this);
-                }
-                else {
-                    saveOrderCallback(order, this);
-                }                             
-            });
-            
+                }              
+                saveOrderCallback(order, this);                                          
+            });         
         }     
     }
 
