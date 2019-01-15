@@ -60,7 +60,7 @@ export class ToolsService {
     }
 
     public formatDate(date: Date, format: string): string {
-        return this.datePipe.transform(date, format);
+        return this.datePipe.transform(date, format, 'pl-PL');
     }
 
     public parsePrice(price:string, workNo: string):number {
@@ -119,6 +119,10 @@ export class ToolsService {
             return '#800080';
         else if (typeCode.startsWith('11.'))
             return '#88cc00';
+        else if (typeCode.startsWith('12.'))
+            return '#cc0088';
+        else if (typeCode.startsWith('13.'))
+            return 'red';
 
         //console.log('Return default color for '+typeCode+'!');
 

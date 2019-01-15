@@ -91,13 +91,13 @@
 
 
 
-<p-dialog [header]="'Podumowanie czasów (wybór okresu)'" [(visible)]="displayDateChooserDialog" [responsive]="true" [minWidth]="800">
+<p-dialog [header]="'Podsumowanie czasów (wybór okresu)'" [(visible)]="displayDateChooserDialog" [responsive]="true" [minWidth]="800">
 
     <div>
         <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 200px;">
           <div class="ui-grid-col-4"><label for="reportDate">*</label></div>
           <div class="ui-grid-col-8">
-            <p-dropdown placeholder="Wybierz miesiąć..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
+            <p-dropdown placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
           </div>
         </div>
 
@@ -110,7 +110,7 @@
 
 </p-dialog>
 
-<p-dialog [header]="'Podumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1000">
+<p-dialog [header]="'Podsumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1000">
 
   <p-dataTable [value]="timestats" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtReport dataKey="personId" resizableColumns="true" sortField="user.excelId" sortOrder="1" loadingIcon="fa fa-spinner"
                csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate">
@@ -121,7 +121,7 @@
       </div>
     </p-header>
 
-    <!--
+    <!-- WARN data manipulation - trainingTime added to workTime in userTimeStats.service !!!
       "leaveTime": 40,
       "workTime": 138.58,
       "trainingTime": 0,
@@ -150,11 +150,12 @@
     <p-column [sortable]="true" field="periodBeginning" header="Od" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="periodEnd" header="Do" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
-    <p-column [sortable]="true" field="leaveTime" header="Urlop" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="workTime" header="Czas pracy" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+
+    <p-column [sortable]="true" field="workTime" header="Czas razem" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" [style]="{'color':'green'}" field="poolWorkTime" header="Czas w puli" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" [style]="{'color':'green'}" field="nonpoolWorkTime" header="Czas poza pulą" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="trainingTime" header="Szkolenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="poolWorkTime" header="Czas w puli" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-    <p-column [sortable]="true" field="nonpoolWorkTime" header="Czas poza pulą" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+    <p-column [sortable]="true" field="leaveTime" header="Urlop" [filter]="true" filterPlaceholder="Filtruj"></p-column>
     <p-column [sortable]="true" field="overTime" header="Nadgodziny" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
 

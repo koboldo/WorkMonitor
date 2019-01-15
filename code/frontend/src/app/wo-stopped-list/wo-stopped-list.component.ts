@@ -52,7 +52,7 @@ export class WoStoppedListComponent implements OnInit {
         ];
 
         if (this.allowRecover) {
-            this.items.push({label: 'Przywróć/Wnów', icon: 'fa fa-check', disabled: true, command: (event) => this.recover()});
+            this.items.push({label: 'Przywróć/Wznów', icon: 'fa fa-check', disabled: true, command: (event) => this.recover()});
         }
 
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
@@ -137,7 +137,7 @@ export class WoStoppedListComponent implements OnInit {
     }
 
     private getLastStatusCode(history:OrderHistory[]):string {
-        if (history && history.length > 0 && history[0].statusCode) {
+        if (history && history.length > 0 && history[0].statusCode && history[0].statusCode != 'SU') {
             return history[0].statusCode;
         }
         return 'OP';

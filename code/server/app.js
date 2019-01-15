@@ -10,6 +10,7 @@ var cls = require('continuation-local-storage');
 var nanoid = require('nanoid');
 
 if(!process.env.WM_CONF_DIR) throw new Error('Env variable WM_CONF_DIR not set! Aborting...');
+if(!process.env.WM_SOCKET) throw new Error('Env variable WM_SOCKET not set! Aborting...');
 
 var logger = require('./api/logger').logger; 
 var auth = require('./api/auth');
@@ -52,12 +53,13 @@ app.use(function(req, res){
 app.disable('etag'); // TODO: investigate why
 
 if(process.env.NODE_ENV == 'dev') {
-    var server = app.listen(process.env.PORT || '8080', function(){
+    var server = app.listen(process.env.WM_PORT || '8080', function(){
         logger().info('http server started at %s',server.address().port);
     });
 } else {
     var mask = process.umask(0);
-    var socket = '/tmp/nginx2node';
+    // var socket = '/tmp/nginx2node';
+    var socket = process.env.WM_SOCKET;
     if (fs.existsSync(socket)) {
         fs.unlinkSync(socket);
     }

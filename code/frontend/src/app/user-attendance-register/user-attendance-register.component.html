@@ -1,8 +1,55 @@
-<div style="float: left; width: 100%; margin-left: 5px">
-  <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="float: left; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestruj WEJŚCIE</a>
-  <div *ngIf="isSetFrom()" style="float: left; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestrowane WEJŚCIE: {{timesheet?.from?.substr(11, 5)}}</div>
+
+<div *ngIf="timesheet">
+
+  <div *ngIf="unregisteredExits.length > 0" style="float: left; width: 100%; margin-left: 5px">
+    <a class="blink_me" style="float: left; color: red; font-weight: bold">
+      <i [class]="'fa fa-exclamation-triangle'"></i> Niezarejestrowane WYJŚCIA: {{unregisteredExits}}, Zgłoś się do operatora!!!
+    </a>
+  </div>
+
+  <div *ngIf="unregisteredExits.length < 1" style="width: 100%; display: flex; flex-wrap: nowrap; align-items: stretch;">
+
+    <div style="width: 33%; margin-left: 5px;">
+      <a *ngIf="!isSetFrom()" (click)="registerFrom()" style="cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestruj WEJŚCIE</a>
+      <div *ngIf="isSetFrom()" style="font-weight: bold" ><i [class]="'fa fa-sign-in'"></i> Zarejestrowane WEJŚCIE: {{timesheet?.from?.substr(11, 5)}},</div>
+    </div>
+
+    <div id="center" style="width: 34%; text-align: center;">
+      <a *ngIf="isSetFrom()" (click)="addBreak()" style="cursor: pointer; color: #21405f; text-decoration: underline; font-weight: bold" ><i [class]="'fa fa-coffee'"></i> Zmień przerwę, aktualnie {{timesheet?.break}} minuty</a>
+    </div>
+
+    <div style="width: 33%; text-align: right; margin-right: 5px;">
+      <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold">Zarejestruj WYJŚCIE <i [class]="'fa fa-sign-out'"></i></a>
+      <div *ngIf="isSetTo() && isSetFrom()" style="float: right; font-weight: bold" >Zarejestrowane WYJŚCIE: {{timesheet?.to?.substr(11, 5)}} <i [class]="'fa fa-sign-out'"></i></div>
+    </div>
+
+
+  </div>
+
 </div>
-<div style="float: right; width: 100%; margin-top: -20px; margin-right: 5px">
-  <a *ngIf="!isSetTo() && isSetFrom()" (click)="registerTo()" style="float: right; cursor: pointer; color: orangered; text-decoration: underline; font-weight: bold">Zarejestruj WYJŚCIE <i [class]="'fa fa-sign-out'"></i></a>
-  <div *ngIf="isSetTo() && isSetFrom()" style="float: right; font-weight: bold" >Zarejestrowane WYJŚCIE: {{timesheet?.to?.substr(11, 5)}} <i [class]="'fa fa-sign-out'"></i></div>
-</div>
+
+<p-dialog header="Zadeklaruj przerwę" [(visible)]="displayBreakDialog" [responsive]="true" [minWidth]="800">
+
+  <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+
+    <div class="ui-grid-row"  style="margin-top: 20px">
+
+      <div class="ui-grid-col-5"><label style="float: right" for="totalBreakInMinutes">Przerwa w minutach w dniu {{timesheet?.from | date: 'yyyy-MM-dd'}}</label></div>
+      <div class="ui-grid-col-7">
+        <input id="totalBreakInMinutes" type="number" class="form-control" name="totalBreakInMinutes" [(ngModel)]="totalBreakInMinutes" required totalBreakInMinutes minlength="1" min="15" />
+        <div *ngIf="!totalBreakInMinutes?.valid " class="help-block">Przerwa musi być liczbą >= 15</div>
+      </div>
+
+    </div>
+    <div class="ui-grid-row"  style="margin-top: 10px; margin-bottom: 20px;">
+      <div class="ui-grid-col-5"></div>
+
+      <div class="ui-grid-col-7">
+        <button pButton type="button" (click)="registerBreak()" icon="fa fa-check" label="Zapisz przerwę" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="totalBreakInMinutes < 15"></button>
+      </div>
+    </div>
+
+
+  </div>
+
+</p-dialog>

@@ -123,7 +123,7 @@ export class ChangeWoComplexityComponent implements OnInit {
         let workType: WorkType = this.workTypeService.getWorkType(this.editedOrder.typeCode, this.editedOrder.officeCode, this.editedOrder.complexityCode);
         console.log("Changing complexity for workType: "+JSON.stringify(workType));
 
-        if (workType && workType.complexity) {
+        if (workType && workType.complexity >= 0) {
             this.editedOrder.complexity = workType.complexity;     //this.dictService.getComplexities(this.editedOrder.complexityCode);
         } else {
             this.alertService.warn("Brak danych z parametryzacji...");

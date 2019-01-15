@@ -25,11 +25,11 @@
                     <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
                 </div>
             </div>
-            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity">
+            <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.complexity != null">
                 <div class="ui-grid-col-4">Złożoność:</div>
                 <div class="ui-grid-col-8">
                     <span class="ui-inputgroup-addon"><i
-                            [class]="selectedOrder.complexity=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                            [class]="selectedOrder.complexityCode=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
                     <span style="padding: 3px; font-style: italic;">Wycena {{selectedOrder?.complexity}} godzin</span>
                 </div>
             </div>

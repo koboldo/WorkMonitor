@@ -84,7 +84,7 @@ export class WoComponent implements OnInit {
                 private authSerice:AuthenticationService,
                 private toolsService: ToolsService) {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
-        this.lastModBefore = toolsService.getCurrentDateDayOperation(1);
+        this.lastModBefore = toolsService.getCurrentDateDayOperation(0);
         this.items = [
             {label: 'Przypisz/Zmień wykonawce', icon: 'fa fa-user', disabled: true, command: (event) => this.assign(true)},
             {label: 'Dopisz wykonawce', icon: 'fa fa-share', disabled: true, command: (event) => this.assign(false)},
@@ -130,14 +130,14 @@ export class WoComponent implements OnInit {
     }
 
     refresh() {
-        this.lastModBefore = this.toolsService.getCurrentDateDayOperation(1);
+        this.lastModBefore = this.toolsService.getCurrentDateDayOperation(0);
         this.search();
     }
 
     search() {
         this.woService.getOrdersByDates(
-            this.lastModAfter.toISOString().substring(0, 10),
-            this.lastModBefore.toISOString().substring(0, 10)
+            this.toolsService.formatDate(this.lastModAfter, 'yyyy-MM-dd'),
+            this.toolsService.formatDate(this.lastModBefore, 'yyyy-MM-dd')
         ).pipe(mergeMap(orders => this.callVentures(orders)))
         .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
     }
@@ -456,7 +456,6 @@ export class WoComponent implements OnInit {
 
         order.id            = this.newOrder ? undefined : order.id;
         order.statusCode    = this.newOrder ? 'OP' : this.status.code;
-        order.complexity    = this.newOrder ? -1 : order.complexity;
         order.status        = this.dictService.getWorkStatus(order.statusCode);
 
         if (this.newComment && this.newComment.length > 0) {
@@ -482,18 +481,20 @@ export class WoComponent implements OnInit {
                 order.mdCapex = undefined;
             }
         } else {
-            this.alertService.error('WO nie zostało zapiasane, nieprawidlowy (pusty?) region zleceniodawcy!');
+            this.alertService.error('Zlecenie nie zostało zapiasane, nieprawidlowy (pusty?) region zleceniodawcy!');
             return;
         }
 
-
-        let workTypeParam: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, 'STD');
-        if (workTypeParam && workTypeParam.complexity >= 0) {
+        if (this.newOrder) {
+            let workTypeParam: WorkType = this.workTypeService.getWorkType(order.typeCode, order.officeCode, 'STD');
+            if (workTypeParam && workTypeParam.complexity != null) {
+                order.complexity = workTypeParam.complexity;
+            } else {
+                console.log("workTypeParam = "+JSON.stringify(workTypeParam));
+                this.alertService.error('Zlecenie nie zostało zapisane, brak pracochlonnosci w parametryzacji dla '+order.type+', '+order.officeCode+'!');
+                return;
+            }
             order.type = this.workTypeService.getWorkTypeDescription(order);
-        } else {
-            console.log("workTypeParam = "+JSON.stringify(workTypeParam));
-            this.alertService.error('WO nie zostało zapiasane, nieprawidlowa parametryzacja dla '+order.type+', '+order.officeCode+'!');
-            return;
         }
 
 
