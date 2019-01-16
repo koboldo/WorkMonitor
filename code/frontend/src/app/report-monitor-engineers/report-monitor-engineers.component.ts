@@ -178,8 +178,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     search(): void {
-        let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
-        let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
+        let sAfterDate: string = this.toolsService.formatDate(this.afterDate, 'yyyy-MM-dd');
+        let sBeforeDate: string = this.toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd');
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
         this.chartsReady = false;
@@ -232,7 +232,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         if (timesheets && timesheets.length > 0) {
             for (let t of timesheets) {
                 inner: for (let report of this.reports) {
-                    if (report.id === t.personId) {
+                    if (report.id === t.personId && t.isLeave !== 'Y') {
                         report.declaredTime += t.usedTime;
                         break inner;
                     }

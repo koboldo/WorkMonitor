@@ -87,18 +87,14 @@ export class UserRegisterComponent implements OnInit {
             this.show=true;
             this.user.isActive = 'Y';
             this.user.isEmployed= 'Y'; 
-            this.user.isFromPool='';  
+            this.user.isFromPool='N';
         }
     }
 
-    removeRole (text:string) {
-        let info="";
+    removeRole (role:string) {
         this.user.roleCode=[];
-        this.user.roleCode.push(text);
-        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
-        if (this.user.roleCode.length===1) {
-            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
-        }
+        this.user.roleCode.push(role);
+        this.alertService.warn('Uzytkownik z rolą '+(role ==="CN" ? "Zleceniobiorca" : "Zleceniodawca")+" może posiadać tylko jedną rolę, aby wybrać inne role należy ją odznaczyć!");
     }
 
     register() {

@@ -290,7 +290,7 @@
         </div>
       </div>
       <!--Assign engener -->
-      <div class="ui-grid-row" style="margin-top: 20px;">
+      <div *ngIf="newOrder" class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-2"><label for="assignEngineer">Wykonawca</label></div>
         <div class="ui-grid-col-10">
           <p-autoComplete id="assignEngineer" 
@@ -300,6 +300,7 @@
           [dropdown]="true" 
           field="displayName" 
           [forceSelection]="true"
+          pTooltip="Opcjonalne wybranie wykonawcy spowoduje jego przypisanie"
           [ngModelOptions]="{standalone: true}">
           
         </p-autoComplete>

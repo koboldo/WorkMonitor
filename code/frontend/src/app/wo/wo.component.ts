@@ -420,8 +420,21 @@ export class WoComponent implements OnInit {
             .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user));
     }
 
+    synchronousSaveAssignment() {
+        console.log('Synchronous saving assignment!' + JSON.stringify(this.editedOrder) + ' for ' + JSON.stringify(this.assignedEngineer.user));
+        this.isNewOrderOwner = true;
+        this.displayAssignDialog = false;
+        this.userService.assignWorkOrder(this.assignedEngineer.user, this.editedOrder, this.isNewOrderOwner).toPromise()
+            .then(result => {
+                this.updateOrderStatusObs(result['created'], this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user).toPromise()
+                    .then(result => {
+                        console.log('Status from promise!');
+                    });
+            });
+    }
 
-    private updateOrderStatus(created:number, isNewOrderOwner:boolean, order:Order, engineer:User):void {
+    private updateOrderStatusObs(created:number, isNewOrderOwner:boolean, order:Order, engineer:User):Observable<Order> {
+        console.log('updateOrderStatus setting status to AS, current ' + order.statusCode + ' isNewOrderOwner:' + isNewOrderOwner);
         if (!created || created === -1) {
             console.log('Assignment problem! ' + created);
             this.alertService.error('Blad przypisania zlecenia ' + order.workNo + ' do ' + engineer.email);
@@ -433,7 +446,11 @@ export class WoComponent implements OnInit {
         this.alertService.info('Pomyślnie przypisano zlecenie ' + order.workNo + ' do ' + engineer.email);
 
         //this.woService.updateOrder(order).subscribe(updatedOrder => this.refreshTable(updatedOrder, false));
-        this.woService.updateOrder(order).subscribe(updatedOrder => this.refresh());
+        return this.woService.updateOrder(order);
+    }
+
+    private updateOrderStatus(created:number, isNewOrderOwner:boolean, order:Order, engineer:User):void {
+        this.updateOrderStatusObs(created, isNewOrderOwner, order, engineer).subscribe(updatedOrder => this.refresh());
     }
 
     canSaveOrders(): boolean {
@@ -516,8 +533,7 @@ export class WoComponent implements OnInit {
             .subscribe(order =>{
                 if (this.assignedEngineer != null){
                     this.editedOrder = order;
-                    this.saveAssignment();
-                    this.updateOrderStatus(this.editedOrder.id,this.newOrder,order,this.assignedEngineer.user);
+                    this.synchronousSaveAssignment();
                 }              
                 saveOrderCallback(order, this);                                          
             });         
