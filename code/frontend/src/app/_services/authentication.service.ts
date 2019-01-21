@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { TabMenuModule,MenuItem }  from 'primeng/primeng';
+import {Md5} from 'ts-md5/dist/md5';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,6 +16,8 @@ export class AuthenticationService {
     private hierarchyItems = new BehaviorSubject<MenuItem[]>(null);
     private user = new BehaviorSubject<User>(null);
     private httpHeaders: HttpHeaders;
+
+    private fakeSessionId;
 
     get isLogged(): boolean {
         return this.isLoggedFlag;
@@ -64,15 +67,18 @@ export class AuthenticationService {
     }
 
     private initAuthHeaders(token: string) {
-        this.httpHeaders = new HttpHeaders({'Content-Type':'application/json','x-access-token':token});
+        this.fakeSessionId =  new Md5().appendStr(token).end();
+        this.httpHeaders = new HttpHeaders({'Content-Type':'application/json','x-access-token':token, 'Session-Id':this.fakeSessionId});
 
     }
 
     logout() {
         console.log("Logging out!");
         this.menuItems.next(null);
+        this.hierarchyItems.next(null);
         this.user.next(null);
         this.isLoggedFlag = false;
+        this.httpHeaders = null;
     }
 
     private buildHierarchyMenu(user:User):any {

@@ -17,7 +17,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, HttpProgressInterceptor, UserTimeStatsService } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, HttpHeadersInterceptor, HttpProgressInterceptor, UserTimeStatsService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -90,7 +90,8 @@ import { ContractorsComponent } from './contractors/contractors.component';
 import { WoStoppedListComponent } from './wo-stopped-list/wo-stopped-list.component';
 import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
-import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
+import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';;
+import { AppVersionComponent } from './app-version/app-version.component'
 
 
 @NgModule({
@@ -137,7 +138,8 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
         WoStoppedListComponent,
         WoCancelledComponent,
         UsersTimeStatsComponent,
-        ReportMonthlyEngineersComponent
+        ReportMonthlyEngineersComponent,
+        AppVersionComponent    
     ],
     providers: [
         AlertService,
@@ -156,6 +158,11 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
         HttpBotWrapper,
         UserTimeStatsService,
         {provide: LOCALE_ID, useValue: 'pl-PL'},
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpHeadersInterceptor,
+            multi: true,
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpCacheInterceptor,

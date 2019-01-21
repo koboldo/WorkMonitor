@@ -23,21 +23,24 @@ export class HttpBotWrapper {
     }
 
     public get(url: string): Observable<Object> {
-        //this.incrementProgress(this.getProgressKey(url));
-        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        //return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        return this.http.get(url).pipe();
 
     }
 
     public post(url: string, object:any): Observable<Object> {
-        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        //return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        return this.http.post(url, object).pipe();
     }
 
     public put(url: string, object:any): Observable<Object> {
-        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        //return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        return this.http.put(url, object).pipe();
     }
 
     public delete(url: string): Observable<Object> {
-        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        //return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
+        return this.http.delete(url).pipe();
 
     }
 
