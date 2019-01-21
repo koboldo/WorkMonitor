@@ -22,104 +22,25 @@ export class HttpBotWrapper {
     ) {
     }
 
-    progress: Map<string, number> = new Map<string, number>();
-    subject = new Subject<Map<string, number>>();
-
-    public getProgress(): Observable<Map<string, number>> {
-        return this.subject.asObservable();
-    }
-
-    public cleanProgress(): void {
-        this.progress = new Map<string, number>();
-        this.subject.next(this.progress);
-    }
-
-    private getProgressKey(url: string):string {
-        return url;
-    }
-
-
-    private incrementProgress(key: string): void {
-        let value: number = this.progress.get(key);
-        if (value === undefined) {
-            this.progress.set(key, 1);
-            console.log("progress for "+key +"=1 has been added!");
-        } else {
-            this.progress.set(key, ++value);
-            console.log("progress for "+key +" incremented to "+value);
-        }
-        this.subject.next(this.progress);
-    }
-
-    private decrementProgress(key: string): void {
-        let value: number = this.progress.get(key);
-        if (value !== undefined) {
-            if (value === 1) {
-                this.progress.delete(key);
-                console.log("progress for "+key +" has been removed!");
-            } else {
-                this.progress.set(key, --value);
-                console.log("progress for "+key +" decremented to "+value);
-            }
-        } else {
-            console.log("key="+key +" not found in "+JSON.stringify(this.progress));
-        }
-        this.subject.next(this.progress);
-    }
-
-    private cache: { [name: string]: AsyncSubject<HttpEvent<any>> } = {};
-
-
     public get(url: string): Observable<Object> {
-        this.incrementProgress(this.getProgressKey(url));
-        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()}).pipe(
-            tap(object => this.decrementProgress(this.getProgressKey(url))),
-            catchError(e => this.handleError(e, url))
-            );
+        //this.incrementProgress(this.getProgressKey(url));
+        return this.http.get(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
 
     }
 
     public post(url: string, object:any): Observable<Object> {
-        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe(
-            tap(response => this.decrementProgress(this.getProgressKey(url))),
-                catchError(e => this.handleError(e, url))
-        );
+        return this.http.post(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
     }
 
     public put(url: string, object:any): Observable<Object> {
-        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe(
-            tap(response => this.decrementProgress(this.getProgressKey(url))),
-            catchError(e => this.handleError(e, url))
-        );
+        return this.http.put(url, object, {headers: this.authSerivce.getHttpHeaders()}).pipe();
     }
 
     public delete(url: string): Observable<Object> {
-        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()}).pipe(
-            tap(response => this.decrementProgress(this.getProgressKey(url))),
-            catchError(e => this.handleError(e, url))
-        );
+        return this.http.delete(url, {headers: this.authSerivce.getHttpHeaders()}).pipe();
 
     }
 
-    public handleError(error: Response, url: string) {
-        this.decrementProgress(this.getProgressKey(url));
 
-        console.log("This is an error: "+JSON.stringify(error));
-        let body: any = JSON.parse(error["_body"]);
-
-        if(error.status === 403) { //forbidden
-            console.log("message: "+body.message);
-            if (body !== undefined && body.message === "jwt expired") {
-                this.alertService.error("Sesja wygasła");
-            } else {
-                this.alertService.error("Zostałeś wylogowany z powodu próby nieautoryzowanego dostępu do zasobu!");
-            }
-            this.router.navigate(['logme']); //navigate home
-        } else {
-            this.alertService.error("Wewnętrzny bląd: "+ (body !== undefined && body.message ? body.message : ""));
-        }
-
-        return observableThrowError(error)
-    }
 
 }

@@ -8,6 +8,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
+import { SelectItem } from 'primeng/primeng';
 
 declare var jquery:any;
 declare var $ :any;
@@ -21,6 +22,8 @@ declare var $ :any;
 export class ReportMonthlyEngineersComponent implements OnInit {
 
   NO_MONTHS: number = 6;
+  possibleNoMonths: SelectItem[];
+
   holidays: number = -1;
   noTimesheets: number = -2;
 
@@ -56,6 +59,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
     this.dictService.init();
     this.workTypeService.init();
+    this.initMounths();
 
     this.lineUtilizationOptions = {
       title: {
@@ -103,6 +107,16 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
   }
 
+  private initMounths() {
+    this.possibleNoMonths = [];
+    for (let i = 6; i < 12; i++) {
+      let d = new Date();
+      d.setMonth(d.getMonth() - i);
+      let l:string = this.toolsService.formatDate(d, 'yyyy-MM');
+      this.possibleNoMonths.push({label: l, value: i});
+    }
+  }
+
   ngOnInit() {
 
     this.workTypeService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
@@ -121,6 +135,8 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   }
 
   private initMonths(): DateRange[] {
+    console.log('NO_MONTHS '+this.NO_MONTHS);
+
     let result : DateRange[] = [];
 
     for (let i = this.NO_MONTHS; i >= 1; i--) {
@@ -423,9 +439,12 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     for(let order of userData.workOrders) {
       if (order.doneDate) {
         let doneDate: Date = this.toolsService.parseDate(order.doneDate);
-        console.log('debug '+doneDate+', '+userData.dateRange.beginDate+' _ '+JSON.stringify(userData));
+        doneDate.setHours(0,0,0,0);
+
         if (userData.dateRange && userData.dateRange.beginDate && userData.dateRange.endDate && userData.dateRange.beginDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= userData.dateRange.endDate.getTime()) {
           userData.earnedMoney += order.price;
+         } else {
+          console.log("earnedMoney without : "+doneDate +" between "+JSON.stringify(userData.dateRange));
         }
       }
     }

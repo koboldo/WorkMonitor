@@ -1,3 +1,25 @@
+<div class="ui-grid-row">
+  <div class="ui-grid-col-12">
+
+    <form #f="ngForm" (submit)="search()">
+
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 20px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-5">
+            <p-dropdown placeholder="Ilość miesięcy..." [style]="{'width': '100%'}" id="NO_MONTHS" name="NO_MONTHS" [options]="possibleNoMonths" [(ngModel)]="NO_MONTHS" required autoWidth="false" ></p-dropdown>
+          </div>
+          <div class="ui-grid-col-2">
+            <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!f?.valid"></button>
+          </div>
+          <div class="ui-grid-col-5"></div>
+
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
 
 
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">

@@ -17,7 +17,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, UserTimeStatsService } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, HttpProgressInterceptor, UserTimeStatsService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -156,8 +156,15 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
         HttpBotWrapper,
         UserTimeStatsService,
         {provide: LOCALE_ID, useValue: 'pl-PL'},
-        {provide: HTTP_INTERCEPTORS,
+        {
+            provide: HTTP_INTERCEPTORS,
             useClass: HttpCacheInterceptor,
+            multi: true,
+        },
+        HttpProgressInterceptor,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpProgressInterceptor,
             multi: true,
         }
     ],
