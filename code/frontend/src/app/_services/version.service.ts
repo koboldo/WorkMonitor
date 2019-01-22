@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+			new CodeValue('1.5.25', 'Dodanie zakładki Prime Ng6 z Turbo Table'),
             new CodeValue('1.5.24', 'Dodanie zakładki Prime Ng6 z Turbo Table'),
             new CodeValue('1.5.23', 'Wyświetlanie historii zmian, przekazywanie Session-Id oraz Front-Version'),
             new CodeValue('1.5.22', 'Edytowalny zakres dat na zakladce raporty miesięczne'),

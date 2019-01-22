@@ -73,6 +73,20 @@ export class WorkTypeService {
     private cacheAndGet(workTypes: WorkType[]): WorkType[] {
         console.log("Caching workTypes! first: "+JSON.stringify(workTypes[0]));
 
+        workTypes.sort(function (a,b) {
+            if (a.typeCode === 'OT' || a.typeCode === 'IN') {
+                return 1;
+            } else if ((parseFloat(a.typeCode.split(".")[0]) === parseFloat(b.typeCode.split(".")[0]))) {
+                if (parseFloat(a.typeCode.split(".")[1]) >= parseFloat(b.typeCode.split(".")[1])) {
+                    return 1;
+                } else if (parseFloat(b.typeCode.split(".")[1]) > parseFloat(a.typeCode.split(".")[1])) {
+                    return -1;
+                }
+            } else {
+                return parseFloat(a.typeCode) - parseFloat(b.typeCode);
+            }
+        });
+        
         this.cache = workTypes;
 
         return workTypes;
