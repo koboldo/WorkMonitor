@@ -83,7 +83,8 @@
 			"COMPLEXITY": "complexity",
 			"PRICE": "price",
 			"DESCRIPTION": "description",
-			"IS_FROM_POOL": "isFromPool"
+			"IS_FROM_POOL": "isFromPool",
+			"COLOR": "color"
 		}
 	},
 	"timeSheet": {
