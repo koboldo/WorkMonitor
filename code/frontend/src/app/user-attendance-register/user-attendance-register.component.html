@@ -37,7 +37,7 @@
       <div class="ui-grid-col-5"><label style="float: right" for="totalBreakInMinutes">Przerwa w minutach w dniu {{timesheet?.from | date: 'yyyy-MM-dd'}}</label></div>
       <div class="ui-grid-col-7">
         <input id="totalBreakInMinutes" type="number" class="form-control" name="totalBreakInMinutes" [(ngModel)]="totalBreakInMinutes" required totalBreakInMinutes minlength="1" min="15" />
-        <div *ngIf="!totalBreakInMinutes?.valid " class="help-block">Przerwa musi być liczbą >= 15</div>
+        <div *ngIf="totalBreakInMinutes < 15" class="help-block">Przerwa musi być liczbą >= 15</div>
       </div>
 
     </div>

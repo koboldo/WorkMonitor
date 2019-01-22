@@ -1,7 +1,10 @@
 ﻿export * from './authentication.service';
 export * from './alert.service';
+export * from './progress.service';
 export * from './httpBotWrapper.service';
 export * from './httpCacheInterceptor.service';
+export * from './httpHeadersInterceptor.service';
+export * from './httpProgressInterceptor.service';
 export * from './user.service';
 export * from './payroll.service';
 export * from './wo.service';
@@ -12,3 +15,4 @@ export * from './tools.service';
 export * from './timesheet.service';
 export * from './autoLogout.service';
 export * from './userTimeStats.service';
+export * from './version.service';

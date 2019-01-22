@@ -11,8 +11,8 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
     @Input() user:User;
 
-    private displayBreakDialog: boolean;
-    private totalBreakInMinutes: number = 15;
+    public displayBreakDialog: boolean;
+    public totalBreakInMinutes: number = 15;
 
     private _timesheet: Timesheet;
     get timesheet(): Timesheet {
@@ -35,11 +35,11 @@ export class UserAttendanceRegisterComponent implements OnInit {
 
         let today:Date = this.toolsService.getCurrentDateDayOperation(0);
 
-        let sToday: string = today.toISOString().substring(0, 10);
+        let sToday: string = this.toolsService.formatDate(today, 'yyyy-MM-dd');
 
         let checkFromDate = this.toolsService.getCurrentDateDayOperation(-24) // 3 weeks + 1 weekend
 
-        let sFrom: string = checkFromDate.toISOString().substring(0, 10);
+        let sFrom: string = this.toolsService.formatDate(checkFromDate, 'yyyy-MM-dd');
 
         this.timesheetService.getByIdAndDates(this.user.id, sFrom, sToday)
             .subscribe((timesheets:Timesheet[]) => this.checkUser(timesheets, sToday));

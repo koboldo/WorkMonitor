@@ -76,7 +76,7 @@ export class UserChangeComponent implements OnInit {
     }
 
     checkSelect() {
-        if (this.selectedUser.user.roleCode.indexOf('CN')> -1) {
+        if (this.selectedUser.user.roleCode.indexOf('CN') > -1) {
             if (this.selectedUser.user.roleCode.length>1) {
                 this.removeRole("CN");
             }
@@ -85,29 +85,26 @@ export class UserChangeComponent implements OnInit {
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';                  
         }
-        else if (this.selectedUser.user.roleCode.indexOf('VE')> -1) {
-            if (this.selectedUser.user.roleCode.length>1 ){
+        else if (this.selectedUser.user.roleCode.indexOf('VE') > -1) {
+            if (this.selectedUser.user.roleCode.length > 1){
                 this.removeRole("VE");
             }
             this.show=false;
-            this.selectedUser.user.isEmployed= 'N'; 
+            this.selectedUser.user.isEmployed= 'N';
+            this.selectedUser.user.isFromPool= 'N';
+            this.selectedUser.user.isActive = 'N';
         }
         else {
             this.show=true;
             this.selectedUser.user.isActive = 'Y';
             this.selectedUser.user.isEmployed= 'Y';
-            this.selectedUser.user.isFromPool=''; 
         }
     }
 
-    removeRole (text:string) {
-        let info="";
+    removeRole (role:string) {
         this.selectedUser.user.roleCode=[];
-        this.selectedUser.user.roleCode.push(text);
-        text ==="CN" ? info="Zleceniobiorca" : info = "Zleceniodawca" ;
-        if (this.selectedUser.user.roleCode.length===1) {
-            this.alertService.warn('Uzytkownik z rolą '+info+" może posiadać tylko jedną rolę aby wybrać inne role należy odznaczyć rolę "+info);
-        }
+        this.selectedUser.user.roleCode.push(role);
+        this.alertService.warn('Uzytkownik z rolą '+(role ==="CN" ? "Zleceniobiorca" : "Zleceniodawca")+" może posiadać tylko jedną rolę, aby wybrać inne role należy ją odznaczyć!");
     }
 
     public showDismissDialog ()

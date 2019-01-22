@@ -66,8 +66,8 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     search() {
         this.woService.getOrdersByDates(
-            this.lastModAfter.toISOString().substring(0, 10),
-            this.lastModBefore.toISOString().substring(0, 10)
+            this.toolsService.formatDate(this.lastModAfter, 'yyyy-MM-dd'),
+            this.toolsService.formatDate(this.lastModBefore, 'yyyy-MM-dd')
         ).subscribe(orders => this.processOrders(orders));
     }
 

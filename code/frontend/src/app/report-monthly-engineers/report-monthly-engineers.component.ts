@@ -8,6 +8,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
+import { SelectItem } from 'primeng/primeng';
 
 declare var jquery:any;
 declare var $ :any;
@@ -21,6 +22,8 @@ declare var $ :any;
 export class ReportMonthlyEngineersComponent implements OnInit {
 
   NO_MONTHS: number = 6;
+  possibleNoMonths: SelectItem[];
+
   holidays: number = -1;
   noTimesheets: number = -2;
 
@@ -37,8 +40,11 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   avgUtilizationData: any;
   lineUtilizationOptions: any;
   lineEarnedData: any;
+  personalEarnedOptions: any;
   totalEarnedData: any;
-  lineEarnedOptions: any;
+  totalEarnedOptions: any;
+  perCapitaEarnedData: any;
+  perCapitaEarnedOptions: any;
 
   colors: string[] = ['#b52aaf','#b52aaf','#6a1341','#6a1341','#c5cb6b','#c5cb6b','#68870d','#68870d','#47781d','#47781d','#fa980c','#fa980c','#12999c','#12999c','#a16e65','#a16e65','#d445c8','#d445c8','#b652fa','#b652fa','#542148','#542148','#f225ba','#ec38b1','#ec38b1','#6c4b76','#6c4b76','#b8a541','#b8a541','#c30f52','#c30f52','#c2e58c','#c2e58c','#911215','#911215','#45cbed','#45cbed','#f8bbde','#f8bbde','#1501f6','#1501f6','#bc2533','#bc2533','#42c438','#42c438','#4ea38a','#4ea38a','#a7774d','#a7774d','#5d9311','#5d9311','#26a864','#26a864','#92427a','#92427a','#339a5a','#339a5a','#a2ab53','#a2ab53','#c35e87','#c35e87','#c20c91','#c20c91','#a69e52','#a69e52','#85a6fc','#85a6fc','#f591de','#f591de','#be7dea','#be7dea','#546305','#546305','#769c11','#769c11','#4c6e55','#4c6e55','#bf3e19','#bf3e19','#132776','#132776','#30750d','#30750d','#44d240','#44d240','#3c00ca','#3c00ca','#5e72c7','#5e72c7','#3f16cd','#3f16cd','#3af2ad','#3af2ad','#ee79fd','#ee79fd','#e515d1','#e515d1','#c8ae00','#c8ae00','#9aba2f','#9aba2f','#d79179','#d79179','#a5cc12','#a5cc12','#fce3a0','#fce3a0','#a73775','#a73775','#77171f','#77171f','#f4d5a6','#f4d5a6','#e115e7','#e115e7','#661889','#661889','#83f557','#83f557','#d9d96f','#d9d96f','#9dd18c','#9dd18c','#eddc80','#eddc80','#fb3dc4','#fb3dc4','#961066','#961066','#4035f0','#4035f0','#46061b','#46061b','#b547d4','#b547d4','#99ba47','#99ba47','#3bb9a8','#3bb9a8','#3cb96c','#3cb96c','#c98b7c','#c98b7c','#45cc62','#45cc62','#bc7a3b','#bc7a3b','#68ed99','#68ed99','#24c7b4','#24c7b4','#0bab07','#0bab07','#5fc181','#5fc181','#bef91a','#bef91a','#69f98a','#69f98a','#75378f','#75378f','#30cd4a','#30cd4a','#2d2cda','#2d2cda','#d7e491','#d7e491','#e3b221','#e3b221','#c0fbe5','#c0fbe5','#ea0bfa','#ea0bfa','#4ab834','#4ab834','#d1fc8e','#d1fc8e','#22b543','#22b543','#e44dae','#e44dae','#3d5634','#3d5634','#1a170b','#1a170b','#edce07','#edce07','#89f020','#89f020','#58c5e4','#58c5e4','#030c83','#030c83','#422819','#422819','#ce5be9','#ce5be9','#f225ba'];
 
@@ -53,6 +59,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
     this.dictService.init();
     this.workTypeService.init();
+    this.initMounths();
 
     this.lineUtilizationOptions = {
       title: {
@@ -65,10 +72,10 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       }
     };
 
-    this.lineEarnedOptions = {
+    this.personalEarnedOptions = {
       title: {
         display: true,
-        text: 'Wkład [PLN]',
+        text: 'Indywidualny obrót [PLN]',
         fontSize: 16
       },
       legend: {
@@ -76,6 +83,38 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       }
     };
 
+    this.totalEarnedOptions = {
+      title: {
+        display: true,
+        text: 'Sumaryczny obrót [PLN]',
+        fontSize: 16
+      },
+      legend: {
+        position: 'top'
+      }
+    };
+
+    this.perCapitaEarnedOptions = {
+      title: {
+        display: true,
+        text: 'Obrót per capita w [PLN]',
+        fontSize: 16
+      },
+      legend: {
+        position: 'top'
+      }
+    };
+
+  }
+
+  private initMounths() {
+    this.possibleNoMonths = [];
+    for (let i = 6; i < 12; i++) {
+      let d = new Date();
+      d.setMonth(d.getMonth() - i);
+      let l:string = this.toolsService.formatDate(d, 'yyyy-MM');
+      this.possibleNoMonths.push({label: l, value: i});
+    }
   }
 
   ngOnInit() {
@@ -96,6 +135,8 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   }
 
   private initMonths(): DateRange[] {
+    console.log('NO_MONTHS '+this.NO_MONTHS);
+
     let result : DateRange[] = [];
 
     for (let i = this.NO_MONTHS; i >= 1; i--) {
@@ -109,6 +150,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       this.avgUtilizationData.labels.push(this.toolsService.formatDate(firstDay, 'yyyy-MM'));
       this.lineEarnedData.labels.push(this.toolsService.formatDate(firstDay, 'yyyy-MM'));
       this.totalEarnedData.labels.push(this.toolsService.formatDate(firstDay, 'yyyy-MM'));
+      this.perCapitaEarnedData.labels.push(this.toolsService.formatDate(firstDay, 'yyyy-MM'));
       this.emptyData.push(0);
     }
     console.log('periods '+JSON.stringify(result));
@@ -121,6 +163,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     this.avgUtilizationData = {labels: [], datasets: []}
     this.lineEarnedData = {labels: [], datasets: []}
     this.totalEarnedData = {labels: [], datasets: []}
+    this.perCapitaEarnedData = {labels: [], datasets: []}
     this.reports = [];
 
     let monthsRange: DateRange[] = this.initMonths();
@@ -178,7 +221,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     if (timesheets && timesheets.length > 0) {
       for (let t of timesheets) {
         inner: for (let report of reportData) {
-          if (report.id === t.personId) {
+          if (report.id === t.personId && t.isLeave !== 'Y') {
             report.declaredTime += t.usedTime;
             break inner;
           }
@@ -213,6 +256,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     this.lineEarnedData.datasets = [];
     this.avgUtilizationData.datasets = [];
     this.totalEarnedData.datasets = [];
+    this.perCapitaEarnedData.datasets = [];
 
 
     let users: string[] = this.getUsers(reports);
@@ -254,19 +298,26 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     }
     this.avgUtilizationData.datasets.push({label: 'ŚREDNIA', data: utilizationAvg, fill: false, borderColor: '#0000FF'});
 
-    let earnedAvg: number[] = JSON.parse(JSON.stringify(this.emptyData));
+    let totalEarned: number[] = JSON.parse(JSON.stringify(this.emptyData));
+    let perCapitaEarned: number[] = JSON.parse(JSON.stringify(this.emptyData));
     for (let dataset of this.lineEarnedData.datasets) {
       for (let i=0; i< dataset.data.length; i++) {
-        earnedAvg[i] += dataset.data[i];
+        totalEarned[i] += dataset.data[i];
       }
     }
-    this.totalEarnedData.datasets.push({label: 'RAZEM', data: earnedAvg, fill: false, borderColor: '#00FF00'});
+    this.totalEarnedData.datasets.push({label: 'RAZEM', data: totalEarned, fill: false, borderColor: '#00FF00'});
+
+    for (let i=0; i< totalEarned.length; i++) {
+      perCapitaEarned[i] += (totalEarned[i] / this.lineEarnedData.datasets.length);
+    }
+    this.perCapitaEarnedData.datasets.push({label: 'ŚREDNIA PER CAPITA ('+this.lineEarnedData.datasets.length+')', data: perCapitaEarned, fill: false, borderColor: '#00FF00'});
 
 
     this.lineUtilizationData = JSON.parse(JSON.stringify(this.lineUtilizationData));
     this.avgUtilizationData = JSON.parse(JSON.stringify(this.avgUtilizationData));
     this.lineEarnedData = JSON.parse(JSON.stringify(this.lineEarnedData));
     this.totalEarnedData = JSON.parse(JSON.stringify(this.totalEarnedData));
+    this.perCapitaEarnedData = JSON.parse(JSON.stringify(this.perCapitaEarnedData));
     this.chartsReady = true;
   }
 
@@ -388,9 +439,12 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     for(let order of userData.workOrders) {
       if (order.doneDate) {
         let doneDate: Date = this.toolsService.parseDate(order.doneDate);
-        console.log('debug '+doneDate+', '+userData.dateRange.beginDate+' _ '+JSON.stringify(userData));
+        doneDate.setHours(0,0,0,0);
+
         if (userData.dateRange && userData.dateRange.beginDate && userData.dateRange.endDate && userData.dateRange.beginDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= userData.dateRange.endDate.getTime()) {
           userData.earnedMoney += order.price;
+         } else {
+          console.log("earnedMoney without : "+doneDate +" between "+JSON.stringify(userData.dateRange));
         }
       }
     }

@@ -1,5 +1,5 @@
-<div class="ui-grid-row" style="max-width: 900px;">
-    <div class="ui-grid-col-6" style="margin-top: 10px;">
+<div class="ui-grid-row" style="max-width: 1000px;">
+    <div class="ui-grid-col-6" style="margin-top: 0px;">
         <p-fieldset legend="Detale zlecenia"
                     *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.comment">
             <div class="ui-grid-row" *ngIf="selectedOrder?.creationDate">
@@ -69,7 +69,7 @@
 
     <div class="ui-grid-col-6">
         <div *ngIf="selectedOrder?.ventureDisplay || selectedOrder?.ventureCompany" class="ui-grid-row"
-             style="margin-top: 10px;">
+             style="margin-top: 0px;">
             <p-fieldset legend="Inwestor">
                 {{selectedOrder?.ventureDisplay}} @ {{selectedOrder?.ventureCompany}}
             </p-fieldset>
@@ -118,15 +118,15 @@
     </div>
     <br>
 
+
     <div *ngIf="selectedOrder?.comments?.comments || selectedOrder?.description" class="ui-grid ui-grid-responsive ui-fluid" style="margin-top: 10px;">
 
-        <p-fieldset legend="Uwagi">
-            <div class="ui-grid-row">
+        <div class="ui-grid-row" style="margin-top: 10px;">
                     <div class="ui-grid-col-12" *ngIf="selectedOrder?.comments?.comments">
 
 
                         <p-dataTable header="Komentarze" [value]="selectedOrder.comments.comments" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                                     sortField="date" sortOrder="1" [loading]="loading" loadingIcon="fa fa-spinner">
+                                     sortField="date" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
                             <p-header>Komentarze</p-header>
                             <p-column [sortable]="true" field="date" header="Utworzono" [style]="{'width':'120px'}"></p-column>
                             <p-column [sortable]="true" field="sCreatedBy" header="Osoba" [style]="{'width':'120px'}"></p-column>
@@ -136,28 +136,30 @@
                                     <textarea readonly="readonly" style="color: black;" pInputTextarea [rows]="2" [cols]="30">{{comment.text}}</textarea>
                                 </ng-template>
                             </p-column>
+                            <ng-template pTemplate="emptymessage">
+                                Brak komentarzy...
+                            </ng-template>
                         </p-dataTable>
 
                     </div>
-            </div>
-            <div class="ui-grid-row">
-                    <div class="ui-grid-col-12"  *ngIf="selectedOrder?.description" style="max-width: 900px; margin-top: 10px;">
-                        <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
-                    </div>
-            </div>
+        </div>
+        <div class="ui-grid-row">
+                <div class="ui-grid-col-12"  *ngIf="selectedOrder?.description" style="max-width: 1000px; margin-top: 10px;">
+                    <p-panel header="Opis">{{selectedOrder.description}}</p-panel>
+                </div>
+        </div>
 
-        </p-fieldset>
 
 
     </div>
 
-    <div class="ui-grid-row" style="max-width: 900px;">
+    <div class="ui-grid-row" style="max-width: 1000px;">
         <div class="ui-grid-col-12" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"
-             style="margin-top: 10px; margin-top: 10px;">
+             style="margin-top: 10px;">
             <p-fieldset legend="Historia">
 
                 <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                             sortField="versionDate" sortOrder="1" [loading]="loading" loadingIcon="fa fa-spinner">
+                             sortField="versionDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
                     <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
@@ -165,8 +167,8 @@
                     <p-column [sortable]="true" field="workNo" header="Zlecenie" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
-                    <p-column [sortable]="true" field="complexity" header="Złożoność" [style]="{'width':'60px'}"></p-column>
-                    <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px'}"></p-column>
+                    <p-column [sortable]="true" field="complexity" header="Pracochłonność" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
+                    <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
 
                     <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
 

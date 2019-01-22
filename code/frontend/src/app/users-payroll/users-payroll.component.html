@@ -113,7 +113,7 @@
 
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-12">
-                <p-dataTable [value]="historicalPayrolls" sortField="periodDate"
+                <p-dataTable [value]="historicalPayrolls" sortField="periodDate" sortOrder="-1"
                              rowGroupMode="subheader" groupField="periodDate" expandableRowGroups="true" [sortableRowGroup]="false"
                              [style]="{'margin-top':'20px'}" scrollable="true" scrollHeight="600px"
                              #historicalDt
@@ -128,7 +128,7 @@
 
                         <div style="float: left; max-width: 90%;">
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
-                            <span [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
+                            <span style="margin-left: 10px;" [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wspólczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
@@ -271,7 +271,7 @@
             </div>
 
         </div>
-        <p-dataTable [value]="approvedPayroll" sortField="periodDate"
+        <p-dataTable [value]="approvedPayroll"
                      rowGroupMode="rowspan"
                      #approvedDt
                      sortField="user.excelId" sortOrder="1"

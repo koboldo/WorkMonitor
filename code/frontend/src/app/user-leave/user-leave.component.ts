@@ -57,7 +57,7 @@ export class UserLeaveComponent implements OnInit {
     }
 
     public confirmLeave(): void {
-        console.log("Confirm leave for: "+this.selectedUser.user.id+" test:"+this.toolsService.formatDate(this.afterDate, 'yyyy-MM-dd HH:mm:ss')+" "+this.beforeDate.toISOString());
+        console.log("Confirm leave for: "+this.selectedUser.user.id+" test:"+this.toolsService.formatDate(this.afterDate, 'yyyy-MM-dd HH:mm:ss')+" "+this.toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd'));
 
         this.timesheetService.addLeave(
             this.selectedUser.user.id,

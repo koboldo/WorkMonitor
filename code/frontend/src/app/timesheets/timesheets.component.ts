@@ -78,6 +78,13 @@ export class TimesheetsComponent implements OnInit {
     onEdit(event) {
         console.log('edit !' + JSON.stringify(event.data));
 
+        if (event.data.roleCode.indexOf('OP') > -1 || event.data.roleCode.indexOf('MG') > -1) {
+            if (this.user.roleCode.indexOf('PR') < 0) {
+                this.alertService.warn("Brak uprawnień");
+                this.restore(event.data);
+            }
+        }
+
         if (event.data.timesheetFrom.length === 2) {
             if (this.hourRegexp.test(event.data.timesheetFrom)) {
                 event.data.timesheetFrom+=':';
@@ -135,6 +142,10 @@ export class TimesheetsComponent implements OnInit {
                 userWithSheet.timesheetFrom = this.sWeekendSheet;
                 userWithSheet.timesheetTo = this.sWeekendSheet;
                 userWithSheet.color = 'grey';
+            }
+
+            if (userWithSheet.isManagerOrOperator === 'VIP' && this.user.roleCode.indexOf('PR') === -1) {
+                userWithSheet.color = 'darkgrey';
             }
 
 
@@ -298,6 +309,7 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.copy = JSON.parse(JSON.stringify(timesheet));
 
             userWithSheet.rowid = rowid;
+            userWithSheet.isManagerOrOperator = (user.roleCode.indexOf('MG') > -1 || user.roleCode.indexOf('OP') > -1) ? 'VIP': 'Master';
 
             this.restore(userWithSheet);
 
@@ -372,6 +384,8 @@ export class UserWithSheet extends User {
     timesheetBreakInMinutes: string;
     timesheetTrainingInGMM: string;
     isLeave: string;
+
+    isManagerOrOperator: string; //Y, N
 
     color: string;
     status: string;

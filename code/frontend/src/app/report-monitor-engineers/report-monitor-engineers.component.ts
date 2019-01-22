@@ -51,7 +51,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 private workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
-                private toolsService:ToolsService,
+                public toolsService:ToolsService,
                 private timesheetService: TimesheetService) {
 
         this.dictService.init();
@@ -61,7 +61,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         d.setMonth(d.getMonth() - 1);
         this.afterDate = d;
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);
-        this.future = toolsService.getCurrentDateDayOperation(+10).toISOString().substring(0, 10);
+        this.future = toolsService.formatDate(toolsService.getCurrentDateDayOperation(+10), 'yyyy-MM-dd');
         this.pl=new Calendar();
 
     }
@@ -178,8 +178,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     search(): void {
-        let sAfterDate: string = this.afterDate.toISOString().substring(0, 10);
-        let sBeforeDate: string = this.beforeDate.toISOString().substring(0, 10);
+        let sAfterDate: string = this.toolsService.formatDate(this.afterDate, 'yyyy-MM-dd');
+        let sBeforeDate: string = this.toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd');
         console.log("Searching for "+this.afterDate+"="+sAfterDate+", "+this.beforeDate+"="+sBeforeDate);
 
         this.chartsReady = false;
@@ -232,7 +232,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
         if (timesheets && timesheets.length > 0) {
             for (let t of timesheets) {
                 inner: for (let report of this.reports) {
-                    if (report.id === t.personId) {
+                    if (report.id === t.personId && t.isLeave !== 'Y') {
                         report.declaredTime += t.usedTime;
                         break inner;
                     }
@@ -354,9 +354,11 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 for(let order of userData.workOrders) {
                     if (order.doneDate) {
                         let doneDate: Date = this.toolsService.parseDate(order.doneDate);
+                        doneDate.setHours(0,0,0,0);
                         if (this.afterDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= this.beforeDate.getTime()) {
-                            //console.log("chartEarnedData: "+order.doneDate)
                             userData.earnedMoney += order.price;
+                        } else {
+                            console.log("earnedMoney without : "+doneDate +" as it is not after "+this.afterDate+ " or before "+this.beforeDate);
                         }
                     }
                 }

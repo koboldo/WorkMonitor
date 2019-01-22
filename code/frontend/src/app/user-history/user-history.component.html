@@ -17,8 +17,7 @@
 
         <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
           <ng-template let-col let-user="rowData" pTemplate="body">
-            <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}}</span>
-            <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.lastName}}</span>
+            <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}} {{user.lastName}}</span>
           </ng-template>
         </p-column>
 

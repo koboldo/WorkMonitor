@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UsersDisplayComponent } from '../users-display/users-display.component';
 import { AlertService, UserService, DictService, AuthenticationService, ToolsService, UserTimeStatsService } from '../_services/index';
 import { User, CodeValue, SearchUser, Timestats } from '../_models/index';
-import { SelectItem } from 'primeng/primeng'
+import { SelectItem } from 'primeng/primeng';
 
 
 @Component({

@@ -1,0 +1,32 @@
+<p>WERSJA <a [routerLink]="" (click)="showHistoryDialog()">{{versionService.version}} Faza II</a> ( <a href="https://www.primefaces.org/primeng/#/" target="_top">Powered by primeng</a> )
+</p>
+
+<p-dialog header="Historia zmian" [(visible)]="showHistory" [responsive]="true" [minWidth]="1000" [width]="800">
+  <div class="ui-grid ui-grid-responsive ui-fluid">
+    <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
+
+      <p-dataTable [value]="versionService.history" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtChangeLog
+                   dataKey="code" resizableColumns="true">
+        <p-header>
+          <div>
+            <i class="fa fa-search"></i>
+            <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+          </div>
+        </p-header>
+        <p-column [sortable]="false" field="code" header="Numer" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
+        <p-column [sortable]="false" field="paramChar" header="Opis"  [style]="{'text-align':'left', 'word-wrap': 'break-word'}">
+          <ng-template let-col let-version="rowData" pTemplate="body">
+            <textarea style="width: 100%; border: 0 none white; overflow: hidden; padding: 0; outline: none;"
+                      [(ngModel)]="version[col.field]" ></textarea>
+          </ng-template>
+        </p-column>
+      </p-dataTable>
+
+    </div>
+  </div>
+</p-dialog>
+
+
+
+
+
