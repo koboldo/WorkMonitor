@@ -139,7 +139,8 @@ import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component
         WoStoppedListComponent,
         WoCancelledComponent,
         UsersTimeStatsComponent,
-		AppVersionComponent,
+        AppVersionComponent,
+        ReportMonthlyEngineersComponent,
 		WoTurboTableComponent    ],
     providers: [
         AlertService,
