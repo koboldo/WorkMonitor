@@ -82,7 +82,6 @@ import { WoSuspendedComponent } from './wo-suspended/wo-suspended.component';
 import { UsersDisplayComponent } from './users-display/users-display.component';
 import { UsersPayrollComponent } from './users-payroll/users-payroll.component';
 import { MyPayrollComponent } from './my-payroll/my-payroll.component';
-// protocol filter
 import { WoListComponent } from './wo-list/wo-list.component';
 import { UserHistoryComponent } from './user-history/user-history.component';
 import { GroupStatusChangeComponent } from './group-status-change/group-status-change.component';
@@ -91,6 +90,7 @@ import { WoStoppedListComponent } from './wo-stopped-list/wo-stopped-list.compon
 import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
+import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
 
 
 @NgModule({
@@ -138,7 +138,8 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
         WoStoppedListComponent,
         WoCancelledComponent,
         UsersTimeStatsComponent,
-        ReportMonthlyEngineersComponent
+        ReportMonthlyEngineersComponent,
+        WoTurboTableComponent
     ],
     providers: [
         AlertService,

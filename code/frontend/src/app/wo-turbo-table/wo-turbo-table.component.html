@@ -1,6 +1,6 @@
 
 
-<p-panel header="Zlecenia - WO">
+<p-panel header="Turbo Table z zleceniami WO">
 
   <div class="ui-grid-row">
     <div class="ui-grid-col-6">
@@ -44,114 +44,7 @@
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 
-    <!-- sortField="lastModDate" -->
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
-                 selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" (onRowDblclick)="onRowDblclick($event)"
-                 resizableColumns="true" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm" csvSeparator=";" exportFilename="Zlecenia">
-      <p-header>
-        <div>
-          <i class="fa fa-search"></i>
-          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
-        </div>
-      </p-header>
-      <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
-      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <!--<p-column [sortable]="true" field="status" header="statusSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
-      <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-          <span style="padding: 3px">{{order.status}}</span>
-        </ng-template>
-      </p-column>
-
-      <!--<p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
-      <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-          <span style="padding: 3px">{{order.type}}</span>
-        </ng-template>
-      </p-column>
-
-      <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-        </ng-template>
-      </p-column>
-      <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
-
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-column [sortable]="true" field="sComments" header="Komentarz" hidden="true"></p-column>
-      <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
-
-      <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
-      <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-          <ng-template let-col let-order="rowData" pTemplate="body">
-            <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-            <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-          </ng-template>
-
-      </p-column>
-      <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-
-      <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <!-- search by invisible colums flatten into order by wo.service -->
-      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemAddress" header="Adres" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu" hidden="true"></p-column>
-
-      <!-- these are original childobject props but could not be used to filter
-      <p-column [sortable]="true" header="Obiekt">
-        <ng-template let-col let-relatedItem="rowData.relatedItems[0]" pTemplate="body">
-          <span *ngIf="relatedItem?.itemNo">{{relatedItem?.itemNo}}<br></span>
-          <span *ngIf="relatedItem?.address">{{relatedItem?.address}}<br></span>
-          <span *ngIf="relatedItem?.mdBuildingType">{{relatedItem?.mdBuildingType}}<br></span>
-          <span *ngIf="relatedItem?.mdConstructionCategory">{{relatedItem?.mdConstructionCategory}}<br></span>
-          <span *ngIf="relatedItem?.description">{{relatedItem?.description}}<br></span>
-        </ng-template>
-      </p-column>-->
-      <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [style]="{'width':'40px','text-align':'center'}">
-        <ng-template let-order="rowData" pTemplate="body">
-          <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
-        </ng-template>
-      </p-column>
-
-      <p-footer>
-        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-          <div class="ui-grid-row"  style="margin-top: 15px;">
-            <div class="ui-grid-col-1"></div>
-            <div class="ui-grid-col-2">
-              <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
-            </div>
-
-            <div class="ui-grid-col-2">  </div>
-            <div class="ui-grid-col-2"> </div>
-            <div class="ui-grid-col-1"> </div>
-
-            <div class="ui-grid-col-2">
-              <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
-            </div>
-            <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
-          </div>
-        </div>
-      </p-footer>
-
-      <ng-template pTemplate="emptymessage">
-        Brak zleceń...
-      </ng-template>
-
-    </p-dataTable>
+   
   </div>
 
   <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
