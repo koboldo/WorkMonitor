@@ -302,13 +302,13 @@
 
   <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" 
      [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm" csvSeparator=";"  exportFilename="Turbo Zlecenia">
-  <ng-template pTemplate="caption">
-      <div>
-          <i class="fa fa-search"></i>
-          <input type="text" pInputText size="50" placeholder="Filtruj" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-          <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
-        </div>
-</ng-template>
+    <ng-template pTemplate="caption">
+        <div>
+            <i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+          </div>
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
           <th *ngFor="let col of cols"
@@ -317,14 +317,18 @@
           [ngClass]="col.class"
           pResizableColumn
           >
+          <span class="header">
               {{col.header}}
+              <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+          </span>
+          
           </th>
         </tr>
         <tr>
-          <th *ngFor="let col of cols" [ngSwitch]="col.field" [hidden]="col.hidden" >
-            <input placeholder="Filtruj" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+          <th *ngFor="let col of cols"  [hidden]="col.hidden" >
+            <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
           </th>
-      </tr>
+        </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-order>
         <tr [pSelectableRow]="rowData" (dblclick)="onRowDblclick($event)">
@@ -334,18 +338,17 @@
             [ngClass]="col.class"
             [pSelectableRowDblClick]="rowData"
             >           
-            <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
-            <span *ngIf="col.type" [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
-            <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-            <span *ngIf="col.isFromPool">
-              <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-              <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-            </span>
-            <p-button *ngIf="col.button" type="button" style="width:25px"  (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
-            <span *ngIf="!col.icon">
-              {{order[col.field]}}
-            </span>
-            
+              <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
+              <span *ngIf="col.type" [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+              <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+              <span *ngIf="col.isFromPool">
+                <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+              </span>
+              <p-button *ngIf="col.button" type="button" style="width:25px"  (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
+              <span *ngIf="!col.icon">
+                {{order[col.field]}}
+              </span>            
         </td>
         </tr>
     </ng-template>

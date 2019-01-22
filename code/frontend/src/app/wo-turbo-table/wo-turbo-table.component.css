@@ -3,24 +3,38 @@
     width :45px;
 }
 
-.width-135 {
-    width: 135px;
-}
 .text-center-55 {
     text-align:center;
     width :55px;
 }
+
+.width-35 {
+    width: 35px;
+}
 .width-70 {
     width: 70px;
 }
-.width-82 {
+
+.width-100 {
     width: 100px;
 }
-.width-25 {
-    width: 25px;
+
+.width-135 {
+    width: 135px;
 }
-td{
+
+.width-125 {
+    width: 125px;
+}
+
+td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis
-  }
+}
+
+.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
