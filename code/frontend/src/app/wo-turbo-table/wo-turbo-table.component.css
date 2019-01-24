@@ -1,0 +1,40 @@
+.text-center {
+    text-align:center;
+    width :45px;
+}
+
+.text-center-55 {
+    text-align:center;
+    width :55px;
+}
+
+.width-35 {
+    width: 35px;
+}
+.width-70 {
+    width: 70px;
+}
+
+.width-100 {
+    width: 100px;
+}
+
+.width-135 {
+    width: 135px;
+}
+
+.width-125 {
+    width: 125px;
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}

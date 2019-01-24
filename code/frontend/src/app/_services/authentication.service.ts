@@ -124,6 +124,14 @@ export class AuthenticationService {
                 ]
             },
             {
+                label: 'Prime NG 6',
+                icon: 'fa fa-rocket',
+                items: [
+                    {label: 'Tabela', icon: 'fa fa-table', routerLink: ['/turboTable'], "rolesRequired":["PR", "OP"]},
+                   
+                ]
+            },
+            {
                 label: 'Ustawienia',
                 icon: 'fa fa-cogs',
                 items: [
@@ -165,6 +173,7 @@ export class AuthenticationService {
             {label: 'Zmodyfikuj osobę', icon: 'fa fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
             //{label: 'Parametryzacja zleceń', icon: 'fa fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
             {label: 'Parametryzacja zleceń', icon: 'fa fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
+            {label: 'Turbo Table', icon: 'fa fa-cogs', routerLink: ['/turboTable'], "rolesRequired":["PR", "OP"]},
             /*{label: 'Wyloguj', icon: 'fa fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 

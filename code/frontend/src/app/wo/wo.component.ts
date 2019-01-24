@@ -105,7 +105,7 @@ export class WoComponent implements OnInit {
         this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
        
-        this.search();     
+        this.search();
     }
 
     showChangeStatusDialog() {
