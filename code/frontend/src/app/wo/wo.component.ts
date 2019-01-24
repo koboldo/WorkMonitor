@@ -98,7 +98,7 @@ export class WoComponent implements OnInit {
     ngOnInit() {
         this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
-        this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
+        this.itemService.getAllItems().subscribe(relatedItems => this.sortRelatedItems(relatedItems));
         this.workTypeService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
 
@@ -650,6 +650,11 @@ export class WoComponent implements OnInit {
     }
 
 
+    private sortRelatedItems(relatedItems:RelatedItem[]):void {
+        this.relatedItems = relatedItems.sort(function (a,b) {
+            return ((a.itemNo) >= (b.itemNo)) ? 1 : -1;
+        });
+    }
 }
 
 

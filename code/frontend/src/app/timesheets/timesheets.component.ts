@@ -79,7 +79,7 @@ export class TimesheetsComponent implements OnInit {
         console.log('edit !' + JSON.stringify(event.data));
 
         if (event.data.roleCode.indexOf('OP') > -1 || event.data.roleCode.indexOf('MG') > -1) {
-            if (this.user.roleCode.indexOf('PR') < 0) {
+            if (this.user.roleCode.indexOf('TS') < 0) {
                 this.alertService.warn("Brak uprawnień");
                 this.restore(event.data);
             }
@@ -144,7 +144,7 @@ export class TimesheetsComponent implements OnInit {
                 userWithSheet.color = 'grey';
             }
 
-            if (userWithSheet.isManagerOrOperator === 'VIP' && this.user.roleCode.indexOf('PR') === -1) {
+            if (userWithSheet.isManagerOrOperator === 'VIP' && this.user.roleCode.indexOf('TS') === -1) {
                 userWithSheet.color = 'darkgrey';
             }
 
