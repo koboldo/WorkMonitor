@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.25', 'Rola zegarmistrz do aktualizacji czasu pracy dla OP i MG, sortowanie numerów stacji.'),
             new CodeValue('1.5.24', 'Poprawa sortowania typów, przypisywania wykonawcy podczas dodawania zlecenia, Poprawa wielokrotnego dodawania i modyfikacji stacji podczas dodawania wielu zleceń'),
             new CodeValue('1.5.23', 'Wyświetlanie historii zmian, przekazywanie Session-Id oraz Front-Version'),
             new CodeValue('1.5.22', 'Edytowalny zakres dat na zakladce raporty miesięczne'),

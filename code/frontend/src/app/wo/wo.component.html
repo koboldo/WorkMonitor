@@ -208,7 +208,7 @@
       <div class="ui-grid-row" style="margin-top: 2px;">
         <div class="ui-grid-col-2"><label for="orderType">Typ zlecenia*</label></div>
         <div class="ui-grid-col-5">
-            <p-autoComplete [forceSelection]="true" [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia...">
+            <p-autoComplete [forceSelection]="true" delay="100" [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia...">
               <ng-template let-orderType pTemplate="item">
                 <div class="ui-helper-clearfix">
                   <span [style.color]="toolsService.getOrderColor(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
