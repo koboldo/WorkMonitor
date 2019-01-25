@@ -398,6 +398,7 @@ export class WoComponent implements OnInit {
 
         this.newOrder = false;
         this.displayEditDialog = true;
+        this.assignedEngineer = undefined;
     }
 
 
@@ -409,13 +410,13 @@ export class WoComponent implements OnInit {
             .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user));
     }
 
-    synchronousSaveAssignment(order: Order) {
-        console.log('Synchronous saving assignment!' + JSON.stringify(order) + ' for ' + JSON.stringify(this.assignedEngineer.user));
+    synchronousSaveAssignment(order: Order, assignedEngineer: SearchUser) {
+        console.log('Synchronous saving assignment!' + JSON.stringify(order) + ' for ' + JSON.stringify(assignedEngineer.user));
         this.isNewOrderOwner = true;
         this.displayAssignDialog = false;
-        this.userService.assignWorkOrder(this.assignedEngineer.user, order, this.isNewOrderOwner).toPromise()
+        this.userService.assignWorkOrder(assignedEngineer.user, order, this.isNewOrderOwner).toPromise()
             .then(result => {
-                this.updateOrderStatusObs(result['created'], this.isNewOrderOwner, order, this.assignedEngineer.user).toPromise()
+                this.updateOrderStatusObs(result['created'], this.isNewOrderOwner, order, assignedEngineer.user).toPromise()
                     .then(result => {
                         console.log('Status from promise!');
                     });
@@ -511,7 +512,7 @@ export class WoComponent implements OnInit {
                 this.itemService.updateItem(this.relatedItem).subscribe(item => {
                     this.storeOrder(item, order, this.newOrder, false).subscribe(order => {
                         if (this.assignedEngineer != null){
-                            this.synchronousSaveAssignment(order);
+                            this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
                         }
                         saveOrderCallback(order, this);
                     })
@@ -521,7 +522,7 @@ export class WoComponent implements OnInit {
                 console.log('no action on relatedItem but could be reassignment - this will be handled in storeOrder');
                 this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => {
                     if (this.assignedEngineer != null){
-                        this.synchronousSaveAssignment(order);
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
                     }
                     saveOrderCallback(order, this);
                 });
@@ -531,7 +532,7 @@ export class WoComponent implements OnInit {
             this.itemService.addItem(this.relatedItem).subscribe(item => {
                 this.storeOrder(item, order, this.newOrder, true).subscribe(order => {
                     if (this.assignedEngineer != null){
-                        this.synchronousSaveAssignment(order);
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
                     }
                     saveOrderCallback(order, this);
                 })
@@ -541,7 +542,7 @@ export class WoComponent implements OnInit {
             console.log('no action on relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
             this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => {
                     if (this.assignedEngineer != null){
-                        this.synchronousSaveAssignment(order);
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
                     }
                     saveOrderCallback(order, this);
             });
@@ -577,6 +578,7 @@ export class WoComponent implements OnInit {
         } else {
             console.log('No more order to save, refreshing...');
             that.refresh();
+            this.assignedEngineer = undefined;
         }
     }
 

@@ -19,7 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
-			      new CodeValue('1.5.26', 'Dodanie zakładki Prime Ng6 z Turbo Table'),
+            new CodeValue('1.5.27', 'Poprawa przypisywania i edycji - awaria'),
+            new CodeValue('1.5.26', 'Dodanie zakładki Prime Ng6 z Turbo Table'),
             new CodeValue('1.5.25', 'Rola zegarmistrz do aktualizacji czasu pracy dla OP i MG, sortowanie numerów stacji.'),
             new CodeValue('1.5.24', 'Poprawa sortowania typów, przypisywania wykonawcy podczas dodawania zlecenia, Poprawa wielokrotnego dodawania i modyfikacji stacji podczas dodawania wielu zleceń'),
             new CodeValue('1.5.23', 'Wyświetlanie historii zmian, przekazywanie Session-Id oraz Front-Version'),

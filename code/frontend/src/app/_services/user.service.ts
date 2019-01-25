@@ -44,7 +44,7 @@ export class UserService {
         return this.http.put('/pwdreset', msg).pipe(map((response: Object) => response));
     }
 
-    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):any {
+    assignWorkOrder(user: User, order: Order, isNewOrderOwner: boolean):Observable<any> {
         if (isNewOrderOwner && order.assignee !== undefined && order.assignee.length > 0) {
             return this.addRelation(true, user, order);
         } else {
