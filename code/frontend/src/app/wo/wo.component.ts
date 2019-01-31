@@ -110,6 +110,7 @@ export class WoComponent implements OnInit {
 
     showChangeStatusDialog() {
         this.displayChangeStatusDialog=true;
+        this.assignedEngineer = undefined;
     }
 
     onClose(isVisible: boolean){
@@ -345,6 +346,7 @@ export class WoComponent implements OnInit {
             this.isNewOrderOwner = isNewOrderOwner;
             this.newOrder = false;
             this.editedOrder = this.selectedOrder;
+            this.assignedEngineer = undefined;
             this.displayAssignDialog = true;
         }
     }
@@ -546,7 +548,7 @@ export class WoComponent implements OnInit {
                     }
                     saveOrderCallback(order, this);
             });
-        }     
+        }    
     }
 
     private storeOrder(item:RelatedItem, order:Order, newOrder:boolean, newItem:boolean):Observable<Order> {
@@ -577,8 +579,8 @@ export class WoComponent implements OnInit {
             that.additionalPrices.shift();          
         } else {
             console.log('No more order to save, refreshing...');
-            that.refresh();
-            this.assignedEngineer = undefined;
+            that.refresh();        
+            // this.assignedEngineer = undefined;    Shows errors during order saving                  
         }
     }
 
