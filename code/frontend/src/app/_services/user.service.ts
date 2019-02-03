@@ -98,8 +98,9 @@ export class UserService {
     }
 
     public getUtilizationReportData(dateAfter: string, dateBefore: string): Observable<MonthlyUserReport[]> {
-        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).pipe(map((response: Object) =>
-        this.getAllUserReport(response))) as Observable<MonthlyUserReport[]>;
+        return this.http.get('/api//v1/report/personOrders?dateAfter='+dateAfter+"&dateBefore="+dateBefore).pipe(
+                map((response: Object) => this.getAllUserReport(response))
+            ) as Observable<MonthlyUserReport[]>;
         // (response['list'])
         
     }
@@ -212,19 +213,38 @@ export class UserService {
     private getAllUserReport(response:any):UserReport[] {
         let users : UserReport[] = [];
         if (response.list && response.list.length > 0) {
-            for (let user of response.list) {
 
-                if (user.roleCode!='CN'){
+            for (let user of response.list) {
+                if (user.roleCode != 'CN') {
                     for (let order of user.workOrders) {
-                        order.statusCode ? order.status = this.dictService.getWorkStatus(order.statusCode): '?'
+                        order.statusCode ? order.status = this.dictService.getWorkStatus(order.statusCode): '?';
+                        this.shareRevenue(user, order, response.list);
                     }
                     users.push(user);
                 } else {
                     console.log('debug '+JSON.stringify(user));
                 }
             }
+
         }
         return users;
     }
 
+    private shareRevenue(user:User, order:Order, users: UserReport[]):void {
+        let sharedCounter: number = 1;
+        if ((order.typeCode === '1.1' || order.typeCode === '8.2' || order.typeCode === '10.1')) {
+
+            for (let currUser of users) {
+                for (let currOrder of currUser.workOrders) {
+                    if (currUser.id != user.id && order.id === currOrder.id) {
+                        sharedCounter++;
+                    }
+                }
+            }
+        }
+        if (sharedCounter > 1) {
+            console.log('Sharing revenue for '+order.id+', '+order.workNo+' among '+sharedCounter+' employees');
+        }
+        order.sharedPrice = order.price / sharedCounter;
+    }
 }

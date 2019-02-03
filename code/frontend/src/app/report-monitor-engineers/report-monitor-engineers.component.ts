@@ -356,7 +356,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                         let doneDate: Date = this.toolsService.parseDate(order.doneDate);
                         doneDate.setHours(0,0,0,0);
                         if (this.afterDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= this.beforeDate.getTime()) {
-                            userData.earnedMoney += order.price;
+                            userData.earnedMoney += order.sharedPrice;
                         } else {
                             console.log("earnedMoney without : "+doneDate +" as it is not after "+this.afterDate+ " or before "+this.beforeDate);
                         }
