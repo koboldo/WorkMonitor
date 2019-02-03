@@ -300,8 +300,8 @@
     </p-footer>
   </p-dialog>
 
-  <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" 
-     [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm" csvSeparator=";"  exportFilename="Turbo Zlecenia">
+  <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
+           loadingIcon="fa fa-spinner" csvSeparator=";"  exportFilename="Turbo Zlecenia">
     <ng-template pTemplate="caption">
         <div>
             <i class="fa fa-search"></i>
