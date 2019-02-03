@@ -73,6 +73,28 @@ export class WorkTypeService {
     private cacheAndGet(workTypes: WorkType[]): WorkType[] {
         console.log("Caching workTypes! first: "+JSON.stringify(workTypes[0]));
 
+
+        workTypes.sort(function (a,b) {
+            let ap = parseFloat(a.typeCode);
+            let ab = parseFloat(b.typeCode);
+
+            if (isNaN(ap) && isNaN(ab)) {
+                return ((a.typeCode) >= (b.typeCode)) ? 1 : -1;
+            } else if (isNaN(ap)) {
+                return 1;
+            } else if (isNaN(ab)) {
+                return -1;
+            } else if ((parseFloat(a.typeCode.split(".")[0]) === parseFloat(b.typeCode.split(".")[0]))) {
+                if (parseFloat(a.typeCode.split(".")[1]) >= parseFloat(b.typeCode.split(".")[1])) {
+                    return 1;
+                } else if (parseFloat(b.typeCode.split(".")[1]) > parseFloat(a.typeCode.split(".")[1])) {
+                    return -1;
+                }
+            } else {
+                return ap - ab;
+            }
+        });
+        
         this.cache = workTypes;
 
         return workTypes;

@@ -31,6 +31,7 @@ export class Order {
 
     assignedDate: string;   //utilization report
     doneDate: string;       //utilization report
+    sharedPrice: number;    //utilization report boolean to share price among employees
 
     history: OrderHistory[];
 

@@ -98,14 +98,14 @@ export class WoComponent implements OnInit {
     ngOnInit() {
         this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(ventureRepresentatives => this.ventureRepresentatives = ventureRepresentatives);
-        this.itemService.getAllItems().subscribe(relatedItems => this.relatedItems = relatedItems);
+        this.itemService.getAllItems().subscribe(relatedItems => this.sortRelatedItems(relatedItems));
         this.workTypeService.getAllWorkTypes().subscribe(workTypesDetails => this.workTypesDetails = workTypesDetails);
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
 
         this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
        
-        this.search();     
+        this.search();
     }
 
     showChangeStatusDialog() {
@@ -130,6 +130,7 @@ export class WoComponent implements OnInit {
     }
 
     refresh() {
+        console.log('refreshing table...');
         this.lastModBefore = this.toolsService.getCurrentDateDayOperation(0);
         this.search();
     }
@@ -181,13 +182,20 @@ export class WoComponent implements OnInit {
         console.log('updateRelatedItem ' + JSON.stringify(this.relatedItem)+'\nJSON '+JSON.stringify(value));
         if (this.relatedItem !== undefined) {
             if (typeof value == 'string' || value instanceof String) {
+
+                let existingItem: RelatedItem = this.getOriginalRelatedItemByNumber(<string> value);
+                if (existingItem != null) {
+                    this.relatedItem = existingItem;
+                    return;
+                }
+
                 if (this.relatedItemCopy !== undefined) {
                     this.relatedItem = this.relatedItemCopy;
                 } else {
                     this.relatedItem = <RelatedItem> {};
                 }
                 this.relatedItem.itemNo = ''+value;
-                this.copyRelatedItem(undefined);
+                this.copyRelatedItem(this.relatedItem);
             }
         }
     }
@@ -211,7 +219,7 @@ export class WoComponent implements OnInit {
     }
 
     suggestRelatedItem(event) {
-        console.log('all ' + JSON.stringify(this.relatedItems));
+        //console.log('all ' + JSON.stringify(this.relatedItems));
         let queryIgnoreCase: string = event.query ? event.query.toLowerCase(): event.query;
 
         let suggestedRelatedItems: RelatedItem[] = [];
@@ -223,7 +231,7 @@ export class WoComponent implements OnInit {
             }
         }
         this.suggestedRelatedItems = suggestedRelatedItems;
-        console.log('suggestedRelatedItems: ' + JSON.stringify(this.suggestedRelatedItems));
+        //console.log('suggestedRelatedItems: ' + JSON.stringify(this.suggestedRelatedItems));
     }
 
     suggestStatus(event) {
@@ -237,7 +245,7 @@ export class WoComponent implements OnInit {
             }
         }
         this.suggestedStatuses = suggestedStatuses;
-        console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
+        //console.log('suggestedStatuses: ' + JSON.stringify(this.suggestedStatuses));
     }
 
     fillPrice(event: any, index: number): void {
@@ -268,27 +276,9 @@ export class WoComponent implements OnInit {
                 }
             }
         }
-        suggestedTypes.sort( function (a,b) {           
-            return parseFloat(a.code) - parseFloat(b.code);
-        });
-        suggestedTypes.sort(function (a,b) {       
 
-            if (parseFloat(a.code.split(".")[0]) === parseFloat(b.code.split(".")[0])){
-                if (parseFloat(a.code.split(".")[1]) > parseFloat(b.code.split(".")[1])) {
-                    return 1;
-                  } else if (parseFloat(b.code.split(".")[1]) > parseFloat(a.code.split(".")[1])) {
-                    return -1;
-                  } else {
-                    return 0;
-                  }
-                }
-                else {
-                    return 0;
-                }
-        }
-      );
         this.suggestedTypes = suggestedTypes;
-        console.log('suggestedTypes: ' + JSON.stringify(this.suggestedTypes));
+        //console.log('suggestedTypes: ' + JSON.stringify(this.suggestedTypes));
     }
 
     suggestEngineer(event): void {
@@ -297,7 +287,7 @@ export class WoComponent implements OnInit {
         if (this.engineers && this.engineers.length > 0) {
             for (let engineer of this.engineers) {
                 let suggestion:string = JSON.stringify(engineer).toLowerCase();
-                console.log('suggestEngineer ' + suggestion + ' for ' + JSON.stringify(event));
+                //console.log('suggestEngineer ' + suggestion + ' for ' + JSON.stringify(event));
                 if (suggestion.indexOf(queryIgnoreCase) > -1 && (this.editedOrder.assignee === undefined || this.editedOrder.assignee.indexOf(engineer.email) === -1)) {
                     let displayName:string = engineer.firstName + ' ' + engineer.lastName + ' (' + engineer.role + ')';
                     suggestedEngineers.push(new SearchUser(displayName, engineer));
@@ -305,7 +295,7 @@ export class WoComponent implements OnInit {
             }
         }
         this.suggestedEngineers = suggestedEngineers;
-        console.log('suggestedEngineers ' + JSON.stringify(this.suggestedEngineers));
+        //console.log('suggestedEngineers ' + JSON.stringify(this.suggestedEngineers));
     }
 
     suggestVentureRepresentative(event) {
@@ -314,7 +304,7 @@ export class WoComponent implements OnInit {
         if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
             for (let v of this.ventureRepresentatives) {
                 let suggestion:string = JSON.stringify(v).toLowerCase();
-                console.log('suggestVentureRepresentative ' + suggestion + ' for ' + JSON.stringify(event));
+                //console.log('suggestVentureRepresentative ' + suggestion + ' for ' + JSON.stringify(event));
                 if (suggestion.indexOf(queryIgnoreCase) > -1) {
                     let displayName:string = v.firstName + ' ' + v.lastName + ' (' + v.company + ' - '+v.office+')';
                     suggestedVentureRepresentatives.push(new SearchUser(displayName, v));
@@ -322,7 +312,7 @@ export class WoComponent implements OnInit {
             }
         }
         this.suggestedVentureRepresentatives = suggestedVentureRepresentatives;
-        console.log('suggestedVentureRepresentatives ' + JSON.stringify(this.suggestedVentureRepresentatives));
+        //console.log('suggestedVentureRepresentatives ' + JSON.stringify(this.suggestedVentureRepresentatives));
     }
 
     public showWoDetails(event, order) {
@@ -338,9 +328,12 @@ export class WoComponent implements OnInit {
 
     onRowDblclick(event) {
         console.log('onRowDblclick row!' + JSON.stringify(this.selectedOrder));
-        if (this.operator && this.operator.roleCode && this.operator.roleCode.indexOf('OP') > -1) {
-            this.edit();
-        }
+        this.edit();
+    }
+
+    editOrder(order:Order) {
+        this.selectedOrder = order;
+        this.edit();
     }
 
     assign(isNewOrderOwner:boolean):void {
@@ -387,31 +380,34 @@ export class WoComponent implements OnInit {
 
     edit():void {
 
-        console.log('editing!' + JSON.stringify(this.selectedOrder));
-        this.generateWorkNoFlag = 'N';
-        this.comment = this.selectedOrder.comments ? commentAsString(this.selectedOrder.comments) : undefined;
-        this.newComment = undefined;
+        if (this.operator && this.operator.roleCode && this.operator.roleCode.indexOf('OP') > -1) {
+            console.log('editing!' + JSON.stringify(this.selectedOrder));
+            this.generateWorkNoFlag = 'N';
+            this.comment = this.selectedOrder.comments ? commentAsString(this.selectedOrder.comments) : undefined;
+            this.newComment = undefined;
 
-        //initial values based on selectedOrder for form preparation
-        let price: string = this.selectedOrder.price !== undefined? ''+this.selectedOrder.price : '';
-        this.price = new CodeValue(price, price);
+            //initial values based on selectedOrder for form preparation
+            let price:string = this.selectedOrder.price !== undefined ? '' + this.selectedOrder.price : '';
+            this.price = new CodeValue(price, price);
 
-        this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
-        this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
-        this.relatedItem = (this.selectedOrder.relatedItems[0] === undefined ? <RelatedItem> {} : this.selectedOrder.relatedItems[0]);
-        if (this.selectedOrder.ventureFull !== undefined && this.selectedOrder.ventureFull !== undefined) {
-            this.assignedVentureRepresentative = new SearchUser(this.selectedOrder.ventureDisplay, this.selectedOrder.ventureFull);
+            this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
+            this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
+            this.relatedItem = (this.selectedOrder.relatedItems[0] === undefined ? <RelatedItem> {} : this.selectedOrder.relatedItems[0]);
+            if (this.selectedOrder.ventureFull !== undefined && this.selectedOrder.ventureFull !== undefined) {
+                this.assignedVentureRepresentative = new SearchUser(this.selectedOrder.ventureDisplay, this.selectedOrder.ventureFull);
+            }
+
+            this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
+            this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
+            this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
+
+            this.newOrder = false;
+            this.displayEditDialog = true;
+            this.assignedEngineer = undefined;
+        } else {
+            this.alertService.warn('Brak uprawnień do edycji zlecenia!');
         }
-
-        this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
-        this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
-        this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
-
-        this.newOrder = false;
-        this.displayEditDialog = true;
     }
-
-
 
     saveAssignment() {
         console.log('saving assignment!' + JSON.stringify(this.editedOrder) + ' for ' + JSON.stringify(this.assignedEngineer.user));
@@ -420,13 +416,13 @@ export class WoComponent implements OnInit {
             .subscribe(json => this.updateOrderStatus(json.created, this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user));
     }
 
-    synchronousSaveAssignment() {
-        console.log('Synchronous saving assignment!' + JSON.stringify(this.editedOrder) + ' for ' + JSON.stringify(this.assignedEngineer.user));
+    synchronousSaveAssignment(order: Order, assignedEngineer: SearchUser) {
+        console.log('Synchronous saving assignment!' + JSON.stringify(order) + ' for ' + JSON.stringify(assignedEngineer.user));
         this.isNewOrderOwner = true;
         this.displayAssignDialog = false;
-        this.userService.assignWorkOrder(this.assignedEngineer.user, this.editedOrder, this.isNewOrderOwner).toPromise()
+        this.userService.assignWorkOrder(assignedEngineer.user, order, this.isNewOrderOwner).toPromise()
             .then(result => {
-                this.updateOrderStatusObs(result['created'], this.isNewOrderOwner, this.editedOrder, this.assignedEngineer.user).toPromise()
+                this.updateOrderStatusObs(result['created'], this.isNewOrderOwner, order, assignedEngineer.user).toPromise()
                     .then(result => {
                         console.log('Status from promise!');
                     });
@@ -484,7 +480,7 @@ export class WoComponent implements OnInit {
         }
 
         if (this.toolsService.isStatusLowerThanProtocol(order.statusCode)) {
-            order.protocolNo = ''; //According to LE its null for sqlite
+            order.protocolNo = ''; //According to ŁE its null for sqlite
         }
 
         if (this.assignedVentureRepresentative && this.assignedVentureRepresentative.user && this.assignedVentureRepresentative.user.id) {
@@ -519,24 +515,43 @@ export class WoComponent implements OnInit {
         if (this.relatedItem.itemNo !== undefined && this.relatedItem.id !== undefined) {
             if (this.isRelatedItemChanged(this.relatedItem)) {
                 console.log('changing existing relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-                this.itemService.updateItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this)));
+                this.itemService.updateItem(this.relatedItem).subscribe(item => {
+                    this.storeOrder(item, order, this.newOrder, false).subscribe(order => {
+                        if (this.assignedEngineer != null){
+                            this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
+                        }
+                        saveOrderCallback(order, this);
+                    })
+                    this.refreshItems(item, false);
+                });
             } else {
                 console.log('no action on relatedItem but could be reassignment - this will be handled in storeOrder');
-                this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => saveOrderCallback(order, this));
+                this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => {
+                    if (this.assignedEngineer != null){
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
+                    }
+                    saveOrderCallback(order, this);
+                });
             }
         } else if (this.relatedItem.itemNo !== undefined && this.relatedItem.id === undefined) {
             console.log('adding new relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-            this.itemService.addItem(this.relatedItem).subscribe(item => this.storeOrder(item, order, this.newOrder, true).subscribe(order => saveOrderCallback(order, this)));
+            this.itemService.addItem(this.relatedItem).subscribe(item => {
+                this.storeOrder(item, order, this.newOrder, true).subscribe(order => {
+                    if (this.assignedEngineer != null){
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
+                    }
+                    saveOrderCallback(order, this);
+                })
+                this.refreshItems(item, true);
+            });
         } else {
             console.log('no action on relatedItem itemNo:' + this.relatedItem.itemNo + ', id:' + this.relatedItem.id);
-            this.storeOrder(this.relatedItem, order, this.newOrder, false)
-            .subscribe(order =>{
-                if (this.assignedEngineer != null){
-                    this.editedOrder = order;
-                    this.synchronousSaveAssignment();
-                }              
-                saveOrderCallback(order, this);                                          
-            });         
+            this.storeOrder(this.relatedItem, order, this.newOrder, false).subscribe(order => {
+                    if (this.assignedEngineer != null){
+                        this.synchronousSaveAssignment(order, JSON.parse(JSON.stringify(this.assignedEngineer)));
+                    }
+                    saveOrderCallback(order, this);
+            });
         }     
     }
 
@@ -567,8 +582,12 @@ export class WoComponent implements OnInit {
             that.additionalWorkTypes.shift();
             that.additionalPrices.shift();          
         } else {
-            console.log('No more order to save, refreshing...');
-            that.refresh();
+            setTimeout(() => {
+                console.log('No more order to save, refreshing...');
+                that.refresh();
+                this.assignedEngineer = undefined;
+            }, 500);
+
         }
     }
 
@@ -605,16 +624,48 @@ export class WoComponent implements OnInit {
         return true;
     }
 
+    private refreshItems(newItem: RelatedItem, addIfNotFound: boolean): void {
+        // idea to use to assure stopping adding/updating items after first in type loop
+        for (let i = 0; i < this.relatedItems.length; i++) {
+            if (this.relatedItems[i].id === newItem.id) {
+                this.relatedItems[i] = newItem;
+                // idea to use to assure stopping adding/updating items after first in type loop
+                this.relatedItem = JSON.parse(JSON.stringify(newItem));
+                return;
+            }
+        }
+        if (addIfNotFound) {
+            this.relatedItems.push(newItem);
+            // idea to use to assure stopping adding/updating items after first in type loop
+            this.relatedItem = JSON.parse(JSON.stringify(newItem));
+        }
+    }
+
+
     private getOriginalRelatedItemById(id:number):RelatedItem {
         for (let item of this.relatedItems) {
             if (item.id === id) {
-                return item;
+                return JSON.parse(JSON.stringify(item));
+            }
+        }
+        return null;
+    }
+
+    private getOriginalRelatedItemByNumber(itemNo:string):RelatedItem {
+        for (let item of this.relatedItems) {
+            if (item.itemNo === itemNo) {
+                return JSON.parse(JSON.stringify(item));
             }
         }
         return null;
     }
 
 
+    private sortRelatedItems(relatedItems:RelatedItem[]):void {
+        this.relatedItems = relatedItems.sort(function (a,b) {
+            return ((a.itemNo) >= (b.itemNo)) ? 1 : -1;
+        });
+    }
 }
 
 

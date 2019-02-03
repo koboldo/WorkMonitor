@@ -1,4 +1,4 @@
-<div class="ui-grid-row" style="max-width: 900px;">
+<div class="ui-grid-row" style="max-width: 1200px;">
 
     <div style="margin-top: 5px" *ngIf="userHistory" class="ui-g">
       <!--(onRowSelect)="onRowSelect($event)"-->
@@ -15,7 +15,7 @@
         <p-column [sortable]="true" field="id" header="Id bazy" [hidden]="true"></p-column>
         <p-column [sortable]="true" field="excelId" header="Id excel" [hidden]="true"></p-column>
 
-        <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'60px'}">
+        <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'140px'}">
           <ng-template let-col let-user="rowData" pTemplate="body">
             <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}} {{user.lastName}}</span>
           </ng-template>

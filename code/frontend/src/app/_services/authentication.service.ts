@@ -55,10 +55,10 @@ export class AuthenticationService {
             map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
+                    this.initAuthHeaders(user.token); //do not change order, this need to be first!
                     this.user.next(user);
                     this.menuItems.next(this.buildMenu(user));
                     this.hierarchyItems.next(this.buildHierarchyMenu(user));
-                    this.initAuthHeaders(user.token);
                     this.isLoggedFlag = true;
                 }
 
@@ -88,6 +88,7 @@ export class AuthenticationService {
                 icon: 'fa fa-server',
                 items: [
                     {label: 'Lista zleceń', icon: 'fa fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    //{label: 'Lista zleceń (turbo)', icon: 'fa fa-table', routerLink: ['/turboTable'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Zawieszone', icon: 'fa fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Anulowane',  icon: 'fa fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Moje zlecenia', icon: 'fa fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
@@ -165,6 +166,7 @@ export class AuthenticationService {
             {label: 'Zmodyfikuj osobę', icon: 'fa fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
             //{label: 'Parametryzacja zleceń', icon: 'fa fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
             {label: 'Parametryzacja zleceń', icon: 'fa fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
+            {label: 'Turbo Table', icon: 'fa fa-cogs', routerLink: ['/turboTable'], "rolesRequired":["PR", "OP"]},
             /*{label: 'Wyloguj', icon: 'fa fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 

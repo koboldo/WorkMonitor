@@ -192,7 +192,7 @@
 
 </p-dialog>
 
-<p-dialog [header]="selectedReport?.firstName +' '+ selectedReport?.lastName+' zlecenia od '+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+' do '+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')" [(visible)]="doneOrdersDialogDisplay" [responsive]="true" [minWidth]="800" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+<p-dialog [header]="selectedReport?.firstName +' '+ selectedReport?.lastName+' zlecenia od '+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+' do '+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')" [(visible)]="doneOrdersDialogDisplay" [responsive]="true" [minWidth]="870" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
 
     <div *ngIf="selectedReport?.workOrders">
         <div class="ui-grid-row">
@@ -229,6 +229,7 @@
                 </p-column>
                 <p-column [sortable]="true" field="complexity" header="Wycena [H]" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
                 <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+                <p-column [sortable]="true" field="sharedPrice" header="Obrót" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
                 <p-column [sortable]="true" field="assignedDate" header="Przypisano" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
                 <p-column [sortable]="true" field="doneDate" header="Zrealizowano" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
