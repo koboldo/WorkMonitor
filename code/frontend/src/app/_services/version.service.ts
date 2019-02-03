@@ -19,6 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.30', 'Przycisk edycji zlecenia, odświeżanie ostateniego zlecenia podczas dodawania i przypisywania wielu typów zleceń'),
+            new CodeValue('1.5.29', 'Poprawa wyświetlania historii użytkownika'),
             new CodeValue('1.5.28', 'Poprawa przelogowania, usunięcie turbo table z menu do czasu zaimplementowania dziedziczenia'),
             new CodeValue('1.5.27', 'Poprawa przypisywania i edycji - awaria'),
             new CodeValue('1.5.26', 'Dodanie zakładki Prime Ng6 z Turbo Table'),

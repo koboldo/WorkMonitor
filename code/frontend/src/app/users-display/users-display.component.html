@@ -25,13 +25,10 @@
       </div>
     </p-header>
 
-    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" [style]="{'width':'26px','text-align':'center'}">
+    <p-column *ngIf="operator.roleCode.indexOf('PR') >= 0" header="Historia" [style]="{'width':'26px','text-align':'center'}">
       <ng-template let-userRow="rowData" pTemplate="body">
           <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>-->
-          <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa fa-search"></button>
-          <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
-            <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
-          </p-dialog>
+          <button type="button" pButton (click)="showUserHistory($event, userRow)" icon="fa fa-history"></button>
       </ng-template>
     </p-column>
 
@@ -175,4 +172,9 @@
     </ng-template>
 
   </p-dataTable>
+
+  <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+    <app-user-history *ngIf="displayUserHistoryDialog" [selectedUser]="selectedUser" [staff]="users"></app-user-history>
+  </p-dialog>
+
 </div>

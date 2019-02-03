@@ -121,9 +121,10 @@
       </p-column>-->
       <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [style]="{'width':'40px','text-align':'center'}">
+      <p-column [style]="{'width':'70px','text-align':'center'}">
         <ng-template let-order="rowData" pTemplate="body">
-          <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
+          <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px; margin-right: 5px;" (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
+          <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="editOrder(order)" icon="fa fa-edit" [disabled]="!(operator?.roleCode?.indexOf('OP') > -1)"></p-button>
         </ng-template>
       </p-column>
 
