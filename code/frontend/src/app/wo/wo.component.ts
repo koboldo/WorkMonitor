@@ -75,14 +75,14 @@ export class WoComponent implements OnInit {
     pl:Calendar;
     displayChangeStatusDialog:boolean;
     
-    constructor(private woService:WOService,
-                private userService:UserService,
-                private itemService:RelatedItemService,
-                private workTypeService:WorkTypeService,
-                private dictService:DictService,
-                private alertService:AlertService,
-                private authSerice:AuthenticationService,
-                private toolsService: ToolsService) {
+    constructor(protected woService:WOService,
+                protected userService:UserService,
+                protected itemService:RelatedItemService,
+                protected workTypeService:WorkTypeService,
+                protected dictService:DictService,
+                protected alertService:AlertService,
+                protected authSerice:AuthenticationService,
+                protected toolsService: ToolsService) {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(0);
         this.items = [
@@ -119,7 +119,7 @@ export class WoComponent implements OnInit {
     }
  
 
-    private assignOperator(operator:User):void {
+    public assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
         this.operator = operator;
         if (operator && operator.roleCode && operator.roleCode.indexOf('OP') > -1) {
