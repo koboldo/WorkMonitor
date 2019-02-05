@@ -328,7 +328,7 @@
               [ngClass]="col.class"
               >           
                 <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
-                <span *ngIf="col.type" [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
                 <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
                 <span *ngIf="col.isFromPool">
                   <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
