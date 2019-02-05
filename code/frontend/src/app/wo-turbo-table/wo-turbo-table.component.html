@@ -183,7 +183,7 @@
         </div>
       </div>
       <!--Assign engener -->
-      <div class="ui-grid-row" style="margin-top: 20px;">
+      <div *ngIf="newOrder" class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-2"><label for="assignEngineer">Wykonawca</label></div>
         <div class="ui-grid-col-10">
           <p-autoComplete id="assignEngineer" 
@@ -200,7 +200,6 @@
     </div>
       <hr>
       <!-- related item -->
-
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="itemNo">Numer obiektu</label></div>
         <div class="ui-grid-col-10">
@@ -219,8 +218,6 @@
           <p-message severity="info" text="Dodawanie nowego obiektu"></p-message>
         </div>
       </div>
-
-
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-2"><label for="itemAddress">Adres</label></div>
         <div class="ui-grid-col-10"><input pInputText name="itemAddress" id="itemAddress" [(ngModel)]="relatedItem.address" placeholder="Adres objektu inwestycji"/></div>
@@ -253,12 +250,7 @@
         <button type="submit" [disabled]="!canSaveOrders()" width="200px" type="button" pButton icon="fa fa-check" (click)="saveOrders()" label="Zapisz"></button>
       </div>
     </p-footer>
-
-
-
   </p-dialog>
-
-
   <p-dialog [header]="isNewOrderOwner ? 'Przypisywanie/przepisywanie zlecenia': 'Dopisywanie do zlecenia'" [(visible)]="displayAssignDialog" [responsive]="true" [minWidth]="400">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
         <div class="ui-grid-row" style="margin-top: 20px;">
@@ -299,9 +291,9 @@
       </div>
     </p-footer>
   </p-dialog>
-
-  <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
-           loadingIcon="fa fa-spinner" csvSeparator=";"  exportFilename="Turbo Zlecenia">
+  <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" 
+    (onRowSelect)="onRowSelect($event)" (dblclick)="onRowDblclick($event)" (onRowUnselect)="onRowUnselect($event)" [metaKeySelection]="true"
+     loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint" csvSeparator=";"  exportFilename="Turbo Zlecenia">
     <ng-template pTemplate="caption">
         <div>
             <i class="fa fa-search"></i>
@@ -315,13 +307,11 @@
           [hidden]="col.hidden"
           [pSortableColumn]="col.field"
           [ngClass]="col.class"
-          pResizableColumn
-          >
-          <span class="header">
-              {{col.header}}
-              <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
-          </span>
-          
+          pResizableColumn>
+            <span class="header">
+                {{col.header}}
+                <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+            </span>         
           </th>
         </tr>
         <tr>
@@ -331,25 +321,25 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-order>
-        <tr [pSelectableRow]="rowData" (dblclick)="onRowDblclick($event)">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" > 
             <td *ngFor="let col of cols"
-            [hidden]="col.hidden"
-            filterMatchMode="col.contains"
-            [ngClass]="col.class"
-            [pSelectableRowDblClick]="rowData"
-            >           
-              <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
-              <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
-              <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-              <span *ngIf="col.isFromPool">
-                <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-                <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-              </span>
-              <p-button *ngIf="col.button" type="button" style="width:25px"  (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
-              <span *ngIf="!col.icon">
-                {{order[col.field]}}
-              </span>            
-        </td>
+              [hidden]="col.hidden"
+              filterMatchMode="col.contains"
+              [ngClass]="col.class"
+              >           
+                <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
+                <span *ngIf="col.type" [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                <span *ngIf="col.isFromPool">
+                  <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                  <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                </span>
+                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
+                <p-button *ngIf="col.edit" type="button" style="width:25px"  (click)="editOrder(order)" icon="fa fa-edit" [disabled]="!(operator?.roleCode?.indexOf('OP') > -1)"></p-button>
+                <span *ngIf="!col.icon">
+                  {{order[col.field]}}
+                </span>            
+            </td>
         </tr>
     </ng-template>
     <ng-template pTemplate="summary">
@@ -372,5 +362,5 @@
       </div>
   </ng-template>
 </p-table>
-
+<p-contextMenu #cm [model]="items"></p-contextMenu>
 </p-panel>

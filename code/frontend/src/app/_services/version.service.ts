@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.33', 'Poprawienie turbo table - dodanie przycisku edycji, dziedziczenie, doubleClick'),
             new CodeValue('1.5.32', 'Usunięcie zahardkodowanych kolorów i możliwość edycji typów zadań (kolory, przynależność do puli)'),
             new CodeValue('1.5.31', 'Współdzielenie obrotu na raportach'),
             new CodeValue('1.5.30', 'Przycisk edycji zlecenia, odświeżanie ostateniego zlecenia podczas dodawania i przypisywania wielu typów zleceń'),

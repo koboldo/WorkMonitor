@@ -75,14 +75,14 @@ export class WoComponent implements OnInit {
     pl:Calendar;
     displayChangeStatusDialog:boolean;
     
-    constructor(private woService:WOService,
-                private userService:UserService,
-                private itemService:RelatedItemService,
-                private workTypeService:WorkTypeService,
-                private dictService:DictService,
-                private alertService:AlertService,
-                private authSerice:AuthenticationService,
-                private toolsService: ToolsService) {
+    constructor(protected woService:WOService,
+                protected userService:UserService,
+                protected itemService:RelatedItemService,
+                protected workTypeService:WorkTypeService,
+                protected dictService:DictService,
+                protected alertService:AlertService,
+                protected authSerice:AuthenticationService,
+                protected toolsService: ToolsService) {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(0);
         this.items = [
@@ -110,6 +110,7 @@ export class WoComponent implements OnInit {
 
     showChangeStatusDialog() {
         this.displayChangeStatusDialog=true;
+        this.assignedEngineer = undefined;
     }
 
     onClose(isVisible: boolean){
@@ -118,7 +119,7 @@ export class WoComponent implements OnInit {
     }
  
 
-    private assignOperator(operator:User):void {
+    public assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
         this.operator = operator;
         if (operator && operator.roleCode && operator.roleCode.indexOf('OP') > -1) {
@@ -349,6 +350,7 @@ export class WoComponent implements OnInit {
             this.isNewOrderOwner = isNewOrderOwner;
             this.newOrder = false;
             this.editedOrder = this.selectedOrder;
+            this.assignedEngineer = undefined;
             this.displayAssignDialog = true;
         }
     }
@@ -552,7 +554,7 @@ export class WoComponent implements OnInit {
                     }
                     saveOrderCallback(order, this);
             });
-        }     
+        }    
     }
 
     private storeOrder(item:RelatedItem, order:Order, newOrder:boolean, newItem:boolean):Observable<Order> {
@@ -585,7 +587,7 @@ export class WoComponent implements OnInit {
             setTimeout(() => {
                 console.log('No more order to save, refreshing...');
                 that.refresh();
-                this.assignedEngineer = undefined;
+                that.assignedEngineer = undefined;
             }, 500);
 
         }
