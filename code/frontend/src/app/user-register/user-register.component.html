@@ -176,11 +176,13 @@
 
             <div *ngIf="user.roleCode.indexOf('CN') == -1" class="form-group">
                 <p-radioButton name="activegroup" value="Y" [(ngModel)]="user.isActive" label="Aktywny (Konto - może się logować)"></p-radioButton>
+                <span style="padding: 15px;"></span>
                 <p-radioButton name="activegroup" value="N" [(ngModel)]="user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
             </div>
             <div *ngIf="show">                    
                 <div class="form-group">
                     <p-radioButton name="employgroup" value="Y" [(ngModel)]="user.isEmployed" label="Jest pracownikiem"></p-radioButton>
+                    <span style="padding: 15px;"></span>
                     <p-radioButton name="employgroup" value="N" [(ngModel)]="user.isEmployed" label="Nie jest pracownikiem"></p-radioButton>
                 </div>
             </div>

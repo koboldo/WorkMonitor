@@ -18,7 +18,8 @@ export class WoDetailsComponent implements OnInit {
 
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
-                private userService:UserService) {
+                private userService:UserService,
+                private workTypeService: WorkTypeService) {
     }
 
     ngOnInit() {
@@ -79,7 +80,7 @@ export class WoDetailsComponent implements OnInit {
     }
 
     public getColor() :string {
-        return this.toolsService.getOrderColor(this._selectedOrder.typeCode);
+        return this.workTypeService.getWorkTypeColor(this._selectedOrder);//this.toolsService.getOrderColor(this._selectedOrder.typeCode);
     }
 
     public getStatusIcon(): string {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject, forwardRef } from '@angular/core';
-import { ToolsService, WOService, DictService, AlertService } from '../_services';
+import { ToolsService, WOService, DictService, AlertService, WorkTypeService } from '../_services';
 import { Order, CodeValue, commentAdd, Comments, User } from '../_models';
 import { WoComponent } from '../wo/wo.component';
 
@@ -26,7 +26,8 @@ export class GroupStatusChangeComponent implements OnInit {
     constructor(private toolsService:ToolsService,
                 private woService:WOService,
                 private alertService:AlertService,
-                private dictService:DictService) {
+                private dictService:DictService,
+                private workTypeService: WorkTypeService) {
     }
 
     ngOnInit() {

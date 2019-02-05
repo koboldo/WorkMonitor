@@ -43,7 +43,8 @@ export class WoStoppedListComponent implements OnInit {
                 public dictService:DictService,
                 private authSerice:AuthenticationService,
                 private toolsService:ToolsService,
-                private alertService:AlertService) {
+                private alertService:AlertService,
+                private workTypeService: WorkTypeService) {
     }
 
     ngOnInit() {
