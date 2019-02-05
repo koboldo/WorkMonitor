@@ -131,6 +131,7 @@ export class WoComponent implements OnInit {
     }
 
     refresh() {
+        console.log('refreshing table...');
         this.lastModBefore = this.toolsService.getCurrentDateDayOperation(0);
         this.search();
     }
@@ -328,9 +329,12 @@ export class WoComponent implements OnInit {
 
     onRowDblclick(event) {
         console.log('onRowDblclick row!' + JSON.stringify(this.selectedOrder));
-        if (this.operator && this.operator.roleCode && this.operator.roleCode.indexOf('OP') > -1) {
-            this.edit();
-        }
+        this.edit();
+    }
+
+    editOrder(order:Order) {
+        this.selectedOrder = order;
+        this.edit();
     }
 
     assign(isNewOrderOwner:boolean):void {
@@ -378,32 +382,34 @@ export class WoComponent implements OnInit {
 
     edit():void {
 
-        console.log('editing!' + JSON.stringify(this.selectedOrder));
-        this.generateWorkNoFlag = 'N';
-        this.comment = this.selectedOrder.comments ? commentAsString(this.selectedOrder.comments) : undefined;
-        this.newComment = undefined;
+        if (this.operator && this.operator.roleCode && this.operator.roleCode.indexOf('OP') > -1) {
+            console.log('editing!' + JSON.stringify(this.selectedOrder));
+            this.generateWorkNoFlag = 'N';
+            this.comment = this.selectedOrder.comments ? commentAsString(this.selectedOrder.comments) : undefined;
+            this.newComment = undefined;
 
-        //initial values based on selectedOrder for form preparation
-        let price: string = this.selectedOrder.price !== undefined? ''+this.selectedOrder.price : '';
-        this.price = new CodeValue(price, price);
+            //initial values based on selectedOrder for form preparation
+            let price:string = this.selectedOrder.price !== undefined ? '' + this.selectedOrder.price : '';
+            this.price = new CodeValue(price, price);
 
-        this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
-        this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
-        this.relatedItem = (this.selectedOrder.relatedItems[0] === undefined ? <RelatedItem> {} : this.selectedOrder.relatedItems[0]);
-        if (this.selectedOrder.ventureFull !== undefined && this.selectedOrder.ventureFull !== undefined) {
-            this.assignedVentureRepresentative = new SearchUser(this.selectedOrder.ventureDisplay, this.selectedOrder.ventureFull);
+            this.workType = new CodeValue(this.selectedOrder.typeCode, this.selectedOrder.type);
+            this.status = new CodeValue(this.selectedOrder.statusCode, this.selectedOrder.status);
+            this.relatedItem = (this.selectedOrder.relatedItems[0] === undefined ? <RelatedItem> {} : this.selectedOrder.relatedItems[0]);
+            if (this.selectedOrder.ventureFull !== undefined && this.selectedOrder.ventureFull !== undefined) {
+                this.assignedVentureRepresentative = new SearchUser(this.selectedOrder.ventureDisplay, this.selectedOrder.ventureFull);
+            }
+
+            this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
+            this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
+            this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
+
+            this.newOrder = false;
+            this.displayEditDialog = true;
+            this.assignedEngineer = undefined;
+        } else {
+            this.alertService.warn('Brak uprawnień do edycji zlecenia!');
         }
-
-        this.editedOrder = JSON.parse(JSON.stringify(this.selectedOrder));
-        this.additionalWorkTypes = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
-        this.additionalPrices = [new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', ''), new CodeValue('', '')];
-
-        this.newOrder = false;
-        this.displayEditDialog = true;
-        this.assignedEngineer = undefined;
     }
-
-
 
     saveAssignment() {
         console.log('saving assignment!' + JSON.stringify(this.editedOrder) + ' for ' + JSON.stringify(this.assignedEngineer.user));
@@ -578,9 +584,12 @@ export class WoComponent implements OnInit {
             that.additionalWorkTypes.shift();
             that.additionalPrices.shift();          
         } else {
-            console.log('No more order to save, refreshing...');
-            that.refresh();        
-            // this.assignedEngineer = undefined;    Shows errors during order saving                  
+            setTimeout(() => {
+                console.log('No more order to save, refreshing...');
+                that.refresh();
+                that.assignedEngineer = undefined;
+            }, 500);
+
         }
     }
 

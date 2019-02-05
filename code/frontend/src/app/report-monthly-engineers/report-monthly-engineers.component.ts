@@ -442,7 +442,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
         doneDate.setHours(0,0,0,0);
 
         if (userData.dateRange && userData.dateRange.beginDate && userData.dateRange.endDate && userData.dateRange.beginDate.getTime() <= doneDate.getTime() && doneDate.getTime() <= userData.dateRange.endDate.getTime()) {
-          userData.earnedMoney += order.price;
+          userData.earnedMoney += order.sharedPrice;
          } else {
           console.log("earnedMoney without : "+doneDate +" between "+JSON.stringify(userData.dateRange));
         }

@@ -19,8 +19,11 @@ export class VersionService {
 
     constructor() {
         this._history = [
-            new CodeValue('1.5.29', 'Poprawa Turbo Table, refaktoryzacja kodu, naprawa działania doubleClick'),
-            new CodeValue('1.5.28', 'Poprawa przypisywania i edycji zlecenia'),
+            new CodeValue('1.5.32', 'Poprawienie turbo table - dodanie przycisku edycji, dziedziczenie, doubleClick'),
+            new CodeValue('1.5.31', 'Współdzielenie obrotu na raportach'),
+            new CodeValue('1.5.30', 'Przycisk edycji zlecenia, odświeżanie ostateniego zlecenia podczas dodawania i przypisywania wielu typów zleceń'),
+            new CodeValue('1.5.29', 'Poprawa wyświetlania historii użytkownika'),
+            new CodeValue('1.5.28', 'Poprawa przelogowania, usunięcie turbo table z menu do czasu zaimplementowania dziedziczenia'),
             new CodeValue('1.5.27', 'Poprawa przypisywania i edycji - awaria'),
             new CodeValue('1.5.26', 'Dodanie zakładki Prime Ng6 z Turbo Table'),
             new CodeValue('1.5.25', 'Rola zegarmistrz do aktualizacji czasu pracy dla OP i MG, sortowanie numerów stacji.'),
@@ -33,7 +36,7 @@ export class VersionService {
             new CodeValue('1.5.18', 'Progress jako http interceptor'),
             new CodeValue('1.5.17', 'Poprawa przypisania wykonawcy podczas dodawania zlecenia,Średni obrót na osobę, liczenie wydajności usunięto urlop jako skladową w "Czas zadeklarowany", spójne sortowanie, poprawiony błąd z brakiem wyświetlania współczynnika na ekranie modyfikacji osoby, poprawiony błąd niepozwalający zakończyć współpracy z osobą, lepsze wykorzystanie miejsca w oknie podglądu szczegółów WO.'),
             new CodeValue('1.5.16', 'Przypisanie wykonawcy podczas dodawania zlecenia'),
-            new CodeValue('1.5.15', 'Poprawa dat '),
+            new CodeValue('1.5.15', 'Poprawa dat'),
             new CodeValue('1.5.14', 'Możliwość zwiększenia przerwy, poprawa zaznaczania na "wydajność zespołu" '),
             new CodeValue('1.5.13', 'Czas szkolenia dodany do czasu całkowitego, zmiana porządkowania kolumn, filtrowanie statusu w "Wydajności zespołu" '),
             new CodeValue('1.5.12', 'Poprawka wyswietlania bledu rejestracji czasu pracy '),
