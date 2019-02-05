@@ -101,8 +101,9 @@
       </div>
 
       <div class="form-group">
-        <p-radioButton name="activegroup" value="Y" [(ngModel)]="selectedUser.user.isActive" label="Aktywny (Konto)"></p-radioButton>
-          <p-radioButton name="activegroup" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
+            <p-radioButton name="activegroup" value="Y" [(ngModel)]="selectedUser.user.isActive" label="Aktywny (Konto)"></p-radioButton>
+            <span style="padding: 15px;"></span>
+            <p-radioButton name="activegroup" value="N" [(ngModel)]="selectedUser.user.isActive" label="Nie aktywny (Brak konta)"></p-radioButton>
       </div>
       
       <div class="form-group" *ngIf="showRoles" [ngClass]="{ 'has-error': f.submitted && !(selectedUser?.user?.roleCode?.length > 0) }">
@@ -244,6 +245,7 @@
 
           <div class="form-group" [ngClass]="{ 'has-error': f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N' }">
             <p-radioButton name="poolgroup" value="Y" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (TAK)"></p-radioButton>
+            <span style="padding: 15px;"></span>
             <p-radioButton name="poolgroup" value="N" [(ngModel)]="selectedUser.user.isFromPool" label="Pula (NIE)"></p-radioButton>
             <div *ngIf="f.submitted && selectedUser?.user?.isFromPool!='Y' && selectedUser?.user?.isFromPool!='N'" class="help-block">Określenie przynależności do puli jest obowiązkowe</div>
           </div>

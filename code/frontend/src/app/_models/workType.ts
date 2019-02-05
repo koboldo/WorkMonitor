@@ -8,6 +8,8 @@ export class WorkType {
 	complexityCode: string;
 	complexity: number;
 	price: number;
+	isFromPool: string;
+	color: string;
 	
 	constructor(
 	){}

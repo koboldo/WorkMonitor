@@ -211,7 +211,7 @@
                 <p-column [sortable]="true" [filter]="true" field="workNo" header="Zlecenie" ></p-column>
                 <p-column [sortable]="true" field="typeCode" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
                     <ng-template let-col let-order="rowData" pTemplate="body">
-                        <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                        <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
                         <span style="padding: 3px">{{workTypeService.getWorkTypeDescription(order)}}</span>
                     </ng-template>
                 </p-column>
