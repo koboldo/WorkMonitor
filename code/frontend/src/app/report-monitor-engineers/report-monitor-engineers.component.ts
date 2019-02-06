@@ -97,7 +97,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
                 event.start = order.assignedDate;
                 event.orderId = order.id;
-                event.color = this.toolsService.getOrderColor(order.typeCode);
+                event.color = this.workTypeService.getWorkTypeColor(order); //this.toolsService.getOrderColor(order.typeCode);
 
                 if (order.doneDate) {
                     event.title = order.workNo;

@@ -30,6 +30,7 @@ import {AutoCompleteModule} from 'primeng/autocomplete'
 import {ButtonModule} from 'primeng/button'
 import {CalendarModule} from 'primeng/calendar'
 import {ChartModule} from 'primeng/chart'
+import {ColorPickerModule} from 'primeng/colorpicker';
 import {ContextMenuModule} from 'primeng/contextmenu'
 import {DataGridModule} from 'primeng/datagrid'
 import {DataTableModule} from 'primeng/datatable'
@@ -58,7 +59,6 @@ import {TabMenuModule} from 'primeng/tabmenu'
 import {TabViewModule} from 'primeng/tabview'
 import {TooltipModule} from 'primeng/tooltip'
 import {TreeModule} from 'primeng/tree'
-
 import {TableModule} from 'primeng/table';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -101,7 +101,7 @@ import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,
+        AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,
         BrowserAnimationsModule,
         TableModule,
         DataTableModule,

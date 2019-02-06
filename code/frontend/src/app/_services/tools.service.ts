@@ -87,7 +87,7 @@ export class ToolsService {
         }
     }
 
-    public getOrderColor(typeCode :string) :string {
+    /*public getOrderColor(typeCode :string) :string {
 
         if (typeCode === undefined || typeCode === null)
             return 'black';
@@ -128,7 +128,7 @@ export class ToolsService {
 
         return 'black';
 
-    }
+    }*/
 
     /*
      INSERT INTO CODE_REFERENCE (CODE_TABLE, CODE, PARAM_CHARVAL) VALUES ('WORK_STATUS','OP','Otwarte');

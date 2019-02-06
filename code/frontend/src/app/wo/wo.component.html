@@ -70,7 +70,7 @@
       <!--<p-column [sortable]="true" field="type" header="typeSearch" [style]="{'width':'0px'}" hidden="true"></p-column>&lt;!&ndash; search &ndash;&gt;-->
       <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
         <ng-template let-col let-order="rowData" pTemplate="body">
-          <span [style.color]="toolsService.getOrderColor(order.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{order.type}}</span>
         </ng-template>
       </p-column>
@@ -212,7 +212,7 @@
             <p-autoComplete [forceSelection]="true" delay="100" [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="orderType" name="orderType" [(ngModel)]="workType" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, -1)" [dropdown]="true" field="paramChar" required placeholder="Wybierz typ zlecenia...">
               <ng-template let-orderType pTemplate="item">
                 <div class="ui-helper-clearfix">
-                  <span [style.color]="toolsService.getOrderColor(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                  <span [style.color]="workTypeService.getWorkTypeColorByCode(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
                   <span style="padding: 3px">{{orderType.paramChar}}</span>
                 </div>
               </ng-template>
@@ -235,7 +235,7 @@
                       <p-autoComplete [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" [id]="'additionalWorkTypes'+i" [name]="'additionalWorkTypes'+i" [disabled]="!assignedVentureRepresentative" [(ngModel)]="additionalWorkTypes[i]" [suggestions]="suggestedTypes" (completeMethod)="suggestType($event)" (onSelect)="fillPrice($event, i)" [dropdown]="true" field="paramChar" required [placeholder]="'Wybierz '+(i+2)+' dodatkowy typ zlecenia...'">
                         <ng-template let-orderType pTemplate="item">
                           <div class="ui-helper-clearfix">
-                            <span [style.color]="toolsService.getOrderColor(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                            <span [style.color]="workTypeService.getWorkTypeColorByCode(orderType.code)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
                             <span style="padding: 3px">{{orderType.paramChar}}</span>
                           </div>
                         </ng-template>

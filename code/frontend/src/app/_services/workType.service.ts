@@ -100,6 +100,24 @@ export class WorkTypeService {
         return workTypes;
     }
 
+    public getWorkTypeColorByCode(code: string): string {
+        let workType:WorkType = this.getWorkType(code, 'CEN', 'STD');
+        if (workType) {
+            return workType.color;
+        }
+        console.log("getWorkTypeColorByCode not inited yet!");
+        return 'white';
+    }
+
+    public getWorkTypeColor(order: Order): string {
+        let workType:WorkType = this.getWorkType(order.typeCode, order.officeCode? order.officeCode : 'CEN', order.complexityCode? order.complexityCode : 'STD');
+        if (workType) {
+            return workType.color;
+        }
+        console.log("getWorkTypeColor not inited yet!");
+        return null;
+    }
+
     public getWorkTypeDescription(order: Order): string {
         let workType:WorkType = this.getWorkType(order.typeCode, order.officeCode? order.officeCode : 'CEN', 'STD');
         if (workType) {

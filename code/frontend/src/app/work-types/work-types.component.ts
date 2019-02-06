@@ -64,6 +64,8 @@ export class WorkTypesComponent implements OnInit {
     private add():void {
         //this.editedWorkType = JSON.parse(JSON.stringify(this.selectedWorkType));
         this.editedWorkType = new WorkType;
+        this.editedWorkType.isFromPool = 'N';
+        this.editedWorkType.color = '#000000';
         this.newWorkType = true;
         this.displayEditDialog = true;
     }

@@ -9,12 +9,30 @@
     </p-header>
 
     <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+
+
+
+  <p-column [sortable]="true" field="color" header="Kolor" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'120px'}">
+      <ng-template let-col let-order="rowData" pTemplate="body">
+          <span [style.color]="order[col.field]" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px; color: grey">{{order[col.field]}}</span>
+      </ng-template>
+  </p-column>
+
     <p-column [sortable]="true" field="typeCode" header="Typ" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
+
+      <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
+          <ng-template let-col let-order="rowData" pTemplate="body">
+              <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+              <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+          </ng-template>
+      </p-column>
+
     <p-column [sortable]="true" field="description" header="Opis typu" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-      <ng-template let-col let-workType="rowData" pTemplate="body">
-        <span [style.color]="toolsService.getOrderColor(workType.typeCode)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-        <span style="padding: 3px">{{workType.description}}</span>
+      <ng-template let-col let-order="rowData" pTemplate="body">
+        <span [style.color]="order['color']" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+        <span style="padding: 3px">{{order.description}}</span>
       </ng-template>
     </p-column>
 
@@ -42,7 +60,6 @@
         </ng-template>
     </p-column>
 
-
     <ng-template pTemplate="emptymessage">
       Brak typów zleceń...
     </ng-template>
@@ -57,7 +74,7 @@
 
 
 
-<p-dialog [header]="newWorkType? 'Tworzysz nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800">
+<p-dialog [header]="newWorkType? 'Nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800">
     <form name="f" (ngSubmit)="f.form?.valid && save()" #f="ngForm">
         <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedWorkType">
 
@@ -104,16 +121,45 @@
                   <div *ngIf="f.submitted && !price?.valid" class="help-block">Cena jest wymagana</div>
               </div>
             </div>
+
+            <div class="ui-grid-row" style="margin-top: 10px;">
+                <div class="ui-grid-col-4"><label for="isFromPool">Kategoria*</label></div>
+                <div class="ui-grid-col-8">
+                    <div class="form-group">
+                        <p-radioButton name="poolgroup" value="Y" [(ngModel)]="editedWorkType.isFromPool" label="Pula (TAK)"></p-radioButton>
+                        <span style="padding: 15px;"></span>
+                        <p-radioButton name="poolgroup" value="N" [(ngModel)]="editedWorkType.isFromPool" label="Pula (NIE)"></p-radioButton>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
+                <div class="ui-grid-col-4"><label for="color">Kolor*</label></div>
+                <div class="ui-grid-col-8">
+                    <input type="text" pInputText id="color" class="form-control" name="color" [(ngModel)]="editedWorkType.color" placeholder="Kod HTML koloru" required style="margin-bottom: 5px;"/>
+                    <p-colorPicker id="color" name="color" [(ngModel)]="editedWorkType.color" [inline]="true"></p-colorPicker>
+                    <div *ngIf="f.submitted && !color?.valid" class="help-block">Wybierz kolor!</div>
+                </div>
+            </div>
+
+
         </div>
 
 
       </div>
       <p-footer>
-        <div class="ui-dialog-buttonpane ui-helper-clearfix">
-          <!--<button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
-                  width="200px" type="button" pButton icon="fa fa-check" (click)="save()" label="Zapisz"></button>-->
-
-            <button [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity >= 0 && editedWorkType?.price >= 0)" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Zapisz</button>
+        <div class="ui-grid ui-grid-responsive">
+              <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 20px;">
+              <!--<button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
+                      width="200px" type="button" pButton icon="fa fa-check" (click)="save()" label="Zapisz"></button>-->
+                <div class="ui-grid-col-8"></div>
+                <div class="ui-grid-col-4">
+                    <button (click)="save()"
+                            [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity >= 0 && editedWorkType?.price >= 0)"
+                            pButton
+                            type="button" label="Zapisz" icon="fa fa-check  " width="200px" style="width: 200px;"></button>
+                </div>
+            </div>
         </div>
       </p-footer>
     </form>
