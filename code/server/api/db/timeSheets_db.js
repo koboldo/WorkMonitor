@@ -62,35 +62,32 @@ const queries = {
     , PERSON_IDS (ID) AS (
         SELECT ID FROM SPLIT_PERSON_IDS WHERE ID <> ''
     )
-    , WO_INIT AS (
-        SELECT ID, WORK_NO, PRICE, COMPLEXITY, ROWID, LAST_MOD, IS_FROM_POOL, LAST_MOD_TXT
+    , PERIOD_WO AS (
+        SELECT Q.ID, Q.WORK_NO, Q.PRICE, Q.COMPLEXITY,  Q.LAST_MOD, Q.IS_FROM_POOL
         FROM (
-            SELECT WO.ID, WO.WORK_NO, WO.PRICE, WO.COMPLEXITY, (WO.ROWID*100000000) ROWID, WO.LAST_MOD, WO.IS_FROM_POOL, DATETIME(WO.LAST_MOD, 'unixepoch') LAST_MOD_TXT
+            SELECT WO.ID, WO.WORK_NO, WO.PRICE, WO.COMPLEXITY, WO.LAST_MOD, WO.IS_FROM_POOL
             FROM WORK_ORDER WO, TIME_PARAMS TP
-            WHERE STATUS_CODE = "CO"
+            WHERE STATUS_CODE = 'CO'
                 AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
             UNION ALL
-            SELECT WOH.ID, WOH.WORK_NO, WOH.PRICE, WOH.COMPLEXITY, WOH.ROWID, WOH.LAST_MOD, WOH.IS_FROM_POOL, DATETIME(WOH.LAST_MOD, 'unixepoch') LAST_MOD_TXT
+            SELECT WOH.ID, WOH.WORK_NO, WOH.PRICE, WOH.COMPLEXITY, WOH.LAST_MOD, WOH.IS_FROM_POOL
             FROM WORK_ORDER_HIST WOH, TIME_PARAMS TP
-            WHERE STATUS_CODE = "CO"
+            WHERE STATUS_CODE = 'CO'
                 AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
-        ) Q
-        WHERE ID NOT IN (
-            SELECT ID
-            FROM WORK_ORDER_HIST, TIME_PARAMS TP
-            WHERE STATUS_CODE = "CO" AND LAST_MOD < TP.TIME_AFTER
-        )
-    )
-    , WO_FILTER AS (
-        SELECT ID, MIN(LAST_MOD) LAST_MOD
-        FROM WO_INIT
-        GROUP BY ID
-    )
-    , PERIOD_WO AS (
-        SELECT WI.ID, WI.WORK_NO, WI.PRICE, WI.COMPLEXITY, WI.IS_FROM_POOL
-        FROM WO_INIT WI, WO_FILTER WF
-        WHERE WI.ID = WF.ID AND WI.LAST_MOD = WF.LAST_MOD
-    
+        ) Q JOIN (
+            SELECT ID, MIN(LAST_MOD) MIN_LAST_MOD
+            FROM (
+                SELECT WO.ID, WO.LAST_MOD
+                FROM WORK_ORDER WO
+                WHERE STATUS_CODE = 'CO'
+                UNION ALL
+                SELECT WOH.ID, WOH.LAST_MOD
+                FROM WORK_ORDER_HIST WOH
+                WHERE STATUS_CODE = 'CO'
+            ) JOIN TIME_PARAMS TP
+            GROUP BY ID
+            HAVING MIN(LAST_MOD) BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
+        ) F ON Q.ID = F.ID AND Q.LAST_MOD = F.MIN_LAST_MOD    
     )
     , PERIOD_STATS AS (
        SELECT CAST(COALESCE(
@@ -115,6 +112,51 @@ const queries = {
         WHERE PRWO.IS_FROM_POOL = "N"
         GROUP BY PW.PERSON_ID
     )
+    , PERSON_INIT AS (
+      SELECT ID, IS_FROM_POOL, IS_EMPLOYED, RANK_CODE, ROLE_CODE, PROJECT_FACTOR, SALARY, SALARY_RATE, LEAVE_RATE, LAST_MOD
+      FROM (
+      SELECT ID,
+          IS_FROM_POOL
+            , IS_EMPLOYED
+            , RANK_CODE
+            , ROLE_CODE
+            , PROJECT_FACTOR
+            , COALESCE(SALARY,0) SALARY
+            , COALESCE(SALARY_RATE,0) SALARY_RATE
+            , COALESCE(LEAVE_RATE,0) LEAVE_RATE
+            , CASE 
+                WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
+                WHEN CREATED IS NOT NULL THEN CREATED
+                ELSE STRFTIME('%%s','2000-01-01')
+              END LAST_MOD
+        FROM PERSON
+        UNION ALL     
+        SELECT ID,
+          IS_FROM_POOL
+            , IS_EMPLOYED
+            , RANK_CODE
+            , ROLE_CODE
+            , PROJECT_FACTOR
+            , COALESCE(SALARY,0) SALARY
+            , COALESCE(SALARY_RATE,0) SALARY_RATE
+            , COALESCE(LEAVE_RATE,0) LEAVE_RATE
+            , CASE 
+                WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
+                WHEN CREATED IS NOT NULL THEN CREATED
+                ELSE HIST_CREATED
+              END LAST_MOD
+        FROM PERSON_HIST
+        ) WHERE ROLE_CODE LIKE '%%EN%%' OR ROLE_CODE LIKE '%%MG%%' OR ROLE_CODE LIKE '%%OP%%'
+    )
+    , PERIOD_PERSON AS (
+        SELECT PI.* FROM PERSON_INIT PI
+        JOIN (
+            SELECT ID, MAX(LAST_MOD) MAX_LAST_MOD
+            FROM PERSON_INIT, TIME_PARAMS TP
+            WHERE LAST_MOD < TP.TIME_BEFORE
+            GROUP BY ID
+        ) FL ON PI.ID = FL.ID AND PI.LAST_MOD = FL.MAX_LAST_MOD
+    )    
     , PERSON_STATS AS (
         SELECT
             Q.ID PERSON_ID
@@ -140,11 +182,11 @@ const queries = {
                 , CASE WHEN P.IS_FROM_POOL = "Y" THEN COALESCE(PNPT.NONPOOL_TIME,0) ELSE COALESCE(PT.WORK_TIME,0) END NONPOOL_WORK_TIME
                 , (PT.WORK_TIME + PT.LEAVE_TIME + PT.TRAINING_TIME - TP.PERIOD_LENGTH) OVER_TIME
                 , P.IS_FROM_POOL
-            FROM PERSON P 
+            FROM PERIOD_PERSON P 
                 LEFT JOIN PERSON_TIME PT ON P.ID = PT.PERSON_ID 
                 LEFT JOIN PERSON_NONPOOL_WO_TIME PNPT ON P.ID = PNPT.PERSON_ID
                 JOIN TIME_PARAMS TP JOIN QUERY_PARAMS QP
-            WHERE (P.ROLE_CODE LIKE '%%EN%%' OR P.ROLE_CODE LIKE '%%MG%%' OR P.ROLE_CODE LIKE '%%OP%%') AND P.RANK_CODE IS NOT NULL
+            WHERE P.RANK_CODE IS NOT NULL
                 AND CASE WHEN QP.PERSON_ID_LIST = '0' THEN 1
                 WHEN P.ID IN (SELECT ID FROM PERSON_IDS) THEN 1
                 ELSE 0 END
@@ -288,7 +330,7 @@ const timeSheets_db = {
         logger().debug('params ' + JSON.stringify(params));
         
         const query = dbUtil.prepareFiltersByInsertion(queries.getTimestats,params,filters.getTimestats);
-        logger().debug('query is : ' + query);
+        // logger().debug('query is : ' + query);
         const getTimestatsStat = db.prepare(query);
 		getTimestatsStat.all(addCtx(function(err, rows) {
             getTimestatsStat.finalize();

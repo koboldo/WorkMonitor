@@ -17,16 +17,17 @@
     "continuation-local-storage": "^3.2.1",
     "excel4node": "^1.7.0",
     "express": "^4.15.3",
+    "helmet": "^3.15.0",
     "jsonwebtoken": "^8.4.0",
     "log4js": "^3.0.5",
     "moment": "^2.21.0",
     "morgan": "^1.9.1",
     "nanoid": "^1.2.6",
     "nconf": "^0.8.4",
+    "nodemailer": "^4.7.0",
     "sha1": "^1.1.1",
     "sprintf-js": "^1.1.1",
-    "sqlite3": "^4.0.4",
-    "nodemailer": "^4.7.0"
+    "sqlite3": "^4.0.4"
   },
   "devDependencies": {
     "csv-parse": "^2.0.0",

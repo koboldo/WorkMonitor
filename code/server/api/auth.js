@@ -81,6 +81,7 @@ var auth = {
         
         if(token) {
             if(logger().isDebugEnabled()) logger().debug('validating token for ' + req.path);
+            if(logger().isDebugEnabled()) logger().debug('front version ' + req.get('Front-Version'));
 
             try {
                 var decoded = jwt.verify(token, conf.secret);

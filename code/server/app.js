@@ -3,7 +3,8 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
-var morgan = require('morgan');
+// var morgan = require('morgan');
+var helmet = require('helmet');
 var fs = require('fs');
 var http = require('http');
 var cls = require('continuation-local-storage');
@@ -22,13 +23,14 @@ var app = express();
 // app.use(express.static('public'));
 
 // app.use(morgan('dev')); //TODO: set relevant format & file for prod - combine with log4js
+app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
     // CLS needs this as context
     ctx.run(function() {
-        var tid = req.headers['sessionId'] || nanoid(16);
+        var tid = req.headers['Session-Id'] || nanoid(16);
         ctx.set('traceId',tid);
         next();
     });
