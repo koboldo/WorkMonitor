@@ -7,7 +7,7 @@
             <div class="ui-grid-col-12">
                 <div style="margin-top: 0px; margin-bottom: 10px;">
                     <span style="margin-right: 2px;">
-                        Poniżej zaprezentowano dane z bieżącego okresu. Nie można ich zatwierdzić dopóki okres rozliczeniowy się nie zakończy. Dane te przejdą jako niezatwierdzone do rekordów historycznych, gdzie będzie można je zatwiedzić.
+                        Poniżej zaprezentowano dane z bieżącego okresu. Nie można ich zaakceptować dopóki okres rozliczeniowy się nie zakończy. Dane te pojawią się jako niezaakceptowane w historii, gdzie będzie można je zaakceptować.
                     </span>
                 </div>
             </div>
@@ -138,9 +138,10 @@
                         </div>
 
                         <div style="float: right; max-width: 10%;">
-                            <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)"></button>
-                            <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)"></button>
+                            <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)" [class]="rowData.recalculateButtonStyle" [disabled]="rowData.recalculateButtonStyle === 'ui-button-danger'"></button>
+                            <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)" class="ui-button-success"></button>
                             <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
+                            <button type="button" pButton icon="fa fa-table" iconPos="left" label="Zlecenia" (click)="showAllOrders(rowData.periodDate)" style="margin-top: 5px"></button>
                         </div>
 
                         <!-- <div style="float: right; max-width: 10%;">
@@ -153,6 +154,11 @@
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
                             <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
+                        </ng-template>
+                    </p-column>
+                    <p-column [style]="{'text-align':'center', 'width':'40px'}">
+                        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                            <button type="button" pButton icon="fa fa-table" iconPos="center" (click)="completedOrderService.showOrders(userPayroll.periodDate, userPayroll.completedWo)" style="margin-top: 0px"></button>
                         </ng-template>
                     </p-column>
                     <p-column header="Biuro" field="user.officeCode" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
@@ -338,3 +344,6 @@
     </p-panel>
 </p-dialog>
 
+<p-dialog [(visible)]="completedOrderService.displayCompletedOrdersDialog" [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    <app-wo-list [ListToDisplay]="completedOrderService.completedOrders"></app-wo-list>
+</p-dialog>

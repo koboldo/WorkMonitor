@@ -4,7 +4,8 @@ import { Observable }    from 'rxjs';
 import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 import { User, CodeValue, UserPayroll } from '../_models/index';
-import { UserService, DictService, AlertService, AuthenticationService, ToolsService, PayrollService } from '../_services/index';
+import { UserService, DictService, AlertService, AuthenticationService, ToolsService, PayrollService, WOService } from '../_services/index';
+import { CompletedOrderService } from '../_services/completedOrders.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class MyPayrollComponent implements OnInit {
     historicalPayrolls: UserPayroll[];
 
     constructor(private payrollService:PayrollService,
+                private completedOrderService: CompletedOrderService,
                 private authSerice:AuthenticationService) {
     }
 
@@ -36,4 +38,5 @@ export class MyPayrollComponent implements OnInit {
         this.user = user;
         this.search();
     }
+
 }

@@ -12,20 +12,51 @@ const addCtx = require('./logger').addCtx;
 const orders = {
     
     readAll: function(req,resp) {
-        orders_db.readAll(req.query, addCtx(function(err, orderRows){
-            if(err) {
-                resp.status(500).json({status:'error', message: 'request processing failed'});
-                return;
+    	if(req.query.ids) {
+    		let ids = null;
+    		if(req.query.ids) {
+                if(logger().isDebugEnabled()) logger().debug('checking ids');
+                
+                ids = req.query.ids.split(',');
+                for(let id in ids) {
+                    if(isNaN(parseInt(id))) {
+                        resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
+                        return;
+                    }
+                }
+                ids = ids.join(',');
             }
-            
-            let orders = mapper.mapList(mapper.order.mapToJson, orderRows);
-            orders.list.forEach((order) => {
-                mapOrderItems(order);
-                filterOrderPrice(req.context, order);
-            });
-            
-            resp.json(orders);
-        }));
+    		
+    		orders_db.readByIds(ids, addCtx(function(err, orderRows) {
+                if(err) {
+                    resp.status(500).json({status:'error', message: 'request processing failed'});
+                    return;
+                }
+                
+                let orders = mapper.mapList(mapper.order.mapToJson, orderRows);
+                orders.list.forEach((order) => {
+                    mapOrderItems(order);
+                    filterOrderPrice(req.context, order);
+                });
+                
+                resp.json(orders);
+            }));
+    	} else {
+    		orders_db.readAll(req.query, addCtx(function(err, orderRows){
+	            if(err) {
+	                resp.status(500).json({status:'error', message: 'request processing failed'});
+	                return;
+	            }
+	            
+	            let orders = mapper.mapList(mapper.order.mapToJson, orderRows);
+	            orders.list.forEach((order) => {
+	                mapOrderItems(order);
+	                filterOrderPrice(req.context, order);
+	            });
+	            
+	            resp.json(orders);
+	        }));
+    	}
     },
     
     read: function(req, resp) {
