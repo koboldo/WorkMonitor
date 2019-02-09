@@ -292,7 +292,7 @@
     </p-footer>
   </p-dialog>
   <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" 
-    (onRowSelect)="onRowSelect($event)" (dblclick)="onRowDblclick($event)" (onRowUnselect)="onRowUnselect($event)" [metaKeySelection]="true"
+    (onRowSelect)="onRowSelect($event)" (dblclick)="onRowDblclick($event)" [metaKeySelection]="true"
      loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint" csvSeparator=";"  exportFilename="Turbo Zlecenia">
     <ng-template pTemplate="caption">
         <div>

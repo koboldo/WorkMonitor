@@ -44,11 +44,11 @@ export class UsersPayrollComponent implements OnInit {
     constructor(private router:Router,
                 private userService:UserService,
                 private payrollService:PayrollService,
-                private completedOrderService: CompletedOrderService,
                 private alertService:AlertService,
                 private dictService:DictService,
                 private toolsService:ToolsService,
-                private authService:AuthenticationService) {
+                private authService:AuthenticationService,
+                public completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit():void {

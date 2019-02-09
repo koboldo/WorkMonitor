@@ -21,8 +21,8 @@ export class MyPayrollComponent implements OnInit {
     historicalPayrolls: UserPayroll[];
 
     constructor(private payrollService:PayrollService,
-                private completedOrderService: CompletedOrderService,
-                private authSerice:AuthenticationService) {
+                private authSerice:AuthenticationService,
+                public completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit() {
