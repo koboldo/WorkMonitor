@@ -93,7 +93,7 @@ const queries = {
             , CASE 
                 WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
                 WHEN CREATED IS NOT NULL THEN CREATED
-                ELSE STRFTIME('%%s','2000-01-01')
+                ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
               END LAST_MOD
         FROM PERSON
     UNION ALL     
@@ -109,7 +109,7 @@ const queries = {
             , CASE 
                 WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
                 WHEN CREATED IS NOT NULL THEN CREATED
-                ELSE STRFTIME('%%s','2000-01-01')
+                ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
               END LAST_MOD
         FROM PERSON_HIST
         ) WHERE ROLE_CODE LIKE '%%EN%%' OR ROLE_CODE LIKE '%%MG%%' OR ROLE_CODE LIKE '%%OP%%'
