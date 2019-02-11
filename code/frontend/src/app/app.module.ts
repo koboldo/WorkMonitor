@@ -92,6 +92,7 @@ import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.com
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';;
 import { AppVersionComponent } from './app-version/app-version.component'
 import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
+import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignment-wo.component';
 
 
 @NgModule({
@@ -141,7 +142,10 @@ import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component
         UsersTimeStatsComponent,
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
-		WoTurboTableComponent    ],
+        WoTurboTableComponent,
+        GroupAssignmentWoComponent
+            
+    ],
     providers: [
         AlertService,
         AuthGuard,

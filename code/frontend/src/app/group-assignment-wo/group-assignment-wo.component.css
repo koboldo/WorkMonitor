@@ -1,12 +1,12 @@
-.text-center {
+ .text-center {
     text-align:center;
     width :45%;
 }
 
 .text-center-55 {
     text-align:center;
-    width :55%;
-}
+     width :55%;  
+} 
 
 .width-35 {
     width: 35%;
@@ -25,7 +25,7 @@
 
 .width-125 {
     width: 125%;
-}
+} 
 
 td {
     white-space: nowrap;
@@ -38,3 +38,5 @@ td {
     overflow: hidden;
     text-overflow: ellipsis
 }
+
+  
