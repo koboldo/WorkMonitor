@@ -55,6 +55,22 @@ export class WOService {
             .pipe(map((response: Order) => this.getWorkOrder(response)));
     }
 
+
+    getOrderByIds(ids: number[]) : Observable<Order[]> {
+
+        let flatIds: string = "";
+
+        for(let id of ids) {
+            flatIds += id+",";
+        }
+        if (flatIds.length > 1) {
+            flatIds = flatIds.substr(0, flatIds.length-1);
+        }
+
+        return this.http.get('/api/v1/orders?ids='+flatIds)
+            .pipe(map((response: Object) => this.getWorkOrders(response)))
+    }
+
     addOrder(order: Order) : Observable<Order> {
         return this.http.post('/api/v1/orders', JSON.stringify(this.getStrippedOrder(order)))
             .pipe(map((response: Object) => response['created']), mergeMap(createdId => this.getOrderById(createdId)));

@@ -16,3 +16,4 @@ export * from './timesheet.service';
 export * from './autoLogout.service';
 export * from './userTimeStats.service';
 export * from './version.service';
+export * from './completedOrders.service';

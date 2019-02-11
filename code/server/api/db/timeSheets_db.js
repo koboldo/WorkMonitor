@@ -63,18 +63,8 @@ const queries = {
         SELECT ID FROM SPLIT_PERSON_IDS WHERE ID <> ''
     )
     , PERIOD_WO AS (
-        SELECT Q.ID, Q.WORK_NO, Q.PRICE, Q.COMPLEXITY,  Q.LAST_MOD, Q.IS_FROM_POOL
-        FROM (
-            SELECT WO.ID, WO.WORK_NO, WO.PRICE, WO.COMPLEXITY, WO.LAST_MOD, WO.IS_FROM_POOL
-            FROM WORK_ORDER WO, TIME_PARAMS TP
-            WHERE STATUS_CODE = 'CO'
-                AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
-            UNION ALL
-            SELECT WOH.ID, WOH.WORK_NO, WOH.PRICE, WOH.COMPLEXITY, WOH.LAST_MOD, WOH.IS_FROM_POOL
-            FROM WORK_ORDER_HIST WOH, TIME_PARAMS TP
-            WHERE STATUS_CODE = 'CO'
-                AND LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
-        ) Q JOIN (
+        SELECT Q.ID, Q.WORK_NO, Q.PRICE, Q.COMPLEXITY, Q.IS_FROM_POOL
+        FROM WORK_ORDER Q JOIN (
             SELECT ID, MIN(LAST_MOD) MIN_LAST_MOD
             FROM (
                 SELECT WO.ID, WO.LAST_MOD
@@ -87,7 +77,7 @@ const queries = {
             ) JOIN TIME_PARAMS TP
             GROUP BY ID
             HAVING MIN(LAST_MOD) BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
-        ) F ON Q.ID = F.ID AND Q.LAST_MOD = F.MIN_LAST_MOD    
+        ) F ON Q.ID = F.ID    
     )
     , PERIOD_STATS AS (
        SELECT CAST(COALESCE(
@@ -127,7 +117,7 @@ const queries = {
             , CASE 
                 WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
                 WHEN CREATED IS NOT NULL THEN CREATED
-                ELSE STRFTIME('%%s','2000-01-01')
+                ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
               END LAST_MOD
         FROM PERSON
         UNION ALL     
@@ -143,7 +133,7 @@ const queries = {
             , CASE 
                 WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
                 WHEN CREATED IS NOT NULL THEN CREATED
-                ELSE HIST_CREATED
+                ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
               END LAST_MOD
         FROM PERSON_HIST
         ) WHERE ROLE_CODE LIKE '%%EN%%' OR ROLE_CODE LIKE '%%MG%%' OR ROLE_CODE LIKE '%%OP%%'

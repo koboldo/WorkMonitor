@@ -2,9 +2,10 @@ import { Component, OnInit, NgModule, LOCALE_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 
-import { AlertService, UserService, DictService, AuthenticationService, PayrollService } from '../_services/index';
-import { User, CodeValue, SearchUser, UserPayroll } from '../_models/index';
-import {SelectItem, DataTable} from 'primeng/primeng'
+import { AlertService, UserService, DictService, AuthenticationService, PayrollService, ToolsService, WOService } from '../_services/index';
+import { CompletedOrderService } from '../_services/completedOrders.service';
+import { User, CodeValue, SearchUser, UserPayroll, Order } from '../_models/index';
+import { SelectItem, DataTable } from 'primeng/primeng'
 
 
 import { Observable }    from 'rxjs';
@@ -19,6 +20,8 @@ import { MenuItem } from 'primeng/primeng';
     styleUrls: ['./users-payroll.component.css']
 })
 export class UsersPayrollComponent implements OnInit {
+
+    AVG_MONTH_MS: number = 30*24*60*60*1000;
 
     items:MenuItem[] = [];
 
@@ -43,9 +46,9 @@ export class UsersPayrollComponent implements OnInit {
                 private payrollService:PayrollService,
                 private alertService:AlertService,
                 private dictService:DictService,
-                private authService:AuthenticationService) {
-
-
+                private toolsService:ToolsService,
+                private authService:AuthenticationService,
+                public completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit():void {
@@ -56,11 +59,12 @@ export class UsersPayrollComponent implements OnInit {
     public exportCSV(text:string, table: DataTable)
     {
         this.selectedPayrolls=[];
-                this.historicalPayrolls.forEach(element => {
-                    if (element.periodDate==text)
-                    this.selectedPayrolls.push(element)
-                });
-                table.selection=this.selectedPayrolls;
+        this.historicalPayrolls.forEach(element => {
+            if (element.periodDate==text) {
+                this.selectedPayrolls.push(element)
+            }
+        });
+        table.selection=this.selectedPayrolls;
         table.exportCSV({selectionOnly:true});
     }
 
@@ -140,6 +144,28 @@ export class UsersPayrollComponent implements OnInit {
         this.searchPayrolls(true);
     }
 
+
+    public showAllOrders(periodDate: string): void {
+        let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
+
+        let orderIds: number[] = [];
+        for (let payroll of payrolls) {
+            if (payroll.periodDate && payroll.periodDate === periodDate && payroll.completedWo) {
+                let ids: string[] = payroll.completedWo.split("|");
+                for(let id of ids) {
+                    if (orderIds.indexOf(+id) === -1) {
+                        orderIds.push(+id);
+                    }
+                }
+            }
+        }
+
+        this.completedOrderService.showOrdersByIds(periodDate, orderIds);
+
+    }
+
+
+
     private initAll(user:User):void {
         if (user) {
             this.operator = user;
@@ -165,12 +191,28 @@ export class UsersPayrollComponent implements OnInit {
         let tmpBillingCycles: Map<string, string> = new Map<string, string>();
         for (let payroll of payrolls) {
             tmpBillingCycles.set(payroll.periodDate, payroll.periodDate);
+            payroll.recalculateButtonStyle = this.getRecalculateButtonStyle(payroll.periodDate);
         }
 
         this.periodDates = [];
         tmpBillingCycles.forEach((value: string, key: string) => {
             this.periodDates.push({label: value, value: value});
         });
+    }
+
+    private getRecalculateButtonStyle(periodDate: string):string {
+        let theDate: Date = this.toolsService.parseDate(periodDate+' 00:00:01');
+        let now: Date = new Date();
+        let diffMs: number = now.getTime() - theDate.getTime();
+
+        console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
+
+        if (diffMs > 3*this.AVG_MONTH_MS) {
+            return 'ui-button-danger';
+        } else if (diffMs > 2*this.AVG_MONTH_MS) {
+            return 'ui-button-warning';
+        }
+        return 'ui-button-success';
     }
 
 }

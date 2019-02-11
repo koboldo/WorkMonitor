@@ -6,7 +6,7 @@
       <div class="ui-grid-col-12">
         <div style="margin-top: 0px; margin-bottom: 10px;">
                     <span style="margin-right: 2px;">
-                        Poniżej zaprezentowano dane z bieżącego okresu. Nie można ich zatwierdzić dopóki okres rozliczeniowy się nie zakończy. Dane te przejdą jako niezatwierdzone do rekordów historycznych, gdzie będzie można sprawdzić czy zostały już zatwierdzone.
+                        Poniżej zaprezentowano dane z bieżącego okresu. Nie można ich zaakceptować dopóki okres rozliczeniowy się nie zakończy. Dane te przejdą jako niezaakceptowane (do weryfikacji) do rekordów historycznych, gdzie będzie można sprawdzić czy zostały już zaakceptowane.
                     </span>
         </div>
       </div>
@@ -19,9 +19,8 @@
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Współczynnik nadgodzin:</span><span [style.color]="'#286090'">{{currentPayroll[0].overTimeFactor}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
         <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{currentPayroll[0].lastMod}}</span>
-        <div *ngIf="currentPayroll[0]?.rankCode !== 'YOU'">
-          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{currentPayroll[0].formattedPoolRate}}</span>
-        </div>
+        <span *ngIf="currentPayroll[0]?.rankCode !== 'YOU'" style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{currentPayroll[0].formattedPoolRate}}</span>
+
       </div>
 
 
@@ -33,10 +32,14 @@
                  [style]="{'margin-top':'0px'}" scrollable="true" scrollHeight="600px" csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate">
 
 
-      <p-column header="Osoba" field="user.lastName"  filterPlaceholder="Filtruj">
+      <p-column header="Osoba" field="user.lastName">
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
+        </ng-template>
+      </p-column>
+      <p-column [style]="{'text-align':'center', 'width':'40px'}">
+        <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+            <button type="button" pButton icon="fa fa-table" iconPos="center" (click)="completedOrderService.showOrders(userPayroll.periodDate, userPayroll.completedWo)" style="margin-top: 0px"></button>
         </ng-template>
       </p-column>
       <p-column header="Stopień" field="rank"  filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
@@ -107,15 +110,15 @@
       <ng-template pTemplate="rowgroupheader" let-rowData>
 
         <div>
-          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
-          <span [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
+
+          <!--<span style="margin-left: 10px; margin-right: 2px;"><button type="button" pButton icon="fa fa-table" label="Zrealizowane" iconPos="right" (click)="completedOrderService.showOrders(rowData.periodDate, rowData.completedWo)" style="margin-top: 0px"></button></span>-->
+          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Rozliczenie za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
+          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Współczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
           <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
 <!--          <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>-->
+            <span *ngIf="rowData?.rankCode !== 'YOU'" style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.formattedPoolRate}}</span>
 
-            <div *ngIf="rowData && rowData.rankCode !== 'YOU'">
-                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.formattedPoolRate}}</span>
-            </div>
         </div>
 
 
@@ -123,10 +126,16 @@
       <!--<p-column header="Okres rozliczeniowy" field="periodDate" sortable="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>-->
       <p-column header="Osoba" field="user.lastName"  filterPlaceholder="Nazwisko">
         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
-          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}}</span>
-          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['lastName']}}</span>
+          <span [style.color]="'green'" class="ui-inputgroup-addon">{{userPayroll.user['firstName']}} {{userPayroll.user['lastName']}}</span>
         </ng-template>
       </p-column>
+
+        <p-column [style]="{'text-align':'center', 'width':'40px'}">
+            <ng-template let-col let-userPayroll="rowData" pTemplate="body">
+                <button type="button" pButton icon="fa fa-table" iconPos="center" (click)="completedOrderService.showOrders(userPayroll.periodDate, userPayroll.completedWo)" style="margin-top: 0px"></button>
+            </ng-template>
+        </p-column>
+
       <p-column header="Stopień" field="rank"  filterPlaceholder="Filtruj" [style]="{'text-align':'center'}"></p-column>
       <p-column header="Współ." field="projectFactor"  filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
 
@@ -185,3 +194,8 @@
   </p-accordionTab>
 
 </p-accordion>
+
+
+<p-dialog [(visible)]="completedOrderService.displayCompletedOrdersDialog" [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    <app-wo-list [ListToDisplay]="completedOrderService.completedOrders"></app-wo-list>
+</p-dialog>

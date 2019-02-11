@@ -120,7 +120,7 @@
               <div style="margin-bottom: 5px" class="ui-grid-row" *ngIf="selectedOrder?.type">
                   <div class="ui-grid-col-4">Typ:</div>
                   <div class="ui-grid-col-8">
-                      <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                      <span [style.color]="workTypeService.getWorkTypeColor(selectedOrder)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
                       <span style="padding: 3px; font-style: italic;">{{selectedOrder?.type}}</span>
                   </div>
               </div>

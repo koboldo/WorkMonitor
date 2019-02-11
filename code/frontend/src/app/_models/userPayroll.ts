@@ -55,6 +55,8 @@ export class UserPayroll {
     overDue: number;
     totalDue: number;
 
+    completedWo: string; //17918|17919|18041|18042|18070|18201|18202|18261|18289
+
     // user data but could be changed after raport generation
     isFromPool: string;
     rankCode: string;
@@ -71,6 +73,8 @@ export class UserPayroll {
     lastMod: string;
     modifiedBy: number;
     modifiedByUser: User;
+
+    recalculateButtonStyle: string;
 
 }
 
