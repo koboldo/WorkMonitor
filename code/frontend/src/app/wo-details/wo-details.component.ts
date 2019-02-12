@@ -23,7 +23,7 @@ export class WoDetailsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.userService.getAllStaff().subscribe(staff => this.staff = staff);
+        this.userService.getAll().subscribe(staff => this.staff = staff);
         this.userService.getVentureRepresentatives().subscribe(vr => this.ventureRepresentatives = vr);
     }
 
@@ -52,6 +52,7 @@ export class WoDetailsComponent implements OnInit {
             }
             if (this.staff && this.staff.length > 0) {
                 this.fillModifiedBy(record);
+                this.fillAssignedTo(record);
             }
             if (this.ventureRepresentatives && this.ventureRepresentatives.length > 0) {
                 this.fillVentureRepresentative(record);
@@ -67,6 +68,24 @@ export class WoDetailsComponent implements OnInit {
                 record.modifiedByFull = s;
                 return;
             }
+        }
+    }
+
+
+    private fillAssignedTo(record:OrderHistory):void {
+        if (record.assignee && record.assignee.length > 0) {
+            record.frontProcessingDesc = '';
+            record.assigneeFull = [];
+            for(let s of this.staff) {
+                if (record.assignee.indexOf(''+s.id) > -1) {
+                    record.assigneeFull.push(s);
+                    record.frontProcessingDesc += ', '+(s.firstName ? s.firstName.substring(0, 1) : '') +'. '+s.lastName;
+                }
+            }
+            if (record.frontProcessingDesc.indexOf(', ') > -1) {
+                record.frontProcessingDesc = record.frontProcessingDesc.substring(2, record.frontProcessingDesc.length);
+            }
+
         }
     }
 
