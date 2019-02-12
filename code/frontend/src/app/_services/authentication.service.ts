@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -89,8 +89,9 @@ export class AuthenticationService {
                 items: [
                     {label: 'Lista zleceń', icon: 'fa fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Lista zleceń (turbo)', icon: 'fa fa-table', routerLink: ['/turboTable'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Zawieszone', icon: 'fa fa-ban',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Anulowane',  icon: 'fa fa-trash-o', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Zawieszone', icon: 'fa fa-hand-paper-o',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Anulowane',  icon: 'fa fa-ban', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
+                    {label: 'Kosz',  icon: 'fa fa-trash-o', routerLink: ['/trashedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Moje zlecenia', icon: 'fa fa-calendar', routerLink: ['/myWorkOrders'], "rolesRequired":["EN", "MG"]},
                     {label: 'Wyceny pracochłonności', icon: 'fa fa-life-bouy', routerLink: ['/workOrderComplexity'], "rolesRequired":["MG", "PR"]},
                     {label: 'Protokół', icon: 'fa fa-envelope-open-o', routerLink: ['/clearing'], "rolesRequired":["PR", "CL"]}

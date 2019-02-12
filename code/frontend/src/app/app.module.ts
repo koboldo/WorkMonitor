@@ -91,7 +91,8 @@ import { WoCancelledComponent } from './wo-cancelled/wo-cancelled.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';;
 import { AppVersionComponent } from './app-version/app-version.component'
-import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
+import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';;
+import { WoTrashedComponent } from './wo-trashed/wo-trashed.component'
 
 
 @NgModule({
@@ -141,7 +142,8 @@ import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component
         UsersTimeStatsComponent,
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
-		WoTurboTableComponent    ],
+		WoTurboTableComponent ,
+		WoTrashedComponent   ],
     providers: [
         AlertService,
         AuthGuard,

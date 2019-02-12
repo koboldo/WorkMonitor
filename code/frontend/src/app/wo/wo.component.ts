@@ -149,7 +149,7 @@ export class WoComponent implements OnInit {
         //filter
         this.orders = [];
         for (let order of orders) {
-            if (order.statusCode !== 'CA' && order.statusCode != 'SU') {
+            if (order.statusCode !== 'CA' && order.statusCode != 'SU' && order.statusCode != 'TR') {
                 this.orders.push(order);
             }
         }

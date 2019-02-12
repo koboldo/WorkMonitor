@@ -78,9 +78,14 @@
              style="margin-top: 10px;">
             <p-fieldset legend="Wykonawcy">
                 <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
-                    <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
-                    <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+                    <!--<div class="ui-grid-col-12"><u></u></div>-->
+                    <div class="ui-grid-col-12"><u>{{a.firstName}} {{a.lastName}}</u><span style="padding-left: 10px;">{{a.email}}</span></div>
+                    <div class="ui-grid-col-12">{{a.rank}}
+                        <span *ngIf="a.isFromPool==='Y'" style="padding-left: 10px;" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                        <span *ngIf="a.isFromPool!=='Y'" style="padding-left: 10px;" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                    </div>
                     <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+
                 </div>
             </p-fieldset>
         </div>
@@ -172,7 +177,6 @@
                             <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                             <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                         </ng-template>
-
                     </p-column>
                     <p-column [sortable]="true" field="complexity" header="Pracochłonność" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
                     <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
