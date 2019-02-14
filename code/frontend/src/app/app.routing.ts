@@ -25,6 +25,7 @@ import { ContractorsComponent } from './contractors/contractors.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
 import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
+import {WoTrashedComponent} from "./wo-trashed/wo-trashed.component";
 
 const appRoutes: Routes = [
     { path: '',                         component: HomeComponent, canActivate: [AuthGuard] },
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
     { path: 'workOrders',               component: WoComponent,       canActivate: [AuthGuard] },
     { path: 'suspendedWorkOrders',      component: WoSuspendedComponent,       canActivate: [AuthGuard] },
     { path: 'cancelledWorkOrders',      component: WoCancelledComponent,       canActivate: [AuthGuard] },
+    { path: 'trashedWorkOrders',        component: WoTrashedComponent,       canActivate: [AuthGuard] },
     { path: 'workTypes',                component: WorkTypesComponent,       canActivate: [AuthGuard] },
     { path: 'myWorkOrders',             component: MyWoComponent,     canActivate: [AuthGuard] },
     { path: 'addTimesheet',             component: TimesheetsComponent, canActivate: [AuthGuard] },
