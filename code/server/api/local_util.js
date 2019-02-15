@@ -78,7 +78,7 @@ let local_util = {
                 ws.cell(2+cnt,2).date(moment.utc(order.LAST_MOD.toString(),'X').local().toDate()).style(styles.borderCell);
                 ws.cell(2+cnt,3).string(order.WORK_NO).style(styles.borderCell);
                 ws.cell(2+cnt,4).string(order.ITEM_NO).style(styles.borderCell);
-                ws.cell(2+cnt,5).string(order.INITIALS).style(styles.borderCell);
+                ws.cell(2+cnt,5).string(order.VENTURE).style(styles.borderCell);
                 ws.cell(2+cnt,6).string(order.DESCRIPTION).style(styles.borderCell);
                 ws.cell(2+cnt,7).string(order.TYPE).style(styles.borderCell);
                 ws.cell(2+cnt,8).number(order.PRICE).style(styles.alignRight).style(styles.borderCell);

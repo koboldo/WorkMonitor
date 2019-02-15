@@ -21,7 +21,7 @@
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{currentPayroll[0].lastMod}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{currentPayroll[0].budget | currency:'PLN'}}</span>
-                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{currentPayroll[0].formattedPoolRate}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{currentPayroll[0].poolRate | currency:'PLN'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{calculatePayrollCost(currentPayroll[0].periodDate) | currency:'PLN'}}</span>
             </div>
 
@@ -133,7 +133,7 @@
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{rowData.budget  | currency:'PLN'}}</span>
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.formattedPoolRate}}</span>
+                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.poolRate | currency:'PLN'}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{calculatePayrollCost(rowData.periodDate) | currency:'PLN'}}</span>
                         </div>
 
@@ -150,6 +150,10 @@
                     </ng-template>
                     <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
 
+                    <!--<p-column header="tmpApproved" field="approved" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+                    <p-column header="tmpDate" field="periodDate" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+                    <p-column header="tmpBudget" field="budget" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>-->
+                    <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
                     <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
                         <ng-template let-col let-userPayroll="rowData" pTemplate="body">
@@ -235,9 +239,9 @@
             </div>
 
             <div class="ui-grid-row" style="margin-top: 10px;">
-                <div class="ui-grid-col-4"><label for="formattedPoolRate">Stawka za 1h pracy puli</label></div>
+                <div class="ui-grid-col-4"><label for="poolRate">Stawka za 1h pracy puli</label></div>
                 <div class="ui-grid-col-8 ui-fluid">
-                    <span id="formattedPoolRate">{{aSelectedPayroll.formattedPoolRate}}</span>
+                    <span id="poolRate">{{aSelectedPayroll.poolRate | currency:'PLN'}}</span>
                 </div>
             </div>
 
@@ -266,7 +270,7 @@
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="approvedPayroll[0].approved=='Y'?'black':'orange'">{{approvedPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{approvedPayroll[0].lastMod}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{approvedPayroll[0].budget | currency:'PLN'}}</span>
-                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{approvedPayroll[0].formattedPoolRate}}</span>
+                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{approvedPayroll[0].poolRate | currency:'PLN'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{approvedPayrollCost | currency:'PLN'}}</span>
             </div>
 
