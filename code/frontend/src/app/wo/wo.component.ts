@@ -10,7 +10,6 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 
 import { MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
-import { GroupAssignmentWoComponent } from 'app/group-assignment-wo/group-assignment-wo.component';
 
 @Component({
     selector: 'app-wo',
@@ -110,8 +109,6 @@ export class WoComponent implements OnInit {
         this.search();
     }
 
-    @ViewChild('assignmentModal') assignmentModal: GroupAssignmentWoComponent;
-
     public showChangeStatusDialog() {
         this.displayChangeStatusDialog=true;
         this.assignedEngineer = undefined;
@@ -125,9 +122,6 @@ export class WoComponent implements OnInit {
         this.displayChangeStatusDialog = isVisible;
         this.displayAssignmentDialog = isVisible;
         this.search();
-    }
-    public closeAssignment () {
-         this.assignmentModal.finishAndClean();
     }
  
     public assignOperator(operator:User):void {

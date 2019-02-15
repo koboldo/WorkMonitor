@@ -126,33 +126,28 @@
 
                     <ng-template pTemplate="rowgroupheader" let-rowData>
 
-                        <div style="float: left; max-width: 90%;">
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData.periodDate}}</span>
+                        <div style="float: left; width: 90%;">
+                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{rowData?.periodDate.substr(0, 7)}}</span>
                             <span style="margin-left: 10px;" [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wspólczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">przez:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
+                            <!--<span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>-->
+                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Autor:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{rowData.budget  | currency:'PLN'}}</span>
                             <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.poolRate | currency:'PLN'}}</span>
-                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{calculatePayrollCost(rowData.periodDate) | currency:'PLN'}}</span>
+                            <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wypłaty:</span><span [style.color]="'#286090'">{{calculatePayrollCost(rowData.periodDate) | currency:'PLN'}}</span>
                         </div>
 
-                        <div style="float: right; max-width: 10%;">
+
+                        <div style="float: right; width: 10%;">
                             <button *ngIf="rowData['approved']=='Y'" type="button" pButton icon="fa fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)" [class]="rowData.recalculateButtonStyle" [disabled]="rowData.recalculateButtonStyle === 'ui-button-danger'"></button>
                             <button *ngIf="rowData['approved']!='Y'" type="button" pButton icon="fa fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)" class="ui-button-success"></button>
                             <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin-top: 5px"></button>
                             <button type="button" pButton icon="fa fa-table" iconPos="left" label="Zlecenia" (click)="showAllOrders(rowData.periodDate)" style="margin-top: 5px"></button>
                         </div>
 
-                        <!-- <div style="float: right; max-width: 10%;">
-                        <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Export" (click)="Export(rowData.periodDate,historicalDt)"></button>
-                        </div> -->
                     </ng-template>
-                    <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
 
-                    <!--<p-column header="tmpApproved" field="approved" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-                    <p-column header="tmpDate" field="periodDate" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-                    <p-column header="tmpBudget" field="budget" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>-->
+                    <p-column header="Okres rozliczeniowy" [hidden]="true" [exportable]="true" field="periodDate" sortable="true" [filter]="true" [style.color]="'green'" [style]="{'text-align':'center', 'width':'120px'}"></p-column>
                     <p-column header="Id excel" field="user.excelId" sortable="true" [filter]="true" filterPlaceholder="Filtruj"></p-column>
                     <p-column header="Imię" field="user.firstName" sortable="true" [filter]="true" filterPlaceholder="Filtruj" [hidden]="true"></p-column>
                     <p-column header="Osoba" field="user.lastName"  [filter]="true" filterPlaceholder="Nazwisko">
@@ -268,7 +263,7 @@
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'">{{approvedPayroll[0].periodDate}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik nadgodzin:</span><span [style.color]="'#286090'">{{approvedPayroll[0].overTimeFactor}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span [style.color]="approvedPayroll[0].approved=='Y'?'black':'orange'">{{approvedPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
-                <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{approvedPayroll[0].lastMod}}</span>
+                <!--<span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{approvedPayroll[0].lastMod}}</span>-->
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{approvedPayroll[0].budget | currency:'PLN'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{approvedPayroll[0].poolRate | currency:'PLN'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt wypłat:</span><span [style.color]="'#286090'">{{approvedPayrollCost | currency:'PLN'}}</span>

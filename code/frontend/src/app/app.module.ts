@@ -145,8 +145,8 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
-		    WoTurboTableComponent ,
-		    WoTrashedComponent   ],
+		WoTurboTableComponent ,
+		WoTrashedComponent   ],
 
     providers: [
         AlertService,

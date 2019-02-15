@@ -41,7 +41,7 @@
   <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
-  <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true" (onHide)="closeAssignment()">
+  <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-assignment-wo #assignmentModal [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-assignment-wo>
   </p-dialog>
 
@@ -139,14 +139,18 @@
             <div class="ui-grid-col-2">
               <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
             </div>
-            <div class="ui-grid-col-2">  </div>         
-            <div class="ui-grid-col-2"> <button type="button" pButton (click)="showAssignmentDialog()" label="Grupwe przypisanie" icon="fa fa-address-book-o" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
             <div class="ui-grid-col-2">
               <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
-            <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-2">
+              <button type="button" pButton (click)="showAssignmentDialog()" label="Grupowe przypisanie" icon="fa fa-address-book-o" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>
+            </div>
+            <div class="ui-grid-col-2">
+              <button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>
+            </div>
           </div>
-          <div class="ui-grid-col-1"> </div>
+
         </div>
       </p-footer>
 
@@ -257,7 +261,17 @@
       <div class="ui-grid-row" *ngIf="newOrder == false" style="margin-top: 10px;"><!-- editing status is not allowed for new orders-->
             <div class="ui-grid-col-2"><label for="status">Status</label></div>
             <div class="ui-grid-col-10">
-                <p-autoComplete [forceSelection]="true" [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>
+                <!--<p-autoComplete [forceSelection]="true" [disabled]="!assignedVentureRepresentative" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar"></p-autoComplete>-->
+
+              <p-autoComplete [forceSelection]="true" delay="100" [disabled]="!assignedVentureRepresentative" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" id="status" name="status" [(ngModel)]="status" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar">
+                <ng-template let-orderStatus pTemplate="item">
+                  <div class="ui-helper-clearfix">
+                    <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(orderStatus.code)"></i></span>
+                    <span style="padding: 3px">{{orderStatus.paramChar}}</span>
+                  </div>
+                </ng-template>
+              </p-autoComplete>
+
             </div>
       </div>
 

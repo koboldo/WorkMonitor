@@ -351,19 +351,19 @@
           <div class="ui-grid-col-2">
             <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
           </div>
-
-          <div class="ui-grid-col-2">  </div>
-          <div class="ui-grid-col-2"> <button type="button" pButton (click)="showAssignmentDialog()" label="Grupwe przypisanie" icon="fa fa-address-book-o" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
-
-          <div class="ui-grid-col-1"> </div>
-
           <div class="ui-grid-col-2">
-            <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>
+            <button type="button" [disabled]="operator.roleCode.indexOf('OP') == -1" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
           </div>
-          <div class="ui-grid-col-2"><button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2">
+            <button type="button" pButton (click)="showAssignmentDialog()" label="Grupowe przypisanie" icon="fa fa-address-book-o" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>
+          </div>
+          <div class="ui-grid-col-2">
+            <button type="button" pButton (click)="showChangeStatusDialog()" label="Zmiana statusów" icon="fa fa-list" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>
+          </div>
         </div>
       </div>
-  </ng-template>
+    </ng-template>
 </p-table>
 <p-contextMenu #cm [model]="items"></p-contextMenu>
 </p-panel>
