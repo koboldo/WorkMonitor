@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild  } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 
 import { MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
+import { GroupAssignmentWoComponent } from 'app/group-assignment-wo/group-assignment-wo.component';
 
 @Component({
     selector: 'app-wo',
@@ -71,9 +72,10 @@ export class WoComponent implements OnInit {
     comment; string;
     newComment: string;
 
-    operator:User;
-    pl:Calendar;
-    displayChangeStatusDialog:boolean;
+    operator :User;
+    pl: Calendar;
+    displayChangeStatusDialog: boolean;
+    displayAssignmentDialog: boolean;
     
     constructor(protected woService:WOService,
                 protected userService:UserService,
@@ -108,17 +110,26 @@ export class WoComponent implements OnInit {
         this.search();
     }
 
-    showChangeStatusDialog() {
+    @ViewChild('assignmentModal') assignmentModal: GroupAssignmentWoComponent;
+
+    public showChangeStatusDialog() {
         this.displayChangeStatusDialog=true;
         this.assignedEngineer = undefined;
     }
+    public showAssignmentDialog() {
+        this.displayAssignmentDialog = true;
+        this.assignedEngineer = undefined;
+    }
 
-    onClose(isVisible: boolean){
+    public onClose(isVisible: boolean){
         this.displayChangeStatusDialog = isVisible;
+        this.displayAssignmentDialog = isVisible;
         this.search();
     }
+    public closeAssignment () {
+         this.assignmentModal.finishAndClean();
+    }
  
-
     public assignOperator(operator:User):void {
         console.log('operator: '+JSON.stringify(operator));
         this.operator = operator;

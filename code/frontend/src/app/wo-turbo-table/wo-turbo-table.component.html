@@ -41,10 +41,11 @@
   <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
+  <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true" (onHide)="closeAssignment()">
+    <app-group-assignment-wo #assignmentModal [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-assignment-wo>
+  </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-contextMenu #cm [model]="items"></p-contextMenu>
-
-   
   </div>
 
   <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
@@ -293,7 +294,7 @@
   </p-dialog>
   <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" 
     (onRowSelect)="onRowSelect($event)" (dblclick)="onRowDblclick($event)" [metaKeySelection]="true"
-     loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint" csvSeparator=";"  exportFilename="Turbo Zlecenia">
+     loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint" csvSeparator=";"  exportFilename="Zlecenia" [globalFilterFields]="cols" [responsive]="true">
     <ng-template pTemplate="caption">
         <div>
             <i class="fa fa-search"></i>
@@ -301,13 +302,14 @@
             <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
           </div>
     </ng-template>
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
         <tr>
-          <th *ngFor="let col of cols"
+          <th *ngFor="let col of columns"
           [hidden]="col.hidden"
           [pSortableColumn]="col.field"
           [ngClass]="col.class"
-          pResizableColumn>
+          pResizableColumn
+          excludeGlobalFilter = col.exclude>
             <span class="header">
                 {{col.header}}
                 <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
@@ -315,29 +317,29 @@
           </th>
         </tr>
         <tr>
-          <th *ngFor="let col of cols"  [hidden]="col.hidden" >
+          <th *ngFor="let col of columns"  [hidden]="col.hidden" >
             <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
           </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-order>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" > 
-            <td *ngFor="let col of cols"
+            <td *ngFor="let col of columns"
               [hidden]="col.hidden"
               filterMatchMode="col.contains"
               [ngClass]="col.class"
               >           
-                <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(order.statusCode)"></i>
-                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
-                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
+                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
                 <span *ngIf="col.isFromPool">
-                  <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-                  <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                  <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                  <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                 </span>
-                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
-                <p-button *ngIf="col.edit" type="button" style="width:25px"  (click)="editOrder(order)" icon="fa fa-edit" [disabled]="!(operator?.roleCode?.indexOf('OP') > -1)"></p-button>
+                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>
+                <p-button *ngIf="col.edit" type="button" style="width:25px"  (click)="editOrder(rowData)" icon="fa fa-edit" [disabled]="!(operator?.roleCode?.indexOf('OP') > -1)"></p-button>
                 <span *ngIf="!col.icon">
-                  {{order[col.field]}}
+                  {{rowData[col.field]}}
                 </span>            
             </td>
         </tr>
@@ -351,7 +353,8 @@
           </div>
 
           <div class="ui-grid-col-2">  </div>
-          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-2"> <button type="button" pButton (click)="showAssignmentDialog()" label="Grupwe przypisanie" icon="fa fa-address-book-o" iconPos="left" [disabled]="operator.roleCode.indexOf('OP') == -1"></button>  </div>
+
           <div class="ui-grid-col-1"> </div>
 
           <div class="ui-grid-col-2">
