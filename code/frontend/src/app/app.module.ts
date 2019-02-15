@@ -60,6 +60,7 @@ import {TabViewModule} from 'primeng/tabview'
 import {TooltipModule} from 'primeng/tooltip'
 import {TreeModule} from 'primeng/tree'
 import {TableModule} from 'primeng/table';
+import {ToolbarModule} from 'primeng/toolbar';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -104,7 +105,7 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,
+        AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,ToolbarModule,
         BrowserAnimationsModule,
         TableModule,
         DataTableModule,

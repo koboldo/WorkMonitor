@@ -67,6 +67,8 @@ export class UserPayroll {
 
     //payroll report metadata
     periodDate: string;
+    formattedPeriodDate: string;
+
     overTimeFactor: number;
     formattedOverTimeFactor: string;
     approved: string;

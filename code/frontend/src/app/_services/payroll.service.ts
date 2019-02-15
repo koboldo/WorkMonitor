@@ -65,6 +65,7 @@ export class PayrollService {
                 payroll.rank = this.dictService.getRank(payroll.rankCode);
                 payroll.formattedPoolRate = payroll.poolRate? ""+payroll.poolRate: "-";
                 payroll.formattedOverTimeFactor = payroll.overTimeFactor * 100 + "%";
+                payroll.formattedPeriodDate = payroll.periodDate ? payroll.periodDate.substr(0,7) : '';
             }
             return payrolls;
         }
