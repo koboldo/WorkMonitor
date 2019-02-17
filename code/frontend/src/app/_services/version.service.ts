@@ -19,6 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
+
+            new CodeValue('1.5.38', 'Dodanie grupowego przypisywania zleceń, poprawki filtrowania Turbo Table'),
             new CodeValue('1.5.37', 'Dodanie statusu Kosz dla zleceń'),
             new CodeValue('1.5.36', 'Dodanie informacji o puli i wykonawcach w historii zlecenia'),
             new CodeValue('1.5.35', 'Dodanie listy zrealizowanych (po raz pierwszy) zleceń na rozliczeniu'),

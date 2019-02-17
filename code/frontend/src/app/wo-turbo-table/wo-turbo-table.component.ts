@@ -57,8 +57,8 @@ export class WoTurboTableComponent extends WoComponent  {
            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
            { field: 'ventureCompany', header: 'Inwestor', sortable:true , filter:true, class:"width-135"},
            { field: 'ventureDisplay', header: 'Zleceniodawca', sortable:true , filter:true, class:"width-135" },
-           { button: true, details:true, icone:true, class:"width-35"},
-           { button:true ,edit: true, icone:true, class:"width-35"},
+           { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35"},
+           { field: 'none',excludeGlobalFilter: true, button:true ,edit: true, icone:true, class:"width-35"},
        ]
     }
 }
