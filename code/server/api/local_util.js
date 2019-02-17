@@ -4,6 +4,7 @@
 var XLSX = require('excel4node');
 var moment = require('moment');
 var logger = require('./logger').logger; 
+const request = require('request');
 // var logger = require('./logger').getLogger('monitor'); 
 
 let local_util = {
@@ -102,6 +103,29 @@ let local_util = {
         // wb.write('out.xlsx',cb);
         wb.writeToBuffer().then((buffer)=>{ 
             cb(buffer.toString('base64'));
+        });
+    },
+    
+    httpGet: function(url, timeout) {
+    	
+    	// wrap a request in an promise and use async await
+    	return new Promise((resolve, reject) => {
+        	
+        	let options = {
+        		    url: url,
+        		    timeout: timeout
+    		};
+        	
+            request(options, (error, response, body) => {
+                if (error) {
+                	logger().warn('error http get '+url);
+                	reject(error);
+                } else if (response.statusCode != 200) {
+                	logger().warn('wrong status '+response.statusCode+' on get for '+url);
+                    reject('Invalid status code <' + response.statusCode + '> for '+url);
+                }
+                resolve(body);
+            });
         });
     }
 };

@@ -58,6 +58,19 @@
       <p-column [sortable]="true" field="lastName" header="Nazwisko"  [filter]="true" filterPlaceholder="Filtruj"></p-column>
       <p-column [hidden]="true" [sortable]="true" field="isManagerOrOperator" header=""  [filter]="true" filterPlaceholder="Filtruj"></p-column>
 
+      <p-column [sortable]="true" field="copy.fromMobileDevice" header="Wejście" [filter]="true" filterPlaceholder="Y/N" [style]="{'width': '60px'}">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div *ngIf="timesheet.copy.fromMobileDevice === 'Y'"  class="text-center" [style.color]="'darkred'"><i class="fa fa-mobile-phone" aria-hidden="true"></i></div>
+          <div *ngIf="timesheet.copy.fromMobileDevice === 'N'"  class="text-center" [style.color]="'green'"><i class="fa fa-laptop" aria-hidden="true"></i></div>
+        </ng-template>
+      </p-column>
+
+      <p-column [sortable]="true" field="copy.toMobileDevice" header="Wyjście" [filter]="true" filterPlaceholder="Y/N" [style]="{'width': '60px'}">
+        <ng-template let-col let-timesheet="rowData" pTemplate="body">
+          <div *ngIf="timesheet.copy.toMobileDevice === 'Y'"  class="text-center" [style.color]="'darkred'"><i class="fa fa-mobile-phone" aria-hidden="true"></i></div>
+          <div *ngIf="timesheet.copy.toMobileDevice === 'N'"  class="text-center" [style.color]="'green'"><i class="fa fa-laptop" aria-hidden="true"></i></div>
+        </ng-template>
+      </p-column>
 
       <p-column [sortable]="true" field="timesheetWorkDate" header="Dnia" [filter]="true" filterPlaceholder="Filtruj">
         <ng-template let-col let-timesheet="rowData" pTemplate="body">
@@ -124,6 +137,16 @@
           <div class="ui-grid-row">
             <div *ngIf="timesheet?.copy?.modifiedBy" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
                 Zmodyfikowany przez: <span style="font-weight: bold">{{timesheet.copy.modifiedBy}}</span>
+            </div>
+          </div>
+          <div class="ui-grid-row">
+            <div *ngIf="timesheet?.copy?.fromIsp" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+              Wejście: <span style="font-weight: bold">{{timesheet.copy.fromIsp}} @ {{timesheet.copy.fromCity}}</span>
+            </div>
+          </div>
+          <div class="ui-grid-row">
+            <div *ngIf="timesheet?.copy?.toIsp" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+              Wyjście: <span style="font-weight: bold">{{timesheet.copy.toIsp}} @ {{timesheet.copy.toCity}}</span>
             </div>
           </div>
         </div>

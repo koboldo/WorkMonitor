@@ -17,7 +17,7 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, HttpHeadersInterceptor, HttpProgressInterceptor, UserTimeStatsService } from './_services/index';
+import { AlertService, AuthenticationService, AutoLogoutService, UserService, WOService, DictService, RelatedItemService, WorkTypeService, ToolsService, TimesheetService, PayrollService, HttpBotWrapper, HttpCacheInterceptor, HttpHeadersInterceptor, HttpProgressInterceptor, UserTimeStatsService, ClientDeviceService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { UserRegisterComponent } from './user-register/user-register.component';
@@ -146,8 +146,8 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
-		WoTurboTableComponent ,
-		WoTrashedComponent   ],
+		    WoTurboTableComponent ,
+		    WoTrashedComponent   ],
 
     providers: [
         AlertService,
@@ -165,6 +165,7 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         PayrollService,
         HttpBotWrapper,
         UserTimeStatsService,
+        ClientDeviceService,
         {provide: LOCALE_ID, useValue: 'pl-PL'},
         {
             provide: HTTP_INTERCEPTORS,

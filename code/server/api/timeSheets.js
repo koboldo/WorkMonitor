@@ -4,8 +4,12 @@
 const mapper = require('./mapper');
 const timeSheets_db = require('./db/timeSheets_db');
 const moment = require('moment');
+const request = require('request');
+
 const parseStringToDate = require('./local_util').parseStringToDate;
+const httpGet = require('./local_util').httpGet;
 const addCtx = require('./logger').addCtx;
+const logger = require('./logger').logger;
 
 const timeSheets = {
 
@@ -26,14 +30,14 @@ const timeSheets = {
         }));
     },
 
-	
-	create: function(req, res) {
+    
+	create: async function(req, res) {
 
         if(!req.body.personId) {
             res.status(400).json({status:'error', message: 'request processing failed'});
             return;
         }
-
+        
         if([].concat(req.context.role).indexOf('OP') < 0)  {
             delete req.body.isLeave;
             delete req.body.training;
@@ -42,11 +46,41 @@ const timeSheets = {
         req.body.createdBy = req.context.id;
         req.body.modifiedBy = req.context.id;
  
-        if(req.body.from == 'now' || req.body.to == 'now') req.body.personId = req.context.id;
+        let ip;
+        let isp;
+        let city;
+        
+        if(req.body.from == 'now' || req.body.to == 'now') { 
+        	req.body.personId = req.context.id;
+        	
+        	ip = req.headers['X-Real-IP'];
+            logger().debug('self-register, checking ip '+ip);
+            
+            if (ip) {
+            	const url = 'http://extreme-ip-lookup.com/json/'+ip;
+            	const body = await httpGet(url, 3000);
+            	logger().debug('await '+body);
+            	let ipJson = JSON.parse(body);
+            	isp = ipJson.isp || '';
+            	city = ipJson.city || '';
+            }
+        }
 
         const nowDateTxt = moment().format('YYYY-MM-DD HH:mm:ss');
-        if(req.body.from == 'now') req.body.from = nowDateTxt;
-        if(req.body.to == 'now') req.body.to = nowDateTxt;
+        if(req.body.from == 'now') {
+        	req.body.from = nowDateTxt;
+        	req.body.fromIp = ip;
+        	req.body.fromIsp = isp;
+        	req.body.fromCity = city;
+        	req.body.fromMobileDevice = req.body.fromMobileDevice ? 'Y' : 'N'; 
+        }
+        if(req.body.to == 'now') {
+        	req.body.to = nowDateTxt;
+        	req.body.toIp = ip;
+        	req.body.toIsp = isp;
+        	req.body.toCity = city;
+        	req.body.toMobileDevice = req.body.toMobileDevice ? 'Y' : 'N';
+        }
         if(req.body.from) req.body.workDate = req.body.from;
         else req.body.workDate = nowDateTxt;
         

@@ -21,14 +21,13 @@
 </div>
 
 
-<!--
-<div *ngIf="items">
-    <p-tabMenu [model]="items" ></p-tabMenu>
-</div>-->
 
-<div *ngIf="hierarchyItems">
-    <p-menubar [model]="hierarchyItems">
-    </p-menubar>
+<div *ngIf="items && clientDeviceService.isMobileDevice">
+    <p-tabMenu [model]="items" ></p-tabMenu>
+</div>
+
+<div *ngIf="hierarchyItems && !clientDeviceService.isMobileDevice">
+    <p-menubar [model]="hierarchyItems"></p-menubar>
 </div>
 
 
