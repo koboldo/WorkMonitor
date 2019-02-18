@@ -55,7 +55,7 @@ export class UserPayroll {
     overDue: number;
     totalDue: number;
 
-    completedWo: string; //17918|17919|18041|18042|18070|18201|18202|18261|18289
+    completedWo: string; //id:price:?:factor:?:?:isFromPool -> 17712:2000::1.0:::Y|17922:820::1.0:::Y|17923:100::1.0:::Y|17957:820::1.0:::Y|17958:100::1.0:::Y|17970:410::1.0:::Y|17991:410::1.0:::Y|18160:100::1.0:::Y|18161:360::1.0:::Y|18165:50::1.0:::Y|18184:850::1.0:::Y|18196:410::1.0:::Y|18197:150::1.0:::Y|18249:100::1.0:::Y,
 
     // user data but could be changed after raport generation
     isFromPool: string;

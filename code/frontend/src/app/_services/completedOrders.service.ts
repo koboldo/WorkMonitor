@@ -21,10 +21,11 @@ export class CompletedOrderService {
     public showOrders(periodDate: string, completedWo: string): void {
 
         let orderIds: number[] = [];
-        let ids: string[] = completedWo ? completedWo.split("|") : [];
-        for(let id of ids) {
-            if (orderIds.indexOf(+id) === -1) {
-                orderIds.push(+id);
+        let completedOrders: string[] = completedWo ? completedWo.split("|") : [];
+        for(let completedOrder of completedOrders) {
+            let id: number = +completedOrder.split(":")[0];
+            if (orderIds.indexOf(id) === -1) {
+                orderIds.push(id);
             }
         }
 
