@@ -51,7 +51,7 @@ const timeSheets = {
         req.body.createdBy = req.context.id;
         req.body.modifiedBy = req.context.id;
  
-        let ip = req.headers['X-Real-IP'] || '127.0.0.1';
+        let ip = req.headers['x-real-ip'] || '127.0.0.1';
         
         if(req.body.from == 'now' || req.body.to == 'now') { 
         	req.body.personId = req.context.id;
