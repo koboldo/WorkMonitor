@@ -60,7 +60,7 @@ import {TabViewModule} from 'primeng/tabview'
 import {TooltipModule} from 'primeng/tooltip'
 import {TreeModule} from 'primeng/tree'
 import {TableModule} from 'primeng/table';
-
+import {SliderModule} from 'primeng/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
@@ -105,6 +105,7 @@ import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignme
         AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,
         BrowserAnimationsModule,
         TableModule,
+        SliderModule,
         DataTableModule,
         routing
     ],

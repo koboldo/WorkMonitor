@@ -1,6 +1,6 @@
 <div class="ui-grid-row">
     <div style="margin-top: 5px" class="ui-g">
-        <p-dataTable [value]="list" [rows]="20" [paginator]="true" [globalFilter]="gb"
+        <!-- <p-dataTable [value]="list" [rows]="20" [paginator]="true" [globalFilter]="gb"
                      dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" loadingIcon="fa fa-spinner"
                      #dt csvSeparator=";" exportFilename="lista_zlecen">
           <p-header>
@@ -79,7 +79,105 @@
             </div>
           </p-footer>
 
-        </p-dataTable>
+        </p-dataTable> -->
+
+        <!-- turbo table  -->
+
+<p-table 
+    #tt dataKey="id" 
+    [columns]="cols" 
+    [value]="list" 
+    [rows]="20" 
+    [paginator]="true" 
+    [resizableColumns]="true" 
+    sortOrder="-1" 
+    [metaKeySelection]="true"
+    loadingIcon="fa fa-spinner" 
+    csvSeparator=";"  
+    exportFilename="Zlecenia nie gotowe do protokolu" 
+    [globalFilterFields]="cols" 
+    [responsive]="true">
+    <ng-template pTemplate="caption">
+        <div>
+            <i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns"
+          [hidden]="col.hidden"
+          [pSortableColumn]="col.field"
+          [ngClass]="col.class"
+          pResizableColumn
+          excludeGlobalFilter = col.exclude>
+            <span class="header">
+                {{col.header}}
+                <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+            </span>         
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns"  [hidden]="col.hidden" >
+            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+          </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" > 
+            <td *ngFor="let col of columns"
+              [hidden]="col.hidden"
+              filterMatchMode="col.contains"
+              [ngClass]="col.class"
+              >
+                <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>       
+                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"  class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                <span *ngIf="col.isFromPool">
+                  <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                  <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                </span>             
+                <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>            
+                <span *ngIf="!col.icon && !col.price">
+                  {{rowData[col.field]}}
+                </span>
+                <span *ngIf="col.price">
+                  {{rowData[col.field] | currency:'PLN'}}
+                </span>
+                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>            
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer" let-columns>
+      <tr>
+          <td *ngFor="let col of columns"
+          [hidden]="col.hidden"
+          >
+          <span  *ngIf="col.header === 'Zlecenie'">Suma zleceń <br/> {{list?.length}}  </span> 
+          <span *ngIf="col.price">Suma <br/> {{summary.summaryPrice | currency:'PLN'}} </span>
+          </td>
+      </tr>
+  </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 15px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"> 
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>           
+             </div>
+          <div class="ui-grid-col-2">  </div>
+          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-1"> </div>
+        </div>
+      </div>
+  </ng-template>
+</p-table>
+ 
+
+        <!-- end turbo table -->
+
       </div> 
 </div>
 

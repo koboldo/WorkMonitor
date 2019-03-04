@@ -292,6 +292,8 @@
       </div>
     </p-footer>
   </p-dialog>
+
+
   <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true" sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" 
     (onRowSelect)="onRowSelect($event)" (dblclick)="onRowDblclick($event)" [metaKeySelection]="true"
      loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint" csvSeparator=";"  exportFilename="Zlecenia" [globalFilterFields]="cols" [responsive]="true">
@@ -318,7 +320,17 @@
         </tr>
         <tr>
           <th *ngFor="let col of columns"  [hidden]="col.hidden" >
-            <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+            <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+            <div *ngIf="col.header === 'Cena'">
+              Cena > {{priceFilter}}
+              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"></i>
+              <p-slider [style]="{'width':'100%','margin-top':'8px'}" 
+              [(ngModel)]="priceFilter"              
+              [min]="0"
+              [max]="9999"             
+              (onChange)="onPriceChange($event, tt)"             
+              [animate]="true"></p-slider>
+            </div>                
           </th>
         </tr>
     </ng-template>
@@ -328,7 +340,7 @@
               [hidden]="col.hidden"
               filterMatchMode="col.contains"
               [ngClass]="col.class"
-              >           
+              >      
                 <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
                 <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
                 <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
@@ -344,7 +356,26 @@
             </td>
         </tr>
     </ng-template>
-    <ng-template pTemplate="summary">
+    <ng-template pTemplate="footer" let-columns>
+      <button type="button" pButton (click)="showSummary()" label="Podsumowanie"></button>
+        <tr>
+            <td *ngFor="let col of columns"
+            [hidden]="col.hidden"
+            >
+            <span  *ngIf="col.header === 'Zlecenie'">Suma zleceń <br/> {{orders?.length}}  </span> 
+            <span *ngIf="col.header === 'Status'">
+              <i [class]="getStatusIcon('OP')"></i>{{openOrders}} 
+              <i [class]="getStatusIcon('AS')"></i> {{assignedOrders}} 
+              <i [class]="getStatusIcon('CO')"></i> {{complitedOrders}} <br/>
+              <i [class]="getStatusIcon('IS')"></i> {{issuedOrders}}
+              <i [class]="getStatusIcon('CL')"></i> {{closeOrders}}
+            </span>
+            <span *ngIf="col.header === 'Cena'">Suma {{summaryPrice}} zł</span>
+            <span *ngIf="col.header === 'Pula'"> Suma w puli <br/> {{summaryIsFromPool}}</span>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
       <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
         <div class="ui-grid-row"  style="margin-top: 15px;">
           <div class="ui-grid-col-1"></div>

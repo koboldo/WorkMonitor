@@ -7,6 +7,7 @@ import { Observable }       from 'rxjs';
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { SelectItem } from 'primeng/primeng'
+import { TableSummary } from 'app/_models/tableSummary';
 
 
 @Injectable()
@@ -305,5 +306,39 @@ export class ToolsService {
         return value;
     }
 
+    // for turbo table 
 
+    public createSummaryForTable (orders : Order []) : TableSummary {
+        let summary = new TableSummary();
+        orders.forEach(element => {
+          if (element.statusCode === 'OP') {summary.openOrders ++ ;}
+          if (element.statusCode === 'AS') {summary.assignedOrders ++ ;}
+          if (element.statusCode === 'CO') {summary.complitedOrders ++;}
+          if (element.statusCode === 'IS') {summary.issuedOrders ++;}
+          if (element.statusCode === 'CL') {summary.closeOrders ++;}
+        });
+        summary.summaryPrice = this.countSummaryPrice(orders);
+        summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
+        return summary;
+      }
+    
+     private countSummaryPrice (orders: Order []) : number {
+        let summaryPrice = 0;
+        orders.forEach(element => {
+          if (element.price != undefined) {
+              summaryPrice += element.price;
+          }     
+        });
+        return summaryPrice;
+      }
+      
+    private countSummaryIsFromPool (orders: Order []): number {
+        let summaryIsFromPool = 0;
+        orders.forEach(element => {
+          if (element.isFromPool === 'Y') {
+              summaryIsFromPool ++;
+          }
+        });
+        return summaryIsFromPool;
+      }
 }
