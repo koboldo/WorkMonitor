@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 import { DatePipe }         from '@angular/common';
 import { Observable }       from 'rxjs';
 
@@ -158,9 +158,11 @@ export class ToolsService {
         else if (statusCode === 'CL')
             return 'fa fa-envelope-o';
         else if (statusCode === 'SU')
-            return 'fa fa-ban';
+            return 'fa fa-hand-paper-o';
         else if (statusCode === 'CA')
-            return 'fa fa-trash-o';
+            return 'fa fa-ban';
+        else if (statusCode === 'TR')
+          return 'fa fa-trash-o';
 
         console.log('Return default status icon for '+statusCode+'!');
         return 'fa question';

@@ -10,7 +10,6 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 
 import { MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
-import { GroupAssignmentWoComponent } from 'app/group-assignment-wo/group-assignment-wo.component';
 import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
@@ -145,8 +144,6 @@ export class WoComponent implements OnInit {
       
     }
 
-    @ViewChild('assignmentModal') assignmentModal: GroupAssignmentWoComponent;
-
     public getStatusIcon(statusCode: string): string {
     return this.toolsService.getStatusIcon(statusCode);
     }
@@ -174,9 +171,6 @@ export class WoComponent implements OnInit {
         this.displayChangeStatusDialog = isVisible;
         this.displayAssignmentDialog = isVisible;
         this.search();
-    }
-    public closeAssignment () {
-         this.assignmentModal.finishAndClean();
     }
  
     public assignOperator(operator:User):void {
@@ -209,7 +203,7 @@ export class WoComponent implements OnInit {
         //filter
         this.orders = [];
         for (let order of orders) {
-            if (order.statusCode !== 'CA' && order.statusCode != 'SU') {
+            if (order.statusCode !== 'CA' && order.statusCode != 'SU' && order.statusCode != 'TR') {
                 this.orders.push(order);
             }
         }

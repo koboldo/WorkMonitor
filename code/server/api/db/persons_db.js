@@ -19,7 +19,7 @@ const queries = {
 	`WITH PARAMS AS ( SELECT CAST (STRFTIME('%%s', '%(dateAfter)s', 'start of day') AS INTEGER) AS AFTER_DATE, CAST (STRFTIME('%%s', '%(dateBefore)s', 'start of day', '+1 day', '-1 second') AS INTEGER) AS BEFORE_DATE )
 	, SELECTED_WO AS ( SELECT ID, CASE STATUS_CODE WHEN 'CO' THEN DATETIME ( WO.LAST_MOD ,"unixepoch" ,"localtime" ) ELSE NULL END AS DONE_DATE FROM WORK_ORDER AS WO JOIN PERSON_WO AS PWO ON WO.ID = PWO.WO_ID JOIN PARAMS PA WHERE (STATUS_CODE = 'CO' AND LAST_MOD BETWEEN PA.AFTER_DATE AND PA.BEFORE_DATE) OR (WO.STATUS_CODE IN ('AS') AND PWO.CREATED BETWEEN PA.AFTER_DATE AND PA.BEFORE_DATE) UNION SELECT ID, CASE STATUS_CODE WHEN 'CO' THEN DATETIME ( WO.LAST_MOD ,"unixepoch" ,"localtime" ) ELSE NULL END AS DONE_DATE FROM WORK_ORDER_HIST AS WO JOIN PARAMS PA WHERE (STATUS_CODE = 'CO' AND LAST_MOD BETWEEN PA.AFTER_DATE AND PA.BEFORE_DATE) ) 
 	SELECT WO.ID WO_ID, WO.WORK_NO WO_WORK_NO, SW.DONE_DATE WO_DONE_DATE, DATETIME(PWO.CREATED, "unixepoch", "localtime") AS WO_ASSIGNED_DATE, WO.STATUS_CODE WO_STATUS_CODE, WO.TYPE_CODE WO_TYPE_CODE, WO.COMPLEXITY WO_COMPLEXITY, WO.COMPLEXITY_CODE WO_COMPLEXITY_CODE, WO.PRICE WO_PRICE, PWO.PERSON_ID, P.EMAIL AS PERSON_EMAIL, P.FIRST_NAME AS PERSON_FIRST_NAME, P.LAST_NAME AS PERSON_LAST_NAME, P.OFFICE_CODE AS PERSON_OFFICE_CODE, P.ROLE_CODE AS PERSON_ROLE_CODE, P.IS_FROM_POOL AS PERSON_IS_FROM_POOL FROM WORK_ORDER AS WO JOIN PERSON_WO AS PWO ON WO.ID = PWO.WO_ID JOIN PARAMS PA JOIN PERSON AS P ON PWO.PERSON_ID = P.ID JOIN SELECTED_WO SW ON SW.ID = PWO.WO_ID`,
-	getIsFromPool: 'SELECT CASE WHEN ( P.IS_FROM_POOL == "Y" OR ( SELECT CASE WHEN COUNT(1) > 0 THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P1, PERSON_WO PW1 WHERE P1.ID = PW1.PERSON_ID AND PW1.WO_ID = WO.ID AND P1.IS_FROM_POOL = "Y" ) == "Y" ) AND WT.IS_FROM_POOL == "Y" THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P, WORK_TYPE WT, WORK_ORDER WO WHERE WO.ID = ? AND P.ID = ? AND WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE'
+	getIsFromPool: 'SELECT CASE WHEN ( P.IS_FROM_POOL == "Y" OR ( "DETACHED" <> ? AND ( SELECT CASE WHEN COUNT(1) > 0 THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P1 ,PERSON_WO PW1 WHERE P1.ID = PW1.PERSON_ID AND PW1.WO_ID = WO.ID AND P1.IS_FROM_POOL = "Y" ) == "Y" ) ) AND WT.IS_FROM_POOL == "Y" THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P ,WORK_TYPE WT ,WORK_ORDER WO WHERE WO.ID = ? AND P.ID = ? AND WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE'
 };
 
 // ??
@@ -158,7 +158,9 @@ const persons_db = {
 		async.series([
 			addCtx(function(_cb){
 				const getIsFromPoolStat = mydb.prepare(queries.getIsFromPool);
-				getIsFromPoolStat.bind([orderRelation.WO_ID, orderRelation.PERSON_ID]);
+				const bindings = [(detachExistingRelation) ? "DETACHED": "NOT_DETACHED" ,orderRelation.WO_ID, orderRelation.PERSON_ID];
+				console.log('bindings ' + JSON.stringify(bindings));
+				getIsFromPoolStat.bind(bindings);
 				getIsFromPoolStat.get(addCtx(function(err,result){
 					getIsFromPoolStat.finalize();
 	
@@ -207,7 +209,7 @@ const persons_db = {
 				const wo = {};
 				wo.IS_FROM_POOL = isFromPool;
 
-				if(logger().isDebugEnabled()) logger().debug('update workorder of id ' + idObj.ID  + ' with object: ' + util.inspect(wo));
+				if(logger().isDebugEnabled()) logger().debug('update workOrder of id ' + idObj.ID  + ' with object: ' + util.inspect(wo));
         
 				dbUtil.performUpdate(idObj, wo, 'WORK_ORDER', addCtx(function(err,result) {
 					if(err) _cb(err);

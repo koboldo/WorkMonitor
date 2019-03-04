@@ -40,7 +40,7 @@ const queries = {
         ,WO.PROTOCOL_NO
         ,SUBSTR(WO.TYPE_CODE, 0, INSTR(WO.TYPE_CODE, '.')) AS TYPE
         ,RI.ITEM_NO
-        ,COALESCE(P.INITIALS, "") AS INITIALS
+        ,P.FIRST_NAME || " " || P.LAST_NAME AS VENTURE
         ,WO.VENTURE_ID
     FROM WORK_ORDER AS WO
     JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID
@@ -49,7 +49,7 @@ const queries = {
     WHERE WO.ID IN ( WI.ID )`,
     getOfficeCode: 'SELECT OFFICE_CODE FROM PERSON WHERE ID = ?',
     getIsFromPool: 'SELECT IS_FROM_POOL FROM WORK_TYPE WHERE TYPE_CODE = ? AND COMPLEXITY_CODE = ? AND OFFICE_CODE = ?',
-    getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch", "localtime" ) AS CREATED ,DATETIME ( HIST_CREATED ,"unixepoch", "localtime" ) AS HIST_CREATED, MODIFIED_BY, ITEM_ID,VENTURE_ID FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATED DESC'
+    getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch", "localtime" ) AS CREATED ,DATETIME ( HIST_CREATED ,"unixepoch", "localtime" ) AS HIST_CREATED, MODIFIED_BY, ITEM_ID, VENTURE_ID, ASSIGNED_ID AS ASSIGNEE, IS_FROM_POOL FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATED DESC'
 };
 
 // js object used by sprintf function to prepare WHERE condition
@@ -213,6 +213,10 @@ const orders_db = {
         const getOrderHistStat = db.prepare(queries.getOrderHistory);
         getOrderHistStat.bind(orderId);
         getOrderHistStat.all(addCtx((err, rows) => {
+        	rows.forEach(row => {
+                if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
+        	});
+        	
             getOrderHistStat.finalize();
             db.close();
 

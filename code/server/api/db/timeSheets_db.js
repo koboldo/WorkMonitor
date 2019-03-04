@@ -8,16 +8,18 @@ const logger = require('../logger').logger;
 const addCtx = require('../logger').addCtx;
 
 const queries = {
-    getTimesheet: 
+	getTimesheet: 
     `SELECT PERSON_ID, ROUND(CAST(USED_TIME AS DOUBLE)/3600.0,2) AS USED_TIME, BREAK/60 AS BREAK, TRAINING/60 AS TRAINING, IS_LEAVE, DATETIME(FROM_DATE,"unixepoch","localtime") AS FROM_DATE, DATETIME(TO_DATE,"unixepoch","localtime") AS TO_DATE, (PC.FIRST_NAME || " " || PC.LAST_NAME) AS CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) AS MODIFIED_BY 
     FROM TIME_SHEET TS LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.MODIFIED_BY = PM.ID WHERE %(personId)s AND %(workDate)s`,
     getTimesheets: 
     `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)),
     MY_FROM_DATE(T) AS (VALUES (%(workDateAfter)s)),
     MY_TO_DATE(T) AS (VALUES (%(workDateBefore)s))    
-    SELECT P.ID AS PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , COALESCE(DATETIME(TS.FROM_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) FROM_DATE, COALESCE(DATETIME(TS.TO_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TRAINING/60,0) AS TRAINING, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE, (PC.FIRST_NAME || " " || PC.LAST_NAME) AS CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) AS MODIFIED_BY 
+    SELECT P.ID AS PERSON_ID, FD.T+86400*(M3.N*100+M2.N*10+M1.N) AS SWD , COALESCE(DATETIME(TS.FROM_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) FROM_DATE, COALESCE(DATETIME(TS.TO_DATE,"unixepoch","localtime"), DATETIME(FD.T + 86400 * (M3.N * 100 + M2.N * 10 + M1.N),"unixepoch")) TO_DATE, COALESCE(ROUND(CAST(TS.USED_TIME AS DOUBLE)/3600.0,2),0) AS USED_TIME, COALESCE(TS.BREAK/60,0) AS BREAK, COALESCE(TRAINING/60,0) AS TRAINING, COALESCE(TS.IS_LEAVE,'N') AS IS_LEAVE, (PC.FIRST_NAME || " " || PC.LAST_NAME) AS CREATED_BY, (PM.FIRST_NAME || " " || PM.LAST_NAME) AS MODIFIED_BY, TS.FROM_IP, TS.FROM_IS_MOBILE, G_FROM.ISP AS FROM_ISP, G_FROM.ORG AS FROM_ORG, G_FROM.CITY AS FROM_CITY, G_FROM.REGION AS FROM_REGION, TS.TO_IP, TS.TO_IS_MOBILE, G_TO.ISP AS TO_ISP, G_TO.ORG AS TO_ORG, G_TO.CITY AS TO_CITY, G_TO.REGION AS TO_REGION
     FROM MYL M1, MYL M2, MYL M3, MY_FROM_DATE FD, MY_TO_DATE TD, PERSON P 
         LEFT JOIN TIME_SHEET TS ON P.ID = TS.PERSON_ID AND SWD = TS.WORK_DATE LEFT JOIN PERSON PC ON TS.CREATED_BY = PC.ID LEFT JOIN PERSON PM ON TS.CREATED_BY = PM.ID
+        LEFT JOIN IP_GEO G_TO   ON G_TO.IP = TS.TO_IP
+        LEFT JOIN IP_GEO G_FROM ON G_FROM.IP = TS.FROM_IP
     WHERE SWD <= (TD.T)*1 %(personId)s
     ORDER BY 1,3`,    
     insertLeave:
@@ -211,7 +213,7 @@ const filters = {
 
 const timeSheets_db = {
         
-    readAll: function(params, cb) {
+	readAll: function(params, cb) {
         const db = dbUtil.getDatabase();
         
         const query = dbUtil.prepareFiltersByInsertion(queries.getTimesheets,params,filters.getTimesheets);

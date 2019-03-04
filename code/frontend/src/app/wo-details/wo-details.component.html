@@ -1,4 +1,4 @@
-<div class="ui-grid-row" style="max-width: 1000px;">
+<div class="ui-grid-row" style="max-width: 1200px;">
     <div class="ui-grid-col-6" style="margin-top: 0px;">
         <p-fieldset legend="Detale zlecenia"
                     *ngIf="selectedOrder?.creationDate || selectedOrder?.lastModDate || selectedOrder?.comment">
@@ -58,8 +58,8 @@
             <div style="margin-bottom: 5px; margin-top: 5px;" class="ui-grid-row" *ngIf="selectedOrder?.isFromPool">
                 <div class="ui-grid-col-4">W ramach puli:</div>
                 <div class="ui-grid-col-8">
-                    <span class="ui-inputgroup-addon"><i
-                            [class]="selectedOrder.isFromPool=='Y' ? 'fa fa-users': 'fa fa-street-view'"></i></span>
+                    <span *ngIf="selectedOrder.isFromPool==='Y'" [style.color]="'green'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                    <span *ngIf="selectedOrder.isFromPool!=='Y'" [style.color]="'grey'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                     <span style="padding: 3px; font-style: italic;">{{selectedOrder?.isFromPool == 'Y' ? 'TAK' : 'NIE'}}</span>
                 </div>
             </div>
@@ -78,9 +78,14 @@
              style="margin-top: 10px;">
             <p-fieldset legend="Wykonawcy">
                 <div class="ui-grid-row" *ngFor="let a of selectedOrder.assigneeFull">
-                    <div class="ui-grid-col-12"><u>{{a.email}}</u></div>
-                    <div class="ui-grid-col-12">{{a.firstName}} {{a.lastName}}</div>
+                    <!--<div class="ui-grid-col-12"><u></u></div>-->
+                    <div class="ui-grid-col-12"><u>{{a.firstName}} {{a.lastName}}</u><span style="padding-left: 10px;">{{a.email}}</span></div>
+                    <div class="ui-grid-col-12">{{a.rank}}
+                        <span *ngIf="a.isFromPool==='Y'" style="padding-left: 10px;" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                        <span *ngIf="a.isFromPool!=='Y'" style="padding-left: 10px;" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                    </div>
                     <div class="ui-grid-col-12">{{a.role}} @ {{a.office}}</div>
+
                 </div>
             </p-fieldset>
         </div>
@@ -153,13 +158,13 @@
 
     </div>
 
-    <div class="ui-grid-row" style="max-width: 1000px;">
+    <div class="ui-grid-row" style="max-width: 1200px;">
         <div class="ui-grid-col-12" *ngIf="selectedOrder?.history && selectedOrder?.history?.length > 0"
              style="margin-top: 10px;">
-            <p-fieldset legend="Historia">
+            <p-fieldset legend="Historia zlecenia">
 
-                <p-dataTable [style]="{'width':'100%'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
-                             sortField="versionDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
+                <p-dataTable [style]="{'width':'100%', 'margin-top':'-20px'}" [value]="selectedOrder.history" [rows]="10" [paginator]="true" #dt resizableColumns="true"
+                             sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner">
                     <p-column [sortable]="true" field="modifiedByFull.email" header="Zmienił" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="lastModDate" header="Zmieniono" [style]="{'width':'100px'}"></p-column>
                     <p-column [sortable]="true" field="versionDate" header="Nadpisano" [style]="{'width':'100px'}"></p-column>
@@ -167,10 +172,27 @@
                     <p-column [sortable]="true" field="workNo" header="Zlecenie" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [style]="{'width':'90px'}"></p-column>
                     <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'70px'}"></p-column>
+                    <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
+                        <ng-template let-col let-order="rowData" pTemplate="body">
+                            <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                            <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                        </ng-template>
+                    </p-column>
                     <p-column [sortable]="true" field="complexity" header="Pracochłonność" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
                     <p-column [sortable]="true" field="price" header="Cena" [style]="{'width':'60px', 'text-align':'right'}"></p-column>
 
-                    <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>
+                    <!--<p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [style]="{'width':'80px'}"></p-column>-->
+                    <!--<p-column [sortable]="true" field="frontProcessingDesc" header="Wykonawcy" [style]="{'width':'180px'}"></p-column>-->
+
+                    <p-column [sortable]="false" field="assigneeFull" header="Wykonawcy" [filter]="false" [style]="{'text-align':'center', 'width':'180px'}">
+                        <ng-template let-col let-orderHistory="rowData" pTemplate="body">
+                            <span *ngFor="let a of orderHistory.assigneeFull">
+                                {{a.firstName.substring(0, 1)+'.'}} {{a.lastName}}
+                                <span *ngIf="a.isFromPool=='Y'" [style.color]="'green'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                                <span *ngIf="a.isFromPool!='Y'" [style.color]="'grey'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                            </span>
+                        </ng-template>
+                    </p-column>
 
                     <ng-template pTemplate="emptymessage">
                         Brak historycznych danych o zleceniach...

@@ -93,7 +93,19 @@
 			"WORK_DATE": "workDate",
 			"USED_TIME": "usedTime",
 			"FROM_DATE": "from",
-			"TO_DATE": 	 "to",
+			"FROM_IP": "fromIp",
+			"FROM_ISP": "fromIsp",
+			"FROM_ORG": "fromOrg",
+			"FROM_CITY": "fromCity",
+			"FROM_REGION": "fromRegion",
+			"FROM_IS_MOBILE": "fromMobileDevice",
+			"TO_DATE": "to",
+			"TO_IP": "toIp",
+			"TO_ISP": "toIsp",
+			"TO_ORG": "toOrg",
+			"TO_CITY": "toCity",
+			"TO_REGION": "toRegion",
+			"TO_IS_MOBILE": "toMobileDevice",
 			"BREAK": "break",
 			"TRAINING": "training",
 			"IS_LEAVE": "isLeave",
@@ -101,6 +113,15 @@
 			"MODIFIED_BY": "modifiedBy",
 			"CREATED": "created",
 			"LAST_MOD": "lastMod"
+		}
+	},
+	"ipGeo": {
+		"sqlToJson": {
+			"IP": "ip",
+			"ISP": "isp",
+			"ORG": "org",
+			"CITY": "city",
+			"REGION": "region"
 		}
 	},
 	"timeStats": {
