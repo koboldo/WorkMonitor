@@ -1,266 +1,177 @@
-
-
 <p-panel header="Zlecenia - WO">
-
   <div class="ui-grid-row">
     <div class="ui-grid-col-6">
       <p-fieldset legend="Wyszukiwanie zleceń">
         <form #f="ngForm" (submit)="search()">
-
           <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-            <div class="ui-grid-row"  style="margin-top: 20px;">
+            <div class="ui-grid-row" style="margin-top: 20px;">
               <div class="ui-grid-col-1"></div>
               <div class="ui-grid-col-5">
                 <label for="lastModAfter">zmodyfikowano od</label>
-                <p-calendar name="lastModAfter" [locale]="pl" [(ngModel)]="lastModAfter" showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                <p-calendar name="lastModAfter" [locale]="pl" [(ngModel)]="lastModAfter" showIcon="true"
+                  dateFormat="dd.mm.yy" utc="true"></p-calendar>
               </div>
-              <!--<div class="ui-grid-col-1"></div>-->
               <div class="ui-grid-col-5">
                 <label for="lastModBefore">zmodyfikowano do</label>
-                <p-calendar name="lastModBefore" [locale]="pl" [(ngModel)]="lastModBefore"showIcon="true" dateFormat="dd.mm.yy" utc="true"></p-calendar>
+                <p-calendar name="lastModBefore" [locale]="pl" [(ngModel)]="lastModBefore" showIcon="true"
+                  dateFormat="dd.mm.yy" utc="true"></p-calendar>
               </div>
               <div class="ui-grid-col-1"></div>
             </div>
-            <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-row" style="margin-top: 15px;">
               <div class="ui-grid-col-4"></div>
               <div class="ui-grid-col-4">
-                <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+                <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Laros"
+                  style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
               </div>
               <div class="ui-grid-col-4"></div>
             </div>
           </div>
-
         </form>
       </p-fieldset>
     </div>
-
     <div class="ui-grid-col-6">
       <app-status-details></app-status-details>
     </div>
-
   </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
-      <p-header>
+    <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
+      sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
+      [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint"
+      csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols" [responsive]="true">
+      <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>
-          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
         </div>
-      </p-header>
-      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
-      <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+              <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden">
+            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">
+            <div *ngIf="col.price">
+              Cena > {{priceFilter}}
+              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)"
+                style="cursor:pointer"></i>
+              <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="priceFilter" [min]="0" [max]="9999"
+                (onChange)="onPriceChange($event, tt)" [animate]="true"></p-slider>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+            <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
+              class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+            <span *ngIf="col.complexity" class="ui-inputgroup-addon"><i
+                [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+            <span *ngIf="col.isFromPool">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-users'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-street-view'"></i></span>
+            </span>
 
-      <p-column [sortable]="true" field="status" header="Status" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-          <span style="padding: 3px">{{order.status}}</span>
-        </ng-template>
-      </p-column>
-
-
-      <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-          <span style="padding: 3px">{{order.type}}</span>
-        </ng-template>
-      </p-column>
-
-      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-        </ng-template>
-      </p-column>
-      <p-column [sortable]="true" field="complexity" header="Wycena [H]" ></p-column>
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <!--
-      <p-column [sortable]="true" field="comment" header="Komentarz"></p-column>
-      <p-column [sortable]="true" field="description" header="Opis"></p-column>
-      -->
-      <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
-      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Utworzenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <!-- search by invisible colums, display in one row -->
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <!-- search by invisible colums flatten into order by wo.service -->
-      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu"   hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja"   hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemAddress" header="Adres"  hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
-
-      <p-column [style]="{'width':'40px','text-align':'center'}">
-        <ng-template let-order="rowData" pTemplate="body">
-          <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></button>
-        </ng-template>
-      </p-column>
-
+            <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i
+                [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>
+            <p-button *ngIf="col.details" type="button" style="width:25px"
+              (click)="selectedOrder=rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search">
+            </p-button>
+            <span *ngIf="!col.icon && !col.price">
+              {{rowData[col.field]}}
+            </span>
+            <span *ngIf="col.price">
+              {{rowData[col.field] | currency:'PLN'}}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer" let-columns>
+        <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden">
+            <span *ngIf="col.header === 'Zlecenie'">Suma zleceń <br /> {{orders?.length}} </span>
+            <span *ngIf="col.header === 'Status'">
+              <i [class]="getStatusIcon('OP')"></i>{{summary.openOrders}}
+              <i [class]="getStatusIcon('AS')"></i> {{summary.assignedOrders}}
+              <i [class]="getStatusIcon('CO')"></i> {{summary.complitedOrders}} <br />
+              <i [class]="getStatusIcon('IS')"></i> {{summary.issuedOrders}}
+              <i [class]="getStatusIcon('CL')"></i> {{summary.closeOrders}}
+            </span>
+            <span *ngIf="col.price">Suma <br /> {{summary.summaryPrice | currency:'PLN'}} </span>
+            <span *ngIf="col.header === 'Pula'"> W puli <br /> {{summary.summaryIsFromPool}}</span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary" let-columns="columns">
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row" style="margin-top: 15px;">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-1"></div>
+          </div>
+        </div>
+      </ng-template>
       <ng-template pTemplate="emptymessage">
         Brak zleceń w zakresie dat...
       </ng-template>
-
-      <p-footer>
-      </p-footer>
-
-    </p-dataTable>
-
+    </p-table>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
-  <!-- Turbo table -->
-
-  <p-table 
-    #tt dataKey="id" 
-    [columns]="cols" 
-    [value]="orders" 
-    [rows]="20" 
-    [paginator]="true" 
-    [resizableColumns]="true" 
-    sortOrder="-1" 
-    selectionMode="single" 
-    [(selection)]="selectedOrder" 
-    (onRowSelect)="onRowSelect($event)" 
-    [metaKeySelection]="true"
-    loadingIcon="fa fa-spinner" 
-    [contextMenu]="cm"
-    contextMenuSelectionMode="joint" 
-    csvSeparator=";"  
-    exportFilename="Zlecenia" 
-    [globalFilterFields]="cols" 
-    [responsive]="true">
-    <ng-template pTemplate="caption">
-        <div>
-            <i class="fa fa-search"></i>
-            <input type="text" pInputText size="50" placeholder="Filtruj" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-          </div>
-    </ng-template>
-    <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th *ngFor="let col of columns"
-          [hidden]="col.hidden"
-          [pSortableColumn]="col.field"
-          [ngClass]="col.class"
-          pResizableColumn
-          excludeGlobalFilter = col.exclude>
-            <span class="header">
-                {{col.header}}
-                <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
-            </span>         
-          </th>
-        </tr>
-        <tr>
-          <th *ngFor="let col of columns"  [hidden]="col.hidden" >
-            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" 
-            pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
-            <div *ngIf="col.price">
-              Cena > {{priceFilter}}
-              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"></i>
-              <p-slider [style]="{'width':'100%','margin-top':'8px'}" 
-              [(ngModel)]="priceFilter"              
-              [min]="0"
-              [max]="9999"             
-              (onChange)="onPriceChange($event, tt)"             
-              [animate]="true"></p-slider>
-            </div>      
-          </th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns">
-        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" > 
-            <td *ngFor="let col of columns"
-              [hidden]="col.hidden"
-              filterMatchMode="col.contains"
-              [ngClass]="col.class"
-              >      
-                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
-                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-                <span *ngIf="col.isFromPool">
-                  <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-                  <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-                </span>             
-                
-                <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>            
-                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="selectedOrder=rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></p-button>
-                <span *ngIf="!col.icon && !col.price">
-                  {{rowData[col.field]}}
-                </span>
-                <span *ngIf="col.price">
-                  {{rowData[col.field] | currency:'PLN'}}
-                </span>               
-            </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="footer" let-columns>
-      <tr>
-          <td *ngFor="let col of columns"
-          [hidden]="col.hidden"
-          >
-          <span  *ngIf="col.header === 'Zlecenie'">Suma zleceń <br/> {{orders?.length}}  </span> 
-          <span *ngIf="col.header === 'Status'">
-            <i [class]="getStatusIcon('OP')"></i>{{summary.openOrders}} 
-            <i [class]="getStatusIcon('AS')"></i> {{summary.assignedOrders}} 
-            <i [class]="getStatusIcon('CO')"></i> {{summary.complitedOrders}} <br/>
-            <i [class]="getStatusIcon('IS')"></i> {{summary.issuedOrders}}
-            <i [class]="getStatusIcon('CL')"></i> {{summary.closeOrders}}
-          </span>
-          <span *ngIf="col.price">Suma <br/> {{summary.summaryPrice | currency:'PLN'}} </span>
-          <span *ngIf="col.header === 'Pula'"> W puli <br/> {{summary.summaryIsFromPool}}</span>
-          </td>
-      </tr>
-  </ng-template>
-    <ng-template pTemplate="summary" let-columns="columns">
-      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-        <div class="ui-grid-row"  style="margin-top: 15px;">
-          <div class="ui-grid-col-1"></div>
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-1"></div>
-        </div>
-      </div>
-  </ng-template>
-</p-table>
-<p-contextMenu #cm [model]="items"></p-contextMenu>
-
-  <!-- End Turbo Table -->
-
-  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600"
+    [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
 
-  <p-dialog [header]="'Poprawa zlecenia '+editedOrder?.workNo" [(visible)]="displayReassignDialog" [responsive]="true" [minWidth]="500">
+  <p-dialog [header]="'Poprawa zlecenia '+editedOrder?.workNo" [(visible)]="displayReassignDialog" [responsive]="true"
+    [minWidth]="500">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer WO</label></div>
-        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" disabled="true"/></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto"
+            disabled="true" /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="type">Typ WO</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/>
+          <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true" />
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="status">Status</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true"/>
+          <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true" />
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="comment">Komentarz</label></div>
         <div class="ui-grid-col-8">
-          <textarea disabled="true" pInputTextarea id="comment"  [rows]="8" [cols]="30">{{getCancelOrHoldComment(editedOrder)}}</textarea>
+          <textarea disabled="true" pInputTextarea id="comment" [rows]="8"
+            [cols]="30">{{getCancelOrHoldComment(editedOrder)}}</textarea>
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="justification">Uzasadnienie*</label></div>
         <div class="ui-grid-col-8">
-          <textarea pInputTextarea id="justification" [(ngModel)]="newComment" [rows]="3" [cols]="30" required autoResize="autoResize"></textarea>
+          <textarea pInputTextarea id="justification" [(ngModel)]="newComment" [rows]="3" [cols]="30" required
+            autoResize="autoResize"></textarea>
         </div>
       </div>
     </div>
@@ -269,52 +180,49 @@
         <button width="200px" type="button" pButton icon="fa fa-bell" (click)="doReassign()" label="Zapisz"></button>
       </div>
     </p-footer>
-
   </p-dialog>
 
-  <p-dialog [header]="complexityIncrease? 'Zwiększenie trudności' : 'Zmniejszenie trudności'" [(visible)]="displayChangeComplexityDialog" [responsive]="true"  [minWidth]="700">
+  <p-dialog [header]="complexityIncrease? 'Zwiększenie trudności' : 'Zmniejszenie trudności'"
+    [(visible)]="displayChangeComplexityDialog" [responsive]="true" [minWidth]="700">
     <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedOrder">
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="workNo">Numer zlecenia</label></div>
-        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto" disabled="true"/></div>
+        <div class="ui-grid-col-8 ui-fluid"><input pInputText id="workNo" [(ngModel)]="editedOrder.workNo" width="auto"
+            disabled="true" /></div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="type">Typ zlecenia</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true"/>
+          <input pInputText id="type" [(ngModel)]="editedOrder.type" disabled="true" />
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="status">Status</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true"/>
+          <input pInputText id="status" [(ngModel)]="editedOrder.status" disabled="true" />
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="complexity">{{complexityIncrease? 'Zwiekszona': 'Standardowa'}} trudność [h]*</label></div>
+        <div class="ui-grid-col-4"><label for="complexity">{{complexityIncrease? 'Zwiekszona': 'Standardowa'}} trudność
+            [h]*</label></div>
         <div class="ui-grid-col-8">
-          <input pInputText type="number" id="complexity" [(ngModel)]="editedOrder.complexity" required/>
+          <input pInputText type="number" id="complexity" [(ngModel)]="editedOrder.complexity" required />
         </div>
       </div>
       <div class="ui-grid-row" style="margin-top: 20px;">
         <div class="ui-grid-col-4"><label for="newComment">Uzasadnienie*</label></div>
         <div class="ui-grid-col-8">
-          <textarea pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="8" [cols]="30" placeholder="Powód zmiany wyceny..." required autoResize="autoResize"></textarea>
+          <textarea pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="8" [cols]="30"
+            placeholder="Powód zmiany wyceny..." required autoResize="autoResize"></textarea>
         </div>
       </div>
-      <!--<div class="ui-grid-row" style="margin-top: 20px;">
-        <div class="ui-grid-col-4"><label for="justification">Uzasadnienie*</label></div>
-        <div class="ui-grid-col-8">
-          <textarea pInputTextarea name="justification" [(ngModel)]="justification" [rows]="2" [cols]="30" required autoResize="autoResize"></textarea>
-        </div>
-      </div>-->
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button width="200px" type="button" pButton [icon]="complexityIncrease? 'fa fa-arrow-circle-up' : 'fa fa-arrow-circle-down'" (click)="doChangeComplexity()" label="Zaakceptuj"></button>
+        <button width="200px" type="button" pButton
+          [icon]="complexityIncrease? 'fa fa-arrow-circle-up' : 'fa fa-arrow-circle-down'"
+          (click)="doChangeComplexity()" label="Zaakceptuj"></button>
       </div>
     </p-footer>
   </p-dialog>
-
-
 </p-panel>
