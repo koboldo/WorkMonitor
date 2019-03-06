@@ -18,6 +18,8 @@ export class GroupAssignmentWoComponent implements OnInit {
   ordersSuccessAssign: Order [] = [];
   ordersStatusNotChange: Order [] = [];
   cols: any;
+  priceTimeout: any;
+  priceFilter: any;
 
   /* autocompletion assignedEngineer */
   engineers: User[] = [];
@@ -37,29 +39,30 @@ export class GroupAssignmentWoComponent implements OnInit {
     this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
     this.cols = [
       { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35", check: true},
-      { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"text-center-55"},
-      { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+      { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"text-center-55"}, 
       { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-100"},
       { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-100"},
       { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-135"},
       { field: 'complexityCode', header: 'Zł.', sortable:true, filter:false,complexity:true, icon:true,class:"text-center" },
       { field: 'complexity', header: 'Wycena' , sortable:true, filter:false,class:"text-center-55"},
       { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-100" },
-      { field: 'price', header: 'Cena', sortable:true, filter:true,class:"width-70 text-right" },
-      { field: 'sComments', header: 'Komentarz', hidden:true, sortable:true , filter:true},
-      { field: 'description', header: 'Opis', hidden:true, filter:true },
+      { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-70 text-right", price:true },     
       { field: 'assignee', header: 'Wykonawca', sortable:true, filter:true, class:"width-100" },
       { field: 'isFromPool', header: 'Pula' , sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},
       { field: 'protocolNo', header: 'Protokół', sortable:true, filter:true, class:"width-70" },
       { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-125"},
       { field: 'creationDate', header: 'Utw.', sortable:true , filter:true, class:"width-125"},
       { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-100"},
+      // hidden columns
       { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
       { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
       { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
       { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
       { field: 'ventureCompany', header: 'Inwestor', sortable:true , filter:true, class:"width-100"},
       { field: 'ventureDisplay', header: 'Zleceniodawca', sortable:true , filter:true, class:"width-135" },
+      { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+      { field: 'sComments', header: 'Komentarz', hidden:true, sortable:true , filter:true},
+      { field: 'description', header: 'Opis', hidden:true, filter:true },
     ]
 
   }
@@ -81,6 +84,15 @@ export class GroupAssignmentWoComponent implements OnInit {
 
   @Output()
   closeModalEvent = new EventEmitter<boolean>();
+
+  public onPriceChange(event, tt) {
+    if (this.priceTimeout) {
+        clearTimeout(this.priceTimeout);
+    }
+    this.priceTimeout = setTimeout(() => {
+        tt.filter(event.value, 'price', 'gt');
+    }, 250);
+}
 
 public assignOrders(){ 
     if (!this.selectedOrders || this.selectedOrders.length < 1 ) {

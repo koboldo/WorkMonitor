@@ -21,6 +21,8 @@ export class WoListComponent implements OnInit {
     selectedOrder: Order;
     cols: any;
     summary: TableSummary;
+    priceTimeout: any;
+    priceFilter: any;
     
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
@@ -35,7 +37,7 @@ export class WoListComponent implements OnInit {
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
-            { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
+            { field: 'type', header: 'Typ', sortable:true, filter:false, type:true, class:"width-50"},
             { field: 'isFromPool', header: 'Pula' ,hidden:false, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},          
             { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-45 text-right", price:true}, 
             { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"}, 
@@ -67,6 +69,15 @@ export class WoListComponent implements OnInit {
         this.mapVentureRepresentative(orders, this.vrs);
         this.list = orders;
         this.summary = this.toolsService.createSummaryForTable(this.list);
+    }
+
+    public onPriceChange(event, tt) {
+        if (this.priceTimeout) {
+            clearTimeout(this.priceTimeout);
+        }
+        this.priceTimeout = setTimeout(() => {
+            tt.filter(event.value, 'price', 'gt');
+        }, 250);
     }
 
     get ListToDisplay(): Order[] {

@@ -145,7 +145,7 @@ export class WoComponent implements OnInit {
     }
 
     public getStatusIcon(statusCode: string): string {
-    return this.toolsService.getStatusIcon(statusCode);
+        return this.toolsService.getStatusIcon(statusCode);
     }
 
     public onPriceChange(event, tt) {
@@ -155,7 +155,6 @@ export class WoComponent implements OnInit {
         this.priceTimeout = setTimeout(() => {
             tt.filter(event.value, 'price', 'gt');
         }, 250);
-        console.log(this.summary);
     }
 
     public showChangeStatusDialog() {

@@ -56,7 +56,7 @@ export class WoStoppedListComponent implements OnInit {
             { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"text-center-30"},
             { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
-            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-20 text-center", icon:true},
+            { field: 'status', header: 'Status' , filter:false,statusCode:true, class:"width-20 text-center", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-35" },
             { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-35 text-right", price:true},
