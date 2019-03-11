@@ -113,6 +113,24 @@ export class UsersPayrollComponent implements OnInit {
         return result;
     }
 
+    /**
+    * Workaround for backend bug
+    * @param {string} periodDate
+    * @returns {UserPayroll}
+    */
+    public getRightPayrollRecord(periodDate: string): UserPayroll {
+      let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
+      for (let payroll of payrolls) {
+          if (payroll && payroll.periodDate && payroll.periodDate === periodDate) {
+                if (payroll.workTime > 0) {
+                    return payroll;
+                }
+          }
+      }
+      //I want error in GUI if not found
+      return null;
+    }
+
     public showApproveDialog(periodDate: string):void {
         let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
 
@@ -148,19 +166,20 @@ export class UsersPayrollComponent implements OnInit {
     public showAllOrders(periodDate: string): void {
         let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
 
-        let orderIds: number[] = [];
+        // magic completedWo string example -> "completedWo": "17228:420::0.5:::Y|18159:420::0.5:::Y",
+        let orderId2Magic: Map<number, string> = new Map();
+
         for (let payroll of payrolls) {
             if (payroll.periodDate && payroll.periodDate === periodDate && payroll.completedWo) {
-                let ids: string[] = payroll.completedWo.split("|");
-                for(let id of ids) {
-                    if (orderIds.indexOf(+id) === -1) {
-                        orderIds.push(+id);
-                    }
+                let completedOrders: string[] = payroll.completedWo ? payroll.completedWo.split("|") : [];
+                for(let completedOrder of completedOrders) {
+                    let id: number = +completedOrder.split(":")[0];
+                    orderId2Magic.set(id, completedOrder);
                 }
             }
         }
 
-        this.completedOrderService.showOrdersByIds(periodDate, orderIds);
+        this.completedOrderService.showOrdersByIds(periodDate, orderId2Magic);
 
     }
 
@@ -205,7 +224,7 @@ export class UsersPayrollComponent implements OnInit {
         let now: Date = new Date();
         let diffMs: number = now.getTime() - theDate.getTime();
 
-        console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
+        //console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
 
         if (diffMs > 3*this.AVG_MONTH_MS) {
             return 'ui-button-danger';

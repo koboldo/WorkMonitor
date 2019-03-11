@@ -41,7 +41,7 @@
   <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
-  <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true" (onHide)="closeAssignment()">
+  <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
     <app-group-assignment-wo #assignmentModal [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-assignment-wo>
   </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">

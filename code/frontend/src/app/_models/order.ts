@@ -31,7 +31,8 @@ export class Order {
 
     assignedDate: string;   //utilization report
     doneDate: string;       //utilization report
-    sharedPrice: number;    //utilization report boolean to share price among employees
+    sharedPrice: number;    //utilization report front calculated shared price among employees,
+    poolRevenue: number;    //user payroll -> pool share obtained from completedWo magic string
 
     history: OrderHistory[];
 

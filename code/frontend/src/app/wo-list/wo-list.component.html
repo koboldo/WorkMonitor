@@ -39,6 +39,11 @@
               {{order[col.field] | currency:'PLN'}}
             </ng-template>
           </p-column>
+          <p-column [sortable]="true" field="poolRevenue" header="Do puli" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj">
+            <ng-template let-col let-order="rowData" pTemplate="body">
+              {{order[col.field]!==null && (order[col.field] > -1) ? (order[col.field] | currency:'PLN') : 'Brak danych'}}
+            </ng-template>
+          </p-column>
 
           <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
 
