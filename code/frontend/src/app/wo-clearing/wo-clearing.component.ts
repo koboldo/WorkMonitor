@@ -168,7 +168,7 @@ export class WoClearingComponent implements OnInit {
 
     private callVentures(orders:Order[]):Observable<User[]> {
         this.orders = orders;
-        this.summary = this.toolsService.createSummaryForTable(this.orders);
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
         return this.userService.getVentureRepresentatives();
     }
 

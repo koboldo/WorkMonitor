@@ -145,7 +145,7 @@ export class WoStoppedListComponent implements OnInit {
     search() {
         this.woService.getOrdersByStatus(this.orderStatus).subscribe(orders =>{
             this.orders = orders ; 
-            this.summary = this.toolsService.createSummaryForTable(this.orders);
+            this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
         } );
         
     }

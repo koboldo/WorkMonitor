@@ -68,7 +68,7 @@ export class WoListComponent implements OnInit {
     set ListToDisplay(orders: Order[]) {
         this.mapVentureRepresentative(orders, this.vrs);
         this.list = orders;
-        this.summary = this.toolsService.createSummaryForTable(this.list);
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.list);
     }
 
     public onPriceChange(event, tt) {

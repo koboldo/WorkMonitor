@@ -75,7 +75,7 @@ export class WoTurboTableComponent  extends WoComponent implements OnInit {
       this.priceTimeout = setTimeout(() => {
           tt.filter(event.value, 'price', 'gt');
       }, 250);
-      this.summary = this.toolsService.createSummaryForTable(this.orders);
+      this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
       console.log(this.summary);
   }
 

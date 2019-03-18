@@ -258,7 +258,7 @@ export class ChangeWoComplexityComponent implements OnInit {
         }
 
         this.orders = tmpOrders;
-        this.summary = this.toolsService.createSummaryForTable(this.orders);
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
     }
 //TODO perhaps comment service ?
     public getCancelOrHoldComment(order:Order):string {

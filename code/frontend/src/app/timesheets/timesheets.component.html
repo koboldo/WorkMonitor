@@ -41,7 +41,15 @@
   </div>
 
   <div class="ui-g" *ngIf="usersWithSheets" style="margin-top: 5px; margin-right: 10px;">
-    <p-dataTable [editable]="true" (onEditInit)="onEditInit($event)" (onEdit)="onEdit($event)" (onEditCancel)="onEditCancel($event)" (onEditComplete)="onEditComplete($event)" [value]="usersWithSheets" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" [loading]="loading" loadingIcon="fa fa-spinner"
+    <p-dataTable 
+    [editable]="true" 
+    (onEditInit)="onEditInit($event)" 
+    (onEdit)="onEdit($event)" 
+    (onEditCancel)="onEditCancel($event)" 
+    (onEditComplete)="onEditComplete($event)"
+     [value]="usersWithSheets"
+      [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="tabid" resizableColumns="true" sortField="lastName" sortOrder="1" 
+      [loading]="loading" loadingIcon="fa fa-spinner"
                  csvSeparator=";" exportFilename="czas_pracy"
                  expandableRows="true">
       <p-header>
@@ -170,6 +178,137 @@
       </p-footer>
 
     </p-dataTable>
+
+    <!-- turbo table  -->
+
+    <p-table #tt dataKey="id" [columns]="cols" 
+    (onEditInit)="onEditInit($event)" 
+    
+    (onEditCancel)="onEditCancel($event)" 
+    (onEditComplete)="onEditComplete($event)"
+     [value]="usersWithSheets" [rows]="20" [paginator]="true"
+    [resizableColumns]="true" sortOrder="1" 
+    loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="czas_pracy" [globalFilterFields]="cols"
+    [responsive]="true"
+    sortField="lastName"
+    >
+    <ng-template pTemplate="caption">
+      <div>
+        <i class="fa fa-search"></i>
+        <input type="text" pInputText size="50" placeholder="Filtruj"
+          (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+          pResizableColumn excludeGlobalFilter=col.exclude>
+          <span class="header">
+            {{col.header}}
+            <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+          </span>
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden">
+          <input class="width-100" [attr.placeholder]="col.inOut ? 'Y/N' : 'Filtruj'" pInputText
+            type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">       
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+      <tr>       
+        <td *ngFor="let col of columns" [pEditableColumn]="rowData" pEditableColumn [pEditableColumnField]="'rowData[col.field]'" 
+        [hidden]="col.hidden" [ngClass]="col.class">
+            <p-cellEditor *ngIf="col.edit">
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData[col.field]" (ngModelChange)="valueChange(rowData)" [style.color]="rowData.color">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <span [style.color]="rowData.color" >
+                      {{rowData[col.field]}}
+                  </span>
+                </ng-template>
+              </p-cellEditor>
+              <span  *ngIf="!col.edit && !col.status">
+                  {{rowData[col.field]}}
+              </span>
+              <div *ngIf="col.status">
+                  <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
+                  <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
+                  <div *ngIf="rowData[col.field] == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>    
+              </div>
+              <div *ngIf="col.expand">
+                  <a href="#" [pRowToggler]="rowData">
+                      <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                  </a>
+              </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+        <tr>
+            <td [attr.colspan]="columns.length + 1">
+                <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+                    <div class="ui-grid-row">
+                      <div *ngIf="rowData?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                        Utworzony dla: {{rowData.role}}, {{rowData.email}}, {{rowData.phone}},
+                      </div>
+                    </div>
+                    <div class="ui-grid-row">
+                      <div *ngIf="rowData?.copy?.createdBy" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                          Utworzony przez: <span style="font-weight: bold">{{rowData.copy.createdBy}}</span>
+                      </div>
+                    </div>
+                    <div class="ui-grid-row">
+                      <div *ngIf="rowData?.copy?.modifiedBy" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                          Zmodyfikowany przez: <span style="font-weight: bold">{{rowData.copy.modifiedBy}}</span>
+                      </div>
+                    </div>
+                    <div class="ui-grid-row">
+                      <div *ngIf="rowData?.copy?.fromIsp || rowData?.copy?.fromOrg" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                        Wejście: <span style="font-weight: bold">{{rowData.copy.fromIsp}} @ {{rowData.copy.fromOrg}}, {{rowData.copy.fromCity}} @ {{rowData.copy.fromRegion}}</span>
+                      </div>
+                    </div>
+                    <div class="ui-grid-row">
+                      <div *ngIf="rowData?.copy?.toIsp || rowData?.copy?.toOrg" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                        Wyjście: <span style="font-weight: bold">{{rowData.copy.toIsp}} @ {{rowData.copy.toOrg}}, {{rowData.copy.toCity}} @ {{rowData.copy.toRegion}}</span>
+                      </div>
+                    </div>
+                  </div>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer" let-columns>
+      <tr>
+        <td *ngFor="let col of columns" [hidden]="col.hidden">
+          <span *ngIf="col.training">Suma szkoleń <br /> {{summary?.totalTrainingTimeInGMM}} </span>
+          <span *ngIf="col.break">Suma przerw <br /> {{summary?.totalBreakTime}} </span>
+          <span *ngIf="col.isLeave">Suma urlop <br /> {{summary?.totalIsLeave}} </span>
+          <span *ngIf="col.header === 'Nazwisko'">Ilość pracowników <br /> {{usersWithSheets?.length}}</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row" style="margin-top: 15px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"> <button  type="button" pButton
+              icon="fa fa-file-o" style="float:left" (click)="tt.exportCSV()" label="CSV"></button> </div>
+          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-1"> </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      Brak danych...
+    </ng-template>
+  </p-table>
+
+    <!-- end turbo table -->
   </div>
 
 

@@ -9,6 +9,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { Observable }    from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
+import { userTableSummary } from 'app/_models/userTableSummary';
 
 @Component({
     selector: 'app-users-display',
@@ -23,6 +24,7 @@ export class UsersDisplayComponent implements OnInit {
     allUsers:User[] = [];
     users:User[] = [];
     selectedUser: User;
+    summary: userTableSummary;
 
 
     displayUserHistoryDialog: boolean;
@@ -72,6 +74,7 @@ export class UsersDisplayComponent implements OnInit {
         //this is shame, onClick is triggerd before model is changed therefore I will rely on input...
         if (input === 'ALL') {
             this.users = this.allUsers;
+            
         } else if (input === this.employedOnlyFilter) {
             this.users = [];
             for(let user of this.allUsers) {
@@ -79,10 +82,12 @@ export class UsersDisplayComponent implements OnInit {
                     this.users.push(user);
                 }
             }
+           
         } else {
             this.users = [];
             console.log(input + ' unimplemented!');
         }
+        this.summary = this.creatSummary(this.users);
     }
 
     private removeRolesAndGetManagedUsers(user:User):void {
@@ -94,6 +99,63 @@ export class UsersDisplayComponent implements OnInit {
 
     private processUsers(engineers:User[]):void {
         this.allUsers = engineers;
-        this.filter(this.employedOnlyFilter);
+        this.filter(this.employedOnlyFilter);       
+    }
+
+    private creatSummary (users: User[]) : userTableSummary {
+        console.log(users);
+        let summary = new userTableSummary();
+        summary.totalActiveUsers = this.countActiveUsers(users);
+        summary.totalEmployees = this.countEmployedUsers(users);
+        summary.totalUsersFromPool = this.countUsersInPool(users);
+        users.forEach(element => {
+          if (element.rankCode === 'YOU'){
+              summary.totalYOURank ++;
+          }
+          if (element.rankCode === 'SEN'){
+              summary.totalSENRank ++;
+          }
+          if (element.rankCode === 'REG'){
+              summary.totalREGRank ++;
+          }
+          if (element.rankCode === 'NONE'){
+              summary.totalNONERank ++;
+          }
+          if (element.rank === 'DZI'){
+              summary.totalDZIRank ++;
+          }
+        });
+        return summary;
+      }
+  
+      private countUsersInPool (users: User[]): number {
+        let usersFromPoll = 0;
+        users.forEach(element => {
+            if (element.isFromPool === 'Y'){
+                usersFromPoll++;
+            }
+        });
+        return usersFromPoll;
+    }
+  
+    private countActiveUsers (users: User[]): number {
+        let activUserNumber = 0;
+        users.forEach(element => {
+            if (element.isActive === 'Y'){
+                activUserNumber ++;
+            }
+        });
+        return activUserNumber;
+    }
+  
+  
+      private countEmployedUsers(users: User[]): number {
+        let emplyedUser = 0;
+        users.forEach(element => {
+            if (element.isEmployed === 'Y') {
+                emplyedUser++;
+            }       
+        });
+        return emplyedUser;
     }
 }

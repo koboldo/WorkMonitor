@@ -87,6 +87,93 @@
     </ng-template>
 
   </p-dataTable>
+  <!-- turbo table  -->
+
+  <p-table #tt dataKey="id" [columns]="cols" [value]="users" [rows]="50" [paginator]="true"
+      [resizableColumns]="true"  sortField="excelId" sortOrder="1" [(selection)]="selectedUsers" [metaKeySelection]="true"
+      loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="cols"
+      [responsive]="true">
+      <ng-template pTemplate="caption">
+        <div>
+          <i class="fa fa-search"></i>
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden">
+            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+            <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
+
+            <span *ngIf="col.person" [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}} {{rowData.lastName}}</span>
+            <span *ngIf="col.isActive">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+            </span>
+            <span *ngIf="col.isEmployed">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+            </span>
+            <span *ngIf="col.isFromPool">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+            </span>
+            <span *ngIf="!col.icon">
+              {{rowData[col.field]}}
+            </span>
+            
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer" let-columns>
+        <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden">
+            <span *ngIf="col.isActive">Aktywnych <br />  {{summary?.totalActiveUsers}} </span>
+            <span *ngIf="col.isEmployed">Pracujących <br />{{summary?.totalEmployees}}</span>
+            <span *ngIf="col.rank"> <br />{{summary?.totalYOURank}}  {{summary?.totalSENRank}}  {{summary?.totalREGRank}} {{summary?.totalNONERank}} {{summary?.totalDZIRank}} </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary" let-columns="columns">
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-2">
+              <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+            </div>
+  
+            <div class="ui-grid-col-6"></div>
+  
+            <div class="ui-grid-col-2">
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+            </div>
+            <div class="ui-grid-col-1"></div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak pracowników...
+      </ng-template>
+    </p-table>
+
+  <!-- end turbo table  -->
 </div>
 
 
@@ -177,6 +264,79 @@
     </p-footer>
 
   </p-dataTable>
+
+  <!-- turbo table   -->
+
+  <p-table #timeSummary dataKey="personId"
+  sortField="user.excelId" sortOrder="1" 
+  [columns]="colsForTimeSummary" [value]="timestats" [rows]="20" [paginator]="true"
+  [resizableColumns]="true"  
+  loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate" [globalFilterFields]="cols"
+  [responsive]="true">
+  <ng-template pTemplate="caption">
+    <div>
+      <i class="fa fa-search"></i>
+      <input type="text" pInputText size="50" placeholder="Filtruj"
+        (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr >
+      <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class" 
+        pResizableColumn excludeGlobalFilter=col.exclude>
+        <span class="header">
+          {{col.header}}
+          <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+        </span>
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns" [hidden]="col.hidden">
+        <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+          type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr>
+      <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class" >
+
+       <span *ngIf="col.excelId">{{rowData.user.excelId}}</span>
+       <span *ngIf="col.firstName">{{rowData.user.firstName}}</span>
+       <span *ngIf="col.lastName">{{rowData.user.lastName}}</span>
+       <span *ngIf="col.officeCode">{{rowData.user.officeCode}}</span>
+       <span *ngIf="col.isFromPool">
+        <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+        <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+       </span>
+        <span *ngIf="!col.details">
+          {{rowData[col.field]}}
+        </span>
+        
+      </td>
+    </tr>
+  </ng-template>
+  
+  <ng-template pTemplate="summary" let-columns="columns">
+    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+      <div class="ui-grid-row"  style="margin-top: 15px;">
+       
+        <div class="ui-grid-col-2"></div>
+        <div class="ui-grid-col-2"></div>
+        <div class="ui-grid-col-4"> <button type="button" pButton icon="fa fa-file-o" style="float:left"label="CSV" (click)="timeSummary.exportCSV()"></button> </div>
+        <div class="ui-grid-col-2"> </div>
+        <div class="ui-grid-col-2"> </div>
+        
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    Brak raportu podsumowania czasów...
+  </ng-template>
+</p-table>
+
+
+  <!-- turbo table  -->
 
 </p-dialog>
 

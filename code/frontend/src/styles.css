@@ -191,3 +191,6 @@ td {
     overflow: hidden;
     text-overflow: ellipsis
 }
+.color-green{
+    color: green;
+}

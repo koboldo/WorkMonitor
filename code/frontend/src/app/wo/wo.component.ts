@@ -206,7 +206,7 @@ export class WoComponent implements OnInit {
                 this.orders.push(order);
             }
         }
-        this.summary = this.toolsService.createSummaryForTable(this.orders);
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
         return this.userService.getVentureRepresentatives();
     }
 

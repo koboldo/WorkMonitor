@@ -9,6 +9,8 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
+import { UserWithSheet } from 'app/_models/userWithSheet';
+import { userTableSummary } from 'app/_models/userTableSummary';
 
 @Component({
     selector: 'app-timesheets',
@@ -33,7 +35,9 @@ export class TimesheetsComponent implements OnInit {
 
 
     user: User;
-    pl:Calendar;
+    pl: Calendar;
+    cols: any;
+    summary: userTableSummary;
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -54,10 +58,31 @@ export class TimesheetsComponent implements OnInit {
         this.authSerice.userAsObs.subscribe(user => this.user = user);
         this.search();
         this.pl=new Calendar();
+        this.cols = [
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true},            
+            { field: 'rowid', header: 'tabid', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
+            { field: 'office', header: 'Biuro' , filter:true, class:"width-35"},
+            { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
+            { field: 'lastName', header: 'Nazwisko',sortable:true, filter:true,class:"width-35" },
+            { field: 'isManagerOrOperator', header: '',hidden:true, sortable:true, filter:false,class:"width-35 text-right"}, 
+            { field: 'copy.fromMobileDevice', header: 'Wejście', sortable:true, filter:true, class:"width-35", inOut: true },
+            { field: 'copy.toMobileDevice', header: 'Wyjście', sortable:true , filter:true, class:"width-35", inOut:true },
+            { field: 'timesheetWorkDate', header: 'Dnia' , sortable:true, filter:true, class:"width-50 text-center"},
+            { field: 'isLeave', header: 'Urlop',sortable:true , filter:true, class:"width-35 text-center", edit: true, isLeave:true},
+            { field: 'timesheetFrom', header: 'Obecny od', sortable:true , filter:true, class:"width-35 text-center", edit: true }, 
+            { field: 'timesheetTo', header: 'Obecny do',  sortable:true, filter:true,class:"width-35 text-center", edit: true },
+            { field: 'timesheetBreakInMinutes', header: 'Przerwa [min]' ,sortable:true, filter:true,class:"width-50 text-center", edit: true, break:true},      
+            { field: 'timesheetTrainingInGMM', header: 'Szkolenie [g:mm]', sortable:true, filter:true, class:"width-50 text-center", edit: true, training:true },
+            { field: 'timesheetUsedTime', header: 'Obecność', sortable:true, filter:true, class:"width-50 text-center"},           
+            { field: 'status', header: 'Zapisano', sortable: true, filter:true, class:"width-35 col-icon", status:true},
+            // { field: 'none',header:'Zapisano', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon"} 
+             
+        ]
     }
 
-
     onEditInit(event) {
+        console.log('on edit init');
+        console.log(event);
         console.log('about edit !' + JSON.stringify(event.data));
 
         if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
@@ -68,15 +93,69 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetBreakInMinutes = 15;
             event.data.timesheetTrainingInGMM = '';
             event.data.color = '#2399e5';
-        }
+        }        
     }
 
     onEditCancel(event) {
+        console.log('cancel');
+        console.log(event);
         this.onEditComplete(event);
     }
 
+    valueChange(rowData: any){
+        console.log('edit');
+         console.log('edit !' + JSON.stringify(rowData));
+
+        if (rowData.roleCode.indexOf('OP') > -1 || rowData.roleCode.indexOf('MG') > -1) {
+            if (this.user.roleCode.indexOf('TS') < 0) {
+                this.alertService.warn("Brak uprawnień");
+                this.restore(rowData);
+            }
+        }
+
+        if (rowData.timesheetFrom.length === 2) {
+            if (this.hourRegexp.test(rowData.timesheetFrom)) {
+                rowData.timesheetFrom+=':';
+            } else {
+                rowData.timesheetFrom='';
+            }
+        } else if (rowData.timesheetFrom.length > 5) {
+            this.alertService.warn('Zbyt długie pole od '+rowData.timesheetFrom);
+            rowData.timesheetFrom = rowData.timesheetFrom.substr(0, 5);
+        }
+
+        if (rowData.timesheetTo.length === 2) {
+            if (this.hourRegexp.test(rowData.timesheetTo)) {
+                rowData.timesheetTo+=':';
+            } else {
+                rowData.timesheetTo='';
+            }
+        } else if (rowData.timesheetTo.length > 5) {
+            this.alertService.warn('Zbyt długie pole do '+rowData.timesheetFrom);
+            rowData.timesheetTo = rowData.timesheetTo.substr(0, 5);
+        }
+
+        if (rowData.timesheetTrainingInGMM.length === 1) {
+            if (this.hourRegexp.test(rowData.timesheetTrainingInGMM)) {
+                rowData.timesheetTrainingInGMM+=':';
+            }
+            else {
+                rowData.timesheetTrainingInGMM='';
+            }
+        } else if (rowData.timesheetTrainingInGMM.length > 4) {
+            this.alertService.warn('Zbyt długie pole szkolenie '+rowData.timesheetTrainingInGMM);
+            if (rowData.timesheetTrainingInGMM.indexOf(':') === 1) {
+                rowData.timesheetTrainingInGMM = rowData.timesheetTrainingInGMM.substr(0, 4);
+            } else {
+                rowData.timesheetTrainingInGMM = '0';
+            }
+
+        }
+    }
+    // TODO remove after change table
     onEdit(event) {
-        console.log('edit !' + JSON.stringify(event.data));
+        console.log('edit');
+         console.log('edit !' + JSON.stringify(event.data));
 
         if (event.data.roleCode.indexOf('OP') > -1 || event.data.roleCode.indexOf('MG') > -1) {
             if (this.user.roleCode.indexOf('TS') < 0) {
@@ -297,10 +376,11 @@ export class TimesheetsComponent implements OnInit {
                 console.log('User not found '+timesheet.personId);
             }
         }
-
+        this.summary = this.toolsService.createSummaryForUserTable(this.usersWithSheets);
+        console.log(this.summary);
 
     }
-
+   
     private createUserWithSheet(timesheet: Timesheet, users: User[], rowid: number): UserWithSheet {
         let user = this.getUser(timesheet.personId, users);
 
@@ -372,23 +452,23 @@ export class TimesheetsComponent implements OnInit {
 }
 
 
-export class UserWithSheet extends User {
-    rowid: number;
+// export class UserWithSheet extends User {
+//     rowid: number;
 
-    copy: Timesheet;
+//     copy: Timesheet;
 
-    timesheetUsedTime: number; //flat property for p-dataTable used for sort
-    timesheetWorkDate: string;
-    timesheetFrom: string;
-    timesheetTo: string;
-    timesheetBreakInMinutes: string;
-    timesheetTrainingInGMM: string;
-    isLeave: string;
+//     timesheetUsedTime: number; //flat property for p-dataTable used for sort
+//     timesheetWorkDate: string;
+//     timesheetFrom: string;
+//     timesheetTo: string;
+//     timesheetBreakInMinutes: string;
+//     timesheetTrainingInGMM: string;
+//     isLeave: string;
 
-    isManagerOrOperator: string; //Y, N
+//     isManagerOrOperator: string; //Y, N
 
-    color: string;
-    status: string;
+//     color: string;
+//     status: string;
 
-}
+// }
 
