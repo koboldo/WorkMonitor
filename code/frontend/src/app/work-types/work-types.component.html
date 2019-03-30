@@ -1,5 +1,7 @@
 <div style="margin-top: 5px" *ngIf="workTypes" class="ui-g">
-  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
+  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single"
+   [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" 
+   dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
     <p-header>
       <div>
         <i class="fa fa-search"></i>
@@ -70,6 +72,111 @@
   </p-dataTable>
 
   <p-contextMenu #cm [model]="items"></p-contextMenu>
+
+   <!-- turbo table  -->
+
+   <p-table #tt dataKey="id" [columns]="cols" [value]="workTypes" [rows]="20" [paginator]="true" [resizableColumns]="true" 
+   sortField="lastModDate" sortOrder="-1"  [(selection)]="selectedWorkType" selectionMode="single"
+   loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+   [responsive]="true"
+   (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" 
+   [metaKeySelection]="true"
+   [contextMenu]="cm"
+   contextMenuSelectionMode="joint"
+   >
+   <!-- [headerCheckboxToggleAllPages]="false" -->
+   <ng-template pTemplate="caption">
+     <div>
+       <i class="fa fa-search"></i>
+       <input type="text" pInputText size="50" placeholder="Filtruj"
+         (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+     </div>
+   </ng-template>
+   <ng-template pTemplate="header" let-columns let-rowData>
+     <tr>
+       <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+         pResizableColumn excludeGlobalFilter=col.exclude>
+         <span class="header" *ngIf="!col.check">
+           {{col.header}}
+           <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+         </span>
+         <p-tableHeaderCheckbox *ngIf="col.check"></p-tableHeaderCheckbox>
+       </th>
+     </tr>
+     <tr>
+       <th *ngFor="let col of columns" [hidden]="col.hidden">
+         <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+           type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+         
+              
+       </th>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="body" let-rowData let-columns="columns" >
+     <tr [pSelectableRow]="rowData" >
+       <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">    
+         <span *ngIf="col.color">          
+          <span [style.color]="rowData[col.field]" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px; color: grey">{{rowData[col.field]}}</span>
+         </span>
+         <span *ngIf="col.isFromPool">
+             <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+             <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+         </span>
+         <span *ngIf="col.description">
+          <span [style.color]="rowData['color']" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px">{{rowData.description}}</span>
+         </span>
+         <span *ngIf="col.office">
+          {{dictService.getOffice(rowData[col.field])}}      
+         </span>
+         <span *ngIf="col.complexityCode">
+            <span class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span> 
+            <span style="margin-left: 5px;">{{dictService.getComplexitiy(rowData[col.field])}}</span>
+         </span>
+          <span *ngIf="col.complexity">        
+            <span style="margin-left: 5px;">{{rowData[col.field]}}</span><span> godzin</span>
+          </span>
+        <span *ngIf="col.price">
+            <span style="margin-left: 5px;">{{rowData[col.field] | currency:'PLN'}}</span>
+        </span>    
+         <span *ngIf="!col.icon">
+           {{rowData[col.field]}}
+         </span>
+         
+       </td>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="footer" let-columns>
+     <tr>
+       <td *ngFor="let col of columns" [hidden]="col.hidden">
+         <span *ngIf="col.isActive">Aktywnych <br />   </span>
+         <span *ngIf="col.isEmployed">Pracujących <br /></span>
+         <span *ngIf="col.rank"> <br /> </span>
+       </td>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="summary" let-columns="columns">
+     <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+       <div class="ui-grid-row"  style="margin-top: 15px;">
+         <div class="ui-grid-col-1"></div>
+         <div class="ui-grid-col-2"> </div>
+         <div class="ui-grid-col-6"></div>
+         <div class="ui-grid-col-2">
+         </div>
+         <div class="ui-grid-col-1"></div>
+       </div>
+     </div>
+   </ng-template>
+   <ng-template pTemplate="emptymessage">
+    Brak typów zleceń...
+  </ng-template>
+
+ </p-table>
+ <p-contextMenu #cm [model]="items"></p-contextMenu>
+ 
+   <!-- end turbo table  -->
+ 
 </div>
 
 

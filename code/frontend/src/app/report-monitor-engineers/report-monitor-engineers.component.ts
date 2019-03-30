@@ -44,7 +44,9 @@ export class ReportMonitorEngineersComponent implements OnInit {
     chartShareData: any;
     chartEarnedData: any;
     chartsReady: boolean;
-    pl:Calendar;
+    pl: Calendar;
+    cols: any;
+    colsForOrdersTable: any;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -78,13 +80,43 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
 
         this.search();
+
+        this.cols = [
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true},            
+            { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true},
+            { field: 'none', header: 'Ocena' ,excludeGlobalFilter: true,  class:"width-10 text-center", icon: true},
+            { field: 'timeUtilizationPercentage', header: 'Wydajność', sortable:true, filter:true, class:"width-50 text-center", utilization:true, icon:true},
+            { field: 'firstName', header: 'Imię',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'lastName', header: 'Nazwisko', sortable:true, filter:true, class:"width-35 text-center" },
+            { field: 'role', header: 'Rola', sortable:true , filter:true, class:"width-35 text-center"},
+            { field: 'office', header: 'Biuro' , sortable:true, filter:true, class:"width-50 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'declaredTime', header: 'Czas zadeklarowany', sortable:true , class:"width-35 text-center", declaredTime:true, icon:true},  
+            { field: 'expectedTime', header: 'Czas zakładany', sortable:true , class:"width-35 text-center",expectedTime:true, icon:true},  
+            { field: 'noOrdersDone', header: 'Ukończonych WO', sortable:true , class:"width-35 text-center"},  
+            { field: 'earnedMoney', header: 'Wypracowany obrót', sortable:true , class:"width-35 text-center",earnedMoney:true, icon:true},
+            { field: 'none', header: 'Zlecenia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, orders:true},  
+          ]
+        this.colsForOrdersTable = [                    
+            { field: 'workNo', header: 'Zlecenie' ,filter:true, sortable:true, class:"width-35"},
+            { field: 'typeCode', header: 'Typ', sortable:true, filter:true, class:"width-50 text-center", typeCode:true, icon:true},
+            { field: 'status', header: 'Status',sortable:true, filter:true,class:"width-50 text-center", status:true, icon:true},
+            { field: 'complexityCode', header: 'Zł.', sortable:true, class:"width-20 text-center", complexity:true, icon:true },
+            { field: 'complexity', header: 'Wycena [H]', sortable:true , class:"width-35 text-center"},
+            { field: 'price', header: 'Cena' , sortable:true, filter:true, class:"width-35 text-center"},
+            { field: 'sharedPrice', header: 'Obrót',sortable:true , filter:true, class:"width-35 text-center"},
+            { field: 'assignedDate', header: 'Przypisano', sortable:true ,filter:true, class:"width-35 text-center"},  
+            { field: 'doneDate', header: 'Zrealizowano', sortable:true ,filter:true, class:"width-35 text-center"},       
+            { field: 'none', header: '', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, order:true},  
+        ]
     }
 
 
 
     onRowDblclick(event) {
+        console.log(event);
         console.log("double clicked "+JSON.stringify(event));
-        this.prepareAndShowCalendar(event.data);
+        this.prepareAndShowCalendar(event);
     }
 
     prepareAndShowCalendar(report: UserReport) {

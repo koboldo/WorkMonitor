@@ -103,6 +103,114 @@
 
   </p-dataTable>
 
+  <!-- turbo table  -->
+
+  <p-table #tt dataKey="id" [columns]="cols" [value]="reports" [rows]="20" [paginator]="true"
+    [resizableColumns]="true"  sortField="timeUtilizationPercentage" sortOrder="-1"  
+    [(selection)]="selectedReports" 
+    loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+    [responsive]="true"
+    (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)" (onRowUnselect)="filterReports($event)"
+    [metaKeySelection]="false"
+    csvSeparator=";" exportFilename="Raport_Miesieczny" 
+  >
+  <!-- [headerCheckboxToggleAllPages]="false" -->
+  <ng-template pTemplate="caption">
+    <div>
+      <i class="fa fa-search"></i>
+      <input type="text" pInputText size="50" placeholder="Filtruj"
+        (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns let-rowData>
+    <tr>
+      <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+        pResizableColumn excludeGlobalFilter=col.exclude>
+        <span class="header" *ngIf="!col.check">
+          {{col.header}}
+          <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+        </span>
+        <p-tableHeaderCheckbox *ngIf="col.check"></p-tableHeaderCheckbox>
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns" [hidden]="col.hidden">
+        <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+          type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+        
+             
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+    <tr [pSelectableRow]="rowData" [pSelectableRowIndex]="rowIndex">
+      <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+
+        <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
+        <span *ngIf="col.header === 'Ocena'" class="ui-inputgroup-addon" [style.color]="rowData.iconColor"><i [class]="rowData.icon"></i></span>
+        <span *ngIf="col.utilization">          
+            <span *ngIf="rowData?.timeUtilizationPercentage >= 0" style="padding: 3px">{{rowData.timeUtilizationPercentage}}%</span>
+            <span *ngIf="rowData?.timeUtilizationPercentage === noTimesheets" style="padding: 3px">Brak deklaracji czasu pracy</span>
+            <span *ngIf="rowData?.timeUtilizationPercentage === holidays" style="padding: 3px">Urlop</span>    
+        </span>
+        <span *ngIf="col.isFromPool">
+            <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+            <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+        </span>
+        <span *ngIf="col.declaredTime">
+            <span>{{rowData[col.field] | number: '1.2-2'}} godz.</span>
+        </span>
+        <span *ngIf="col.expectedTime">
+            <span>{{rowData[col.field] | number: '1.2-2'}} godz.</span>
+        </span>
+        <span *ngIf="col.earnedMoney">
+            <span>{{rowData[col.field] | currency: 'PLN'}}</span>
+        </span>
+      <span *ngIf="col.date">      
+        {{rowData['dateRange'].beginDate  | date: 'yyyy-MM'}}
+      </span>
+        <span *ngIf="!col.icon && !col.date">
+          {{rowData[col.field]}}
+        </span>
+        
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="footer" let-columns>
+      <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden">
+              <span *ngIf="col.finishedOrders">Suma <br /> {{summary.countFinishWo}}  </span>
+              <!-- <span *ngIf="col.isFromPool">W puli <br /> {{summary.countIsFromPool}}  </span> -->
+              <span *ngIf="col.declaredTime">Suma <br /> {{summary.countDeclaredTime | number: '1.2-2'}} godz.</span>
+              <span *ngIf="col.expectedTime"> Suma <br />{{summary.countExpectedTime | number: '1.2-2'}} godz.</span>
+              <span *ngIf="col.earnedMoney"> Suma <br />{{summary.countEarnedMoney | currency: 'PLN'}} </span>
+            </td>
+         
+       
+      </tr>
+    </ng-template>
+  <ng-template pTemplate="summary" let-columns="columns">
+    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+      <div class="ui-grid-row"  style="margin-top: 15px;">
+        <div class="ui-grid-col-3"></div>
+        <div class="ui-grid-col-2"> </div>
+        <div class="ui-grid-col-2">  
+           <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>
+          </div>
+        <div class="ui-grid-col-2">
+        </div>
+        <div class="ui-grid-col-3"></div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    Brak raportów w zakresie dat...
+</ng-template>
+</p-table>
+
+
+  <!-- end turbo table  -->
+
 </div>
 
 <div *ngIf="chartsReady">

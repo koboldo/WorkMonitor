@@ -26,6 +26,7 @@ export class WorkTypesComponent implements OnInit {
 
     showComplexities: boolean;
     complexities:SelectItem[] = [];
+    cols: any;
 
     constructor(private workService:WorkTypeService,
                 private dictService:DictService,
@@ -44,6 +45,17 @@ export class WorkTypesComponent implements OnInit {
             {label: 'Dodaj', icon: 'fa fa-plus', command: (event) => this.add()},
             {label: 'Zmień', icon: 'fa fa-pencil-square-o', command: (event) => this.change()}
         ];
+        this.cols = [          
+            { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true},
+            { field: 'color', header: 'Kolor' ,sortable:true,filter:true,  class:"width-20 text-center", icon: true, color:true},
+            { field: 'typeCode', header: 'Typ', sortable:true, filter:true, class:"width-50 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-10 text-center", isFromPool:true, icon:true},
+            { field: 'description', header: 'Opis typu' ,filter: true,sortable:true,  class:"width-50", description:true, icon:true},
+            { field: 'officeCode', header: 'Biuro',sortable:true, filter:true,class:"width-35 text-center", office:true, icon:true},
+            { field: 'complexityCode', header: 'Złożoność', sortable:true, filter:true, class:"width-35 text-center", icon:true, complexityCode:true},
+            { field: 'complexity', header: 'Pracochłonność [H]', sortable:true , filter:true, class:"width-35 text-center", complexity:true, icon:true},
+            { field: 'price', header: 'Cena [PLN]' , sortable:true, filter:true, class:"width-50 text-center", price:true, icon:true},
+          ]
     }
 
     onRowSelect(event) {

@@ -107,6 +107,103 @@
 
     </p-dataTable>
 
+    <!-- turbotable -->
+    <p-table #tt dataKey="id" [columns]="cols" [value]="reports" [rows]="50" [paginator]="true"
+      [resizableColumns]="true"  sortField="timeUtilizationPercentage" sortOrder="-1" selectionMode="multiple" [(selection)]="selectedReports"
+      loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+      [responsive]="true"
+     (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
+      [metaKeySelection]="true"
+      >
+      <ng-template pTemplate="caption">
+        <div>
+          <i class="fa fa-search"></i>
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header" *ngIf="!col.check">
+              {{col.header}}
+              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+            </span>
+            <p-tableHeaderCheckbox *ngIf="col.check"></p-tableHeaderCheckbox>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden">
+            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+        <tr [pSelectableRow]="rowData"  [pSelectableRowDblClick]="rowData" [pSelectableRowIndex]="rowIndex" [pContextMenuRow]="rowData" (dblclick)="onRowDblclick(rowData)">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+
+            <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
+            <span *ngIf="col.header === 'Ocena'" class="ui-inputgroup-addon" [style.color]="rowData.iconColor"><i [class]="rowData.icon"></i></span>
+            <span *ngIf="col.utilization">          
+                <span *ngIf="rowData?.timeUtilizationPercentage >= 0" style="padding: 3px">{{rowData.timeUtilizationPercentage}}%</span>
+                <span *ngIf="rowData?.timeUtilizationPercentage === noTimesheets" style="padding: 3px">Brak deklaracji czasu pracy</span>
+                <span *ngIf="rowData?.timeUtilizationPercentage === holidays" style="padding: 3px">Urlop</span>    
+            </span>
+            <span *ngIf="col.isFromPool">
+                <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+            </span>
+            <span *ngIf="col.declaredTime">
+                <span>{{rowData[col.field] | number: '1.2-2'}} godz.</span>
+            </span>
+            <span *ngIf="col.expectedTime">
+                <span>{{rowData[col.field] | number: '1.2-2'}} godz.</span>
+            </span>
+            <span *ngIf="col.earnedMoney">
+                <span>{{rowData[col.field] | currency: 'PLN'}}</span>
+            </span>
+            <div *ngIf="col.orders">
+                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px; margin-right: 10px;" (click)="showDoneOrders($event, rowData)" icon="fa fa-server"></p-button>
+                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="prepareAndShowCalendar(rowData)" icon="fa fa-calendar"></p-button>
+            </div>
+            <span *ngIf="!col.icon">
+              {{rowData[col.field]}}
+            </span>
+            
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer" let-columns>
+        <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden">
+            <span *ngIf="col.isActive">Aktywnych <br />   </span>
+            <span *ngIf="col.isEmployed">Pracujących <br /></span>
+            <span *ngIf="col.rank"> <br /> </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary" let-columns="columns">
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          <div class="ui-grid-row"  style="margin-top: 15px;">
+            <div class="ui-grid-col-1"></div>
+            <div class="ui-grid-col-2"> </div>
+            <div class="ui-grid-col-6"></div>
+            <div class="ui-grid-col-2">
+            </div>
+            <div class="ui-grid-col-1"></div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak raportów w zakresie dat...
+    </ng-template>
+    </p-table>
+
+
+    <!-- end turbotable -->
+
 </div>
 
 <div *ngIf="chartsReady">
@@ -256,6 +353,93 @@
                 </p-footer>
 
             </p-dataTable>
+            <!-- turbo table -->
+
+            <p-table #ordersTable dataKey="id" [columns]="colsForOrdersTable" [value]="selectedReport.workOrders" [rows]="20" [paginator]="true"
+            [resizableColumns]="true" sortField="workNo" sortOrder="-1" 
+            loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="selectedReport?.lastName+'_zl_wykonywane_'+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+'_'+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')"
+             [globalFilterFields]="colsForOrdersTable"
+            [responsive]="true"
+           (onRowSelect)="filterReports($event)" 
+            [metaKeySelection]="true"
+            >
+            <ng-template pTemplate="caption">
+              <div>
+                <i class="fa fa-search"></i>
+                <input type="text" pInputText size="50" placeholder="Filtruj"
+                  (input)="ordersTable.filterGlobal($event.target.value, 'contains')" style="width:auto">
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+                  pResizableColumn excludeGlobalFilter=col.exclude>
+                  <span class="header" *ngIf="!col.check">
+                    {{col.header}}
+                    <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+                  </span>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden">
+                  <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+                    type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData"  [pSelectableRowDblClick]="rowData" [pSelectableRowIndex]="rowIndex" [pContextMenuRow]="rowData" (dblclick)="onRowDblclick(rowData)">
+                <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+      
+                <span *ngIf="col.typeCode">
+                    <span [style.color]="workTypeService.getWorkTypeColor(rowData)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+                    <span style="padding: 3px">{{workTypeService.getWorkTypeDescription(rowData)}}</span>
+                </span>
+                <span *ngIf="col.status">
+                    <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i></span>
+                    <span style="padding: 3px">{{rowData.status}}</span>
+                </span>
+                <span *ngIf="col.complexity">                      
+                    <span class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>                         
+                </span>
+                <span *ngIf="col.order">
+                    <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="getAndShowOrderDetails(rowData.id)" icon="fa fa-search"></p-button>
+                </span>
+                <span *ngIf="!col.icon">
+                    {{rowData[col.field]}}
+                </span>
+                  
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer" let-columns>
+              <tr>
+                <td *ngFor="let col of columns" [hidden]="col.hidden">
+                  <span *ngIf="col.isActive">Aktywnych <br />   </span>
+                  <span *ngIf="col.isEmployed">Pracujących <br /></span>
+                  <span *ngIf="col.rank"> <br /> </span>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="summary" let-columns="columns">
+              <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                <div class="ui-grid-row"  style="margin-top: 15px;">
+                  <div class="ui-grid-col-1"></div>
+                  <div class="ui-grid-col-2"> </div>
+                  <div class="ui-grid-col-6">  <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="ordersTable.exportCSV()"></button></div>
+                  <div class="ui-grid-col-2">
+                  </div>
+                  <div class="ui-grid-col-1"></div>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                Brak realizowanych zadań w tym zakresie dat...
+            </ng-template>
+          </p-table>
+      
+
+            <!-- end turbo table -->
         </div>
 
 
