@@ -57,7 +57,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.dictService.init();
         this.workTypeService.init();
 
-        let d = new Date();
+        let now = new Date();
+        let d = new Date(now.getFullYear(), now.getMonth(), 1, now.getHours(), now.getMinutes(), now.getSeconds(), 0);
         d.setMonth(d.getMonth() - 1);
         this.afterDate = d;
         this.beforeDate = toolsService.getCurrentDateDayOperation(0);

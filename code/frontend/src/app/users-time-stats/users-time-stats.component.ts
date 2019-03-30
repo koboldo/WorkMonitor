@@ -37,8 +37,9 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
   }
 
   private initMounths() {
+    let now = new Date();
     for (let i = 0; i < 12; i++) {
-      let d = new Date();
+      let d = new Date(now.getFullYear(), now.getMonth(), 1, now.getHours(), now.getMinutes(), now.getSeconds(), 0);
       d.setMonth(d.getMonth() - i);
       let l:string = this.toolsService.formatDate(d, 'yyyy-MM');
       let v:string = this.toolsService.formatDate(d, 'yyyy-MM-dd');
