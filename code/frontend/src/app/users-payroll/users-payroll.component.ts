@@ -41,6 +41,10 @@ export class UsersPayrollComponent implements OnInit {
     displayApproveResultDialog: boolean;
     selectedPayrolls: UserPayroll[];
 
+    cols: any;
+    colsHistorical: any;
+    rowGroupMetadata: any;
+
     constructor(private router:Router,
                 private userService:UserService,
                 private payrollService:PayrollService,
@@ -54,6 +58,48 @@ export class UsersPayrollComponent implements OnInit {
     ngOnInit():void {
         this.dictService.init();
         this.authService.userAsObs.subscribe(user => this.initAll(user));
+        this.cols = [
+            { field: 'user.excelId', header:'Id excel',  sortable: true, filter:true,class:"width-20 text-center", excelId:true},            
+            { field: 'user.firstName', header: 'Imię',hidden:true, sortable: true, filter:true, firstName:true},
+            { field: 'user.lastName', header: 'Osoba' , filter:true,sortable:true,  class:"width-50 text-center", lastName:true},
+            { field: 'user.officeCode', header: 'Biuro', sortable:true, filter:true, class:"width-50 text-center", officeCode:true},
+            { field: 'rank', header: 'Stopień' ,filter: true,  class:"width-50 text-center"},
+            { field: 'projectFactor', header: 'Współ',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'workTime', header: 'Czas razem', sortable:true, filter:true, class:"width-35 text-center color-blue" },
+            { field: 'poolWorkTime', header: 'Czas dla puli', sortable:true , filter:true, class:"width-35 text-center color-green"},
+            { field: 'nonpoolWorkTime', header: 'Czas poza pulą' , sortable:true, filter:true, class:"width-50 text-center color-green"},          
+            { field: 'trainingTime', header: 'Szkolenia', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'leaveTime', header: 'Urlop', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'overTime', header: 'Nadgodziny', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'workDue', header: 'Obecnosc PLN', sortable:true ,filter:true, class:"width-35 text-center", price:true},
+            { field: 'trainingDue', header: 'Szkolenia PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'overDue', header: 'Nadgodziny PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'leaveDue', header: 'Urlop PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'totalDue', header: 'Suma PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+          ]
+        this.colsHistorical = [
+            { field: 'formattedPeriodDate', header:'Okres rozliczeniowy',hidden:true,  sortable: true, filter:true,class:"width-20 text-center"}, 
+            { field: 'user.excelId', header:'Id excel',  sortable: true, filter:true,class:"width-20 text-center", excelId:true},            
+            { field: 'user.firstName', header: 'Imię',hidden:true, sortable: true, filter:true, firstName:true},
+            { field: 'user.lastName', header: 'Osoba' , filter:true,sortable:true,  class:"width-50 text-center", lastName:true},
+            { field: 'user.officeCode', header: 'Biuro', sortable:true, filter:true, class:"width-50 text-center", officeCode:true},
+            { field: 'rank', header: 'Stopień' ,filter: true,  class:"width-50 text-center"},
+            { field: 'projectFactor', header: 'Współ',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'workTime', header: 'Czas razem', sortable:true, filter:true, class:"width-35 text-center color-blue" },
+            { field: 'poolWorkTime', header: 'Czas dla puli', sortable:true , filter:true, class:"width-35 text-center color-green"},
+            { field: 'nonpoolWorkTime', header: 'Czas poza pulą' , sortable:true, filter:true, class:"width-50 text-center color-green"},          
+            { field: 'trainingTime', header: 'Szkolenia', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'leaveTime', header: 'Urlop', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'overTime', header: 'Nadgodziny', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'workDue', header: 'Obecnosc PLN', sortable:true ,filter:true, class:"width-35 text-center", price:true},
+            { field: 'trainingDue', header: 'Szkolenia PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'overDue', header: 'Nadgodziny PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'leaveDue', header: 'Urlop PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'totalDue', header: 'Suma PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+          ]
+         
     }
 
     public exportCSV(text:string, table: DataTable)
@@ -198,6 +244,7 @@ export class UsersPayrollComponent implements OnInit {
         tmpBillingCycles.forEach((value: string, key: string) => {
             this.periodDates.push({label: value, value: value});
         });
+        this.updateRowGroupMetaData();
     }
 
     private getRecalculateButtonStyle(periodDate: string):string {
@@ -206,7 +253,6 @@ export class UsersPayrollComponent implements OnInit {
         let diffMs: number = now.getTime() - theDate.getTime();
 
         console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
-
         if (diffMs > 3*this.AVG_MONTH_MS) {
             return 'ui-button-danger';
         } else if (diffMs > 2*this.AVG_MONTH_MS) {
@@ -214,5 +260,27 @@ export class UsersPayrollComponent implements OnInit {
         }
         return 'ui-button-success';
     }
+
+    public updateRowGroupMetaData() {
+        this.rowGroupMetadata = {};
+        if (this.historicalPayrolls) {
+            for (let i = 0; i < this.historicalPayrolls.length; i++) {
+                let rowData = this.historicalPayrolls[i];
+                let formattedPeriodDate = rowData.formattedPeriodDate;
+                if (i == 0) {
+                    this.rowGroupMetadata[formattedPeriodDate] = { index: 0, size: 1 };
+                }
+                else {
+                    let previousRowData = this.historicalPayrolls[i - 1];
+                    let previousRowGroup = previousRowData.formattedPeriodDate;
+                    if (formattedPeriodDate === previousRowGroup)
+                        this.rowGroupMetadata[formattedPeriodDate].size++;
+                    else
+                        this.rowGroupMetadata[formattedPeriodDate] = { index: i, size: 1 };
+                }
+            }
+        }
+    }
+
 
 }

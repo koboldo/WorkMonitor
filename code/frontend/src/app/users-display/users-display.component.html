@@ -177,4 +177,124 @@
     <app-user-history *ngIf="displayUserHistoryDialog" [selectedUser]="selectedUser" [staff]="users"></app-user-history>
   </p-dialog>
 
+<!-- turbo table  -->
+
+<p-table #tt dataKey="id" [columns]="cols" [value]="users" [rows]="20" [paginator]="true"
+  [resizableColumns]="true"   sortField="excelId" sortOrder="1"
+  [(selection)]="selectedUser" selectionMode="single"
+  loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+  [responsive]="true"
+  (dblclick)="onRowDblclick($event)" 
+  [metaKeySelection]="false"
+  [contextMenu]="cm" [(contextMenuSelection)]="selectedUser"
+   csvSeparator=";" exportFilename="pracownicy"
+>
+<!-- [headerCheckboxToggleAllPages]="false" -->
+<ng-template pTemplate="caption">
+<div>
+  <i class="fa fa-search"></i>
+  <input type="text" pInputText size="50" placeholder="Filtruj"
+    (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+</div>
+</ng-template>
+<ng-template pTemplate="header" let-columns let-rowData>
+<tr>
+  <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+    pResizableColumn excludeGlobalFilter = col.exclude>
+    <span class="header">
+      {{col.header}}
+      <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+    </span>
+    
+  </th>
+  <th header="Historia" [style]="{'width':'26px','text-align':'center'}">
+    <ng-template let-userRow="rowData" pTemplate="body">
+        <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>-->
+        
+    </ng-template>
+  </th>
+</tr>
+<tr>
+  <th *ngFor="let col of columns" [hidden]="col.hidden">
+    <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+      type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+    
+         
+  </th>
+</tr>
+</ng-template>
+<ng-template pTemplate="body" let-rowData let-columns="columns" >
+<tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
+  <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+
+   <span *ngIf="operator.roleCode.indexOf('PR') >= 0 && col.history"  >
+    <button type="button"  pButton (click)="showUserHistory($event, rowData)" icon="fa fa-history"></button>
+   </span>
+   <span *ngIf="col.user">
+      <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}} {{rowData.lastName}}</span>
+   </span>
+   <span *ngIf="col.isActive">
+    <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+    <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+   </span>
+   <span *ngIf="col.isEmployed">
+    <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
+    <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
+   </span>
+   <span *ngIf="col.isFromPool">
+    <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+    <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+   </span>
+   <span *ngIf="col.projectFactor">
+    <span *ngIf="rowData.isFromPool=='Y'" [style.color]="'green'" class="ui-inputgroup-addon">{{rowData[col.field]}}</span>
+    <span *ngIf="rowData.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">{{rowData[col.field]}}</span>
+   </span>
+   <span *ngIf="col.salary && operator.roleCode.indexOf('PR') >= 0">
+    <span *ngIf="rowData.salary!==0" class="ui-inputgroup-addon">{{rowData[col.field] | currency:'PLN'}}</span>
+   </span>
+   <span *ngIf="col.salaryRate && operator.roleCode.indexOf('PR') >= 0">
+    <span *ngIf="!rowData.salary || rowData.salary===0" class="ui-inputgroup-addon">{{rowData.salaryRate | currency:'PLN'}}</span>
+   </span>
+    <span *ngIf="!col.icon">
+      {{rowData[col.field]}}
+    </span>
+    
+  </td>
+</tr>
+</ng-template>
+<ng-template pTemplate="footer" let-columns>
+  <tr>
+      <td *ngFor="let col of columns" [hidden]="col.hidden">
+         
+        </td>
+     
+   
+  </tr>
+</ng-template>
+<ng-template pTemplate="summary" let-columns="columns">
+  <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+    <div class="ui-grid-row"  style="margin-top: 15px;">
+      <div class="ui-grid-col-1"></div>
+      <div class="ui-grid-col-2">
+        <button type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
+      </div>
+
+      <div class="ui-grid-col-6"></div>
+
+      <div class="ui-grid-col-2">
+        <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+      </div>
+      <div class="ui-grid-col-1"></div>
+    </div>
+  </div>
+</ng-template>
+<ng-template pTemplate="emptymessage">
+    Brak pracowników...
+</ng-template>
+</p-table>
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+
+<!-- end turbo table  -->
+
+
 </div>

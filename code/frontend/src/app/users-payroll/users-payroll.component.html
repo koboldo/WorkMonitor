@@ -98,6 +98,110 @@
             </ng-template>
 
         </p-dataTable>
+        <!-- turbo table  -->
+
+<p-table #current dataKey="id" [columns]="cols" [value]="currentPayroll" 
+  [resizableColumns]="true"    sortField="user.excelId" sortOrder="1"
+  
+  loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+  [responsive]="true"
+ 
+  [metaKeySelection]="false"
+  rowGroupMode="rowspan"
+   csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].formattedPeriodDate"
+>
+<!-- [headerCheckboxToggleAllPages]="false" -->
+<ng-template pTemplate="caption">
+<div>
+  <i class="fa fa-search"></i>
+  <input type="text" pInputText size="50" placeholder="Filtruj"
+    (input)="current.filterGlobal($event.target.value, 'contains')" style="width:auto">
+</div>
+</ng-template>
+<ng-template pTemplate="header" let-columns let-rowData>
+<tr>
+  <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+    pResizableColumn excludeGlobalFilter = col.exclude>
+    <span class="header">
+      {{col.header}}
+      <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+    </span>
+    
+  </th>
+  <th header="Historia" [style]="{'width':'26px','text-align':'center'}">
+    <ng-template let-userRow="rowData" pTemplate="body">
+        <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>-->
+        
+    </ng-template>
+  </th>
+</tr>
+<tr>
+  <th *ngFor="let col of columns" [hidden]="col.hidden">
+    <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+      type="text" (input)="current.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+    
+         
+  </th>
+</tr>
+</ng-template>
+<ng-template pTemplate="body" let-rowData let-columns="columns" >
+<tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
+  <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+
+    <span *ngIf="col.excelId">
+        {{rowData['user'].excelId }}
+    </span>
+    <span *ngIf="col.officeCode">
+        {{rowData['user'].officeCode }}
+    </span>
+    <span *ngIf="col.lastName" [style.font-weight]="'bolder'">
+        <span  class="ui-inputgroup-addon">{{rowData.user['firstName']}} {{rowData.user['lastName']}}</span>
+    </span>
+    <span *ngIf="col.isFromPool">
+        <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+        <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+    </span>
+    <span *ngIf="col.price">
+        {{rowData[col.field] | currency:'PLN' }}
+    </span>
+    <span *ngIf="!col.icon && ! col.price">
+      {{rowData[col.field]}}
+    </span>
+    
+  </td>
+</tr>
+</ng-template>
+<ng-template pTemplate="footer" let-columns>
+  <tr>
+      <td *ngFor="let col of columns" [hidden]="col.hidden">
+         
+        </td>     
+  </tr>
+</ng-template>
+<ng-template pTemplate="summary" let-columns="columns">
+  <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+    <div class="ui-grid-row"  style="margin-top: 15px;">
+      <div class="ui-grid-col-1"></div>
+      <div class="ui-grid-col-2">
+        
+      </div>
+
+      <div class="ui-grid-col-6"></div>
+
+      <div class="ui-grid-col-2">
+       
+      </div>
+      <div class="ui-grid-col-1"></div>
+    </div>
+  </div>
+</ng-template>
+<ng-template pTemplate="emptymessage">
+    Brak danych...
+</ng-template>
+</p-table>
+<!-- <p-contextMenu #cm [model]="items"></p-contextMenu> -->
+
+        <!-- end turbo table  -->
         </div>
     </p-accordionTab>
 
@@ -216,6 +320,149 @@
                     </ng-template>
 
                 </p-dataTable>
+
+                <!-- turbo table  -->
+
+                <p-table #historical dataKey="id" [columns]="colsHistorical" [value]="historicalPayrolls" 
+                [resizableColumns]="true"    sortField="formattedPeriodDate" sortOrder="-1"
+                
+                loadingIcon="fa fa-spinner" [globalFilterFields]="colsHistorical"
+                [responsive]="true"
+                
+                expandableRowGroups="true" 
+                [metaKeySelection]="false"
+                rowGroupMode="rowspan"
+                 csvSeparator=";" [exportFilename]="'wynagrodzenia_historyczne'"
+                 scrollable="true" scrollHeight="600px"
+                 selectionMode="multiple"
+                             [selection]="selectedPeriod"
+                             selectionOnly="true"
+              >
+              <!-- [headerCheckboxToggleAllPages]="false" -->
+              <ng-template pTemplate="caption">
+              <div>
+                <i class="fa fa-search"></i>
+                <input type="text" pInputText size="50" placeholder="Filtruj"
+                  (input)="current.filterGlobal($event.target.value, 'contains')" style="width:auto">
+              </div>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns let-rowData>
+              <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+                  pResizableColumn excludeGlobalFilter = col.exclude>
+                  <span class="header">
+                    {{col.header}}
+                    <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+                  </span>
+                  
+                </th>
+                <th header="Historia" [style]="{'width':'26px','text-align':'center'}">
+                  <ng-template let-userRow="rowData" pTemplate="body">
+                      <!--<button type="button" pButton (click)="showWoDetails($event, order)" icon="fa fa-search"></button>-->
+                      
+                  </ng-template>
+                </th>
+              </tr>
+              <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden">
+                  <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+                    type="text" (input)="current.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+                  
+                       
+                </th>
+              </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded" let-columns="columns">
+                <tr class="ui-widget-header" *ngIf="rowGroupMetadata[rowData.formattedPeriodDate].index === rowIndex">
+                        <!-- <tr class="ui-widget-header" *ngFor="let row of rowGroupMetadata"> -->
+                    <td colspan="3">
+                        <a href="#" [pRowToggler]="rowData">
+                            <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down' : 'fa fa-fw fa-chevron-circle-right'"></i>                    
+                        <div>
+                            <div class="ui-toolbar-group-left">
+                                <div style="vertical-align: center">
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span [style.color]="'#286090'" style="font-weight: bold">{{rowData?.formattedPeriodDate}}</span>
+                                    <span style="margin-left: 10px;" [style.color]="rowData.approved=='Y'?'black':'orange'">{{rowData.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wspólczynnik nadgodzin:</span><span [style.color]="'#286090'">{{rowData.formattedOverTimeFactor}}</span>
+                                </div>
+                                <div style="vertical-align: center">
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Autor:</span><span [style.color]="'#286090'">{{rowData?.modifiedByUser?.firstName}} {{rowData?.modifiedByUser?.lastName}}</span>
+                                    <span *ngIf="rowData?.lastMod" style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wygenerowany:</span><span [style.color]="'#286090'">{{rowData.lastMod}}</span>
+                                </div>
+                                <div style="vertical-align: center">
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span [style.color]="'#286090'">{{rowData.budget  | currency:'PLN'}}</span>
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span [style.color]="'#286090'">{{rowData.poolRate | currency:'PLN'}}</span>
+                                    <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wypłaty:</span><span [style.color]="'#286090'">{{calculatePayrollCost(rowData.periodDate) | currency:'PLN'}}</span>
+                                </div>
+                                <div style="vertical-align: center; width: 100%">
+                                    <button *ngIf="rowData['approved']=='Y'" type="button" style="margin: 5px; margin-right: 15px; width: 160px;" pButton icon="fa fa-repeat" iconPos="left" label="Przelicz" (click)="showApproveDialog(rowData.periodDate)" [class]="rowData.recalculateButtonStyle" [disabled]="rowData.recalculateButtonStyle === 'ui-button-danger'"></button>
+                                    <button *ngIf="rowData['approved']!='Y'" type="button" style="margin: 5px; margin-right: 15px; width: 160px;"pButton icon="fa fa-check" iconPos="left" label="Zaakceptuj" (click)="showApproveDialog(rowData.periodDate)" class="ui-button-success"></button>
+                                    <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="exportCSV(rowData.periodDate,historicalDt)" style="margin: 5px; margin-right: 15px; width: 160px;"></button>
+                                    <button type="button" pButton icon="fa fa-table" iconPos="left" label="Zlecenia" (click)="showAllOrders(rowData.periodDate)" style="margin: 5px; margin-right: 15px; width: 160px;"></button>
+                                </div>
+                            </div>
+                    </div>
+                </a>
+                    </td>
+                </tr>
+            </ng-template>
+              <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex" let-columns="columns" >
+              <tr [pSelectableRow]="rowData" >
+                <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+              
+                  <span *ngIf="col.excelId">
+                      {{rowData['user'].excelId }}
+                  </span>
+                  <span *ngIf="col.officeCode">
+                      {{rowData['user'].officeCode }}
+                  </span>
+                  <span *ngIf="col.lastName" [style.font-weight]="'bolder'">
+                      <span  class="ui-inputgroup-addon">{{rowData.user['firstName']}} {{rowData.user['lastName']}}</span>
+                  </span>
+                  <span *ngIf="col.isFromPool">
+                      <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                      <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                  </span>
+                  <span *ngIf="col.price">
+                      {{rowData[col.field] | currency:'PLN' }}
+                  </span>
+                  <span *ngIf="!col.icon && ! col.price">
+                    {{rowData[col.field]}}
+                  </span>
+                  
+                </td>
+              </tr>
+              </ng-template>
+              <ng-template pTemplate="footer" let-columns>
+                <tr>
+                    <td *ngFor="let col of columns" [hidden]="col.hidden">
+                       
+                      </td>     
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary" let-columns="columns">
+                <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                  <div class="ui-grid-row"  style="margin-top: 15px;">
+                    <div class="ui-grid-col-1"></div>
+                    <div class="ui-grid-col-2">
+                      
+                    </div>
+              
+                    <div class="ui-grid-col-6"></div>
+              
+                    <div class="ui-grid-col-2">
+                     
+                    </div>
+                    <div class="ui-grid-col-1"></div>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                  Brak danych...
+              </ng-template>
+              </p-table>
+
+                <!-- end turbo table  -->
             </div>
         </div>
     </div>

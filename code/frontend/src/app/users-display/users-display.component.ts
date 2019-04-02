@@ -25,6 +25,7 @@ export class UsersDisplayComponent implements OnInit {
     users:User[] = [];
     selectedUser: User;
     summary: userTableSummary;
+    cols: any;
 
 
     displayUserHistoryDialog: boolean;
@@ -40,11 +41,30 @@ export class UsersDisplayComponent implements OnInit {
             {label: 'Zmień dane pracownika', icon: 'fa fa-pencil-square-o', disabled: false, command: (event) => this.change()}
         ];
 
+        
     }
 
     ngOnInit():void {
         this.dictService.init();
         this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
+        this.cols = [
+            { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", icon:true, button:true , history:true},            
+            { field: 'excelId', header: 'Id excel',hidden:false, sortable: true, filter:true, class:"width-20 text-center" },
+            { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-20 text-center"},
+            { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-50 text-center", user:true, icon:true},          
+            { field: 'isActive', header: 'Aktywny' ,filter: true,  class:"width-50 text-center", isActive:true, icon:true},
+            { field: 'isEmployed', header: 'Pracuje',sortable:true, filter:true,class:"width-35 text-center", isEmployed:true, icon:true},
+            { field: 'role', header: 'Rola', sortable:true, filter:true, class:"width-35 text-center" },
+            { field: 'rank', header: 'Stopień', sortable:true , filter:true, class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'projectFactor', header: 'Wspł.' , sortable:true, filter:true, class:"width-50 text-center", projectFactor:true, icon:true},         
+            { field: 'salary', header: 'Wynagrodzenie', sortable:true , class:"width-35 text-center", salary:true, icon:true},  
+            { field: 'salaryRate', header: 'Stawka gwarantowana', sortable:true , class:"width-35 text-center", salaryRate:true, icon:true},  
+            { field: 'leaveRate', header: 'Urlop', sortable:true , class:"width-35 text-center", salaryRate:true, icon:true},  
+            { field: 'email', header: 'Email', sortable:true , class:"width-35 text-center"},
+            { field: 'phone', header: 'Telefon', sortable:true , class:"width-35 text-center"},
+          ]
+
     }
 
     public showUserHistory(event, user: User): void {

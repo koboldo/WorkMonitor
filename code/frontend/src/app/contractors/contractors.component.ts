@@ -4,6 +4,7 @@ import { Order, CodeValue, commentAdd, Comments, User } from '../_models';
 import { WoComponent } from '../wo/wo.component';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/primeng';
+import { templateJitUrl } from '@angular/compiler';
 
 @Component({
   selector: 'app-contractors',
@@ -24,6 +25,8 @@ export class ContractorsComponent implements OnInit {
   filter1: string = 'EMPLOYED_ONLY';
   filter2: string = 'ALL';
 
+  cols: any;
+
   constructor(private router:Router,
               private userService:UserService,
               private alertService:AlertService,
@@ -39,6 +42,15 @@ export class ContractorsComponent implements OnInit {
   ngOnInit():void {
       this.dictService.init();
       this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
+      this.cols = [
+        { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", icon:true, button:true , history:true},            
+        { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-20 text-center"},
+        { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-50 text-center", user:true, icon:true},          
+        { field: 'isActive', header: 'Aktywny' ,filter: true,  class:"width-50 text-center", isActive:true, icon:true},
+        { field: 'role', header: 'Rola', sortable:true, filter:true, class:"width-35 text-center", role:true, icon:true },
+        { field: 'email', header: 'Email', sortable:true ,filter:true, class:"width-35 text-center"},
+        { field: 'phone', header: 'Telefon', sortable:true ,filter:true, class:"width-35 text-center"},
+      ]
   }
 
   public showUserHistory(event, user: User): void {
