@@ -16,6 +16,9 @@ export class WoDetailsComponent implements OnInit {
     staff: User[];
     ventureRepresentatives: User[];
 
+    commentsCol: any;
+    cols: any ;
+
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
                 private userService:UserService,
@@ -25,6 +28,25 @@ export class WoDetailsComponent implements OnInit {
     ngOnInit() {
         this.userService.getAll().subscribe(staff => this.staff = staff);
         this.userService.getVentureRepresentatives().subscribe(vr => this.ventureRepresentatives = vr);
+        this.cols = [
+            { field: 'modifiedByFull.email', header:'Zmienił',  sortable: true, filter:true,class:"width-50 text-center", modifiedBy:true, icon:true},            
+            { field: 'lastModDate', header: 'Zmieniono', sortable: true, filter:true,class:"width-50 text-center"},
+            { field: 'versionDate', header: 'Nadpisano' , filter:true,sortable:true,  class:"width-50 text-center"},
+            { field: 'workNo', header: 'Zlecenie', sortable:true, filter:true, class:"width-50 text-center"},
+            { field: 'itemNo', header: 'Numer obiektu' ,filter: true,  class:"width-50 text-center"},
+            { field: 'status', header: 'Status',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'complexity', header: 'Pracochłonność', sortable:true, filter:true, class:"width-35 text-center " },
+            { field: 'price', header: 'Cena', sortable:true , filter:true, class:"width-35 text-center ", price:true, icon:true},
+            { field: 'assigneeFull', header: 'Wykonawcy' , sortable:true, filter:true, class:"width-50 text-center ", assigneeFull:true, icon:true},          
+            
+          ]
+        this.commentsCol = [
+        { field: 'date', header:'Utworzono',  sortable: true, filter:true,class:"width-20 text-center"},            
+        { field: 'sCreatedBy', header: 'Osoba', sortable: true, filter:true,class:"width-20 text-center"},
+        { field: 'reason', header: 'Powód' , filter:true,sortable:true,  class:"width-20 text-center"},
+        { field: 'text', header: 'Treść', sortable:true, filter:true, class:"width-80 text-center", text:true, icon:true}, 
+        ]
     }
 
     @Input()

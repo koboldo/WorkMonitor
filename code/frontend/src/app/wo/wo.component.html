@@ -156,7 +156,7 @@
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
   <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600"
-    [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    [responsive]="true" [blockScroll]="false" [contentStyle]="{'height': '800px'}">
     <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
   </p-dialog>
   <p-dialog [header]="newOrder? 'Nowe zlecenie' : 'Modyfikacja zlecenia'" [(visible)]="displayEditDialog"

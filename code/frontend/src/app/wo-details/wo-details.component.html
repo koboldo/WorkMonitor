@@ -146,6 +146,41 @@
                             </ng-template>
                         </p-dataTable>
 
+                        <!-- turbo table  -->
+                        <p-table #comments dataKey="id" [columns]="commentsCol" [value]="selectedOrder.comments.comments" 
+                        [rows]="10" [paginator]="true"
+                        sortField="date" sortOrder="-1"
+                        loadingIcon="fa fa-spinner" [globalFilterFields]="commentsCol"
+                        [responsive]="true"             
+                      >            
+                      <ng-template pTemplate="header" let-columns let-rowData>
+                      <tr>
+                        <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+                          pResizableColumn excludeGlobalFilter = col.exclude>
+                          <span class="header">
+                            {{col.header}}
+                            <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+                          </span>               
+                        </th>
+                      </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns" >
+                      <tr [pSelectableRow]="rowData" >
+                        <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+                        <textarea *ngIf="col.text" readonly="readonly" style="color: black;" pInputTextarea [rows]="2" [cols]="30">{{rowData.text}}</textarea>
+                          <span *ngIf="!col.icon">
+                            {{rowData[col.field]}}
+                          </span>              
+                        </td>
+                      </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                            Brak komentarzy...
+                      </ng-template>
+                      </p-table>
+
+
+                        <!-- end turbo table  -->
                     </div>
         </div>
         <div class="ui-grid-row">
@@ -200,6 +235,59 @@
 
                 </p-dataTable>
 
+                <!-- turbo table  -->
+
+                <p-table #oredrHistroy dataKey="id" [columns]="cols" [value]="selectedOrder.history" 
+                [rows]="10" [paginator]="true"
+                sortField="lastModDate" sortOrder="-1"
+                loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+                [responsive]="true"             
+              >            
+              <ng-template pTemplate="header" let-columns let-rowData>
+              <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+                  pResizableColumn excludeGlobalFilter = col.exclude>
+                  <span class="header">
+                    {{col.header}}
+                    <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+                  </span>               
+                </th>
+              </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns" >
+              <tr [pSelectableRow]="rowData" >
+                <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+              
+                  <span *ngIf="col.modifiedBy">
+                      {{rowData['modifiedByFull'].email }}
+                  </span>
+                 
+                  <span *ngIf="col.assigneeFull">
+                        <span *ngFor="let a of rowData.assigneeFull">
+                                {{a.firstName.substring(0, 1)+'.'}} {{a.lastName}}
+                                <span *ngIf="a.isFromPool=='Y'" [style.color]="'green'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                                <span *ngIf="a.isFromPool!='Y'" [style.color]="'grey'" style="padding-right: 10px;" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                            </span>
+                  </span>
+                  <span *ngIf="col.isFromPool">
+                      <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                      <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                  </span>
+                  <span *ngIf="col.price">
+                      {{rowData[col.field] | currency:'PLN' }}
+                  </span>
+                  <span *ngIf="!col.icon && ! col.price">
+                    {{rowData[col.field]}}
+                  </span>              
+                </td>
+              </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                    Brak historycznych danych o zleceniach...
+              </ng-template>
+              </p-table>
+
+                <!-- end turbo table  -->
 
                 <!--<div class="ui-grid-row" *ngFor="let record of selectedOrder.history">
                     <div class="ui-grid-col-12">
