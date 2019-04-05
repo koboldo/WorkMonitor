@@ -182,8 +182,7 @@
     <!-- turbo table  -->
 
     <p-table #tt dataKey="id" [columns]="cols" 
-    (onEditInit)="onEditInit($event)" 
-    
+    (onEditInit)="onEditInit($event)"   
     (onEditCancel)="onEditCancel($event)" 
     (onEditComplete)="onEditComplete($event)"
      [value]="usersWithSheets" [rows]="20" [paginator]="true"
@@ -218,7 +217,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
       <tr>       
-        <td *ngFor="let col of columns" [pEditableColumn]="rowData" pEditableColumn [pEditableColumnField]="'rowData[col.field]'" 
+        <td *ngFor="let col of columns" [pEditableColumn]="rowData" pEditableColumn 
         [hidden]="col.hidden" [ngClass]="col.class">
             <p-cellEditor *ngIf="col.edit">
                 <ng-template pTemplate="input">

@@ -103,7 +103,7 @@ export class TimesheetsComponent implements OnInit {
     }
 
     valueChange(rowData: any){
-        console.log('edit');
+            console.log('edit');
          console.log('edit !' + JSON.stringify(rowData));
 
         if (rowData.roleCode.indexOf('OP') > -1 || rowData.roleCode.indexOf('MG') > -1) {

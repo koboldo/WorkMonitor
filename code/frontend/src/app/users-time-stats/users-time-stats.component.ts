@@ -22,7 +22,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
   selectedDate: string;
 
   timestats: Timestats[];
-  cols: any;
+  colsTime: any;
   colsForTimeSummary: any;
   summary:  userTableSummary;
 
@@ -37,7 +37,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
     super(router, userService, alertService, dictService, authService);
 
     this.initMounths();
-    this.cols = [
+    this.colsTime = [
       { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true},            
       { field: 'excelId', header: 'Id excel', sortable: true, filter:true, class:"width-35"},
       { field: 'officeCode', header: 'Biuro' , filter:true, class:"width-35"},

@@ -357,7 +357,7 @@
 
             <p-table #ordersTable dataKey="id" [columns]="colsForOrdersTable" [value]="selectedReport.workOrders" [rows]="20" [paginator]="true"
             [resizableColumns]="true" sortField="workNo" sortOrder="-1" 
-            loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="selectedReport?.lastName+'_zl_wykonywane_'+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+'_'+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')"
+            loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename] = "selectedReport?.lastName+'_zl_wykonywane_'+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+'_'+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')"
              [globalFilterFields]="colsForOrdersTable"
             [responsive]="true"
            (onRowSelect)="filterReports($event)" 
@@ -382,7 +382,7 @@
               </tr>
               <tr>
                 <th *ngFor="let col of columns" [hidden]="col.hidden">
-                  <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+                  <input class="width-100" [attr.placeholder]="col.isFromPool || col.isActive || col.isEmployed  ? 'Y/N' : 'Filtruj'" pInputText
                     type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
                 </th>
               </tr>

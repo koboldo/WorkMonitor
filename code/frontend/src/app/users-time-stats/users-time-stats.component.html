@@ -89,9 +89,9 @@
   </p-dataTable>
   <!-- turbo table  -->
 
-  <p-table #tt dataKey="id" [columns]="cols" [value]="users" [rows]="50" [paginator]="true"
+  <p-table #tt dataKey="id" [columns]="colsTime" [value]="users" [rows]="50" [paginator]="true"
       [resizableColumns]="true"  sortField="excelId" sortOrder="1" [(selection)]="selectedUsers" [metaKeySelection]="true"
-      loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="cols"
+      loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="colsTime"
       [responsive]="true">
       <ng-template pTemplate="caption">
         <div>

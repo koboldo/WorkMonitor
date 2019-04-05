@@ -216,10 +216,9 @@
 </tr>
 <tr>
   <th *ngFor="let col of columns" [hidden]="col.hidden">
-    <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+    <input class="width-100" [attr.placeholder]="col.isFromPool || col.isActive || col.isEmployed  ? 'Y/N' : 'Filtruj'" pInputText
       type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
-    
-         
+        
   </th>
 </tr>
 </ng-template>
