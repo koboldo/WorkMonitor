@@ -40,7 +40,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
     this.colsTime = [
       { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true},            
       { field: 'excelId', header: 'Id excel', sortable: true, filter:true, class:"width-35"},
-      { field: 'officeCode', header: 'Biuro' , filter:true, class:"width-35"},
+      { field: 'officeCode', header: 'Biuro' , filter:true, sortable:true, class:"width-35 text-center"},
       { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-50 text-center", person:true, icon:true},
       { field: 'isActive', header: 'Aktywny',sortable:true, filter:true,class:"width-35 text-center" , isActive:true, icon:true},
       { field: 'isEmployed', header: 'Pracuje', sortable:true, filter:true, class:"width-35 text-center", isEmployed: true, icon:true },
@@ -50,10 +50,10 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
       { field: 'phone', header: 'Telefon', sortable:true , filter:true, class:"width-35 text-center"},  
     ]
     this.colsForTimeSummary = [
-      { field: 'user', header: 'Id excel', sortable: true, filter:true, class:"width-35", excelId:true, details:true},
-      { field: 'user', header: 'Imię' , filter:true, class:"width-35", firstName:true, details:true},
-      { field: 'user', header: 'Nazwisko', sortable:true, filter:true, class:"width-50 text-center", lastName:true, details:true},
-      { field: 'user', header: 'Biuro',sortable:true, filter:true,class:"width-35 text-center", officeCode:true, details:true },
+      { field: 'user', header: 'Id excel', sortable: true, filter:true, class:"width-35", excelId:true, details:true, user:true},
+      { field: 'user', header: 'Imię' , filter:true, class:"width-35", firstName:true, details:true, user:true},
+      { field: 'user', header: 'Nazwisko', sortable:true, filter:true, class:"width-50 text-center", lastName:true, details:true, user:true},
+      { field: 'user', header: 'Biuro',sortable:true, filter:true,class:"width-35 text-center", officeCode:true, details:true, user:true },
       { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-35 text-center", isFromPool:true, details:true},
       { field: 'periodBeginning', header: 'Od', sortable:true, filter:true, class:"width-35 text-center" },
       { field: 'periodEnd', header: 'Do', sortable:true , filter:true, class:"width-35 text-center"},
