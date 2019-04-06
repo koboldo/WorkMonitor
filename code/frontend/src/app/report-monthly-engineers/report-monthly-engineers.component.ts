@@ -129,7 +129,7 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true},
       { field: 'iconColor', header: 'Ocena' ,excludeGlobalFilter: true,sortable:true,  class:"width-20 text-center", icon: true},
       { field: 'timeUtilizationPercentage', header: 'Wydajność', sortable:true, filter:true, class:"width-50 text-center", utilization:true, icon:true},
-      { field: 'dateRange.beginDate', header: 'Od' ,filter: true,  class:"width-50 text-center", date:true, icon:true},
+      { field: 'dateRange.beginDate', header: 'Od' ,filter: true, sortable:true,  class:"width-50 text-center", date:true, icon:true},
       { field: 'firstName', header: 'Imię',sortable:true, filter:true,class:"width-35 text-center"},
       { field: 'lastName', header: 'Nazwisko', sortable:true, filter:true, class:"width-35 text-center" },
       { field: 'role', header: 'Rola', sortable:true , filter:true, class:"width-35 text-center"},
