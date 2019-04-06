@@ -33,6 +33,10 @@ export class MyWoComponent implements OnInit {
     displayAddComment: boolean;
     commentOrder:Order;
     displayChangeStatusDialog:boolean;
+    cols: any;
+    priceTimeout: any;
+    priceFilter: number;
+
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -53,8 +57,37 @@ export class MyWoComponent implements OnInit {
             {label: 'Zakończ zlecenie', icon: 'fa fa-check', command: (event) => this.finishWork()},
             {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o',  command: (event) => this.addComment()},
         ];
+        this.cols = [
+            { field: 'workNo', header: 'Zlecenie' , sortable: true,class:"width-50 text-center"},        
+            { field: 'statusCode', header: 'Status', sortable: true,  class:"width-100 text-center", statusCode:true, icon:true},        
+            { field: 'typeCode', header: 'Typ', sortable:true, type:true, class:"width-135 text-center"},
+            { field: 'complexityCode', header: 'Złożoność', sortable:true, complexity:true, icon:true,class:"width-50 text-center" },
+            { field: 'mdCapex', header: 'CAPEX', sortable:true, class:"width-100 text-center" },
+            { field: 'price', header: 'Cena', sortable:true, class:"width-80 text-right", price:true},
+            { field: 'sComments', header: 'Komentarz', sortable:true ,  class:"width-100 ", comment:true,icon:true},
+            { field: 'description', header: 'Opis', sortable:true, class:"width-100 text-center" },
+            { field: 'lastModDate', header: 'Modyfikacja.' , sortable:true,  class:"width-100 text-center" },
+            { field: 'creationDate', header: 'Dodano', sortable:true , class:"width-100 text-center"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true,  class:"width-125 text-center"},
+            //hidden
+            { field: 'status', header: 'statusSearch', hidden: true},
+            { field: 'type', header: 'typeSearch' , hidden: true},
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true},
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true},
+            { field: 'itemAddress', header: 'Adres', hidden:true},
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true},        
+            { field: 'none',excludeGlobalFilter: true, button:true ,details: true, icone:true, class:"width-35 text-center"},
+        ]
     }
     
+    public onPriceChange(event, tt) {
+        if (this.priceTimeout) {
+            clearTimeout(this.priceTimeout);
+        }
+        this.priceTimeout = setTimeout(() => {
+            tt.filter(event.value, 'price', 'gt');
+        }, 250);
+    }
 
     showChangeStatusDialog() {
         this.displayChangeStatusDialog=true;

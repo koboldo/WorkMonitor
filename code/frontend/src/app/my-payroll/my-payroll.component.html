@@ -98,6 +98,61 @@
 
     </p-dataTable>
 
+      <!-- turbo table  -->
+
+      <p-table *ngIf="currentPayroll[0]" #current dataKey="id" [columns]="cols"
+      [value]="currentPayroll" sortField="periodDate"[rows]="20"
+      [paginator]="true" [resizableColumns]="true"
+      sortOrder="-1" loadingIcon="fa fa-spinner" 
+      csvSeparator=";" [exportFilename]="'wynagrodzenie_'+currentPayroll[0].periodDate" [globalFilterFields]="cols"
+      [responsive]="true">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden"  [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+            </span>
+          </th>
+        </tr>
+        <tr>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden"  [ngClass]="col.class">
+            <span  *ngIf="col.user">
+              <span class="ui-inputgroup-addon color-green">{{rowData.user['firstName']}} {{rowData.user['lastName']}}</span>
+            </span>
+            <span *ngIf="col.isFromPool">          
+                <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+            </span>
+            <span *ngIf="col.field === 'nonpoolWorkTime'">
+                <span *ngIf="rowData.isFromPool=='Y'" [style.color]="'green'" class="ui-inputgroup-addon">{{rowData[col.field]}}</span>
+                <span *ngIf="rowData.isFromPool!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon">brak</span>
+            </span>        
+            <button *ngIf="col.completedOrders" type="button" pButton icon="fa fa-table" iconPos="center" (click)="completedOrderService.showOrders(rowData.periodDate, rowData.completedWo)" style="margin-top: 0px"></button>
+            <span *ngIf="!col.icon && !col.price && !col.time">
+              {{rowData[col.field]}}
+            </span>
+            <span *ngIf="col.price">
+              {{rowData[col.field] | currency:'PLN'}}
+            </span>
+            <span *ngIf="col.time" class="color-blue">
+              {{rowData[col.field]}}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak danych...
+      </ng-template>
+    </p-table>
+ 
+  
+      <!-- end turbo table -->
+
   </p-accordionTab>
 
   <p-accordionTab header="Historyczne" [selected]="false" *ngIf="historicalPayrolls">

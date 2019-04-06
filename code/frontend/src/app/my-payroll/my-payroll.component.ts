@@ -20,6 +20,8 @@ export class MyPayrollComponent implements OnInit {
     currentPayroll: UserPayroll[];
     historicalPayrolls: UserPayroll[];
 
+    cols: any;
+
     constructor(private payrollService:PayrollService,
                 private authSerice:AuthenticationService,
                 public completedOrderService: CompletedOrderService) {
@@ -27,6 +29,24 @@ export class MyPayrollComponent implements OnInit {
 
     ngOnInit() {
         this.authSerice.userAsObs.subscribe(user => this.processUser(user));
+        this.cols = [
+            { field: 'user.lastName', header: 'Osoba',class:"width-100 text-center", user:true, icon:true},
+            { field: 'none',excludeGlobalFilter: true , button: true, completedOrders:true, icone:true, class:"width-35"},        
+            { field: 'rank', header: 'Stopień', class:"width-100 text-center"},        
+            { field: 'projectFactor', header: 'Współ.', class:"width-135 text-center"},
+            { field: 'isFromPool', header: 'Pula',complexity:true, icon:true,class:"width-50 text-center", isFromPool:true },
+            { field: 'workTime', header: 'Czas pracy',class:"width-100 text-center color-blue", time:true, icon:true },
+            { field: 'poolWorkTime', header: 'Czas dla puli',class:"width-80 text-center color-blue", time:true, icon:true},
+            { field: 'nonpoolWorkTime', header: 'Czas poza pulą', class:"width-100 text-center color-blue", icon:true},
+            { field: 'trainingTime', header: 'Szkolenia',class:"width-100 text-center color-blue", time:true, icon:true },
+            { field: 'overTime', header: 'Nadgodziny' , class:"width-100 text-center color-blue", time:true, icon:true},
+            { field: 'leaveTime', header: 'Urlop', class:"width-100 text-center color-blue", time:true, icon:true},
+            { field: 'workDue', header: 'Obecnosc PLN', class:"width-125 text-right",price:true, icon:true },
+            { field: 'trainingDue', header: 'Szkolenia PLN' , class:"width-125 text-right",price:true, icon:true},
+            { field: 'overDue', header: 'Nadgodziny PLN' , class:"width-125 text-right",price:true, icon:true},
+            { field: 'leaveDue', header: 'Urlop PLN' , class:"width-125 text-right",price:true, icon:true},
+            { field: 'totalDue', header: 'Suma PLN' , class:"width-125 text-right", price:true, icon:true},       
+        ]
     }
 
     search() {
