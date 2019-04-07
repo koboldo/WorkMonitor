@@ -36,7 +36,7 @@ export class WoDetailsComponent implements OnInit {
             { field: 'itemNo', header: 'Numer obiektu' ,filter: true,  class:"width-50 text-center"},
             { field: 'status', header: 'Status',sortable:true, filter:true,class:"width-35 text-center"},
             { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
-            { field: 'complexity', header: 'Pracochłonność', sortable:true, filter:true, class:"width-35 text-center " },
+            { field: 'complexity', header: 'Pracochłonność', sortable:true, filter:true, class:"width-50 text-center " },
             { field: 'price', header: 'Cena', sortable:true , filter:true, class:"width-35 text-center ", price:true, icon:true},
             { field: 'assigneeFull', header: 'Wykonawcy' , sortable:true, filter:true, class:"width-50 text-center ", assigneeFull:true, icon:true},          
             
