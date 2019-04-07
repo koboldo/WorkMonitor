@@ -122,4 +122,7 @@
     </ng-template>
   </p-table>
   <p-contextMenu #cm [model]="items"></p-contextMenu>
+  <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+      <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
+    </p-dialog>
 </div>

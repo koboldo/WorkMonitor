@@ -36,10 +36,7 @@
         <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"
           exportable="col.exportable">
           <div *ngIf="operator.roleCode.indexOf('PR') >= 0 && col.history">
-            <button type="button" pButton (click)="showUserHistory($event, rowData)" icon="fa fa-search"></button>
-            <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
-              <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
-            </p-dialog>
+            <button type="button" pButton (click)="showUserHistory($event, rowData)" icon="fa fa-search"></button>       
           </div>
           <span *ngIf="col.user">
             <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}}
@@ -92,4 +89,7 @@
     </ng-template>
   </p-table>
   <p-contextMenu #cm [model]="items"></p-contextMenu>
+  <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+    <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
+  </p-dialog>
 </div>
