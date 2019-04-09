@@ -44,7 +44,7 @@
     <p-table #tt dataKey="id" [columns]="cols" [value]="ordersReadyForProtocol" [rows]="20" [paginator]="true"
       [resizableColumns]="true" sortOrder="-1" [(selection)]="selectedOrders" [metaKeySelection]="true"
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
-      [responsive]="true">
+      [responsive]="false">
       <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>

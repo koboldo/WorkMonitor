@@ -49,8 +49,8 @@ export class UsersDisplayComponent implements OnInit {
         this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
         this.cols = [
             { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", icon:true, button:true , history:true, exportable:false},            
-            { field: 'excelId', header: 'Id excel',hidden:false, sortable: true, filter:true, class:"width-20 text-center" },
-            { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-20 text-center"},
+            { field: 'excelId', header: 'Id excel',hidden:false, sortable: true, filter:true, class:"width-35 text-center" },
+            { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-35 text-center"},
             { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-50 text-center", user:true, icon:true},          
             { field: 'isActive', header: 'Aktywny' ,filter: true,  class:"width-50 text-center", isActive:true, icon:true},
             { field: 'isEmployed', header: 'Pracuje',sortable:true, filter:true,class:"width-35 text-center", isEmployed:true, icon:true},

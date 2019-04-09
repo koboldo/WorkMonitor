@@ -172,6 +172,9 @@ body .ui-button.ui-state-default.ui-button-danger:enabled:active, body .ui-butto
 .width-100 {
     width: 100%;
 }
+.width-100-filtr {
+    width: 100%;
+}
 .width-135 {
     width: 135%;
 }
@@ -197,3 +200,43 @@ td {
 .color-blue {
     color: #286090;
 }
+.width-1680 {
+    width: 1680px;
+}
+@media only screen and (max-width: 1026px) {
+    .width-10 {
+        width: 30px;
+    }
+    .width-20 {
+        width: 40px;
+    }
+    .text-center-30 {
+        text-align:center;
+        width :50px;
+    }
+    .width-35 {
+        width: 70px;
+    }
+    .width-45 {
+        width: 80px;
+    }
+    .width-50 {
+        width: 100px;
+    }
+    .width-70 {
+        width: 120px;
+    }
+    .width-80 {
+        width: 160px;
+    }
+    
+    .width-135 {
+        width: 250px;
+    }
+    .width-125 {
+        width: 270px;
+    }
+    .width-250 {
+        width: 250px;
+    }
+} 

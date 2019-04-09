@@ -6,7 +6,7 @@
   <p-table #tt dataKey="id" [columns]="colsTime" [value]="users" [rows]="50" [paginator]="true"
       [resizableColumns]="true"  sortField="excelId" sortOrder="1" [(selection)]="selectedUsers" [metaKeySelection]="true"
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="colsTime"
-      [responsive]="true">
+      [responsive]="false">
       <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>
@@ -116,7 +116,7 @@
   [resizableColumns]="true"  
   loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate" 
   [globalFilterFields]="['user.excelId','user.firstName','user.lastName','user.officeCode', 'isFromPool', 'periodBeginning','periodEnd','workTime','poolWorkTime','nonpoolWorkTime','trainingTime','leaveTime','overTime']"
-  [responsive]="true">
+  [responsive]="false">
   <ng-template pTemplate="caption">
     <div>
       <i class="fa fa-search"></i>

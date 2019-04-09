@@ -43,14 +43,14 @@ export class ContractorsComponent implements OnInit {
       this.dictService.init();
       this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
       this.cols = [
-        { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon text-center", icon:true, button:true , history:true,exportable:false},            
-        { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-20 text-center"},
-        { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-50 text-center", user:true, icon:true},
+        { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, button:true , history:true,exportable:false},            
+        { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-50 text-center"},
+        { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-70 text-center", user:true, icon:true},
         { field: 'firstName', header: 'Osoba', hidden:true, user:true, icon:true},
-        { field: 'isActive', header: 'Aktywny' ,filter: true,  class:"width-50 text-center", isActive:true, icon:true},
-        { field: 'role', header: 'Rola', sortable:true, filter:true, class:"width-35 text-center", role:true, icon:true },
-        { field: 'email', header: 'Email', sortable:true ,filter:true, class:"width-35 text-center"},
-        { field: 'phone', header: 'Telefon', sortable:true ,filter:true, class:"width-35 text-center"},
+        { field: 'isActive', header: 'Aktywny' ,filter: true,  class:"width-70 text-center", isActive:true, icon:true},
+        { field: 'role', header: 'Rola', sortable:true, filter:true, class:"width-50 text-center", role:true, icon:true },
+        { field: 'email', header: 'Email', sortable:true ,filter:true, class:"width-50 text-center"},
+        { field: 'phone', header: 'Telefon', sortable:true ,filter:true, class:"width-50 text-center"},
       ]
   }
 

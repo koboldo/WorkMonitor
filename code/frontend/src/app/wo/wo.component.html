@@ -45,11 +45,11 @@
       [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-assignment-wo>
   </p-dialog>
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
+    <p-table  #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
       sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
       (dblclick)="onRowDblclick($event)" [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm"
       contextMenuSelectionMode="joint" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
-      [responsive]="true">
+       [scrollable]="true">
       <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>
@@ -72,7 +72,7 @@
         <tr>
           <th *ngFor="let col of columns" [hidden]="col.hidden">
             <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text"
-              (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">
+              (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter" class="width-100-filtr">
             <div *ngIf="col.price">
               Cena > {{priceFilter}}
               <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)"
@@ -112,7 +112,7 @@
       </ng-template>
       <ng-template pTemplate="footer" let-columns>
         <tr>
-          <td *ngFor="let col of columns" [hidden]="col.hidden">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class">
             <span *ngIf="col.header === 'Zlecenie'">Suma zleceń <br /> {{orders?.length}} </span>
             <span *ngIf="col.header === 'Status'">
               <i [class]="getStatusIcon('OP')"></i>{{summary.openOrders}}

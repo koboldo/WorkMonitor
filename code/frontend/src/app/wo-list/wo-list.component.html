@@ -96,7 +96,7 @@
     csvSeparator=";"  
     exportFilename="Zlecenia nie gotowe do protokolu" 
     [globalFilterFields]="cols" 
-    [responsive]="true">
+    [responsive]="false">
     <ng-template pTemplate="caption">
         <div>
             <i class="fa fa-search"></i>
@@ -165,7 +165,7 @@
           [hidden]="col.hidden"
           >
           <span  *ngIf="col.header === 'Zlecenie'">Suma zleceń <br/> {{list?.length}}  </span> 
-          <span *ngIf="col.price">Suma <br/> {{summary.summaryPrice | currency:'PLN'}} </span>
+          <span *ngIf="col.price">Suma <br/> {{summary?.summaryPrice | currency:'PLN'}} </span>
           </td>
       </tr>
   </ng-template>

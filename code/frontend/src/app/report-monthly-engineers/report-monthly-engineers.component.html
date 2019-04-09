@@ -21,7 +21,7 @@
     [resizableColumns]="true"  sortField="timeUtilizationPercentage" sortOrder="-1"  
     [(selection)]="selectedReports" 
     loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
-    [responsive]="true"
+    [responsive]="false"
     (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)" (onRowUnselect)="filterReports($event)"
     [metaKeySelection]="false"
     csvSeparator=";" exportFilename="Raport_Miesieczny" 

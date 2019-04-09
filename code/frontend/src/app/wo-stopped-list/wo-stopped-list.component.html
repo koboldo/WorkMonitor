@@ -9,10 +9,10 @@
       <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
     </p-dialog>
     <!-- Turbo table  -->
-    <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
+    <p-table  [scrollable]="true" #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
       sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
       [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint"
-      csvSeparator=";" exportFilename="Zawieszone" [globalFilterFields]="cols" [responsive]="true">
+      csvSeparator=";" exportFilename="Zawieszone" [globalFilterFields]="cols"  >
       <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>
@@ -73,9 +73,9 @@
       </ng-template>
       <ng-template pTemplate="footer" let-columns>
         <tr>
-          <td *ngFor="let col of columns" [hidden]="col.hidden">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class"> 
             <span *ngIf="col.header === 'Zlecenie'">Suma zleceń <br /> {{orders?.length}} </span>
-            <span *ngIf="col.header === 'Cena'">Suma <br /> {{summary.summaryPrice | currency:'PLN'}} </span>
+            <span *ngIf="col.price">Suma <br /> {{summary.summaryPrice | currency:'PLN'}} </span>
           </td>
         </tr>
       </ng-template>

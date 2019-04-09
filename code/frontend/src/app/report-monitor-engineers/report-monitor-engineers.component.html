@@ -42,7 +42,7 @@
     <p-table #tt dataKey="id" [columns]="cols" [value]="reports" [rows]="20" [paginator]="true"
       [resizableColumns]="true"  sortField="timeUtilizationPercentage" sortOrder="-1" selectionMode="multiple" [(selection)]="selectedReports"
       loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
-      [responsive]="true"
+      [responsive]="false"
      (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
       [metaKeySelection]="true"
       >
@@ -206,7 +206,7 @@
             [resizableColumns]="true" sortField="workNo" sortOrder="-1" 
             loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename] = "selectedReport?.lastName+'_zl_wykonywane_'+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+'_'+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')"
              [globalFilterFields]="colsForOrdersTable"
-            [responsive]="true"
+            [responsive]="false"
            (onRowSelect)="filterReports($event)" 
             [metaKeySelection]="true"
             >

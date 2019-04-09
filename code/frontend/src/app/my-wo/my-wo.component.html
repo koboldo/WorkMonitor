@@ -77,7 +77,7 @@
     sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
     [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm"
     contextMenuSelectionMode="joint" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
-    [responsive]="true">
+    [responsive]="false">
     <ng-template pTemplate="caption">
       <div>
         <i class="fa fa-search"></i>

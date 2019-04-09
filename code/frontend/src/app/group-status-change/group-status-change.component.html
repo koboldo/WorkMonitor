@@ -64,7 +64,7 @@
   <div style="margin-top: 5px" class="ui-g">
     <p-table #tt dataKey="id" [columns]="cols" [value]="ordersToChange" [rows]="20" [paginator]="true"
       [resizableColumns]="true" columnResizeMode="expand" sortOrder="-1" [(selection)]="selectedOrders"
-      [metaKeySelection]="true" loadingIcon="fa fa-spinner" [responsive]="true">
+      [metaKeySelection]="true" loadingIcon="fa fa-spinner" [responsive]="false">
       <ng-template pTemplate="caption">
         <div>
           <i class="fa fa-search"></i>

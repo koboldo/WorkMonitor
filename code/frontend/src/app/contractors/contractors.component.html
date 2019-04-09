@@ -1,7 +1,7 @@
 <div style="margin-top: 5px" *ngIf="users" class="ui-g">
   <p-table #tt dataKey="id" [columns]="cols" [value]="users" [rows]="20" [paginator]="true" [resizableColumns]="true"
     sortField="excelId" sortOrder="1" [(selection)]="selectedUser" selectionMode="single" loadingIcon="fa fa-spinner"
-    [globalFilterFields]="cols" [responsive]="true" (dblclick)="onRowDblclick($event)" [metaKeySelection]="false"
+    [globalFilterFields]="cols" [responsive]="false"  [metaKeySelection]="false"
     [contextMenu]="cm" [(contextMenuSelection)]="selectedUser" csvSeparator=";" exportFilename="pracownicy">
     <ng-template pTemplate="caption">
       <div>
@@ -32,9 +32,9 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns">
-      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
+      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData" (dblclick)="onRowDblclick($event,rowData)">
         <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"
-          exportable="col.exportable">
+          exportable="col.exportable" >
           <div *ngIf="operator.roleCode.indexOf('PR') >= 0 && col.history">
             <button type="button" pButton (click)="showUserHistory($event, rowData)" icon="fa fa-search"></button>       
           </div>
