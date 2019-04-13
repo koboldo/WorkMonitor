@@ -9,9 +9,10 @@ import { SelectItem, DataTable } from 'primeng/primeng'
 
 
 import { Observable }    from 'rxjs';
-import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+import { catchError, map, tap, delay, mergeMap, groupBy } from 'rxjs/operators';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
+import { element } from '@angular/core/src/render3/instructions';
 
 
 @Component({
@@ -43,7 +44,11 @@ export class UsersPayrollComponent implements OnInit {
 
     cols: any;
     colsHistorical: any;
+    periodForDropDown: SelectItem[];
+    selectedPeriod: string;
     rowGroupMetadata: any;
+    historicalPayrollsFiltered: UserPayroll[];
+    firsHistoricalPayroll: UserPayroll;
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -83,6 +88,7 @@ export class UsersPayrollComponent implements OnInit {
             { field: 'user.excelId', header:'Id excel',  sortable: true, filter:true,class:"width-20 text-center", excelId:true},            
             { field: 'user.firstName', header: 'Imię',hidden:true, sortable: true, filter:true, firstName:true},
             { field: 'user.lastName', header: 'Osoba' , filter:true,sortable:true,  class:"width-50 text-center", lastName:true},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-20 text-center"},
             { field: 'user.officeCode', header: 'Biuro', sortable:true, filter:true, class:"width-50 text-center", officeCode:true},
             { field: 'rank', header: 'Stopień' ,filter: true,  class:"width-50 text-center"},
             { field: 'projectFactor', header: 'Współ',sortable:true, filter:true,class:"width-35 text-center"},
@@ -239,12 +245,20 @@ export class UsersPayrollComponent implements OnInit {
             tmpBillingCycles.set(payroll.periodDate, payroll.periodDate);
             payroll.recalculateButtonStyle = this.getRecalculateButtonStyle(payroll.periodDate);
         }
-
         this.periodDates = [];
         tmpBillingCycles.forEach((value: string, key: string) => {
             this.periodDates.push({label: value, value: value});
         });
-        this.updateRowGroupMetaData();
+
+        let tmpMapForDropDownPeriodList: Map<string, string> = new Map<string, string>();
+        for (let payroll of payrolls) {
+            tmpMapForDropDownPeriodList.set(payroll.formattedPeriodDate, payroll.formattedPeriodDate);
+        }
+        let tab = Array.from(tmpMapForDropDownPeriodList.values()).sort().reverse();
+        this.periodForDropDown = [];
+        tab.forEach(element=>{
+            this.periodForDropDown.push({label: element, value:element});
+        });       
     }
 
     private getRecalculateButtonStyle(periodDate: string):string {
@@ -261,26 +275,15 @@ export class UsersPayrollComponent implements OnInit {
         return 'ui-button-success';
     }
 
-    public updateRowGroupMetaData() {
-        this.rowGroupMetadata = {};
-        if (this.historicalPayrolls) {
-            for (let i = 0; i < this.historicalPayrolls.length; i++) {
-                let rowData = this.historicalPayrolls[i];
-                let formattedPeriodDate = rowData.formattedPeriodDate;
-                if (i == 0) {
-                    this.rowGroupMetadata[formattedPeriodDate] = { index: 0, size: 1 };
-                }
-                else {
-                    let previousRowData = this.historicalPayrolls[i - 1];
-                    let previousRowGroup = previousRowData.formattedPeriodDate;
-                    if (formattedPeriodDate === previousRowGroup)
-                        this.rowGroupMetadata[formattedPeriodDate].size++;
-                    else
-                        this.rowGroupMetadata[formattedPeriodDate] = { index: i, size: 1 };
-                }
-            }
-        }
+    public setHistroicalPayrolls() {
+        this.historicalPayrollsFiltered = [];
+        
+        this.historicalPayrolls.forEach(element => {
+            if (element.formattedPeriodDate === this.selectedPeriod) {
+                this.historicalPayrollsFiltered.push(element);
+            }         
+        });
+        this.firsHistoricalPayroll = this.historicalPayrollsFiltered[0];
     }
-
 
 }
