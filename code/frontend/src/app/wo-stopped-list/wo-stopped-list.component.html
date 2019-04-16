@@ -46,7 +46,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
-          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"  exportable="col.exportable">
             <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
               class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
             <span *ngIf="col.complexity" class="ui-inputgroup-addon"><i

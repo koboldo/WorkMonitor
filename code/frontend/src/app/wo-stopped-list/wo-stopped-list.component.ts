@@ -54,7 +54,7 @@ export class WoStoppedListComponent implements OnInit {
     ngOnInit() {
         this.cols = [
             { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-35 text-center"},
-            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true,exportable:false},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35 text-center"},
             { field: 'status', header: 'Status' , filter:false,statusCode:true, class:"width-20 text-center", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
@@ -76,7 +76,7 @@ export class WoStoppedListComponent implements OnInit {
             { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
             { field: 'ventureCompany', header: 'Inwestor',hidden:true, sortable:true , filter:true, class:"width-135"},
             { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:true, sortable:true , filter:true, class:"width-135" },
-            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icon:true, class:"width-20"},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icon:true, class:"width-20",exportable:false},
             
         ]
         

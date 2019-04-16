@@ -116,7 +116,7 @@ export class WoComponent implements OnInit {
        
         this.cols = [
             { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center"},
-            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true, exportable:false},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-100"},
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-135"},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-135"},
@@ -138,8 +138,8 @@ export class WoComponent implements OnInit {
             { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
             { field: 'ventureCompany', header: 'Inwestor', sortable:true , filter:true, class:"width-135"},
             { field: 'ventureDisplay', header: 'Zleceniodawca', sortable:true , filter:true, class:"width-135" },
-            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35"},
-            { field: 'none',excludeGlobalFilter: true, button:true ,edit: true, icone:true, class:"width-35"},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35",exportable:false},
+            { field: 'none',excludeGlobalFilter: true, button:true ,edit: true, icone:true, class:"width-35", exportable:false},
         ]
       
     }
