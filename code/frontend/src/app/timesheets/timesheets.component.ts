@@ -59,7 +59,7 @@ export class TimesheetsComponent implements OnInit {
         this.search();
         this.pl=new Calendar();
         this.cols = [
-            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true},            
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true, edit:false},            
             { field: 'rowid', header: 'tabid', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
             { field: 'office', header: 'Biuro' , filter:true, class:"width-35"},
             { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
@@ -340,6 +340,7 @@ export class TimesheetsComponent implements OnInit {
             console.log('Nie wypelniono poprawnie timesheetu '+JSON.stringify(event.data));
             this.restore(event.data);
         }
+        
     }
 
 
@@ -377,7 +378,6 @@ export class TimesheetsComponent implements OnInit {
             }
         }
         this.summary = this.toolsService.createSummaryForUserTable(this.usersWithSheets);
-        console.log(this.summary);
 
     }
    

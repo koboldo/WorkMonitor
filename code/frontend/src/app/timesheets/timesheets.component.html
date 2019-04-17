@@ -169,7 +169,7 @@
           <div  *ngIf="user?.roleCode?.indexOf('OP') > -1" class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-5"></div>
             <div class="ui-grid-col-2">
-              <!--<button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>-->
+           
               <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-5"></div>
@@ -180,16 +180,57 @@
     </p-dataTable>
 
     <!-- turbo table  -->
-
+<!-- <p-table #tt [value]="usersWithSheets" [columns]="cols" dataKey="tabid"
+      [rows]="20" [paginator]="true"
+      [resizableColumns]="true" sortOrder="1"  
+>
+    <ng-template pTemplate="caption">
+        <div>
+          <i class="fa fa-search"></i>
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+    <tr>       
+     <td *ngFor="let col of columns" [pEditableColumn]="rowData"  [pEditableColumnField]="rowData[col.field]"
+     [hidden]="col.hidden" [ngClass]="col.class">
+         <p-cellEditor *ngIf="col.edit">  
+             <ng-template pTemplate="input">
+                 <input pInputText type="text" [(ngModel)]="rowData[col.field]" (ngModelChange)="valueChange(rowData)" [style.color]="rowData.color">
+             </ng-template>
+             <ng-template pTemplate="output">
+               <span [style.color]="rowData.color" >
+                   {{rowData[col.field]}}
+               </span>
+             </ng-template>
+           </p-cellEditor>
+           <span  *ngIf="!col.edit && !col.status">
+               {{rowData[col.field]}}
+           </span>
+           <div *ngIf="col.status">
+               <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
+               <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
+               <div *ngIf="rowData[col.field] == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>    
+           </div>
+           <div *ngIf="col.expand">
+               <a href="#" [pRowToggler]="rowData">
+                   <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+               </a>
+           </div>
+     </td>
+   </tr> 
+ </ng-template>
+</p-table> -->
     <p-table #tt dataKey="id" [columns]="cols" 
       (onEditInit)="onEditInit($event)"   
       (onEditCancel)="onEditCancel($event)" 
       (onEditComplete)="onEditComplete($event)"
-      [value]="usersWithSheets" [rows]="20" [paginator]="true"
-      [resizableColumns]="true" sortOrder="1" 
+      [value]="usersWithSheets" 
+      [resizableColumns]="true"   sortOrder="1" 
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="czas_pracy" [globalFilterFields]="cols"
       [responsive]="false"
-      sortField="lastName"
+      
     >
     <ng-template pTemplate="caption">
       <div>
@@ -216,12 +257,12 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-      <tr>       
-        <td *ngFor="let col of columns" [pEditableColumn]="rowData" pEditableColumn 
-        [hidden]="col.hidden" [ngClass]="col.class">
-            <p-cellEditor *ngIf="col.edit">
-                <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="rowData[col.field]" (ngModelChange)="valueChange(rowData)" [style.color]="rowData.color">
+       <tr>       
+        <td *ngFor="let col of columns"  [pEditableColumn]="col.edit ? rowData : null" [pEditableColumnField]="rowData[col.field]"
+          [hidden]="col.hidden" [ngClass]="col.class" >
+            <p-cellEditor *ngIf="col.edit" >  
+                <ng-template pTemplate="input" *ngIf="user?.roleCode?.indexOf('OP') > -1">
+                    <input pInputText type="text" [(ngModel)]="rowData[col.field]" (ngModelChange)="valueChange(rowData)" [style.color]="rowData.color" >
                 </ng-template>
                 <ng-template pTemplate="output">
                   <span [style.color]="rowData.color" >
@@ -231,7 +272,7 @@
               </p-cellEditor>
               <span  *ngIf="!col.edit && !col.status">
                   {{rowData[col.field]}}
-              </span>
+              </span>             
               <div *ngIf="col.status">
                   <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
                   <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
@@ -243,9 +284,9 @@
                   </a>
               </div>
         </td>
-      </tr>
+      </tr> 
     </ng-template>
-    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+     <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
         <tr>
             <td [attr.colspan]="columns.length + 1">
                 <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
@@ -278,13 +319,13 @@
             </td>
         </tr>
     </ng-template>
-    <ng-template pTemplate="footer" let-columns>
+     <ng-template pTemplate="footer" let-columns>
       <tr>
         <td *ngFor="let col of columns" [hidden]="col.hidden">
           <span *ngIf="col.training">Suma szkoleń <br /> {{summary?.totalTrainingTimeInGMM}} </span>
           <span *ngIf="col.break">Suma przerw <br /> {{summary?.totalBreakTime}} </span>
           <span *ngIf="col.isLeave">Suma urlop <br /> {{summary?.totalIsLeave}} </span>
-          <span *ngIf="col.header === 'Nazwisko'">Ilość pracowników <br /> {{usersWithSheets?.length}}</span>
+          <!-- <span *ngIf="col.header === 'Nazwisko'">Ilość pracowników <br /> {{usersWithSheets?.length}}</span> -->
         </td>
       </tr>
     </ng-template>
