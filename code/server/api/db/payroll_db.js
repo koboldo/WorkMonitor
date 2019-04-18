@@ -4,7 +4,7 @@
 const dbUtil = require('./db_util');
 const async = require('async');
 const logErrAndCall = require('../local_util').logErrAndCall;
-// const logger = require('../logger').logger; 
+const logger = require('../logger').logger; 
 const addCtx = require('../logger').addCtx;
 
 const queries = {
@@ -301,7 +301,8 @@ const queries = {
         WHERE PY.PERIOD_DATE IS NULL OR PS.APPROVED = 'Y' OR (PS.APPROVED = 'N' AND PY.APPROVED = 'N')`,
     
     getPayroll: `SELECT PERSON_ID, DATE( PERIOD_DATE ,"unixepoch" ) PERIOD_DATE, LEAVE_TIME, WORK_TIME, TRAINING_TIME, POOL_WORK_TIME, NONPOOL_WORK_TIME, OVER_TIME, LEAVE_DUE, WORK_DUE, TRAINING_DUE, OVER_DUE, TOTAL_DUE, IS_FROM_POOL, RANK_CODE, PROJECT_FACTOR, COMPLETED_WO, BUDGET, POOL_RATE, OVER_TIME_FACTOR, APPROVED, MODIFIED_BY, DATETIME( LAST_MOD ,"unixepoch", "localtime" ) LAST_MOD
-                    FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`
+                    FROM PAYROLL WHERE 1=1 %(personId)s %(periodDate)s %(history)s ORDER BY PERSON_ID, PERIOD_DATE DESC`,
+    deletePayroll: `DELETE FROM PAYROLL WHERE PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")`
 };
 
 const filters = {
@@ -316,36 +317,49 @@ const filters = {
         personId: 'AND CASE %(personId)s WHEN 0 THEN 1 ELSE PERSON_ID = %(personId)s END',
         periodDate: 'AND PERIOD_DATE = STRFTIME("%%s", "%(periodDate)s", "start of month")',
         history: 'AND PERIOD_DATE <= CAST(STRFTIME("%%s", "now", "start of month","-1 month") AS INTEGER)'
+    },
+    deletePayroll: {
+        periodDate: '%(periodDate)s'
     }
 };
 
 const payroll_db = {
-    read: function(params,cb){
+    read0: function(params,cb){
         
         const db = dbUtil.getDatabase();
         
         const calls = [];
 
-        calls.push(
-            function(_cb){
-                const query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
-                // if(logger().isDebugEnabled()) logger().debug('query for payroll: ' + query);
-                const calculatePayrollStat = db.prepare(query);
-                calculatePayrollStat.get(addCtx(function(err, result){
-                    calculatePayrollStat.finalize();
+        if(logger().isDebugEnabled()) logger().debug('params ' + JSON.stringify(params));
 
-                    
-                    if(err) _cb(err);
-                    else _cb(null,result);
-                }));
-            });
-
+        if(!(params.history == 'Y')) {
+            // get payroll status
+            if(logger().isDebugEnabled()) logger().debug('calculating payroll ...');
+            calls.push(
+                function(_cb){
+                    const query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                    // if(logger().isDebugEnabled()) logger().debug('query for payroll: ' + query);
+                    const calculatePayrollStat = db.prepare(query);
+                    calculatePayrollStat.get(addCtx(function(err, result){
+                        calculatePayrollStat.finalize();
+                        
+                        
+                        if(err) _cb(err);
+                        else _cb(null,result);
+                    }));
+                });
+        }
+                
         calls.push(
             function(_cb) {    
                 const getParams = {};
                 getParams.personId = params.personId;
-                if(params.history == 'N') getParams.periodDate = params.periodDate;
-                else getParams.history = 'Y';
+                if(params.history == 'N') {
+                    getParams.periodDate = params.periodDate;
+                    getParams.reqId = params.reqId;
+                } else {
+                    getParams.history = 'Y';
+                }
     
                 const query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,getParams,filters.getPayroll);
                 const getPayrollStat = db.prepare(query);
@@ -356,6 +370,82 @@ const payroll_db = {
                     else _cb(null,rows);
                 }));
             });
+
+        async.series(calls,addCtx(function(err, result){
+            db.close();
+
+            if(err) logErrAndCall(err,cb);
+            else {
+                cb(null,result[result.length-1]);
+            }
+        }));
+    },
+
+    read: function(params,cb) {
+
+        if(params.history == 'N') {
+            delete params.history;
+        } else {
+            delete params.periodDate;
+        }
+
+        const db = dbUtil.getDatabase();
+
+        const query = dbUtil.prepareFiltersByInsertion(queries.getPayroll,params,filters.getPayroll);
+        const getPayrollStat = db.prepare(query);
+        getPayrollStat.all(addCtx(function(err,rows){
+            getPayrollStat.finalize();
+            db.close();
+
+            if(err) cb(err);
+            else cb(null,rows);
+        }));
+    },
+
+    update0: function(params,cb) {
+        const db = dbUtil.getDatabase();
+        const query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+        const getPayrollStat = db.prepare(query);
+        getPayrollStat.run(addCtx(function(err,result){
+            getPayrollStat.finalize();
+            db.close();
+            
+            if(err) cb(err);
+            else cb(null,this.changes);
+        }));
+    },
+
+    update: function(params,cb) {
+        const db = dbUtil.getDatabase();
+
+        const calls = [];
+
+        calls.push(
+            function(_cb) {
+                const query = dbUtil.prepareFiltersByInsertion(queries.deletePayroll,{periodDate: params.periodDate},filters.deletePayroll);
+                const deletePayrollStat = db.prepare(query);
+                deletePayrollStat.run(addCtx(function(err,result){
+                    deletePayrollStat.finalize();
+                    // db.close();
+                    
+                    if(err) _cb(err);
+                    else _cb(null,1);
+                }));
+            }
+        );
+
+        calls.push(
+            function(_cb) {
+                const query = dbUtil.prepareFiltersByInsertion(queries.calculatePayroll,params,filters.calculatePayroll);
+                const getPayrollStat = db.prepare(query);
+                getPayrollStat.run(addCtx(function(err,result){
+                    getPayrollStat.finalize();
+                    
+                    if(err) _cb(err);
+                    else _cb(null,this.changes);;
+                }));
+            }
+        );
 
         async.series(calls,addCtx(function(err, result){
             db.close();

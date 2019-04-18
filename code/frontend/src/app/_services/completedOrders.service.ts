@@ -20,29 +20,42 @@ export class CompletedOrderService {
 
     public showOrders(periodDate: string, completedWo: string): void {
 
-        let orderIds: number[] = [];
+        let orderId2Magic: Map<number, string> = new Map();
+
+        // magic completedWo string example -> "completedWo": "17228:420::0.5:::Y|18159:420::0.5:::Y",
+
         let completedOrders: string[] = completedWo ? completedWo.split("|") : [];
         for(let completedOrder of completedOrders) {
+
             let id: number = +completedOrder.split(":")[0];
-            if (orderIds.indexOf(id) === -1) {
-                orderIds.push(id);
-            }
+            orderId2Magic.set(id, completedOrder);
         }
 
-        this.showOrdersByIds(periodDate, orderIds);
+        this.showOrdersByIds(periodDate, orderId2Magic);
     }
 
 
-    public showOrdersByIds(periodDate: string, orderIds: number[]) {
-        console.log('ids: '+orderIds.length);
+    public showOrdersByIds(periodDate: string, orderId2Magic: Map<number, string>) {
+        console.log('orderId2Magic: '+orderId2Magic.size);
 
-        if (orderIds && orderIds.length > 0) {
+        if (orderId2Magic && orderId2Magic.size > 0) {
 
-            const desc: string = 'Zrealizowano w '+this.toolsService.formatDate(this.toolsService.parseDate(periodDate+' 00:00:01'), 'yyyy-MM');
+            let orderIds: number[] = Array.from( orderId2Magic.keys() );
+
+            const desc: string = 'Zr. w '+this.toolsService.formatDate(this.toolsService.parseDate(periodDate+' 00:00:01'), 'yyyy-MM');
             this.woService.getOrderByIds(orderIds)
                 .subscribe(orders => {
                     for(let order of orders) {
                         order.frontProcessingDesc = desc;
+                        order.poolRevenue = -1;
+                        if (orderId2Magic.get(order.id) && orderId2Magic.get(order.id).indexOf(':') != -1) {
+                          let magic: string[] = orderId2Magic.get(order.id).split(':');
+                          if (magic.length > 3) {
+                            let poolInclusionFactor: number = +magic[3];
+                            order.poolRevenue = order.isFromPool == 'Y' ? order.price * poolInclusionFactor : 0;
+                          }
+                        }
+
                     }
                     this.completedOrders = orders;
                     this.displayCompletedOrdersDialog = true;

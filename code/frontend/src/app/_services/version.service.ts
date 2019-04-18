@@ -20,6 +20,7 @@ export class VersionService {
     constructor() {
         this._history = [
 
+			new CodeValue('1.5.43', 'Składowa budżetu puli, obsługa TDS completedWo'),
             new CodeValue('1.5.42', 'Zmiana tabel na turbo table'),
             new CodeValue('1.5.41', 'Dodanie filtrowania ceny jako suwak'),
             new CodeValue('1.5.40', 'Dodanie podsumowań dla tabel'),
