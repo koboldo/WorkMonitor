@@ -93,7 +93,6 @@ import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.com
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
 import { AppVersionComponent } from './app-version/app-version.component';
 import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignment-wo.component';
-import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
 import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
 
 
@@ -147,7 +146,6 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
-		    WoTurboTableComponent ,
 		    WoTrashedComponent   ],
 
     providers: [

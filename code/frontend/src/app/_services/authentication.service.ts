@@ -88,7 +88,6 @@ export class AuthenticationService {
                 icon: 'fa fa-server',
                 items: [
                     {label: 'Lista zleceń', icon: 'fa fa-server', routerLink: ['/workOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
-                    {label: 'Lista zleceń (turbo)', icon: 'fa fa-table', routerLink: ['/turboTable'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Zawieszone', icon: 'fa fa-hand-paper-o',     routerLink: ['/suspendedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Anulowane',  icon: 'fa fa-ban', routerLink: ['/cancelledWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
                     {label: 'Kosz',  icon: 'fa fa-trash-o', routerLink: ['/trashedWorkOrders'], "rolesRequired":["OP", "PR", "EN", "MG"]},
@@ -167,7 +166,6 @@ export class AuthenticationService {
             {label: 'Zmodyfikuj osobę', icon: 'fa fa-user-o', routerLink: ['/changePerson'], "rolesRequired":["OP", "PR"]},
             //{label: 'Parametryzacja zleceń', icon: 'fa fa-server', routerLink: ['/workTypes'], "rolesRequired":["PR"]},
             {label: 'Parametryzacja zleceń', icon: 'fa fa-cogs', routerLink: ['/workTypes'], "rolesRequired":["PA"]},
-            {label: 'Turbo Table', icon: 'fa fa-cogs', routerLink: ['/turboTable'], "rolesRequired":["PR", "OP"]},
             /*{label: 'Wyloguj', icon: 'fa fa-sign-out', routerLink: ['/logme'], "rolesRequired":["PR", "OP", "MG", "EN"]}*/
         ];
 

@@ -32,8 +32,7 @@ export class TimesheetsComponent implements OnInit {
 
     afterDate:Date;
     beforeDate:Date;
-
-
+    
     user: User;
     pl: Calendar;
     cols: any;
@@ -74,9 +73,7 @@ export class TimesheetsComponent implements OnInit {
             { field: 'timesheetBreakInMinutes', header: 'Przerwa [min]' ,sortable:true, filter:true,class:"width-50 text-center", edit: true, break:true},      
             { field: 'timesheetTrainingInGMM', header: 'Szkolenie [g:mm]', sortable:true, filter:true, class:"width-50 text-center", edit: true, training:true },
             { field: 'timesheetUsedTime', header: 'Obecność', sortable:true, filter:true, class:"width-50 text-center"},           
-            { field: 'status', header: 'Zapisano', sortable: true, filter:true, class:"width-35 col-icon", status:true},
-            // { field: 'none',header:'Zapisano', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon"} 
-             
+            { field: 'status', header: 'Zapisano', sortable: true, filter:true, class:"width-35 col-icon", status:true},             
         ]
     }
 

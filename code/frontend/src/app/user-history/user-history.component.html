@@ -1,7 +1,7 @@
 <div class="ui-grid-row" style="max-width: 1200px;">
 
   <div style="margin-top: 5px" *ngIf="userHistory" class="ui-g">
-    <p-table #tt dataKey="id" [columns]="cols" [value]="userHistory" [rows]="20" [paginator]="true"
+    <p-table #tt dataKey="histCreationDate" [columns]="cols" [value]="userHistory" [rows]="20" [paginator]="true"
       [resizableColumns]="true" sortField="histCreationDate" sortOrder="1" loadingIcon="fa fa-spinner"
       [globalFilterFields]="cols" [responsive]="false" expandableRows="true">
       <ng-template pTemplate="caption">

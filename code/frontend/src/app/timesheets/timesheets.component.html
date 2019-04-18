@@ -178,50 +178,7 @@
       </p-footer>
 
     </p-dataTable>
-
-    <!-- turbo table  -->
-<!-- <p-table #tt [value]="usersWithSheets" [columns]="cols" dataKey="tabid"
-      [rows]="20" [paginator]="true"
-      [resizableColumns]="true" sortOrder="1"  
->
-    <ng-template pTemplate="caption">
-        <div>
-          <i class="fa fa-search"></i>
-          <input type="text" pInputText size="50" placeholder="Filtruj"
-            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-        </div>
-      </ng-template>
-  <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-    <tr>       
-     <td *ngFor="let col of columns" [pEditableColumn]="rowData"  [pEditableColumnField]="rowData[col.field]"
-     [hidden]="col.hidden" [ngClass]="col.class">
-         <p-cellEditor *ngIf="col.edit">  
-             <ng-template pTemplate="input">
-                 <input pInputText type="text" [(ngModel)]="rowData[col.field]" (ngModelChange)="valueChange(rowData)" [style.color]="rowData.color">
-             </ng-template>
-             <ng-template pTemplate="output">
-               <span [style.color]="rowData.color" >
-                   {{rowData[col.field]}}
-               </span>
-             </ng-template>
-           </p-cellEditor>
-           <span  *ngIf="!col.edit && !col.status">
-               {{rowData[col.field]}}
-           </span>
-           <div *ngIf="col.status">
-               <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
-               <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
-               <div *ngIf="rowData[col.field] == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>    
-           </div>
-           <div *ngIf="col.expand">
-               <a href="#" [pRowToggler]="rowData">
-                   <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-               </a>
-           </div>
-     </td>
-   </tr> 
- </ng-template>
-</p-table> -->
+<!-- turbo table  -->
     <p-table #tt dataKey="id" [columns]="cols" 
       (onEditInit)="onEditInit($event)"   
       (onEditCancel)="onEditCancel($event)" 
@@ -256,7 +213,7 @@
         </th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded" *ngIf="user?.roleCode?.indexOf('OP') > -1">
        <tr>       
         <td *ngFor="let col of columns"  [pEditableColumn]="col.edit ? rowData : null" [pEditableColumnField]="rowData[col.field]"
           [hidden]="col.hidden" [ngClass]="col.class" >
@@ -286,6 +243,26 @@
         </td>
       </tr> 
     </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded"  *ngIf="user?.roleCode?.indexOf('OP') == -1">
+      <tr>       
+       <td *ngFor="let col of columns"  
+         [hidden]="col.hidden" [ngClass]="col.class" >
+             <span  *ngIf="!col.status">
+                 {{rowData[col.field]}}
+             </span>             
+             <div *ngIf="col.status">
+                 <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
+                 <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>
+                 <div *ngIf="rowData[col.field] == 'EDITED'" class="text-center" [style.color]="'#2399e5'"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>    
+             </div>
+             <div *ngIf="col.expand">
+                 <a href="#" [pRowToggler]="rowData">
+                     <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                 </a>
+             </div>
+       </td>
+     </tr> 
+   </ng-template>
      <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
         <tr>
             <td [attr.colspan]="columns.length + 1">
