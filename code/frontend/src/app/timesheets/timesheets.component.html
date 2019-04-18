@@ -179,6 +179,9 @@
 
     </p-dataTable>
 <!-- turbo table  -->
+<!-- usunąłem paginację aby sprawdzić czy na końcu się nie dodają te rekordy , nie ma także sortowania po nazwisku tak jak było poniżej to czego brakuje 
+[rows]="20" [paginator]="true"
+sortField="lastName" sortOrder="1"  -->
     <p-table #tt dataKey="id" [columns]="cols" 
       (onEditInit)="onEditInit($event)"   
       (onEditCancel)="onEditCancel($event)" 
@@ -302,7 +305,7 @@
           <span *ngIf="col.training">Suma szkoleń <br /> {{summary?.totalTrainingTimeInGMM}} </span>
           <span *ngIf="col.break">Suma przerw <br /> {{summary?.totalBreakTime}} </span>
           <span *ngIf="col.isLeave">Suma urlop <br /> {{summary?.totalIsLeave}} </span>
-          <!-- <span *ngIf="col.header === 'Nazwisko'">Ilość pracowników <br /> {{usersWithSheets?.length}}</span> -->
+          <span *ngIf="col.header === 'Nazwisko'">Ilość pracowników <br /> {{usersWithSheets?.length}}</span>
         </td>
       </tr>
     </ng-template>
@@ -321,7 +324,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="emptymessage">
-      Brak danych...
+      Brak pracowników...
     </ng-template>
   </p-table>
 
