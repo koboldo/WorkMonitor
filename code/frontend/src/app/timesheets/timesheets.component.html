@@ -181,8 +181,10 @@
 <!-- turbo table  -->
 <!-- Usunąłem paginację aby sprawdzić czy gdzieś na dole się nie pojawia kopia edytowanego rekordu. Usunąłem także domyśle sortowanie 
 [rows]="20" [paginator]="true" 
-sortField="lastName" sortOrder="1"  -->
-    <p-table #tt dataKey="id" [columns]="cols" 
+sortField="lastName" sortOrder="1" 
+Zakomentowane do czasu ustalenia problemu z pojawiającym się dodatkowym rekordem podczas edycji
+-->
+    <!-- <p-table #tt dataKey="id" [columns]="cols" 
       (onEditInit)="onEditInit($event)"   
       (onEditCancel)="onEditCancel($event)" 
       (onEditComplete)="onEditComplete($event)"
@@ -326,7 +328,7 @@ sortField="lastName" sortOrder="1"  -->
     <ng-template pTemplate="emptymessage">
       Brak danych...
     </ng-template>
-  </p-table>
+  </p-table> -->
 
     <!-- end turbo table -->
   </div>
