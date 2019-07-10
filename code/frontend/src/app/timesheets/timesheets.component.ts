@@ -60,6 +60,9 @@ export class TimesheetsComponent implements OnInit {
         this.cols = [
             { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true, edit:false},            
             { field: 'rowid', header: 'tabid', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
+
+            // { field: 'id', header: 'id', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
+
             { field: 'office', header: 'Biuro' , filter:true, class:"width-35"},
             { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
             { field: 'lastName', header: 'Nazwisko',sortable:true, filter:true,class:"width-35" },
