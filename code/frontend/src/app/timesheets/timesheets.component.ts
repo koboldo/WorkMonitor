@@ -409,8 +409,9 @@ export class TimesheetsComponent implements OnInit {
             return;
         }
 
-        this.usersWithSheets[rowid] = userWithSheet;
-        this.usersWithSheets = JSON.parse(JSON.stringify(this.usersWithSheets)); //immutable dirty trick
+        // this.usersWithSheets[rowid] = userWithSheet;
+        // this.usersWithSheets = JSON.parse(JSON.stringify(this.usersWithSheets)); //immutable dirty trick
+        this.search();
     }
 
     private getUser(id: number, users: User[]): User {
