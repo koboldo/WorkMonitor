@@ -50,7 +50,7 @@ router.put('/v1/relatedItems/:id', relatedItems.update);
 
 router.get('/v1/payroll',payroll.read);
 router.get('/v1/payroll/:id',payroll.read);
-
+router.put('/v1/payroll',payroll.update);
 module.exports = router;
 
 

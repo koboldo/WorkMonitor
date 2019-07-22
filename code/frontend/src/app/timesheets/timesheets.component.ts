@@ -60,9 +60,6 @@ export class TimesheetsComponent implements OnInit {
         this.cols = [
             { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true, edit:false},            
             { field: 'rowid', header: 'tabid', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
-
-            // { field: 'id', header: 'id', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
-
             { field: 'office', header: 'Biuro' , filter:true, class:"width-35"},
             { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
             { field: 'lastName', header: 'Nazwisko',sortable:true, filter:true,class:"width-35" },
@@ -103,7 +100,7 @@ export class TimesheetsComponent implements OnInit {
     }
 
     valueChange(rowData: any){
-            console.log('edit');
+         console.log('edit');
          console.log('edit !' + JSON.stringify(rowData));
 
         if (rowData.roleCode.indexOf('OP') > -1 || rowData.roleCode.indexOf('MG') > -1) {
@@ -152,58 +149,6 @@ export class TimesheetsComponent implements OnInit {
 
         }
     }
-    // TODO remove after change table
-    onEdit(event) {
-        console.log('edit');
-         console.log('edit !' + JSON.stringify(event.data));
-
-        if (event.data.roleCode.indexOf('OP') > -1 || event.data.roleCode.indexOf('MG') > -1) {
-            if (this.user.roleCode.indexOf('TS') < 0) {
-                this.alertService.warn("Brak uprawnień");
-                this.restore(event.data);
-            }
-        }
-
-        if (event.data.timesheetFrom.length === 2) {
-            if (this.hourRegexp.test(event.data.timesheetFrom)) {
-                event.data.timesheetFrom+=':';
-            } else {
-                event.data.timesheetFrom='';
-            }
-        } else if (event.data.timesheetFrom.length > 5) {
-            this.alertService.warn('Zbyt długie pole od '+event.data.timesheetFrom);
-            event.data.timesheetFrom = event.data.timesheetFrom.substr(0, 5);
-        }
-
-        if (event.data.timesheetTo.length === 2) {
-            if (this.hourRegexp.test(event.data.timesheetTo)) {
-                event.data.timesheetTo+=':';
-            } else {
-                event.data.timesheetTo='';
-            }
-        } else if (event.data.timesheetTo.length > 5) {
-            this.alertService.warn('Zbyt długie pole do '+event.data.timesheetFrom);
-            event.data.timesheetTo = event.data.timesheetTo.substr(0, 5);
-        }
-
-        if (event.data.timesheetTrainingInGMM.length === 1) {
-            if (this.hourRegexp.test(event.data.timesheetTrainingInGMM)) {
-                event.data.timesheetTrainingInGMM+=':';
-            }
-            else {
-                event.data.timesheetTrainingInGMM='';
-            }
-        } else if (event.data.timesheetTrainingInGMM.length > 4) {
-            this.alertService.warn('Zbyt długie pole szkolenie '+event.data.timesheetTrainingInGMM);
-            if (event.data.timesheetTrainingInGMM.indexOf(':') === 1) {
-                event.data.timesheetTrainingInGMM = event.data.timesheetTrainingInGMM.substr(0, 4);
-            } else {
-                event.data.timesheetTrainingInGMM = '0';
-            }
-
-        }
-
-    }
 
     private restore(userWithSheet: UserWithSheet) {
         if (userWithSheet.copy.usedTime == 0 && '00:00' == userWithSheet.copy.from.substr(11, 5) && '00:00' == userWithSheet.copy.to.substr(11, 5)) {
@@ -245,7 +190,6 @@ export class TimesheetsComponent implements OnInit {
                 userWithSheet.color = '#286090';
             }
         }
-
         userWithSheet.isLeave = userWithSheet.copy.isLeave;
         if (userWithSheet.isLeave === 'Y') {
             userWithSheet.timesheetBreakInMinutes = this.sLeave;
@@ -254,9 +198,6 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.timesheetTo = this.sLeave;
             userWithSheet.color = '#444433';
         }
-
-
-
         userWithSheet.status = 'OK';
     }
 
@@ -378,7 +319,6 @@ export class TimesheetsComponent implements OnInit {
             }
         }
         this.summary = this.toolsService.createSummaryForUserTable(this.usersWithSheets);
-
     }
    
     private createUserWithSheet(timesheet: Timesheet, users: User[], rowid: number): UserWithSheet {
