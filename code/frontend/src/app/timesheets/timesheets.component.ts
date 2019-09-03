@@ -64,8 +64,8 @@ export class TimesheetsComponent implements OnInit {
             { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
             { field: 'lastName', header: 'Nazwisko',sortable:true, filter:true,class:"width-35" },
             { field: 'isManagerOrOperator', header: '',hidden:true, sortable:true, filter:false,class:"width-35 text-right"}, 
-            { field: 'copy.fromMobileDevice', header: 'Wejście', sortable:true, filter:true, class:"width-35", inOut: true },
-            { field: 'copy.toMobileDevice', header: 'Wyjście', sortable:true , filter:true, class:"width-35", inOut:true },
+            { field: 'copy.fromMobileDevice', nested: 'fromMobileDevice', header: 'Wejście', sortable:true, filter:true, class:"width-35", inOut: true },
+            { field: 'copy.toMobileDevice', nested: 'toMobileDevice', header: 'Wyjście', sortable:true , filter:true, class:"width-35", inOut:true },
             { field: 'timesheetWorkDate', header: 'Dnia' , sortable:true, filter:true, class:"width-50 text-center"},
             { field: 'isLeave', header: 'Urlop',sortable:true , filter:true, class:"width-35 text-center", edit: true, isLeave:true},
             { field: 'timesheetFrom', header: 'Obecny od', sortable:true , filter:true, class:"width-35 text-center", edit: true }, 
@@ -320,7 +320,7 @@ export class TimesheetsComponent implements OnInit {
         }
         this.summary = this.toolsService.createSummaryForUserTable(this.usersWithSheets);
     }
-   
+
     private createUserWithSheet(timesheet: Timesheet, users: User[], rowid: number): UserWithSheet {
         let user = this.getUser(timesheet.personId, users);
 

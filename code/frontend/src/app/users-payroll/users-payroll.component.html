@@ -15,23 +15,23 @@
             <div class="ui-grid-row" style="margin-top: 10px;">
                 <div class="ui-grid-col-11">
                     <span style="margin-right: 2px;" [style.color]="'black'">Za okres:</span><span
-                        [style.color]="'#286090'">{{currentPayroll[0].formattedPeriodDate}}</span>
+                        [style.color]="'#286090'">{{currentPayroll[0]?.formattedPeriodDate}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wpolczynnik
-                        nadgodzin:</span><span [style.color]="'#286090'">{{currentPayroll[0].overTimeFactor}}</span>
+                        nadgodzin:</span><span [style.color]="'#286090'">{{currentPayroll[0]?.overTimeFactor}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;"
                         [style.color]="'black'">Zaakceptowany:</span><span
-                        [style.color]="currentPayroll[0].approved=='Y'?'black':'orange'">{{currentPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
+                        [style.color]="currentPayroll[0]?.approved=='Y'?'black':'orange'">{{currentPayroll[0]?.approved=='Y'?'TAK':'NIE'}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;"
                         [style.color]="'black'">Wygenerowany:</span><span
-                        [style.color]="'#286090'">{{currentPayroll[0].lastMod}}</span>
+                        [style.color]="'#286090'">{{currentPayroll[0]?.lastMod}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span
-                        [style.color]="'#286090'">{{currentPayroll[0].budget | currency:'PLN'}}</span>
+                        [style.color]="'#286090'">{{currentPayroll[0]?.budget | currency:'PLN'}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z
                         puli:</span><span
-                        [style.color]="'#286090'">{{currentPayroll[0].poolRate | currency:'PLN'}}</span>
+                        [style.color]="'#286090'">{{currentPayroll[0]?.poolRate | currency:'PLN'}}</span>
                     <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt
                         wypłat:</span><span
-                        [style.color]="'#286090'">{{calculatePayrollCost(currentPayroll[0].periodDate) | currency:'PLN'}}</span>
+                        [style.color]="'#286090'">{{calculatePayrollCost(currentPayroll[0]?.periodDate) | currency:'PLN'}}</span>
                 </div>
                 <div class="ui-grid-col-1">
                     <div style="margin-top: 0px; margin-bottom: 10px;">
@@ -45,7 +45,7 @@
                 sortField="user.excelId" sortOrder="1" scrollable="true" scrollHeight="600px"
                 loadingIcon="fa fa-spinner" [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false"
                 rowGroupMode="rowspan" csvSeparator=";"
-                [exportFilename]="'wynagrodzenie_'+currentPayroll[0].formattedPeriodDate">
+                [exportFilename]="'wynagrodzenie_'+currentPayroll[0]?.formattedPeriodDate">
                 <ng-template pTemplate="caption">
                     <div>
                         <i class="fa fa-search"></i>
@@ -141,10 +141,10 @@
                                             okres:</span><span [style.color]="'#286090'"
                                             style="font-weight: bold">{{firsHistoricalPayroll?.formattedPeriodDate}}</span>
                                         <span style="margin-left: 10px;"
-                                            [style.color]="firsHistoricalPayroll.approved=='Y'?'black':'orange'">{{firsHistoricalPayroll?.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
+                                            [style.color]="firsHistoricalPayroll?.approved=='Y'?'black':'orange'">{{firsHistoricalPayroll?.approved=='Y'?'Zaakceptowany':'Niezaakceptowany'}}</span>
                                         <span style="margin-left: 10px; margin-right: 2px;"
                                             [style.color]="'black'">Wspólczynnik nadgodzin:</span><span
-                                            [style.color]="'#286090'">{{firsHistoricalPayroll.formattedOverTimeFactor}}</span>
+                                            [style.color]="'#286090'">{{firsHistoricalPayroll?.formattedOverTimeFactor}}</span>
                                     </div>
                                     <div style="vertical-align: center">
                                         <span style="margin-left: 10px; margin-right: 2px;"
@@ -308,11 +308,11 @@
         <div class="ui-grid-row" style="margin-top: 10px;">
             <div class="ui-grid-col-11">
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Za okres:</span><span
-                    [style.color]="'#286090'">{{approvedPayroll[0].formattedPeriodDate}}</span>
+                    [style.color]="'#286090'">{{approvedPayroll[0]?.formattedPeriodDate}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Wspólczynnik
-                    nadgodzin:</span><span [style.color]="'#286090'">{{approvedPayroll[0].overTimeFactor}}</span>
+                    nadgodzin:</span><span [style.color]="'#286090'">{{approvedPayroll[0]?.overTimeFactor}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Zaakceptowany:</span><span
-                    [style.color]="approvedPayroll[0].approved=='Y'?'black':'orange'">{{approvedPayroll[0].approved=='Y'?'TAK':'NIE'}}</span>
+                    [style.color]="approvedPayroll[0].approved=='Y'?'black':'orange'">{{approvedPayroll[0]?.approved=='Y'?'TAK':'NIE'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Budżet puli:</span><span
                     [style.color]="'#286090'">{{approvedPayroll[0].budget | currency:'PLN'}}</span>
                 <span style="margin-left: 10px; margin-right: 2px;" [style.color]="'black'">Koszt 1h z puli:</span><span
@@ -330,7 +330,7 @@
         <p-table #approvedPayrollTable dataKey="id" [columns]="cols" [value]="approvedPayroll" [resizableColumns]="true"
             sortField="user.excelId" sortOrder="1" scrollable="true" scrollHeight="600px" loadingIcon="fa fa-spinner"
             [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false" rowGroupMode="rowspan"
-            csvSeparator=";" [exportFilename]="'wynagrodzenie_'+approvedPayroll[0].formattedPeriodDate">
+            csvSeparator=";" [exportFilename]="'wynagrodzenie_'+approvedPayroll[0]?.formattedPeriodDate">
             <ng-template pTemplate="caption">
                 <div>
                     <i class="fa fa-search"></i>

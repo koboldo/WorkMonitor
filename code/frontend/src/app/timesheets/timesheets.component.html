@@ -70,8 +70,10 @@
       </tr>
       <tr>
         <th *ngFor="let col of columns" [hidden]="col.hidden">
-          <input class="width-100" [attr.placeholder]="col.inOut ? 'Y/N' : 'Filtruj'" pInputText
-            type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">       
+          <input *ngIf="col.filter && !col.inOut" class="width-100" [attr.placeholder]="'Filtruj'" pInputText
+            type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)">
+          <input *ngIf="col.filter && col.inOut" class="width-100" [attr.placeholder]="'Y/N'" pInputText
+                 type="text" (input)="tt.filter($event.target.value, col.field, 'contains')">
         </th>
       </tr>
     </ng-template>
@@ -89,9 +91,16 @@
                   </span>
                 </ng-template>
               </p-cellEditor>
-              <span  *ngIf="!col.edit && !col.status">
+
+              <span  *ngIf="!col.edit && !col.status && !col.inOut">
                   {{rowData[col.field]}}
-              </span>             
+              </span>
+
+              <div *ngIf="col.inOut">
+                <span *ngIf="rowData?.copy[col.nested]=='Y'" [style.color]="'darkred'" class="ui-inputgroup-addon"><i [class]="'fa fa-mobile-phone'"></i></span>
+                <span *ngIf="rowData?.copy[col.nested]=='N'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-laptop'"></i></span>
+              </div>
+
               <div *ngIf="col.status">
                   <div *ngIf="rowData[col.field] == 'PROGRESS'"  class="text-center"><p-progressSpinner [style]="{width: '30px', height: '30px'}" strokeWidth="2"></p-progressSpinner></div>
                   <div *ngIf="rowData[col.field] == 'OK'"  class="text-center" [style.color]="'green'"><i class="fa fa-check" aria-hidden="true"></i></div>

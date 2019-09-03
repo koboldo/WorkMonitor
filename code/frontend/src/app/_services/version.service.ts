@@ -20,10 +20,11 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.44', 'Poprawki na zakładkach wynagrodzenia/czas pracy'),
             new CodeValue('1.5.43', 'Zmiana tabel na turbo table'),
             new CodeValue('1.5.42', 'Dodanie filtrowania ceny jako suwak'),
             new CodeValue('1.5.41', 'Dodanie podsumowań dla tabel'),
-			new CodeValue('1.5.40', 'Składowa budżetu puli, obsługa TDS completedWo'),
+			      new CodeValue('1.5.40', 'Składowa budżetu puli, obsługa TDS completedWo'),
             new CodeValue('1.5.39', 'Obsługa telefonów - menu'),
             new CodeValue('1.5.38', 'Dodanie grupowego przypisywania zleceń, poprawki filtrowania Turbo Table'),
             new CodeValue('1.5.37', 'Dodanie statusu Kosz dla zleceń'),
