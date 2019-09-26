@@ -24,6 +24,15 @@ export class ToolsService {
 
     }
 
+    public getUserById(users: User[], id: number): User {
+        for(let user of users) {
+          if(user.id === id) {
+            return user;
+          }
+        }
+        return null;
+    }
+
     public getEngineers(emails:string[], engineers: User[]):User[] {
         return engineers.filter(engineer => this.filterEnginner(engineer, emails));
     }

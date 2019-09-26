@@ -48,6 +48,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
     cols: any;
     colsForOrdersTable: any;
 
+    users: User[];
+
     constructor(private woService:WOService,
                 private userService:UserService,
                 private workTypeService:WorkTypeService,
@@ -69,6 +71,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        this.userService.getAllStaff().subscribe(users => this.users = users);
 
         this.workTypeService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
 
@@ -307,7 +311,10 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
 
             if (userData.declaredTime === 0) {
-                this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
+                let user: User = this.toolsService.getUserById(this.users, userData.id);
+                if (user.isEmployed) {
+                  this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
+                }
                 this.setMark(userData, this.noTimesheets);
                 userData.timeUtilizationPercentage = this.noTimesheets;
             } else {
