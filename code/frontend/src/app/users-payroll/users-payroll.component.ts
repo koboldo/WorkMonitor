@@ -141,7 +141,7 @@ export class UsersPayrollComponent implements OnInit {
     }
 
     private isCurrent(periodDate: string): boolean {
-        if (this.currentPayroll && this.currentPayroll[0].periodDate === periodDate) {
+        if (this.currentPayroll && this.currentPayroll.length > 0 && this.currentPayroll[0].periodDate === periodDate) {
             return true;
         }
         return false;
@@ -150,8 +150,11 @@ export class UsersPayrollComponent implements OnInit {
     public calculatePayrollCost(periodDate: string): number {
 
         let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
-
-        return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+        if (payrolls) {
+          return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+        } else {
+            return 0;
+        }
     }
 
     private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
@@ -199,7 +202,7 @@ export class UsersPayrollComponent implements OnInit {
 
     public approve():void {
         this.displayApproveDialog = false;
-        if (this.currentPayroll[0] && this.currentPayroll[0].periodDate) {
+        if (this.aSelectedPayroll && this.aSelectedPayroll.periodDate) {
             this.payrollService.approve(this.users, this.aSelectedPayroll.periodDate, this.overTimeFactor/100.0)
                 .subscribe(approvedPayroll => this.showApproveResult(approvedPayroll));
         }
@@ -275,9 +278,14 @@ export class UsersPayrollComponent implements OnInit {
         }
         let tab = Array.from(tmpMapForDropDownPeriodList.values()).sort().reverse();
         this.periodForDropDown = [];
-        tab.forEach(element=>{
+        tab.forEach(element => {
             this.periodForDropDown.push({label: element, value:element});
-        });       
+        });
+
+        this.selectedPeriod = this.periodForDropDown[0] ? this.periodForDropDown[0].value : undefined;
+        if (this.selectedPeriod) {
+          this.setHistroicalPayrolls();
+        }
     }
 
     private getRecalculateButtonStyle(periodDate: string):string {

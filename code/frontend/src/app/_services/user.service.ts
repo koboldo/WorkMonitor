@@ -17,7 +17,7 @@ export class UserService {
     }
 
 
-    getById(id: number) {
+    getById(id: number):Observable<any> {
         return this.http.get('/api/v1/persons/' + id).pipe(map((response: Object) => response));
     }
 
