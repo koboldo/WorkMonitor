@@ -20,6 +20,7 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.44', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
             new CodeValue('1.5.43', 'Zmiana tabel na turbo table'),
             new CodeValue('1.5.42', 'Dodanie filtrowania ceny jako suwak'),
             new CodeValue('1.5.41', 'Dodanie podsumowań dla tabel'),

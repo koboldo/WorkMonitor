@@ -80,6 +80,9 @@ export class WoComponent implements OnInit {
     priceTimeout: any;
     priceFilter: number;
     summary: TableSummary;
+    priceSliderVisibility = true;
+    priceTextFilterVisibility = true;
+    priceTextFilterValue:string;
     
     constructor(protected woService:WOService,
                 protected userService:UserService,
@@ -144,17 +147,23 @@ export class WoComponent implements OnInit {
       
     }
 
+    public onPriceTextChange(){
+        this.priceTextFilterValue != "" ? this.priceSliderVisibility = false :  this.priceSliderVisibility = true;  
+    }
+
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);
     }
 
     public onPriceChange(event, tt) {
-        if (this.priceTimeout) {
-            clearTimeout(this.priceTimeout);
-        }
-        this.priceTimeout = setTimeout(() => {
-            tt.filter(event.value, 'price', 'gt');
-        }, 250);
+        tt.filter(event.value, 'price', 'gt');
+        event.value > 0 ? this.priceTextFilterVisibility = false : this.priceTextFilterVisibility = true;
+    }
+
+    public clearPriceFilter (tt) {
+        this.priceFilter = 0;
+        tt.filter(null, 'price', 'gt')
+        this.priceTextFilterVisibility = true;
     }
 
     public showChangeStatusDialog() {
