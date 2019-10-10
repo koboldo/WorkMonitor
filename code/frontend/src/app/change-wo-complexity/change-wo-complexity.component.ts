@@ -7,6 +7,7 @@ import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '..
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
+import { TableSummary } from 'app/_models/tableSummary';
 
 
 @Component({
@@ -38,7 +39,11 @@ export class ChangeWoComplexityComponent implements OnInit {
 
     newComment: string;
     pl:Calendar;
-
+    cols: any;
+    priceTimeout: any;
+    priceFilter: number;
+    summary: TableSummary;
+    
     constructor(private woService:WOService,
                 private userService:UserService,
                 private workTypeService:WorkTypeService,
@@ -61,7 +66,46 @@ export class ChangeWoComplexityComponent implements OnInit {
             {label: 'Zmniejsz trudność', icon: 'fa fa-arrow-circle-down', command: (event) => this.changeComplexity(false)},
             {label: 'Poprawa', icon: 'fa fa-bell', command: (event) => this.reassign()}
         ];
+        this.cols = [
+            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"text-center-30"},
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+            { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
+            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
+            { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
+            { field: 'complexityCode', header: 'Zł.', hidden:false, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },
+            { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"},
+            { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
+            { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-35 text-right", price:true}, 
+            { field: 'assignee', header: 'Wykonawca',hidden:false, sortable:true, filter:true, class:"width-100" },
+            { field: 'lastModDate', header: 'Mod.' ,hidden:false, sortable:true, filter:true, class:"width-50"},
+            { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icon:true, class:"width-20 text-center"},
+            //hidden columns
+            { field: 'sComments', header: 'Komentarz',hidden:true,  sortable:true , filter:true,class:"width-250", icon:true},
+            { field: 'description', header: 'Opis',hidden:true,  filter:true ,class:"width-250"},      
+            { field: 'isFromPool', header: 'Pula' ,hidden:true, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},
+            { field: 'protocolNo', header: 'Protokół',hidden:true, sortable:true, filter:true, class:"width-100" },        
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
+            { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
+            { field: 'ventureCompany', header: 'Inwestor',hidden:true, sortable:true , filter:true, class:"width-135"},
+            { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:true, sortable:true , filter:true, class:"width-135" },         
+        ]
+    }
 
+    public getStatusIcon(statusCode: string): string {
+    return this.toolsService.getStatusIcon(statusCode);
+    }
+
+    public onPriceChange(event, tt) {
+        if (this.priceTimeout) {
+            clearTimeout(this.priceTimeout);
+        }
+        this.priceTimeout = setTimeout(() => {
+            tt.filter(event.value, 'price', 'gt');
+        }, 250);
     }
 
     search() {
@@ -214,5 +258,32 @@ export class ChangeWoComplexityComponent implements OnInit {
         }
 
         this.orders = tmpOrders;
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
     }
+//TODO perhaps comment service ?
+    public getCancelOrHoldComment(order:Order):string {
+        if (order.comments) {
+            return commentCancelOrHoldAsString(order.comments);
+        } else {
+
+            return '';
+        }
+    }
+}
+export function commentCancelOrHoldAsString(comments: Comments): string {
+    let comentsTab : string [] = [];
+    comments.comments.forEach(element => {
+        if (element.reason=== 'Anulowanie')
+        {
+            comentsTab.push(' '+element.sCreatedBy+": \"" +(element.text? element.text: '')+ "\"" );                       
+        }
+
+    });
+    if (comentsTab.length>0)
+    {
+        return comentsTab.toString();
+    }
+    return comments.comments[comments.comments.length-1]? comments.comments[comments.comments.length-1].text: '';
+    
+
 }

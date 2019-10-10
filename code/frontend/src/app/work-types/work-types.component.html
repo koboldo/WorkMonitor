@@ -1,79 +1,101 @@
 <div style="margin-top: 5px" *ngIf="workTypes" class="ui-g">
-  <p-dataTable [value]="workTypes" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedWorkType" (onRowDblclick)="onRowDblclick($event)" (onRowSelect)="onRowSelect($event)" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
-    <p-header>
-      <div>
-        <i class="fa fa-search"></i>
-        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-        <button type="button" pButton icon="fa fa-plus" style="float:left" (click)="add()" label="Dodaj"></button>
-      </div>
-    </p-header>
 
-    <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
+   <p-table #tt dataKey="id" [columns]="cols" [value]="workTypes" [rows]="20" [paginator]="true" [resizableColumns]="true" 
+   sortField="lastModDate" sortOrder="-1"  [(selection)]="selectedWorkType" selectionMode="single"
+   loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
+   [responsive]="false"
+   (onRowSelect)="onRowSelect($event)" 
+   [metaKeySelection]="true"
+   [contextMenu]="cm"  [(contextMenuSelection)]="selectedWorkType"
+   contextMenuSelectionMode="joint"
+   >
+   <ng-template pTemplate="caption">
+     <div>
+       <i class="fa fa-search"></i>
+       <input type="text" pInputText size="50" placeholder="Filtruj"
+         (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+     </div>
+   </ng-template>
+   <ng-template pTemplate="header" let-columns let-rowData>
+     <tr>
+       <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+         pResizableColumn excludeGlobalFilter=col.exclude>
+         <span class="header" *ngIf="!col.check">
+           {{col.header}}
+           <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+         </span>
+         <p-tableHeaderCheckbox *ngIf="col.check"></p-tableHeaderCheckbox>
+       </th>
+     </tr>
+     <tr>
+       <th *ngFor="let col of columns" [hidden]="col.hidden">
+         <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+           type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">             
+       </th>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="body" let-rowData let-columns="columns" >
+     <tr [pSelectableRow]="rowData" (dblclick)="onRowDblclick($event, rowData)" [pContextMenuRow]="rowData">
+       <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">    
+         <span *ngIf="col.color">          
+          <span [style.color]="rowData[col.field]" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px; color: grey">{{rowData[col.field]}}</span>
+         </span>
+         <span *ngIf="col.isFromPool">
+             <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+             <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+         </span>
+         <span *ngIf="col.description">
+          <span [style.color]="rowData['color']" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
+          <span style="padding: 3px">{{rowData.description}}</span>
+         </span>
+         <span *ngIf="col.office">
+          {{dictService.getOffice(rowData[col.field])}}      
+         </span>
+         <span *ngIf="col.complexityCode">
+            <span class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span> 
+            <span style="margin-left: 5px;">{{dictService.getComplexitiy(rowData[col.field])}}</span>
+         </span>
+          <span *ngIf="col.complexity">        
+            <span style="margin-left: 5px;">{{rowData[col.field]}}</span><span> godzin</span>
+          </span>
+        <span *ngIf="col.price">
+            <span style="margin-left: 5px;">{{rowData[col.field] | currency:'PLN'}}</span>
+        </span>    
+         <span *ngIf="!col.icon">
+           {{rowData[col.field]}}
+         </span>       
+       </td>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="footer" let-columns>
+     <tr>
+       <td *ngFor="let col of columns" [hidden]="col.hidden">
+         <span *ngIf="col.isActive">Aktywnych <br />   </span>
+         <span *ngIf="col.isEmployed">Pracujących <br /></span>
+         <span *ngIf="col.rank"> <br /> </span>
+       </td>
+     </tr>
+   </ng-template>
+   <ng-template pTemplate="summary" let-columns="columns">
+     <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+       <div class="ui-grid-row"  style="margin-top: 15px;">
+         <div class="ui-grid-col-1"></div>
+         <div class="ui-grid-col-2"> </div>
+         <div class="ui-grid-col-6"></div>
+         <div class="ui-grid-col-2">
+         </div>
+         <div class="ui-grid-col-1"></div>
+       </div>
+     </div>
+   </ng-template>
+   <ng-template pTemplate="emptymessage">
+    Brak typów zleceń...
+  </ng-template>
 
-
-
-  <p-column [sortable]="true" field="color" header="Kolor" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'120px'}">
-      <ng-template let-col let-order="rowData" pTemplate="body">
-          <span [style.color]="order[col.field]" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-          <span style="padding: 3px; color: grey">{{order[col.field]}}</span>
-      </ng-template>
-  </p-column>
-
-    <p-column [sortable]="true" field="typeCode" header="Typ" [style]="{'text-align':'center'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-
-      <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'60px'}">
-          <ng-template let-col let-order="rowData" pTemplate="body">
-              <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-              <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-          </ng-template>
-      </p-column>
-
-    <p-column [sortable]="true" field="description" header="Opis typu" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-      <ng-template let-col let-order="rowData" pTemplate="body">
-        <span [style.color]="order['color']" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-        <span style="padding: 3px">{{order.description}}</span>
-      </ng-template>
-    </p-column>
-
-    <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'120px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-            {{dictService.getOffice(order[col.field])}}
-        </ng-template>
-    </p-column>
-
-    <p-column [sortable]="true" field="complexityCode" header="Złożoność" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center'}">
-      <ng-template let-col let-order="rowData" pTemplate="body">
-        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span><span style="margin-left: 5px;">{{dictService.getComplexitiy(order[col.field])}}</span>
-      </ng-template>
-    </p-column>
-
-    <p-column [sortable]="true" field="complexity" header="Pracochłonność [H]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-            <span style="margin-left: 5px;">{{order[col.field]}}</span><span> godzin</span>
-        </ng-template>
-    </p-column>
-
-    <p-column [sortable]="true" field="price" header="Cena [PLN]" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'right'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-            <span style="margin-left: 5px;">{{order[col.field] | currency:'PLN'}}</span>
-        </ng-template>
-    </p-column>
-
-    <ng-template pTemplate="emptymessage">
-      Brak typów zleceń...
-    </ng-template>
-
-    <p-footer>
-    </p-footer>
-
-  </p-dataTable>
-
-  <p-contextMenu #cm [model]="items"></p-contextMenu>
+ </p-table>
+ <p-contextMenu #cm [model]="items"></p-contextMenu>
 </div>
-
-
-
 <p-dialog [header]="newWorkType? 'Nowy typ zlecenia' : 'Modyfikacja typu zlecenia'" [(visible)]="displayEditDialog" [responsive]="true" [minWidth]="800">
     <form name="f" (ngSubmit)="f.form?.valid && save()" #f="ngForm">
         <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="editedWorkType">
@@ -97,14 +119,12 @@
               <div class="ui-grid-col-4"><label for="officeCode">Region*</label></div>
               <div class="ui-grid-col-8">
                   <p-dropdown placeholder="Wybierz biuro obsługujące..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="officeCode" name="officeCode" [options]="offices" [(ngModel)]="editedWorkType.officeCode" required autoWidth="false" ></p-dropdown>
-                  <!--<input [disabled]="!newWorkType" pInputText id="officeCode" name="officeCode" class="form-control" [(ngModel)]="editedWorkType.officeCode" placeholder="Region" required/>-->
               </div>
             </div>
             <div *ngIf="showComplexities" class="ui-grid-row" style="margin-top: 10px;">
               <div class="ui-grid-col-4"><label for="complexityCode">Złożoność*</label></div>
               <div class="ui-grid-col-8">
                   <p-dropdown placeholder="Wybierz złożoność..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="complexityCode" name="complexityCode" [options]="complexities" [(ngModel)]="editedWorkType.complexityCode" required autoWidth="false" ></p-dropdown>
-                  <!--<input [disabled]="!newWorkType" pInputText id="complexityCode" name="complexityCode" class="form-control" [(ngModel)]="editedWorkType.complexityCode" placeholder="Złożoność HRD lub STD" required/>-->
               </div>
             </div>
             <div class="ui-grid-row" style="margin-top: 10px;">
@@ -121,7 +141,6 @@
                   <div *ngIf="f.submitted && !price?.valid" class="help-block">Cena jest wymagana</div>
               </div>
             </div>
-
             <div class="ui-grid-row" style="margin-top: 10px;">
                 <div class="ui-grid-col-4"><label for="isFromPool">Kategoria*</label></div>
                 <div class="ui-grid-col-8">
@@ -132,7 +151,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
                 <div class="ui-grid-col-4"><label for="color">Kolor*</label></div>
                 <div class="ui-grid-col-8">
@@ -141,17 +159,11 @@
                     <div *ngIf="f.submitted && !color?.valid" class="help-block">Wybierz kolor!</div>
                 </div>
             </div>
-
-
         </div>
-
-
       </div>
       <p-footer>
         <div class="ui-grid ui-grid-responsive">
               <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 20px;">
-              <!--<button [disabled]="!(editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexityCode?.length > 0 && editedWorkType?.complexity && editedWorkType?.complexity >= 0 && editedWorkType?.price && editedWorkType?.price >= 0)"
-                      width="200px" type="button" pButton icon="fa fa-check" (click)="save()" label="Zapisz"></button>-->
                 <div class="ui-grid-col-8"></div>
                 <div class="ui-grid-col-4">
                     <button (click)="save()"

@@ -7,6 +7,9 @@ import { Observable }       from 'rxjs';
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { SelectItem } from 'primeng/primeng'
+import { TableSummary } from 'app/_models/tableSummary';
+import { userTableSummary } from 'app/_models/userTableSummary';
+import { UserWithSheet } from 'app/_models/userWithSheet';
 
 
 @Injectable()
@@ -19,6 +22,15 @@ export class ToolsService {
 
     constructor(private alertService: AlertService) {
 
+    }
+
+    public getUserById(users: User[], id: number): User {
+        for(let user of users) {
+          if(user.id === id) {
+            return user;
+          }
+        }
+        return null;
     }
 
     public getEngineers(emails:string[], engineers: User[]):User[] {
@@ -307,5 +319,93 @@ export class ToolsService {
         return value;
     }
 
+    // summary for turbo table 
 
+    public createSummaryForOrdersTable (orders : Order []) : TableSummary {
+        let summary = new TableSummary();
+        orders.forEach(element => {
+          if (element.statusCode === 'OP') {summary.openOrders ++ ;}
+          if (element.statusCode === 'AS') {summary.assignedOrders ++ ;}
+          if (element.statusCode === 'CO') {summary.complitedOrders ++;}
+          if (element.statusCode === 'IS') {summary.issuedOrders ++;}
+          if (element.statusCode === 'CL') {summary.closeOrders ++;}
+        });
+        summary.summaryPrice = this.countSummaryPrice(orders);
+        summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
+        return summary;
+      }
+
+      public createSummaryForUserTable (users : UserWithSheet[]) : userTableSummary {
+        let summary = new userTableSummary();
+        let trainingInMinutes = 0;
+        users.forEach(element => {
+           let time = parseInt(element.timesheetBreakInMinutes);
+           if (!isNaN(time) ){
+                summary.totalBreakTime += time;
+           }
+           if (element.isLeave === 'Y'){
+                summary.totalIsLeave ++;
+           }
+           let training = parseInt(element.copy.training);
+           if (!isNaN(training)){
+                trainingInMinutes += training;
+           }    
+        });
+        summary.totalTrainingTimeInGMM = this.convertMinutesToGMM(trainingInMinutes.toString());
+        summary.totalActiveUsers = this.countActiveUsers(users);
+        summary.totalEmployees = this.countEmployedUsers(users);
+        summary.totalUsersFromPool = this.countUsersInPool(users);
+        return summary;
+    }
+    
+
+    private countUsersInPool (users: UserWithSheet[]): number {
+        let usersFromPoll = 0;
+        users.forEach(element => {
+            if (element.isFromPool === 'Y'){
+                usersFromPoll++;
+            }
+        });
+        return usersFromPoll;
+    }
+
+    private countActiveUsers (users: UserWithSheet[]): number {
+        let activUserNumber = 0;
+        users.forEach(element => {
+            if (element.isActive === 'Y'){
+                activUserNumber ++;
+            }
+        });
+        return activUserNumber;
+    }
+
+    private countEmployedUsers(users: UserWithSheet[]): number {
+        let emplyedUser = 0;
+        users.forEach(element => {
+            if (element.isEmployed === 'Y') {
+                emplyedUser++;
+            }       
+        });
+        return emplyedUser;
+    }
+
+    private countSummaryPrice (orders: Order []) : number {
+        let summaryPrice = 0;
+        orders.forEach(element => {
+            if (element.price != undefined) {
+                summaryPrice += element.price;
+            }     
+        });
+        return summaryPrice;
+    }
+      
+    private countSummaryIsFromPool (orders: Order []): number {
+        let summaryIsFromPool = 0;
+        orders.forEach(element => {
+          if (element.isFromPool === 'Y') {
+              summaryIsFromPool ++;
+          }
+        });
+        return summaryIsFromPool;
+      }
 }

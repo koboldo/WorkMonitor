@@ -142,5 +142,101 @@ body .ui-button.ui-state-default.ui-button-danger:enabled:active, body .ui-butto
     border-color: #a90000; }
 
 
+/*Style for turbo table*/
 
-
+.width-10 {
+    width: 10%;
+}
+.width-20 {
+    width: 20%;
+}
+.text-center-30 {
+    text-align:center;
+    width :30%;
+}
+.width-35 {
+    width: 35%;
+}
+.width-45 {
+    width: 45%;
+}
+.width-50 {
+    width: 50%;
+}
+.width-70 {
+    width: 70%;
+}
+.width-80 {
+    width: 87%;
+}
+.width-100 {
+    width: 100%;
+}
+.width-100-filtr {
+    width: 100%;
+}
+.width-135 {
+    width: 135%;
+}
+.width-125 {
+    width: 125%;
+}
+.width-250 {
+    width: 250%;
+}
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.color-green{
+    color: green;
+}
+.color-blue {
+    color: #286090;
+}
+.width-1680 {
+    width: 1680px;
+}
+@media only screen and (max-width: 1026px) {
+    .width-10 {
+        width: 30px;
+    }
+    .width-20 {
+        width: 40px;
+    }
+    .text-center-30 {
+        text-align:center;
+        width :50px;
+    }
+    .width-35 {
+        width: 70px;
+    }
+    .width-45 {
+        width: 80px;
+    }
+    .width-50 {
+        width: 100px;
+    }
+    .width-70 {
+        width: 120px;
+    }
+    .width-80 {
+        width: 160px;
+    }
+    
+    .width-135 {
+        width: 250px;
+    }
+    .width-125 {
+        width: 270px;
+    }
+    .width-250 {
+        width: 250px;
+    }
+} 

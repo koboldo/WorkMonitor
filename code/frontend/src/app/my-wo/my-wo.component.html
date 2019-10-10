@@ -2,74 +2,70 @@
 
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <!--(onRowSelect)="onRowSelect($event)"-->
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt selectionMode="single" [(selection)]="selectedOrder" dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
-      <p-header>
-        <div>
-          <i class="fa fa-search"></i>
-          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          <button type="button" pButton icon="fa fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
-          <button type="button" pButton [disabled]="orders?.length < 1" (click)="showChangeStatusDialog()" label="Zakończ zlecenia" icon="fa fa-list" iconPos="left" style="float: right;"></button>
+    <p-table #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
+    sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
+    [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm"
+    contextMenuSelectionMode="joint" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
+    [responsive]="false">
+    <ng-template pTemplate="caption">
+      <div class="ui-grid-row">
+          <div class="ui-grid-col-2">
+              <button type="button" pButton icon="fa fa-refresh" style="float:left" (click)="search()" label="Odśwież"></button>
+            </div>
+        <div class="ui-grid-col-8">
+            <i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
         </div>
-      </p-header>
-      <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
-
-      <p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
-      <p-column [sortable]="true" field="statusCode" header="Status" >
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-          <span style="padding: 3px">{{order.status}}</span>
-        </ng-template>
-      </p-column>
-
-      <p-column [sortable]="true" field="type" header="typeSearch"  [style]="{'width':'0px'}"></p-column><!-- search -->
-      <p-column [sortable]="true" field="typeCode" header="Typ">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-          <span style="padding: 3px">{{order.type}}</span>
-        </ng-template>
-      </p-column>
-
-      <p-column [sortable]="true" field="complexityCode" header="Złożoność" [style]="{'text-align':'center'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-          <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-        </ng-template>
-      </p-column>
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" ></p-column>
-      <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right"></p-column>
-
-      <p-column field="sComments" header="Komentarz" hiddem="true">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-            <span>{{getCancelOrHoldComment(order)}}</span>
-        </ng-template>
-    </p-column>
-      <p-column [sortable]="true" field="description" header="Opis" hiddem="true"></p-column>
-      <p-column [sortable]="true" field="lastModDate" header="Modyfikacja"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Dodano"></p-column>
-
-      <!-- search by invisible colums, display in one row -->
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" ></p-column>
-      <!-- search by invisible colums flatten into order by wo.service -->
-      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu"   hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja"   hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemAddress" header="Adres"  hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu"  hidden="true"></p-column>
-
-        <p-column [style]="{'width':'40px','text-align':'center'}">
-            <ng-template let-order="rowData" pTemplate="body">
-                <button type="button" pButton (click)="selectedOrder=order; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></button>
-            </ng-template>
-        </p-column>
-
-      <ng-template pTemplate="emptymessage">
-        Brak zleceń do bieżącej obsługi, poproś o więcej lub idź do domu...
-      </ng-template>
-
-      <p-footer></p-footer>
-
-    </p-dataTable>
-
-    <p-contextMenu #cm [model]="items"></p-contextMenu>
+        <div class="ui-grid-col-2">
+            <button type="button" pButton [disabled]="orders?.length < 1" (click)="showChangeStatusDialog()" label="Zakończ zlecenia" icon="fa fa-list" iconPos="left" style="float: right;"></button>
+          </div>       
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns let-rowData>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+          pResizableColumn excludeGlobalFilter=col.exclude>
+          <span class="header">
+            {{col.header}}
+            <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+          </span>
+        </th>
+      </tr> 
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+        <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="contains" [ngClass]="col.class"  exportable="col.exportable">
+          <span  *ngIf="col.statusCode">
+              <i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
+              <span style="padding: 3px">{{rowData.status}}</span>
+          </span>   
+          <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
+            class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i>   </span>
+          <span *ngIf="col.complexity" class="ui-inputgroup-addon"><i
+              [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+          <span *ngIf="col.isFromPool">
+            <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i
+                [class]="'fa fa-users'"></i></span>
+            <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
+                [class]="'fa fa-street-view'"></i></span>
+          </span>
+          <p-button *ngIf="col.details" type="button" style="width:25px" (click)="selectedOrder = rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></p-button>
+          <span *ngIf="col.comment">{{getCancelOrHoldComment(rowData)}}</span>
+          <span *ngIf="!col.icon && !col.price">
+            {{rowData[col.field]}}
+          </span>
+          <span *ngIf="col.price">
+            {{rowData[col.field] | currency:'PLN'}}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      Brak zleceń...
+    </ng-template>
+  </p-table>
+  <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
 
     <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">

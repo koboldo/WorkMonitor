@@ -1,126 +1,109 @@
 <div class="ui-grid-row" style="max-width: 1200px;">
 
-    <div style="margin-top: 5px" *ngIf="userHistory" class="ui-g">
-      <!--(onRowSelect)="onRowSelect($event)"-->
-      <p-dataTable [value]="userHistory" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id" resizableColumns="true" sortField="histCreationDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" expandableRows="true">
-        <p-header>
-          <div>
-            <i class="fa fa-search"></i>
-            <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          </div>
-        </p-header>
-        
-        <p-column expander="true" styleClass="col-icon" [style]="{'width': '30px'}"></p-column>
-        
-        <p-column [sortable]="true" field="id" header="Id bazy" [hidden]="true"></p-column>
-        <p-column [sortable]="true" field="excelId" header="Id excel" [hidden]="true"></p-column>
-
-        <p-column header="Osoba" field="lastName"  [filter]="true" filterPlaceholder="Nazwisko" [style]="{'text-align':'center', 'width':'140px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
-            <span [style.color]="'green'" class="ui-inputgroup-addon">{{user.firstName}} {{user.lastName}}</span>
-          </ng-template>
-        </p-column>
-
-        <p-column [sortable]="true" field="office" header="Biuro" ></p-column>
-
-        <p-column [sortable]="true" field="role" header="Role" ></p-column>
-        <p-column [sortable]="true" field="rank" header="Stopień" ></p-column>
-
-        <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
-            <span *ngIf="user[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-            <span *ngIf="user[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-          </ng-template>
-
-        </p-column>
-        <p-column [sortable]="true" field="projectFactor" header="Współczynnik" ></p-column>
-
-
-        <p-column [sortable]="true" field="salary" header="Wynagrodzenie" ></p-column>
-        <p-column [sortable]="true" field="salaryRate" header="St. gwarantowana" ></p-column>
-        <p-column [sortable]="true" field="leaveRate" header="St. za urlop" ></p-column>
-
-<!--
-        <p-column [sortable]="true" field="isActive" header="Aktywny" ></p-column>
-        <p-column [sortable]="true" field="isEmployed" header="Pracuje" ></p-column>-->
-
-        <!--<p-column [sortable]="true" field="company" header="Firma" ></p-column>
-        <p-column [sortable]="true" field="agreement" header="Umowa" ></p-column>-->
-
-
-
-        <!--
-        <p-column [sortable]="true" field="lastModDate" header="Od" ></p-column>
-        <p-column [sortable]="true" field="histCreationDate" header="Do" ></p-column>
-        <p-column [sortable]="true" field="modifiedBy" header="Modyfikował" ></p-column>
-        -->
-
-        <p-column [sortable]="true" field="histCreationDate" header="Do" [style]="{'text-align':'center', 'width':'120px'}">
-          <ng-template let-col let-user="rowData" pTemplate="body">
-            <span *ngIf="user[col.field]==CURRENT_EOF" [style.color]="'green'" class="ui-inputgroup-addon">Bieżący</span>
-            <span *ngIf="user[col.field]!=CURRENT_EOF" >{{user[col.field]}}</span>
-          </ng-template>
-
-        </p-column>
-
-        <ng-template let-user pTemplate="rowexpansion">
-          <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
-
-            <div *ngIf="user?.histCreationDate == CURRENT_EOF" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-              Rekord bieżący
-            </div>
-            <div *ngIf="user?.modifiedBy" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-              Rekord modyfikowany przez: <span style="font-weight: bold">{{user?.modifiedByUser?.email}}</span>
-            </div>
-            <div *ngIf="user?.lastModDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-              Rekord aktywny od: <span style="font-weight: bold">{{user?.lastModDate}}</span>
-            </div>
-            <div *ngIf="user?.histCreationDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-              Rekord aktywny do: <span style="font-weight: bold">{{user?.histCreationDate}}</span>
-            </div>
-            <hr>
-
-
-            <div class="ui-grid-row">
-              <div *ngIf="user?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
-                Dane kontaktowe: tel. <span style="font-weight: bold">{{user?.phone}}</span>, email: <span style="font-weight: bold">{{user?.email}}</span>, adres: <span style="font-weight: bold">{{user?.addressStreet}}, {{user?.addressPost}}</span>
+  <div style="margin-top: 5px" *ngIf="userHistory" class="ui-g">
+    <p-table #tt dataKey="histCreationDate" [columns]="cols" [value]="userHistory" [rows]="20" [paginator]="true"
+      [resizableColumns]="true" sortField="histCreationDate" sortOrder="1" loadingIcon="fa fa-spinner"
+      [globalFilterFields]="cols" [responsive]="false" expandableRows="true">
+      <ng-template pTemplate="caption">
+        <div>
+          <i class="fa fa-search"></i>
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns let-rowData>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+        <tr>
+          <td *ngFor="let col of columns " [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"
+            exportable="col.exportable">
+            <a href="#" [pRowToggler]="rowData" *ngIf="col.button">
+              <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+            </a>
+            <span *ngIf="col.user">
+              <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon color-green">{{rowData.firstName}}
+                {{rowData.lastName}}</span>
+            </span>
+            <span *ngIf="col.isFromPool">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-users'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-street-view'"></i></span>
+            </span>
+            <span *ngIf="col.histCreationDate">
+              <span *ngIf="rowData[col.field]==CURRENT_EOF" [style.color]="'green'"
+                class="ui-inputgroup-addon">Bieżący</span>
+              <span *ngIf="rowData[col.field]!=CURRENT_EOF">{{rowData[col.field]}}</span>
+            </span>
+            <span *ngIf="!col.icon">
+              {{rowData[col.field]}}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template let-user pTemplate="rowexpansion" let-columns="columns">
+        <tr>
+          <td [attr.colspan]="columns.length + 1">
+            <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+              <div *ngIf="user?.histCreationDate == CURRENT_EOF" class="ui-grid-row"
+                style="text-align:left; font-size: smaller;">
+                Rekord bieżący
               </div>
-            </div>
-            <div class="ui-grid-row">
-              <div *ngIf="user?.account" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
-                Rachunek: <span style="font-weight: bold">{{user.account}}</span>
+              <div *ngIf="user?.modifiedBy" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Rekord modyfikowany przez: <span style="font-weight: bold">{{user?.modifiedByUser?.email}}</span>
               </div>
-            </div>
-            <div class="ui-grid-row">
-              <div *ngIf="user?.company" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
-                <span style="font-weight: bold">{{user?.company}}</span>
+              <div *ngIf="user?.lastModDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Rekord aktywny od: <span style="font-weight: bold">{{user?.lastModDate}}</span>
               </div>
-            </div>
-            <div *ngIf="user?.excelId" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-              Numer Excel: <span style="font-weight: bold">{{user?.excelId}}</span>
-            </div>
-            <div *ngIf="user" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+              <div *ngIf="user?.histCreationDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Rekord aktywny do: <span style="font-weight: bold">{{user?.histCreationDate}}</span>
+              </div>
+              <hr>
+              <div class="ui-grid-row">
+                <div *ngIf="user?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                  Dane kontaktowe: tel. <span style="font-weight: bold">{{user?.phone}}</span>, email: <span
+                    style="font-weight: bold">{{user?.email}}</span>, adres: <span
+                    style="font-weight: bold">{{user?.addressStreet}}, {{user?.addressPost}}</span>
+                </div>
+              </div>
+              <div class="ui-grid-row">
+                <div *ngIf="user?.account" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                  Rachunek: <span style="font-weight: bold">{{user.account}}</span>
+                </div>
+              </div>
+              <div class="ui-grid-row">
+                <div *ngIf="user?.company" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
+                  <span style="font-weight: bold">{{user?.company}}</span>
+                </div>
+              </div>
+              <div *ngIf="user?.excelId" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Numer Excel: <span style="font-weight: bold">{{user?.excelId}}</span>
+              </div>
+              <div *ngIf="user" class="ui-grid-row" style="text-align:left; font-size: smaller;">
                 Aktywny: <span style="font-weight: bold; padding-right: 5px;">{{user?.isActive}}</span>
                 Zatrudniony: <span style="font-weight: bold">{{user?.isEmployed}}</span>
+              </div>
             </div>
-          </div>
-        </ng-template>
-
-
-        <!--<p-column [sortable]="true" field="status" header="statusSearch"  [style]="{'width':'0px'}"></p-column>&lt;!&ndash; search &ndash;&gt;
-        <p-column [sortable]="true" field="statusCode" header="Status" >
-          <ng-template let-col let-order="rowData" pTemplate="body">
-            <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-            <span style="padding: 3px">{{order.status}}</span>
-          </ng-template>
-        </p-column>
--->
-        <ng-template pTemplate="emptymessage">
-          Brak wpisów w historii...
-        </ng-template>
-
-      </p-dataTable>
-
-    </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer" let-columns>
+        <tr>
+          <td *ngFor="let col of columns" [hidden]="col.hidden">
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak pracowników...
+      </ng-template>
+    </p-table>
+  </div>
 </div>
-

@@ -5,7 +5,7 @@ import { Observable }    from 'rxjs';
 import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 
-import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange } from '../_models/index';
+import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange, UserReport } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
 import { SelectItem } from 'primeng/primeng';
@@ -45,9 +45,11 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   totalEarnedOptions: any;
   perCapitaEarnedData: any;
   perCapitaEarnedOptions: any;
+  cols:any;
+  summary: ReportSummary;
 
   colors: string[] = ['#b52aaf','#b52aaf','#6a1341','#6a1341','#c5cb6b','#c5cb6b','#68870d','#68870d','#47781d','#47781d','#fa980c','#fa980c','#12999c','#12999c','#a16e65','#a16e65','#d445c8','#d445c8','#b652fa','#b652fa','#542148','#542148','#f225ba','#ec38b1','#ec38b1','#6c4b76','#6c4b76','#b8a541','#b8a541','#c30f52','#c30f52','#c2e58c','#c2e58c','#911215','#911215','#45cbed','#45cbed','#f8bbde','#f8bbde','#1501f6','#1501f6','#bc2533','#bc2533','#42c438','#42c438','#4ea38a','#4ea38a','#a7774d','#a7774d','#5d9311','#5d9311','#26a864','#26a864','#92427a','#92427a','#339a5a','#339a5a','#a2ab53','#a2ab53','#c35e87','#c35e87','#c20c91','#c20c91','#a69e52','#a69e52','#85a6fc','#85a6fc','#f591de','#f591de','#be7dea','#be7dea','#546305','#546305','#769c11','#769c11','#4c6e55','#4c6e55','#bf3e19','#bf3e19','#132776','#132776','#30750d','#30750d','#44d240','#44d240','#3c00ca','#3c00ca','#5e72c7','#5e72c7','#3f16cd','#3f16cd','#3af2ad','#3af2ad','#ee79fd','#ee79fd','#e515d1','#e515d1','#c8ae00','#c8ae00','#9aba2f','#9aba2f','#d79179','#d79179','#a5cc12','#a5cc12','#fce3a0','#fce3a0','#a73775','#a73775','#77171f','#77171f','#f4d5a6','#f4d5a6','#e115e7','#e115e7','#661889','#661889','#83f557','#83f557','#d9d96f','#d9d96f','#9dd18c','#9dd18c','#eddc80','#eddc80','#fb3dc4','#fb3dc4','#961066','#961066','#4035f0','#4035f0','#46061b','#46061b','#b547d4','#b547d4','#99ba47','#99ba47','#3bb9a8','#3bb9a8','#3cb96c','#3cb96c','#c98b7c','#c98b7c','#45cc62','#45cc62','#bc7a3b','#bc7a3b','#68ed99','#68ed99','#24c7b4','#24c7b4','#0bab07','#0bab07','#5fc181','#5fc181','#bef91a','#bef91a','#69f98a','#69f98a','#75378f','#75378f','#30cd4a','#30cd4a','#2d2cda','#2d2cda','#d7e491','#d7e491','#e3b221','#e3b221','#c0fbe5','#c0fbe5','#ea0bfa','#ea0bfa','#4ab834','#4ab834','#d1fc8e','#d1fc8e','#22b543','#22b543','#e44dae','#e44dae','#3d5634','#3d5634','#1a170b','#1a170b','#edce07','#edce07','#89f020','#89f020','#58c5e4','#58c5e4','#030c83','#030c83','#422819','#422819','#ce5be9','#ce5be9','#f225ba'];
-
+  users: User[];
 
   constructor(private woService:WOService,
               private userService:UserService,
@@ -120,11 +122,32 @@ export class ReportMonthlyEngineersComponent implements OnInit {
   ngOnInit() {
 
     this.workTypeService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
+    this.userService.getAllStaff().subscribe(users => this.users = users);
 
     this.search();
+    this.cols = [
+      { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true},            
+      { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true},
+      { field: 'iconColor', header: 'Ocena' ,excludeGlobalFilter: true,sortable:true,  class:"width-20 text-center", icon: true},
+      { field: 'timeUtilizationPercentage', header: 'Wydajność', sortable:true, filter:true, class:"width-50 text-center", utilization:true, icon:true},
+      { field: 'dateRange.beginDate', header: 'Od' ,filter: true, sortable:true,  class:"width-50 text-center", date:true, icon:true},
+      { field: 'firstName', header: 'Imię',sortable:true, filter:true,class:"width-35 text-center"},
+      { field: 'lastName', header: 'Nazwisko', sortable:true, filter:true, class:"width-35 text-center" },
+      { field: 'role', header: 'Rola', sortable:true , filter:true, class:"width-35 text-center"},
+      { field: 'office', header: 'Biuro' , sortable:true, filter:true, class:"width-50 text-center"},
+      { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+      { field: 'declaredTime', header: 'Czas zadeklarowany', sortable:true , class:"width-35 text-center", declaredTime:true, icon:true},  
+      { field: 'expectedTime', header: 'Czas zakładany', sortable:true , class:"width-35 text-center",expectedTime:true, icon:true},  
+      { field: 'noOrdersDone', header: 'Ukończonych WO', sortable:true , class:"width-35 text-center", finishedOrders:true},  
+      { field: 'earnedMoney', header: 'Wypracowany obrót', sortable:true , class:"width-35 text-center",earnedMoney:true, icon:true},
+    ]
   }
 
   public filterReports(event): void {
+    console.log(event);
+    console.log(this.reports);
+    console.log('SELECTEDS');
+    console.log(this.selectedReports);
     console.log('onSelect event fired!'+JSON.stringify(event));
     if (!event.type || event.type === 'checkbox') {
       this.calculateLineCharts(this.reports);
@@ -246,6 +269,9 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       this.calculateLineCharts(this.reports);
       this.reports = JSON.parse(JSON.stringify(this.reports));
     }
+    this.summary = this.createSummary(this.reports);
+    console.log('summary');
+    console.log(this.summary);
   }
 
   private calculateLineCharts(reports:MonthlyUserReport[]):void {
@@ -368,7 +394,10 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
 
       if (userData.declaredTime === 0) {
-        this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
+        let user: User = this.toolsService.getUserById(this.users, userData.id);
+        if (user.isEmployed) {
+          this.alertService.warn("Nie wypełnione deklaracje czasu pracy dla " + userData.firstName + " " + userData.lastName);
+        }
         userData.timeUtilizationPercentage = this.noTimesheets;
         this.setMark(userData);
       } else {
@@ -473,6 +502,74 @@ export class ReportMonthlyEngineersComponent implements OnInit {
     }
     return -1;
   }
+  // TODO Refaktoring nazw w klasie
+
+  private createSummary (reports: MonthlyUserReport[]) : ReportSummary {
+    let summary = new ReportSummary();
+    summary.countDeclaredTime = this.countDeclaredTime(reports);
+    summary.countEarnedMoney = this.countEarnedMoney(reports);
+    summary.countExpectedTime = this.countExpectedTime(reports);
+    summary.countFinishWo = this.countFinshedWo(reports);
+    summary.countIsFromPool = this.countIsFromPool(reports);
+    return summary;
+  }
+
+  private countEarnedMoney (reports: MonthlyUserReport[]) : number {
+    let sumEarnedMoney = 0;
+    reports.forEach(element => {
+      sumEarnedMoney += element.earnedMoney;
+    });
+    return sumEarnedMoney;
+  }
+
+  private countFinshedWo (reports: MonthlyUserReport[]): number {
+    let sumFinishedWo = 0;
+    reports.forEach(element => {
+      sumFinishedWo += element.noOrdersDone;
+    });
+    return sumFinishedWo;
+  }
+
+  private countExpectedTime (reports: MonthlyUserReport [] ): number {
+    let sumExpectedTime = 0;
+    reports.forEach(element => {
+      sumExpectedTime += element.expectedTime;
+    });
+    return sumExpectedTime;
+  }
+
+  private countDeclaredTime (reports: MonthlyUserReport []) : number {
+    let sumDecleredTime = 0;
+    reports.forEach(element => {
+        sumDecleredTime += element.declaredTime;
+    });
+    return sumDecleredTime;
+  }
+
+  private countIsFromPool (reports: MonthlyUserReport []) : number {
+    let sumIsFromPool = 0;
+    reports.forEach(element => {
+       element.workOrders.forEach(order => {        
+          if (order.isFromPool)
+            sumIsFromPool++
+       });
+    });
+    return sumIsFromPool;
+  }
+}
+
+export class ReportSummary 
+{
+
+  constructor() {
+    this.countIsFromPool = 0 ;
+  } 
+
+  countIsFromPool: number;
+  countDeclaredTime: number;
+  countExpectedTime: number;
+  countFinishWo: number;
+  countEarnedMoney: number;
 }
 
 

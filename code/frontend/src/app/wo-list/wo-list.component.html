@@ -1,90 +1,107 @@
 <div class="ui-grid-row">
     <div style="margin-top: 5px" class="ui-g">
-        <p-dataTable [value]="list" [rows]="20" [paginator]="true" [globalFilter]="gb"
-                     dataKey="id" resizableColumns="true" sortField="lastModDate" sortOrder="-1" loadingIcon="fa fa-spinner"
-                     #dt csvSeparator=";" exportFilename="lista_zlecen">
-          <p-header>
-            <div>
-              <i class="fa fa-search"></i>
-              <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+<p-table 
+    #tt dataKey="id" 
+    [columns]="cols" 
+    [value]="list" 
+    [rows]="20" 
+    [paginator]="true" 
+    [resizableColumns]="true" 
+    sortOrder="-1" 
+    [metaKeySelection]="true"
+    loadingIcon="fa fa-spinner" 
+    csvSeparator=";"  
+    exportFilename="Zlecenia nie gotowe do protokolu" 
+    [globalFilterFields]="cols" 
+    [responsive]="false">
+    <ng-template pTemplate="caption">
+        <div>
+            <i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns"
+          [hidden]="col.hidden"
+          [pSortableColumn]="col.field"
+          [ngClass]="col.class"
+          pResizableColumn
+          excludeGlobalFilter = col.exclude>
+            <span class="header">
+                {{col.header}}
+                <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+            </span>         
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns"  [hidden]="col.hidden" >
+            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" 
+            pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+            <div *ngIf="col.price">
+              Cena > {{priceFilter}}
+              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"></i>
+              <p-slider [style]="{'width':'100%','margin-top':'8px'}" 
+              [(ngModel)]="priceFilter"              
+              [min]="0"
+              [max]="9999"             
+              (onChange)="onPriceChange($event, tt)"             
+              [animate]="true"></p-slider>
             </div>
-          </p-header>         
-          <p-column [sortable]="true" field="id" header="id" [exportable]="false" hidden="true" ></p-column>
-          <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-          <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-          <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-            <ng-template let-col let-order="rowData" pTemplate="body">
-              <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-              <span style="padding: 3px">{{order.status}}</span>
-            </ng-template>
-          </p-column>
-
-          <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-            <ng-template let-col let-order="rowData" pTemplate="body">
-              <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-              <span style="padding: 3px">{{order.type}}</span>
-            </ng-template>
-          </p-column>
-
-          <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-            <ng-template let-col let-order="rowData" pTemplate="body">
-              <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-              <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-            </ng-template>
-          </p-column>
-
-          <p-column [sortable]="true" field="price" header="Wartość" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj">
-            <ng-template let-col let-order="rowData" pTemplate="body">
-              {{order[col.field] | currency:'PLN'}}
-            </ng-template>
-          </p-column>
-          <p-column [sortable]="true" field="poolRevenue" header="Do puli" styleClass="text-right" [filter]="true" filterPlaceholder="Filtruj">
-            <ng-template let-col let-order="rowData" pTemplate="body">
-              {{order[col.field]!==null && (order[col.field] > -1) ? (order[col.field] | currency:'PLN') : 'Brak danych'}}
-            </ng-template>
-          </p-column>
-
-          <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
-
-          <p-column [sortable]="true" [exportable]="false" field="comment" header="Komentarz" hidden="true"></p-column>
-          <p-column [sortable]="true" [exportable]="false" field="description" header="Opis" hidden="true"></p-column>
-
-          <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-          <p-column [sortable]="true" field="creationDate" header="Utworzenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-          <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-          <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu" hidden="true"></p-column>
-          <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja" hidden="true"></p-column>
-          <p-column [sortable]="true" field="itemAddress" header="Adres" hidden="true"></p-column>
-          <p-column [sortable]="true" field="itemDescription" header="Opis obiektu" hidden="true"></p-column>     
-          <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-          <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-          <p-column [sortable]="true" field="frontProcessingDesc" header="Powód" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-          <p-column [style]="{'width':'35px','text-align':'center'}">
-            <ng-template let-order="rowData" pTemplate="body">
-              <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px;" (click)="showWoDetails($event, order)" icon="fa fa-search"></p-button>
-            </ng-template>
-          </p-column>
-
-          <ng-template pTemplate="emptymessage">
-            Brak zleceń...
-          </ng-template>
-
-          <p-footer>
-            <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-              <div class="ui-grid-row"  style="margin-top: 15px;">
-                <div class="ui-grid-col-5"> </div>
-                <div class="ui-grid-col-2">
-                  <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
-                </div>
-                <div class="ui-grid-col-5"> </div>
-              </div>
-            </div>
-          </p-footer>
-
-        </p-dataTable>
+          </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" > 
+            <td *ngFor="let col of columns"
+              [hidden]="col.hidden"
+              filterMatchMode="col.contains"
+              [ngClass]="col.class"
+              >
+                <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>       
+                <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"  class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+                <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+                <span *ngIf="col.isFromPool">
+                  <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
+                  <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
+                </span>             
+                <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>            
+                <span *ngIf="!col.icon && !col.price">
+                  {{rowData[col.field]}}
+                </span>
+                <span *ngIf="col.price">
+                  {{rowData[col.field] | currency:'PLN'}}
+                </span>
+                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>            
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer" let-columns>
+      <tr>
+          <td *ngFor="let col of columns"
+          [hidden]="col.hidden"
+          >
+          <span  *ngIf="col.header === 'Zlecenie'">Suma zleceń <br/> {{list?.length}}  </span> 
+          <span *ngIf="col.price">Suma <br/> {{summary?.summaryPrice | currency:'PLN'}} </span>
+          </td>
+      </tr>
+  </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-row"  style="margin-top: 15px;">
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"> 
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>           
+             </div>
+          <div class="ui-grid-col-2">  </div>
+          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-1"> </div>
+        </div>
+      </div>
+  </ng-template>
+</p-table>
       </div> 
 </div>
 

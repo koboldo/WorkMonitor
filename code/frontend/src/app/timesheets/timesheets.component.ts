@@ -9,6 +9,8 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
+import { UserWithSheet } from 'app/_models/userWithSheet';
+import { userTableSummary } from 'app/_models/userTableSummary';
 
 @Component({
     selector: 'app-timesheets',
@@ -30,10 +32,11 @@ export class TimesheetsComponent implements OnInit {
 
     afterDate:Date;
     beforeDate:Date;
-
-
+    
     user: User;
-    pl:Calendar;
+    pl: Calendar;
+    cols: any;
+    summary: userTableSummary;
 
     constructor(private router:Router,
                 private userService:UserService,
@@ -54,10 +57,29 @@ export class TimesheetsComponent implements OnInit {
         this.authSerice.userAsObs.subscribe(user => this.user = user);
         this.search();
         this.pl=new Calendar();
+        this.cols = [
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", expand:true, edit:false},            
+            { field: 'rowid', header: 'tabid', hidden:true, sortable: true, filter:true, class:"width-35",exportable: false},
+            { field: 'office', header: 'Biuro' , filter:true, class:"width-35"},
+            { field: 'firstName', header: 'Imie', sortable:true, filter:true, class:"width-50"},
+            { field: 'lastName', header: 'Nazwisko',sortable:true, filter:true,class:"width-35" },
+            { field: 'isManagerOrOperator', header: '',hidden:true, sortable:true, filter:false,class:"width-35 text-right"}, 
+            { field: 'copy.fromMobileDevice', nested: 'fromMobileDevice', header: 'Wejście', sortable:true, filter:true, class:"width-35", inOut: true },
+            { field: 'copy.toMobileDevice', nested: 'toMobileDevice', header: 'Wyjście', sortable:true , filter:true, class:"width-35", inOut:true },
+            { field: 'timesheetWorkDate', header: 'Dnia' , sortable:true, filter:true, class:"width-50 text-center"},
+            { field: 'isLeave', header: 'Urlop',sortable:true , filter:true, class:"width-35 text-center", edit: true, isLeave:true},
+            { field: 'timesheetFrom', header: 'Obecny od', sortable:true , filter:true, class:"width-35 text-center", edit: true }, 
+            { field: 'timesheetTo', header: 'Obecny do',  sortable:true, filter:true,class:"width-35 text-center", edit: true },
+            { field: 'timesheetBreakInMinutes', header: 'Przerwa [min]' ,sortable:true, filter:true,class:"width-50 text-center", edit: true, break:true},      
+            { field: 'timesheetTrainingInGMM', header: 'Szkolenie [g:mm]', sortable:true, filter:true, class:"width-50 text-center", edit: true, training:true },
+            { field: 'timesheetUsedTime', header: 'Obecność', sortable:true, filter:true, class:"width-50 text-center"},           
+            { field: 'status', header: 'Zapisano', sortable: true, filter:true, class:"width-35 col-icon", status:true},             
+        ]
     }
 
-
     onEditInit(event) {
+        console.log('on edit init');
+        console.log(event);
         console.log('about edit !' + JSON.stringify(event.data));
 
         if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
@@ -68,62 +90,64 @@ export class TimesheetsComponent implements OnInit {
             event.data.timesheetBreakInMinutes = 15;
             event.data.timesheetTrainingInGMM = '';
             event.data.color = '#2399e5';
-        }
+        }        
     }
 
     onEditCancel(event) {
+        console.log('cancel');
+        console.log(event);
         this.onEditComplete(event);
     }
 
-    onEdit(event) {
-        console.log('edit !' + JSON.stringify(event.data));
+    valueChange(rowData: any){
+         console.log('edit');
+         console.log('edit !' + JSON.stringify(rowData));
 
-        if (event.data.roleCode.indexOf('OP') > -1 || event.data.roleCode.indexOf('MG') > -1) {
+        if (rowData.roleCode.indexOf('OP') > -1 || rowData.roleCode.indexOf('MG') > -1) {
             if (this.user.roleCode.indexOf('TS') < 0) {
                 this.alertService.warn("Brak uprawnień");
-                this.restore(event.data);
+                this.restore(rowData);
             }
         }
 
-        if (event.data.timesheetFrom.length === 2) {
-            if (this.hourRegexp.test(event.data.timesheetFrom)) {
-                event.data.timesheetFrom+=':';
+        if (rowData.timesheetFrom.length === 2) {
+            if (this.hourRegexp.test(rowData.timesheetFrom)) {
+                rowData.timesheetFrom+=':';
             } else {
-                event.data.timesheetFrom='';
+                rowData.timesheetFrom='';
             }
-        } else if (event.data.timesheetFrom.length > 5) {
-            this.alertService.warn('Zbyt długie pole od '+event.data.timesheetFrom);
-            event.data.timesheetFrom = event.data.timesheetFrom.substr(0, 5);
+        } else if (rowData.timesheetFrom.length > 5) {
+            this.alertService.warn('Zbyt długie pole od '+rowData.timesheetFrom);
+            rowData.timesheetFrom = rowData.timesheetFrom.substr(0, 5);
         }
 
-        if (event.data.timesheetTo.length === 2) {
-            if (this.hourRegexp.test(event.data.timesheetTo)) {
-                event.data.timesheetTo+=':';
+        if (rowData.timesheetTo.length === 2) {
+            if (this.hourRegexp.test(rowData.timesheetTo)) {
+                rowData.timesheetTo+=':';
             } else {
-                event.data.timesheetTo='';
+                rowData.timesheetTo='';
             }
-        } else if (event.data.timesheetTo.length > 5) {
-            this.alertService.warn('Zbyt długie pole do '+event.data.timesheetFrom);
-            event.data.timesheetTo = event.data.timesheetTo.substr(0, 5);
+        } else if (rowData.timesheetTo.length > 5) {
+            this.alertService.warn('Zbyt długie pole do '+rowData.timesheetFrom);
+            rowData.timesheetTo = rowData.timesheetTo.substr(0, 5);
         }
 
-        if (event.data.timesheetTrainingInGMM.length === 1) {
-            if (this.hourRegexp.test(event.data.timesheetTrainingInGMM)) {
-                event.data.timesheetTrainingInGMM+=':';
+        if (rowData.timesheetTrainingInGMM.length === 1) {
+            if (this.hourRegexp.test(rowData.timesheetTrainingInGMM)) {
+                rowData.timesheetTrainingInGMM+=':';
             }
             else {
-                event.data.timesheetTrainingInGMM='';
+                rowData.timesheetTrainingInGMM='';
             }
-        } else if (event.data.timesheetTrainingInGMM.length > 4) {
-            this.alertService.warn('Zbyt długie pole szkolenie '+event.data.timesheetTrainingInGMM);
-            if (event.data.timesheetTrainingInGMM.indexOf(':') === 1) {
-                event.data.timesheetTrainingInGMM = event.data.timesheetTrainingInGMM.substr(0, 4);
+        } else if (rowData.timesheetTrainingInGMM.length > 4) {
+            this.alertService.warn('Zbyt długie pole szkolenie '+rowData.timesheetTrainingInGMM);
+            if (rowData.timesheetTrainingInGMM.indexOf(':') === 1) {
+                rowData.timesheetTrainingInGMM = rowData.timesheetTrainingInGMM.substr(0, 4);
             } else {
-                event.data.timesheetTrainingInGMM = '0';
+                rowData.timesheetTrainingInGMM = '0';
             }
 
         }
-
     }
 
     private restore(userWithSheet: UserWithSheet) {
@@ -166,7 +190,6 @@ export class TimesheetsComponent implements OnInit {
                 userWithSheet.color = '#286090';
             }
         }
-
         userWithSheet.isLeave = userWithSheet.copy.isLeave;
         if (userWithSheet.isLeave === 'Y') {
             userWithSheet.timesheetBreakInMinutes = this.sLeave;
@@ -175,9 +198,6 @@ export class TimesheetsComponent implements OnInit {
             userWithSheet.timesheetTo = this.sLeave;
             userWithSheet.color = '#444433';
         }
-
-
-
         userWithSheet.status = 'OK';
     }
 
@@ -261,6 +281,7 @@ export class TimesheetsComponent implements OnInit {
             console.log('Nie wypelniono poprawnie timesheetu '+JSON.stringify(event.data));
             this.restore(event.data);
         }
+        
     }
 
 
@@ -297,8 +318,7 @@ export class TimesheetsComponent implements OnInit {
                 console.log('User not found '+timesheet.personId);
             }
         }
-
-
+        this.summary = this.toolsService.createSummaryForUserTable(this.usersWithSheets);
     }
 
     private createUserWithSheet(timesheet: Timesheet, users: User[], rowid: number): UserWithSheet {
@@ -329,8 +349,9 @@ export class TimesheetsComponent implements OnInit {
             return;
         }
 
-        this.usersWithSheets[rowid] = userWithSheet;
-        this.usersWithSheets = JSON.parse(JSON.stringify(this.usersWithSheets)); //immutable dirty trick
+        // this.usersWithSheets[rowid] = userWithSheet;
+        // this.usersWithSheets = JSON.parse(JSON.stringify(this.usersWithSheets)); //immutable dirty trick
+        this.search();
     }
 
     private getUser(id: number, users: User[]): User {
@@ -372,23 +393,23 @@ export class TimesheetsComponent implements OnInit {
 }
 
 
-export class UserWithSheet extends User {
-    rowid: number;
+// export class UserWithSheet extends User {
+//     rowid: number;
 
-    copy: Timesheet;
+//     copy: Timesheet;
 
-    timesheetUsedTime: number; //flat property for p-dataTable used for sort
-    timesheetWorkDate: string;
-    timesheetFrom: string;
-    timesheetTo: string;
-    timesheetBreakInMinutes: string;
-    timesheetTrainingInGMM: string;
-    isLeave: string;
+//     timesheetUsedTime: number; //flat property for p-dataTable used for sort
+//     timesheetWorkDate: string;
+//     timesheetFrom: string;
+//     timesheetTo: string;
+//     timesheetBreakInMinutes: string;
+//     timesheetTrainingInGMM: string;
+//     isLeave: string;
 
-    isManagerOrOperator: string; //Y, N
+//     isManagerOrOperator: string; //Y, N
 
-    color: string;
-    status: string;
+//     color: string;
+//     status: string;
 
-}
+// }
 

@@ -61,7 +61,7 @@ import {TooltipModule} from 'primeng/tooltip'
 import {TreeModule} from 'primeng/tree'
 import {TableModule} from 'primeng/table';
 import {ToolbarModule} from 'primeng/toolbar';
-
+import {SliderModule} from 'primeng/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
@@ -93,7 +93,6 @@ import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.com
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
 import { AppVersionComponent } from './app-version/app-version.component';
 import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignment-wo.component';
-import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
 import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
 
 
@@ -108,6 +107,7 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,ToolbarModule,
         BrowserAnimationsModule,
         TableModule,
+        SliderModule,
         DataTableModule,
         routing
     ],
@@ -146,7 +146,6 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
-		    WoTurboTableComponent ,
 		    WoTrashedComponent   ],
 
     providers: [

@@ -7,6 +7,7 @@ import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../
 import { Comments, commentCancelOrHoldAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { MenuItem } from 'primeng/primeng';
+import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
     selector: 'app-wo-stopped-list',
@@ -31,23 +32,54 @@ export class WoStoppedListComponent implements OnInit {
     selectedOrder:Order;
     displayDetailsDialog:boolean;
 
-    //add comment
     newComment:string;
     displayAddComment:boolean;
     commentOrder:Order;
-    // end add comment
+    cols:any[] ;
+    priceTimeout: any;
+    priceFilter: number;
+    summary: TableSummary;
 
 
     constructor(private woService:WOService,
                 private userService:UserService,
                 public dictService:DictService,
                 private authSerice:AuthenticationService,
-                private toolsService:ToolsService,
+                public toolsService:ToolsService,
                 private alertService:AlertService,
-                private workTypeService: WorkTypeService) {
+                public workTypeService: WorkTypeService) {
+                
     }
 
     ngOnInit() {
+        this.cols = [
+            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-35 text-center"},
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true,exportable:false},
+            { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35 text-center"},
+            { field: 'status', header: 'Status' , filter:false,statusCode:true, class:"width-20 text-center", icon:true},
+            { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
+            { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-35" },
+            { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-35 text-right", price:true},
+            { field: 'complexityCode', header: 'Zł.', hidden:true, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },
+            { field: 'complexity', header: 'Wycena' , hidden:true, sortable:true, filter:false,class:"width-35 text-center"},                              
+            { field: 'sComments', header: 'Komentarz',  sortable:true , filter:false,class:"width-250", icon:true},
+            { field: 'description', header: 'Opis',  filter:true ,class:"width-250"},
+            { field: 'assignee', header: 'Wykonawca',hidden:true, sortable:true, filter:true, class:"width-100" },
+            { field: 'isFromPool', header: 'Pula' ,hidden:true, sortable:true, filter:true, isFromPool:true, icon:true, class:"width-20 text-center"},
+            { field: 'protocolNo', header: 'Protokół',hidden:true, sortable:true, filter:true, class:"width-100" },
+            { field: 'lastModDate', header: 'Mod.' ,hidden:false, sortable:true, filter:true, class:"width-50"},
+            { field: 'creationDate', header: 'Utw.',hidden:true, sortable:true , filter:true, class:"width-100"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
+            { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
+            { field: 'ventureCompany', header: 'Inwestor',hidden:true, sortable:true , filter:true, class:"width-135"},
+            { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:true, sortable:true , filter:true, class:"width-135" },
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icon:true, class:"width-20",exportable:false},
+            
+        ]
+        
         this.items = [
             {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o', command: (event) => this.addComment()}
         ];
@@ -61,6 +93,15 @@ export class WoStoppedListComponent implements OnInit {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
         this.search();
+    }
+
+    public onPriceChange(event, tt) {
+        if (this.priceTimeout) {
+            clearTimeout(this.priceTimeout);
+        }
+        this.priceTimeout = setTimeout(() => {
+            tt.filter(event.value, 'price', 'gt');
+        }, 250);
     }
 
     //add comment
@@ -102,7 +143,11 @@ export class WoStoppedListComponent implements OnInit {
     }
 
     search() {
-        this.woService.getOrdersByStatus(this.orderStatus).subscribe(orders => this.orders = orders);
+        this.woService.getOrdersByStatus(this.orderStatus).subscribe(orders =>{
+            this.orders = orders ; 
+            this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
+        } );
+        
     }
 
     public showWoDetails(event, order) {
