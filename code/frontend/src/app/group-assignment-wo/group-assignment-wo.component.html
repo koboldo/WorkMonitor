@@ -31,7 +31,7 @@
 <div class="ui-grid-row">
   <div style="margin-top: 5px" class="ui-g">
       <p-table #tt dataKey="id" [columns]="cols" [value]="copyOrdersToAssign" [rows]="20" [paginator]="true" [resizableColumns]="true" columnResizeMode="expand" sortOrder="-1"  [(selection)]="selectedOrders" 
-        [metaKeySelection]="true" loadingIcon="fa fa-spinner" [responsive]="true">
+        [metaKeySelection]="true" loadingIcon="fa fa-spinner" [responsive]="false">
         <ng-template pTemplate="caption">
             <div>
                 <i class="fa fa-search"></i>
@@ -54,7 +54,19 @@
             </tr>
             <tr>
               <th *ngFor="let col of columns"  [hidden]="col.hidden" >
-                <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
+                <input 
+                [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'"
+                 pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">  
+                 <div *ngIf="col.price">
+                  Cena > {{priceFilter}}
+                  <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" 
+                  [(ngModel)]="priceFilter"              
+                  [min]="0"
+                  [max]="9999"             
+                  (onChange)="onPriceChange($event, tt)"             
+                  [animate]="true"></p-slider>
+              </div>              
               </th>
             </tr>
         </ng-template>
@@ -73,9 +85,12 @@
                       <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                       <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                     </span>
-                    <span *ngIf="!col.icon">
+                    <span *ngIf="!col.icon && !col.price">
                       {{rowData[col.field]}}
-                    </span>            
+                    </span>
+                    <span *ngIf="col.price">
+                      {{rowData[col.field] | currency:'PLN'}}
+                    </span>               
                 </td>
             </tr>
         </ng-template>

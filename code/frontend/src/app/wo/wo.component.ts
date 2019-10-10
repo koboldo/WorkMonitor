@@ -10,6 +10,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 
 import { MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
+import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
     selector: 'app-wo',
@@ -75,6 +76,13 @@ export class WoComponent implements OnInit {
     pl: Calendar;
     displayChangeStatusDialog: boolean;
     displayAssignmentDialog: boolean;
+    cols:any ;
+    priceTimeout: any;
+    priceFilter: number;
+    summary: TableSummary;
+    priceSliderVisibility = true;
+    priceTextFilterVisibility = true;
+    priceTextFilterValue:string;
     
     constructor(protected woService:WOService,
                 protected userService:UserService,
@@ -105,8 +113,57 @@ export class WoComponent implements OnInit {
 
         this.workTypeService.getWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
         this.statuses = this.dictService.getWorkStatuses();
+        
        
         this.search();
+       
+        this.cols = [
+            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center"},
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true, exportable:false},
+            { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-100"},
+            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-135"},
+            { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-135"},
+            { field: 'complexityCode', header: 'Zł.', sortable:true, filter:false,complexity:true, icon:true,class:"width-50 text-center" },
+            { field: 'complexity', header: 'Wycena' , sortable:true, filter:false,class:"width-50 text-center"},
+            { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-100" },
+            { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-80 text-right", price:true},
+            { field: 'sComments', header: 'Komentarz', hidden:true, sortable:true , filter:true},
+            { field: 'description', header: 'Opis', hidden:true, filter:true },
+            { field: 'assignee', header: 'Wykonawca', sortable:true, filter:true, class:"width-100" },
+            { field: 'isFromPool', header: 'Pula' , sortable:true, filter:true, isFromPool:true, icon:true, class:"width-50 text-center"},
+            { field: 'protocolNo', header: 'Protokół', sortable:true, filter:true, class:"width-100" },
+            { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-100"},
+            { field: 'creationDate', header: 'Utw.', sortable:true , filter:true, class:"width-100"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-125"},
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
+            { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},
+            { field: 'ventureCompany', header: 'Inwestor', sortable:true , filter:true, class:"width-135"},
+            { field: 'ventureDisplay', header: 'Zleceniodawca', sortable:true , filter:true, class:"width-135" },
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35",exportable:false},
+            { field: 'none',excludeGlobalFilter: true, button:true ,edit: true, icone:true, class:"width-35", exportable:false},
+        ]
+      
+    }
+
+    public onPriceTextChange(){
+        this.priceTextFilterValue != "" ? this.priceSliderVisibility = false :  this.priceSliderVisibility = true;  
+    }
+
+    public getStatusIcon(statusCode: string): string {
+        return this.toolsService.getStatusIcon(statusCode);
+    }
+
+    public onPriceChange(event, tt) {
+        tt.filter(event.value, 'price', 'gt');
+        event.value > 0 ? this.priceTextFilterVisibility = false : this.priceTextFilterVisibility = true;
+    }
+
+    public clearPriceFilter (tt) {
+        this.priceFilter = 0;
+        tt.filter(null, 'price', 'gt')
+        this.priceTextFilterVisibility = true;
     }
 
     public showChangeStatusDialog() {
@@ -158,7 +215,7 @@ export class WoComponent implements OnInit {
                 this.orders.push(order);
             }
         }
-
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.orders);
         return this.userService.getVentureRepresentatives();
     }
 

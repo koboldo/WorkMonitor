@@ -9,9 +9,10 @@ import { SelectItem, DataTable } from 'primeng/primeng'
 
 
 import { Observable }    from 'rxjs';
-import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
+import { catchError, map, tap, delay, mergeMap, groupBy } from 'rxjs/operators';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
+import { element } from '@angular/core/src/render3/instructions';
 
 
 @Component({
@@ -41,6 +42,14 @@ export class UsersPayrollComponent implements OnInit {
     displayApproveResultDialog: boolean;
     selectedPayrolls: UserPayroll[];
 
+    cols: any;
+    colsHistorical: any;
+    periodForDropDown: SelectItem[];
+    selectedPeriod: string;
+    rowGroupMetadata: any;
+    historicalPayrollsFiltered: UserPayroll[];
+    firsHistoricalPayroll: UserPayroll;
+
     constructor(private router:Router,
                 private userService:UserService,
                 private payrollService:PayrollService,
@@ -54,6 +63,49 @@ export class UsersPayrollComponent implements OnInit {
     ngOnInit():void {
         this.dictService.init();
         this.authService.userAsObs.subscribe(user => this.initAll(user));
+        this.cols = [
+            { field: 'user.excelId', header:'Id excel',  sortable: true, filter:true,class:"width-20 text-center", excelId:true},            
+            { field: 'user.firstName', header: 'Imię',hidden:true, sortable: true, filter:true, firstName:true},
+            { field: 'user.lastName', header: 'Osoba' , filter:true,sortable:true,  class:"width-50 text-center", lastName:true},
+            { field: 'user.officeCode', header: 'Biuro', sortable:true, filter:true, class:"width-50 text-center", officeCode:true},
+            { field: 'rank', header: 'Stopień' ,filter: true,  class:"width-50 text-center"},
+            { field: 'projectFactor', header: 'Współ',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'workTime', header: 'Czas razem', sortable:true, filter:true, class:"width-35 text-center color-blue" },
+            { field: 'poolWorkTime', header: 'Czas dla puli', sortable:true , filter:true, class:"width-35 text-center color-green"},
+            { field: 'nonpoolWorkTime', header: 'Czas poza pulą' , sortable:true, filter:true, class:"width-50 text-center color-green"},          
+            { field: 'trainingTime', header: 'Szkolenia', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'leaveTime', header: 'Urlop', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'overTime', header: 'Nadgodziny', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'workDue', header: 'Obecnosc PLN', sortable:true ,filter:true, class:"width-35 text-center", price:true},
+            { field: 'trainingDue', header: 'Szkolenia PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'overDue', header: 'Nadgodziny PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'leaveDue', header: 'Urlop PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'totalDue', header: 'Suma PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+          ]
+        this.colsHistorical = [
+            { field: 'formattedPeriodDate', header:'Okres rozliczeniowy',hidden:true,  sortable: true, filter:true,class:"width-20 text-center"}, 
+            { field: 'user.excelId', header:'Id excel',  sortable: true, filter:true,class:"width-20 text-center", excelId:true},            
+            { field: 'user.firstName', header: 'Imię',hidden:true, sortable: true, filter:true, firstName:true},
+            { field: 'user.lastName', header: 'Osoba' , filter:true,sortable:true,  class:"width-50 text-center", lastName:true},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-20 text-center"},
+            { field: 'user.officeCode', header: 'Biuro', sortable:true, filter:true, class:"width-50 text-center", officeCode:true},
+            { field: 'rank', header: 'Stopień' ,filter: true,  class:"width-50 text-center"},
+            { field: 'projectFactor', header: 'Współ',sortable:true, filter:true,class:"width-35 text-center"},
+            { field: 'isFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isFromPool:true, icon:true},
+            { field: 'workTime', header: 'Czas razem', sortable:true, filter:true, class:"width-35 text-center color-blue" },
+            { field: 'poolWorkTime', header: 'Czas dla puli', sortable:true , filter:true, class:"width-35 text-center color-green"},
+            { field: 'nonpoolWorkTime', header: 'Czas poza pulą' , sortable:true, filter:true, class:"width-50 text-center color-green"},          
+            { field: 'trainingTime', header: 'Szkolenia', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'leaveTime', header: 'Urlop', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'overTime', header: 'Nadgodziny', sortable:true ,filter:true, class:"width-35 text-center color-blue"},  
+            { field: 'workDue', header: 'Obecnosc PLN', sortable:true ,filter:true, class:"width-35 text-center", price:true},
+            { field: 'trainingDue', header: 'Szkolenia PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'overDue', header: 'Nadgodziny PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'leaveDue', header: 'Urlop PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+            { field: 'totalDue', header: 'Suma PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
+          ]
+         
     }
 
     public exportCSV(text:string, table: DataTable)
@@ -89,7 +141,7 @@ export class UsersPayrollComponent implements OnInit {
     }
 
     private isCurrent(periodDate: string): boolean {
-        if (this.currentPayroll && this.currentPayroll[0].periodDate === periodDate) {
+        if (this.currentPayroll && this.currentPayroll.length > 0 && this.currentPayroll[0].periodDate === periodDate) {
             return true;
         }
         return false;
@@ -98,8 +150,11 @@ export class UsersPayrollComponent implements OnInit {
     public calculatePayrollCost(periodDate: string): number {
 
         let payrolls: UserPayroll[] = this.isCurrent(periodDate)? this.currentPayroll: this.historicalPayrolls;
-
-        return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+        if (payrolls) {
+          return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+        } else {
+            return 0;
+        }
     }
 
     private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
@@ -147,7 +202,7 @@ export class UsersPayrollComponent implements OnInit {
 
     public approve():void {
         this.displayApproveDialog = false;
-        if (this.currentPayroll[0] && this.currentPayroll[0].periodDate) {
+        if (this.aSelectedPayroll && this.aSelectedPayroll.periodDate) {
             this.payrollService.approve(this.users, this.aSelectedPayroll.periodDate, this.overTimeFactor/100.0)
                 .subscribe(approvedPayroll => this.showApproveResult(approvedPayroll));
         }
@@ -212,11 +267,25 @@ export class UsersPayrollComponent implements OnInit {
             tmpBillingCycles.set(payroll.periodDate, payroll.periodDate);
             payroll.recalculateButtonStyle = this.getRecalculateButtonStyle(payroll.periodDate);
         }
-
         this.periodDates = [];
         tmpBillingCycles.forEach((value: string, key: string) => {
             this.periodDates.push({label: value, value: value});
         });
+
+        let tmpMapForDropDownPeriodList: Map<string, string> = new Map<string, string>();
+        for (let payroll of payrolls) {
+            tmpMapForDropDownPeriodList.set(payroll.formattedPeriodDate, payroll.formattedPeriodDate);
+        }
+        let tab = Array.from(tmpMapForDropDownPeriodList.values()).sort().reverse();
+        this.periodForDropDown = [];
+        tab.forEach(element => {
+            this.periodForDropDown.push({label: element, value:element});
+        });
+
+        this.selectedPeriod = this.periodForDropDown[0] ? this.periodForDropDown[0].value : undefined;
+        if (this.selectedPeriod) {
+          this.setHistroicalPayrolls();
+        }
     }
 
     private getRecalculateButtonStyle(periodDate: string):string {
@@ -225,13 +294,23 @@ export class UsersPayrollComponent implements OnInit {
         let diffMs: number = now.getTime() - theDate.getTime();
 
         //console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
-
         if (diffMs > 3*this.AVG_MONTH_MS) {
             return 'ui-button-danger';
         } else if (diffMs > 2*this.AVG_MONTH_MS) {
             return 'ui-button-warning';
         }
         return 'ui-button-success';
+    }
+
+    public setHistroicalPayrolls() {
+        this.historicalPayrollsFiltered = [];
+        
+        this.historicalPayrolls.forEach(element => {
+            if (element.formattedPeriodDate === this.selectedPeriod) {
+                this.historicalPayrollsFiltered.push(element);
+            }         
+        });
+        this.firsHistoricalPayroll = this.historicalPayrollsFiltered[0];
     }
 
 }

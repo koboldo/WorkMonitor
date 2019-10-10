@@ -24,7 +24,6 @@ import { MyPayrollComponent } from './my-payroll/my-payroll.component';
 import { ContractorsComponent } from './contractors/contractors.component';
 import { UsersTimeStatsComponent } from './users-time-stats/users-time-stats.component';
 import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/report-monthly-engineers.component';
-import { WoTurboTableComponent } from './wo-turbo-table/wo-turbo-table.component';
 import {WoTrashedComponent} from "./wo-trashed/wo-trashed.component";
 
 const appRoutes: Routes = [
@@ -51,7 +50,6 @@ const appRoutes: Routes = [
     { path: 'myPayroll',                component: MyPayrollComponent,     canActivate: [AuthGuard] },
     { path: 'payroll',                  component: UsersPayrollComponent, canActivate: [AuthGuard] },
     { path: 'contractors',              component: ContractorsComponent, canActivate: [AuthGuard] },
-    { path: 'turboTable',              component: WoTurboTableComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '', canActivate: [AuthGuard] }
 ];
 

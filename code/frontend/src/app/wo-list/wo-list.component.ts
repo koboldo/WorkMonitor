@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
+import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
     selector: 'app-wo-list',
@@ -18,6 +19,10 @@ export class WoListComponent implements OnInit {
 
     displayDetailsDialog: boolean;
     selectedOrder: Order;
+    cols: any;
+    summary: TableSummary;
+    priceTimeout: any;
+    priceFilter: any;
     
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
@@ -28,12 +33,51 @@ export class WoListComponent implements OnInit {
     ngOnInit() {
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
         this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
+        this.cols = [          
+            { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
+            { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
+            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
+            { field: 'type', header: 'Typ', sortable:true, filter:false, type:true, class:"width-50"},
+            { field: 'isFromPool', header: 'Pula' ,hidden:false, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},          
+            { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-45 text-right", price:true}, 
+            { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"}, 
+            { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
+            { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
+            { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true , filter:true, class:"width-135"},
+            { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:false, sortable:true , filter:true, class:"width-135" },
+            { field: 'frontProcessingDesc', header: 'Powód',hidden:false, sortable:true , filter:false, class:"width-135" },
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35 text-center"},
+            // hidden columns 
+            { field: 'complexityCode', header: 'Zł.', hidden:true, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },              
+            { field: 'assignee', header: 'Wykonawca',hidden:true, sortable:true, filter:true, class:"width-100" },
+            { field: 'lastModDate', header: 'Mod.' ,hidden:true, sortable:true, filter:true, class:"width-50"},           
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
+            { field: 'officeCode', header: 'Biuro' ,hidden:true, sortable: true, filter:true,class:"text-center-30"},
+            { field: 'sComments', header: 'Komentarz',hidden:true,  sortable:true , filter:true,class:"width-250", icon:true},
+            { field: 'description', header: 'Opis',hidden:true,  filter:true ,class:"width-250"},              
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
+            { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},             
+        ]
+
     }
 
     @Input()
     set ListToDisplay(orders: Order[]) {
         this.mapVentureRepresentative(orders, this.vrs);
         this.list = orders;
+        this.summary = this.toolsService.createSummaryForOrdersTable(this.list);
+    }
+
+    public onPriceChange(event, tt) {
+        if (this.priceTimeout) {
+            clearTimeout(this.priceTimeout);
+        }
+        this.priceTimeout = setTimeout(() => {
+            tt.filter(event.value, 'price', 'gt');
+        }, 250);
     }
 
     get ListToDisplay(): Order[] {

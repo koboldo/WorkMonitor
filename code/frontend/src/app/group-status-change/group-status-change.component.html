@@ -1,150 +1,129 @@
 <div *ngIf="operatorMode" class="ui-grid-row">
   <div class="ui-grid-col-6">
     <p-fieldset legend="Nowy Status">
-        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-          <div class="ui-grid-col-2"><label for="status">Status</label></div>
-          <div class="ui-grid-col-6">
-              <p-autoComplete id="status" name="status" [(ngModel)]="status" [forceSelection]="true" [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true" field="paramChar" (onSelect)="filter($event)"></p-autoComplete>
-              <!--  -->
-              <!-- [disabled]="!assignedVentureRepresentative"  -->
-            
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <div class="ui-grid-col-2"><label for="status">Status</label></div>
+        <div class="ui-grid-col-6">
+          <p-autoComplete id="status" name="status" [(ngModel)]="status" [forceSelection]="true"
+            [suggestions]="suggestedStatuses" (completeMethod)="suggestStatus($event)" [dropdown]="true"
+            field="paramChar" (onSelect)="filter($event)"></p-autoComplete>
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 15px; margin-bottom: 65px;">
+        <div *ngIf="(status?.code === 'SU' || status?.code === 'CA')" class="ui-grid-row" style="margin-top: 0px;">
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-10">
+              <p-message severity="warn" text="Dodaj powód anulujowania/wstrzymania zlecenia!"></p-message>
+            </div>
           </div>
-            
+          <br />
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-2"></div>
+            <div class="ui-grid-col-10">
+              <textarea pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"
+                autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
+            </div>
           </div>
-          <div class="ui-grid-row"  style="margin-top: 15px; margin-bottom: 65px;">
-            
-              <div *ngIf="(status?.code === 'SU' || status?.code === 'CA')" class="ui-grid-row" style="margin-top: 0px;" >
-                <div class="ui-grid-row">
-                  <div class="ui-grid-col-2"></div>
-                  <div class="ui-grid-col-10">
-                    <p-message severity="warn" text="Dodaj powód anulujowania/wstrzymania zlecenia!"></p-message>
-                  </div>
-                </div>
-                <br/>
-                <div class="ui-grid-row">
-                    <div class="ui-grid-col-2"></div>
-                    <div class="ui-grid-col-10">
-                        <textarea pInputTextarea id="newComment" name="newComment" [(ngModel)]="newComment" [rows]="2" [cols]="30"  autoResize="autoResize" placeholder="Wewnętrzny komentarz dotyczący zlecenia..."></textarea>
-                    </div>             
-                </div>              
-              </div>
-                           
-          </div> 
-          <div class="ui-grid-row" style="margin-top: 10px;">
-            <div class="ui-grid-col-4">
-                <button type="button" pButton [disabled]="!status?.code || selectedOrders?.length < 1" icon="fa fa-file-o" iconPos="left" label="Zmień statusy" (click)="changeOrdersStatus(true)"></button>
-            </div>           
-          </div>      
+        </div>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 10px;">
+        <div class="ui-grid-col-4">
+          <button type="button" pButton [disabled]="!status?.code || selectedOrders?.length < 1" icon="fa fa-file-o"
+            iconPos="left" label="Zmień statusy" (click)="changeOrdersStatus(true)"></button>
+        </div>
+      </div>
     </p-fieldset>
   </div>
   <div class="ui-grid-col-6">
     <p-fieldset legend="Instrukcja zmiany statusów">
-        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">       
-          <p>1. W celu zmiany statusu zleceń należy wybrać status </p>
-          <p>2. Następnie należy wybrać zlecenia w których chcemy zmienić status, zaznaczając checkBox w pierwszej kolumnie </p>
-          <p>3. Nstępnie należy klinkąć przycisk "Zmień statusy"</p>
-        </div>    
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+        <p>1. W celu zmiany statusu zleceń należy wybrać status </p>
+        <p>2. Następnie należy wybrać zlecenia w których chcemy zmienić status, zaznaczając checkBox w pierwszej
+          kolumnie </p>
+        <p>3. Nstępnie należy klinkąć przycisk "Zmień statusy"</p>
+      </div>
     </p-fieldset>
   </div>
 </div>
 
 <div *ngIf="!operatorMode" class="ui-grid-row">
-    <div class="ui-grid-col-6">
-        <p-fieldset legend="Zakończ zlecenia">
-          <p>W celu zakończenia zleceń należy wybrać zlecenia poprzez zazanczenie checkBox w pierwszej kolumnie </p>
-          <p>Następnie kliknać przycisk "Zakończ zlecenia"</p>
-            <div class="ui-grid-col-4">
-                <button type="button" pButton [disabled]="selectedOrders?.length < 1" icon="fa fa-file-o" iconPos="left" label="Zakończ zlecenia" (click)="closeOrders()"></button>
-            </div> 
-        </p-fieldset>
-    </div>
-  
+  <div class="ui-grid-col-6">
+    <p-fieldset legend="Zakończ zlecenia">
+      <p>W celu zakończenia zleceń należy wybrać zlecenia poprzez zazanczenie checkBox w pierwszej kolumnie </p>
+      <p>Następnie kliknać przycisk "Zakończ zlecenia"</p>
+      <div class="ui-grid-col-4">
+        <button type="button" pButton [disabled]="selectedOrders?.length < 1" icon="fa fa-file-o" iconPos="left"
+          label="Zakończ zlecenia" (click)="closeOrders()"></button>
+      </div>
+    </p-fieldset>
+  </div>
 </div>
 
 <div class="ui-grid-row">
   <div style="margin-top: 5px" class="ui-g">
-
-    <p-dataTable [value]="ordersToChange" [rows]="20" [paginator]="true" [globalFilter]="gb" #dt dataKey="id"
-      selectionMode="multiple" [(selection)]="selectedOrders" 
-      resizableColumns="true" sortOrder="-1" loadingIcon="fa fa-spinner"
-      [headerCheckboxToggleAllPages]="false"
-      >
-      <p-header>
+    <p-table #tt dataKey="id" [columns]="cols" [value]="ordersToChange" [rows]="20" [paginator]="true"
+      [resizableColumns]="true" columnResizeMode="expand" sortOrder="-1" [(selection)]="selectedOrders"
+      [metaKeySelection]="true" loadingIcon="fa fa-spinner" [responsive]="false">
+      <ng-template pTemplate="caption">
         <div>
-        <i class="fa fa-search"></i>
-        <input #gb type="text" pInputText size="50" placeholder="Filtruj">
+          <i class="fa fa-search"></i>
+          <input type="text" pInputText size="50" placeholder="Filtruj"
+            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
         </div>
-      </p-header>
-      <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
-      <p-column [sortable]="true" field="officeCode" header="Biuro" [filter]="true" filterPlaceholder="Filtruj" [style]="{'text-align':'center', 'width':'45px'}"></p-column>
-      <p-column [sortable]="true" field="id" header="id" hidden="true" ></p-column>
-      <p-column [sortable]="true" field="workNo" header="Zlecenie" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-column [sortable]="true" field="status" header="Status" [style]="{'width':'135px'}" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-        <span class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(order.statusCode)"></i></span>
-        <span style="padding: 3px">{{order.status}}</span>
-        </ng-template>
-      </p-column>
-      <p-column [sortable]="true" field="type" header="Typ" [filter]="true" filterPlaceholder="Filtruj" filterMatchMode="contains">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-        <span [style.color]="workTypeService.getWorkTypeColor(order)" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
-        <span style="padding: 3px">{{order.type}}</span>
-        </ng-template>
-      </p-column>
-
-      <p-column [sortable]="true" field="complexityCode" header="Zł." [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-        <span class="ui-inputgroup-addon"><i [class]="order[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-        </ng-template>
-      </p-column>
-      <p-column [sortable]="true" field="complexity" header="Wycena" [style]="{'text-align':'center', 'width':'55px'}"></p-column>
-
-      <p-column [sortable]="true" field="mdCapex" header="CAPEX" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="price" header="Cena" styleClass="text-right" [style]="{'width':'70px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-column [sortable]="true" field="sComments" header="Komentarz" hidden="true"></p-column>
-      <p-column [sortable]="true" field="description" header="Opis" hidden="true"></p-column>
-
-      <p-column [sortable]="true" field="assignee" header="Wykonawca" [filter]="true" filterPlaceholder="Filtruj"></p-column><!--this is array -->
-      <p-column [sortable]="true" field="isFromPool" header="Pula" [filter]="true" filterPlaceholder="Y/N" [style]="{'text-align':'center', 'width':'45px'}">
-        <ng-template let-col let-order="rowData" pTemplate="body">
-        <span *ngIf="order[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
-        <span *ngIf="order[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
       </ng-template>
-
-      </p-column>
-      <p-column [sortable]="true" field="protocolNo" header="Protokół" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-
-      <p-column [sortable]="true" field="lastModDate" header="Mod." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="creationDate" header="Utw." [style]="{'width':'82px'}" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-column [sortable]="true" field="itemNo" header="Numer obiektu" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <!-- search by invisible colums flatten into order by wo.service -->
-      <p-column [sortable]="true" field="itemBuildingType" header="Typ obiektu" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemConstructionCategory" header="Konstukcja" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemAddress" header="Adres" hidden="true"></p-column>
-      <p-column [sortable]="true" field="itemDescription" header="Opis obiektu" hidden="true"></p-column>
-      <p-column [sortable]="true" field="ventureCompany" header="Inwestor" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-      <p-column [sortable]="true" field="ventureDisplay" header="Zleceniodawca" [filter]="true" filterPlaceholder="Filtruj"></p-column>
-
-      <p-footer>
-        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
-        <div class="ui-grid-row"  style="margin-top: 15px;">
-        <div class="ui-grid-col-1"></div>
-        <div class="ui-grid-col-6"></div>
-
-        <div class="ui-grid-col-1"></div>
-        </div>
-        </div>
-      </p-footer>
-
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+            pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="ui-column-title header">
+              {{col.header}}
+              <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden">
+            <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text"
+              (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">
+            <div *ngIf="col.price">
+              Cena > {{priceFilter}}
+              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)"
+                style="cursor:pointer"></i>
+              <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="priceFilter" [min]="0" [max]="9999"
+                (onChange)="onPriceChange($event, tt)" [animate]="true"></p-slider>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="rowData.contains"
+            [ngClass]="col.class">
+            <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
+            <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
+            <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
+              class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
+            <span *ngIf="col.complexity" class="ui-inputgroup-addon"><i
+                [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
+            <span *ngIf="col.isFromPool">
+              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-users'"></i></span>
+              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
+                  [class]="'fa fa-street-view'"></i></span>
+            </span>
+            <span *ngIf="!col.icon && !col.price">
+              {{rowData[col.field]}}
+            </span>
+            <span *ngIf="col.price">
+              {{rowData[col.field] | currency:'PLN'}}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
       <ng-template pTemplate="emptymessage">
-      Brak zleceń...
+        Brak zleceń...
       </ng-template>
-
-    </p-dataTable>
+    </p-table>
   </div>
 </div>
-
