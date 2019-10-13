@@ -111,9 +111,11 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
   private initMounths() {
     this.possibleNoMonths = [];
+    let now = new Date();
     for (let i = 6; i < 12; i++) {
-      let d = new Date();
+      let d = new Date(now.getFullYear(), now.getMonth(), 1, now.getHours(), now.getMinutes(), now.getSeconds(), 0);
       d.setMonth(d.getMonth() - i);
+      console.log('test d='+d);
       let l:string = this.toolsService.formatDate(d, 'yyyy-MM');
       this.possibleNoMonths.push({label: l, value: i});
     }
@@ -162,11 +164,11 @@ export class ReportMonthlyEngineersComponent implements OnInit {
 
     let result : DateRange[] = [];
 
+    let now = new Date();
     for (let i = this.NO_MONTHS; i >= 1; i--) {
-      let date = new Date();
-      date.setMonth(date.getMonth() - i);
-      let firstDay: Date = new Date(date.getFullYear(), date.getMonth(), 1);
-      let lastDay: Date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      firstDay.setMonth(firstDay.getMonth() - i);
+      let lastDay: Date = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
       console.log('next period from '+this.toolsService.formatDate(firstDay, 'yyyy-MM-dd')+' to '+this.toolsService.formatDate(lastDay, 'yyyy-MM-dd'))
       result.push(new DateRange(firstDay, lastDay));
       this.lineUtilizationData.labels.push(this.toolsService.formatDate(firstDay, 'yyyy-MM'));
