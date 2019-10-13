@@ -37,6 +37,9 @@
     <tr>
       <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
         pResizableColumn excludeGlobalFilter=col.exclude>
+        <span *ngIf="col.check">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </span>
         <span class="header" *ngIf="!col.check">
           {{col.header}}
           <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
