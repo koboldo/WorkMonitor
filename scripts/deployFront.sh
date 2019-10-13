@@ -21,6 +21,7 @@ echo ==================
 
 ssh botconsole@jdmiddleware.pl << EOF
   cd /var/www/html/jdmiddleware.pl
+  tar zcvf "/home/botconsole/front_backup/botdist_${TS?}.tar.gz" bot
   tar zxvf "/tmp/botdist_${TS?}.tar.gz"
 EOF
 
