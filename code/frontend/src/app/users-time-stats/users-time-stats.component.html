@@ -15,9 +15,12 @@
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
-        <tr>
+        <tr>            
           <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
             pResizableColumn excludeGlobalFilter=col.exclude>
+            <span *ngIf="col.check">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </span>
             <span class="header">
               {{col.header}}
               <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
@@ -33,7 +36,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
-          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class" exportable="col.exportable">
             <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
             <span *ngIf="col.person" [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}} {{rowData.lastName}}</span>
             <span *ngIf="col.isActive">
@@ -74,7 +77,7 @@
             </div>
             <div class="ui-grid-col-6"></div>
             <div class="ui-grid-col-2">
-              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>
             </div>
             <div class="ui-grid-col-1"></div>
           </div>
@@ -116,7 +119,7 @@
   [resizableColumns]="true"  
   loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate" 
   [globalFilterFields]="['user.excelId','user.firstName','user.lastName','user.officeCode', 'isFromPool', 'periodBeginning','periodEnd','workTime','poolWorkTime','nonpoolWorkTime','trainingTime','leaveTime','overTime']"
-  [responsive]="false">
+  [responsive]="false" >
   <ng-template pTemplate="caption">
     <div>
       <i class="fa fa-search"></i>
@@ -127,7 +130,7 @@
   <ng-template pTemplate="header" let-columns let-rowData>
     <tr >
       <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class" 
-        pResizableColumn excludeGlobalFilter=col.exclude>
+        pResizableColumn excludeGlobalFilter=col.exclude exportable="col.export">
         <span class="header">
           {{col.header}}
           <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
@@ -151,7 +154,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-rowData let-columns="columns">
     <tr>
-      <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class" >
+      <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"  exportable="col.exportable">
        <span *ngIf="col.excelId">{{rowData.user.excelId}}</span>
        <span *ngIf="col.firstName">{{rowData.user.firstName}}</span>
        <span *ngIf="col.lastName">{{rowData.user.lastName}}</span>

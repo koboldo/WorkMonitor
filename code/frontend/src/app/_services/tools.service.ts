@@ -8,7 +8,7 @@ import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { SelectItem } from 'primeng/primeng'
 import { TableSummary } from 'app/_models/tableSummary';
-import { userTableSummary } from 'app/_models/userTableSummary';
+import { UserTableSummary } from 'app/_models/userTableSummary';
 import { UserWithSheet } from 'app/_models/userWithSheet';
 
 
@@ -335,8 +335,8 @@ export class ToolsService {
         return summary;
       }
 
-      public createSummaryForUserTable (users : UserWithSheet[]) : userTableSummary {
-        let summary = new userTableSummary();
+      public createSummaryForUserTable (users : UserWithSheet[]) : UserTableSummary {
+        let summary = new UserTableSummary();
         let trainingInMinutes = 0;
         users.forEach(element => {
            let time = parseInt(element.timesheetBreakInMinutes);

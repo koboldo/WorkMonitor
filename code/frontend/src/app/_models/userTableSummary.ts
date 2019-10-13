@@ -1,4 +1,4 @@
-export class userTableSummary {
+export class UserTableSummary {
 
     constructor (){
         this.totalBreakTime = 0;
