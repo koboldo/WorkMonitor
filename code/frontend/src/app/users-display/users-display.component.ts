@@ -9,7 +9,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { Observable }    from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
-import { userTableSummary } from 'app/_models/userTableSummary';
+import { UserTableSummary } from 'app/_models/userTableSummary';
 
 @Component({
     selector: 'app-users-display',
@@ -24,7 +24,7 @@ export class UsersDisplayComponent implements OnInit {
     allUsers:User[] = [];
     users:User[] = [];
     selectedUser: User;
-    summary: userTableSummary;
+    summary: UserTableSummary;
     cols: any;
 
 
@@ -122,9 +122,9 @@ export class UsersDisplayComponent implements OnInit {
         this.filter(this.employedOnlyFilter);       
     }
 
-    private creatSummary (users: User[]) : userTableSummary {
+    private creatSummary (users: User[]) : UserTableSummary {
         console.log(users);
-        let summary = new userTableSummary();
+        let summary = new UserTableSummary();
         summary.totalActiveUsers = this.countActiveUsers(users);
         summary.totalEmployees = this.countEmployedUsers(users);
         summary.totalUsersFromPool = this.countUsersInPool(users);
@@ -141,7 +141,7 @@ export class UsersDisplayComponent implements OnInit {
           if (element.rankCode === 'NONE'){
               summary.totalNONERank ++;
           }
-          if (element.rank === 'DZI'){
+          if (element.rankCode === 'DZI'){
               summary.totalDZIRank ++;
           }
         });

@@ -20,6 +20,7 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.48', 'Dodanie zaznaczanie wszytsich rekordów w tabeli podsumowanie czasu pracy, poprawienie podsumowania dla tabeli z pracownikami'),
             new CodeValue('1.5.47', 'Poprawienie wielkości textArea w wycenie pracochłonności'),
 			new CodeValue('1.5.46', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
             new CodeValue('1.5.45', 'Poprawki użytkownik, modyfikacja czasu, ostrzeżenie o braku czasu tylko dla zatrudnionych pracowaników'),

@@ -10,7 +10,7 @@ import { User, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_mo
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
 import { UserWithSheet } from 'app/_models/userWithSheet';
-import { userTableSummary } from 'app/_models/userTableSummary';
+import { UserTableSummary } from 'app/_models/userTableSummary';
 
 @Component({
     selector: 'app-timesheets',
@@ -36,7 +36,7 @@ export class TimesheetsComponent implements OnInit {
     user: User;
     pl: Calendar;
     cols: any;
-    summary: userTableSummary;
+    summary: UserTableSummary;
 
     constructor(private router:Router,
                 private userService:UserService,
