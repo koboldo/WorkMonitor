@@ -20,6 +20,7 @@ echo ==================
 
 ssh testbot@jdmiddleware.pl << EOF
   cd WorkMonitorFrontend
+  tar zcvf "testbotdist_backup.tar.gz" bot
   rm -rf bot 
   tar zxvf "testbotdist_${TS?}.tar.gz"
   ./restart_nginx.sh
@@ -27,3 +28,4 @@ EOF
 
 
 cd -
+
