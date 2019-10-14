@@ -16,6 +16,7 @@ if(process.env.NODE_ENV != 'dev' && !process.env.WM_SOCKET) throw new Error('Env
 var logger = require('./api/logger').logger; 
 var auth = require('./api/auth');
 var validator = require('./api/validator');
+var payrollScheduler = require('./schedulers/payroll');
 
 var ctx = cls.createNamespace('ctx');
 var app = express();
@@ -53,6 +54,8 @@ app.use(function(req, res){
 });
 
 app.disable('etag'); // TODO: investigate why
+
+payrollScheduler.schedulePayrollRecalculation();
 
 if(process.env.NODE_ENV == 'dev') {
     var server = app.listen(process.env.WM_PORT || '8080', function(){
