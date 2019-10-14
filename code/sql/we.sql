@@ -1,2 +1,4 @@
 INSERT INTO PERSON (FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, IS_ACTIVE, OFFICE_CODE, ROLE_CODE) VALUES ("Jakub","Drulis", "jdrulis@tlen.pl", "e35bece6c5e6e0e86ca51d0440e92282a9d6ac8a", "Y", "WAW","PR");
 INSERT INTO PERSON (FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, IS_ACTIVE, OFFICE_CODE, ROLE_CODE) VALUES ("Łukasz","Engel", "koboldo@gmail.com", "e35bece6c5e6e0e86ca51d0440e92282a9d6ac8a", "Y", "WAW","PR");
+-- Automat bot do przeliczania płac
+INSERT INTO PERSON (FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, IS_ACTIVE, IS_EMPLOYED, OFFICE_CODE, ROLE_CODE) VALUES ('Bot','Przeliczanie płac', 'bot-payroll@noemail.pl', 'NEVER_LOGIN', 'N', 'N', 'CEN','PR');
