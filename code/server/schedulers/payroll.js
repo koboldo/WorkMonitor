@@ -25,7 +25,7 @@ var scheduler = {
       params.overTimeFactor = 1;
       params.periodDate = moment().format('YYYY-MM-DD');
       params.personId = "0";
-      params.modifierId = 276;
+      params.modifierId = 277;
 
       logger().info(`Recalculating payroll with params ${JSON.stringify(params)}...`);
 
