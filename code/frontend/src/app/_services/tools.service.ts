@@ -19,6 +19,7 @@ export class ToolsService {
 
     public NO_WO = 'XXXXX';
     public NO_CAPEX = 'YYYYY';
+    public FOUR_HOURS: number = 4*3600*1000;
 
     constructor(private alertService: AlertService) {
 

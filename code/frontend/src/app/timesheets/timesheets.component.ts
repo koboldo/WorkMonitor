@@ -201,12 +201,25 @@ export class TimesheetsComponent implements OnInit {
         userWithSheet.status = 'OK';
     }
 
-
     private getTimesheet(userWithSheet: UserWithSheet, trainingInMinutes: number): Timesheet {
         let from: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetFrom+':00';
         let to: string = userWithSheet.timesheetWorkDate+' '+userWithSheet.timesheetTo+':00';
+
+        let fromDate: Date = this.toolsService.parseDate(from);
+        let toDate: Date = this.toolsService.parseDate(to);
+        let interval: number = toDate.getTime() - fromDate.getTime();
+
         let timesheet: Timesheet = new Timesheet(userWithSheet.id, from, to);
-        timesheet.break = userWithSheet.timesheetBreakInMinutes;
+
+        console.log(`getTimesheet from: ${from}, to: ${to}, break: ${userWithSheet.timesheetBreakInMinutes}, copy ${userWithSheet.copy.break}`);
+
+        if (interval > 0 && interval < this.toolsService.FOUR_HOURS && userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break) {
+            //override when work time's less then 4h, but not when somebody set arbitrary value
+            timesheet.break = "0";
+        } else {
+            timesheet.break = userWithSheet.timesheetBreakInMinutes;
+        }
+
         timesheet.training = ''+trainingInMinutes;
         return timesheet;
     }
@@ -255,6 +268,8 @@ export class TimesheetsComponent implements OnInit {
         else if (event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom) && event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo)  && this.leaveRegexp.test(event.data.isLeave)) {
             if (event.data.timesheetFrom <= event.data.timesheetTo) {
                 let newTimesheet: Timesheet = this.getTimesheet(event.data, trainingInMinutes);
+
+                console.log(`Check if timesheet needs update-> newTimesheet: ${JSON.stringify(newTimesheet)}, copy: ${JSON.stringify(event.data.copy)} `);
                 if (newTimesheet.break != event.data.copy.break || newTimesheet.from != event.data.copy.from || newTimesheet.to != event.data.copy.to || newTimesheet.training != event.data.copy.training) {
                     event.data.status = 'PROGRESS';
                     if (newTimesheet.break === '') {

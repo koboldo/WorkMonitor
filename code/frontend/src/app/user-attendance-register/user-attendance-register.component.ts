@@ -63,7 +63,7 @@ export class UserAttendanceRegisterComponent implements OnInit {
     public registerTo():void {
         console.log("To!");
         this.timesheetService.upsertAttendanceTo(this.user.id)
-            .subscribe(result => this.updateTimesheet(result));
+            .subscribe(result => this.calculateBreak(result));
     }
 
     public registerBreak(): void {
@@ -81,7 +81,7 @@ export class UserAttendanceRegisterComponent implements OnInit {
             if (timesheet.personId === this.user.id) {
                 if (timesheet.from && timesheet.from.startsWith(sToday)) {
                     this._timesheet = timesheet;
-                    this.totalBreakInMinutes = timesheet.break? +timesheet.break: 15;
+                    this.totalBreakInMinutes = timesheet.break ? +timesheet.break : 15;
                 } else if (this.checkExitNotRegistered(timesheet)) {
                     this._unregisteredExits.push(timesheet.from.substring(0, 10));
                 }
@@ -101,13 +101,33 @@ export class UserAttendanceRegisterComponent implements OnInit {
         return timesheet.isLeave === 'N' && timesheet.usedTime === 0 && !timesheet.from.endsWith('00:00:00');
     }
 
-    private updateTimesheet(result:any):void {
+    private updateTimesheet(result:any):Timesheet {
         if ((result.updated === 1 || result.created === 1) && result.timesheet) {
             this._timesheet = result.timesheet;
+            return result.timesheet;
         } else {
             console.log("Something went wrong when from or to "+JSON.stringify(result));
-            this.alertService.error("Nie udalo sie zaktualizować danych!");
+            this.alertService.error("Nie udalo sie zaktualizować danych o twoim czasie pracy!");
         }
         this.displayBreakDialog = false;
+        return null;
     }
+
+  private calculateBreak(result:any):void {
+    let timesheet: Timesheet = this.updateTimesheet(result);
+    if (timesheet) {
+      let from: string = timesheet.from+':00';
+      let to: string = timesheet.to+':00';
+
+      let fromDate: Date = this.toolsService.parseDate(from);
+      let toDate: Date = this.toolsService.parseDate(to);
+      let interval: number = toDate.getTime() - fromDate.getTime();
+
+      if (interval > 0 && interval < this.toolsService.FOUR_HOURS && +timesheet.break == this.totalBreakInMinutes) {
+        console.log(`Reducing break from def ${this.totalBreakInMinutes} min to 0 as work time's less then 4h - ${JSON.stringify(timesheet)}...`);
+        this.timesheetService.upsertAttendanceBreak(this.user.id, 0)
+                .subscribe(result => this.updateTimesheet(result));
+      }
+    }
+  }
 }
