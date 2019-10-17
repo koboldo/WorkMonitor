@@ -19,11 +19,12 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.51', 'Poprawienie działania doubleClick w tabeli zlecenia WO'),
             new CodeValue('1.5.50', 'Domyślnie brak przerwy przy pracy poniżej 4h.'),
             new CodeValue('1.5.49', 'Dodanie zaznaczania wszystkich rekordów w grupowym przypisywaniu zleceń'),
             new CodeValue('1.5.48', 'Dodanie zaznaczania wszystkich rekordów w tabelach podsumowanie czasu pracy oraz raportach, poprawienie podsumowania dla tabeli z pracownikami'),
             new CodeValue('1.5.47', 'Poprawienie wielkości textArea w wycenie pracochłonności'),
-			      new CodeValue('1.5.46', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
+			new CodeValue('1.5.46', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
             new CodeValue('1.5.45', 'Poprawki użytkownik, modyfikacja czasu, ostrzeżenie o braku czasu tylko dla zatrudnionych pracowaników'),
             new CodeValue('1.5.44', 'Poprawki na zakładkach wynagrodzenia/czas pracy'),
             new CodeValue('1.5.43', 'Zmiana tabel na turbo table'),
