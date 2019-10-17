@@ -22,6 +22,7 @@ export class TimesheetsComponent implements OnInit {
     users:User[];
     usersWithSheets:UserWithSheet[] = <UserWithSheet[]> [];
 
+    sStatusEdited: string = 'EDITED';
     sEmptySheet: string = 'BRAK';
     sWeekendSheet: string = 'Weekend';
     sLeave: string = 'Urlop';
@@ -211,14 +212,14 @@ export class TimesheetsComponent implements OnInit {
 
         let timesheet: Timesheet = new Timesheet(userWithSheet.id, from, to);
 
-        console.log(`getTimesheet from: ${from}, to: ${to}, break: ${userWithSheet.timesheetBreakInMinutes}, copy ${userWithSheet.copy.break}`);
+        console.log(`getTimesheet from: ${from}, to: ${to}, break: ${userWithSheet.timesheetBreakInMinutes}, copy: ${userWithSheet.copy.break}, all: ${JSON.stringify(userWithSheet)}`);
 
         if (interval > 0 && interval < this.toolsService.FOUR_HOURS &&
-            (userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break || (+userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK))
+            (userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break || (userWithSheet.status == this.sStatusEdited && +userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK))
         ) {
             //override when work time's less then 4h, but not when somebody set arbitrary value
             //1. insert to (userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break)
-            //2. insert from and to (+userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK)
+            //2. insert from and to (userWithSheet.status == this.sStatusEdited && +userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK)
             timesheet.break = "0";
         } else {
             timesheet.break = userWithSheet.timesheetBreakInMinutes;
@@ -295,7 +296,7 @@ export class TimesheetsComponent implements OnInit {
                 this.restore(event.data);
             }
         } else if ((event.data.timesheetFrom && this.timeRegexp.test(event.data.timesheetFrom)) || (event.data.timesheetTo && this.timeRegexp.test(event.data.timesheetTo))) {
-            event.data.status = 'EDITED';
+            event.data.status = this.sStatusEdited;
         } else {
             console.log('Nie wypelniono poprawnie timesheetu '+JSON.stringify(event.data));
             this.restore(event.data);
