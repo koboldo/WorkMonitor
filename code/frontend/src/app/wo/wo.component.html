@@ -47,7 +47,7 @@
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-table  #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
       sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
-      (dblclick)="onRowDblclick($event)" [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm"
+       [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm"
       contextMenuSelectionMode="joint" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
        [scrollable]="true">
       <ng-template pTemplate="caption">
@@ -86,7 +86,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
-        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData" (dblclick)="onRowDblclick($event)">
           <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"  exportable="col.exportable">
             <i *ngIf="col.statusCode" [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
             <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
