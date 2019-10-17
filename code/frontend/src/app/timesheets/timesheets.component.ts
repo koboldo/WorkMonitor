@@ -87,7 +87,7 @@ export class TimesheetsComponent implements OnInit {
             //cleaning BRAK values
             event.data.timesheetFrom = '';
             event.data.timesheetTo = '';
-            event.data.timesheetBreakInMinutes = 15;
+            event.data.timesheetBreakInMinutes = this.toolsService.FOUR_HOURS;
             event.data.timesheetTrainingInGMM = '';
             event.data.color = '#2399e5';
         }        
@@ -213,8 +213,12 @@ export class TimesheetsComponent implements OnInit {
 
         console.log(`getTimesheet from: ${from}, to: ${to}, break: ${userWithSheet.timesheetBreakInMinutes}, copy ${userWithSheet.copy.break}`);
 
-        if (interval > 0 && interval < this.toolsService.FOUR_HOURS && userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break) {
+        if (interval > 0 && interval < this.toolsService.FOUR_HOURS &&
+            (userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break || (+userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK))
+        ) {
             //override when work time's less then 4h, but not when somebody set arbitrary value
+            //1. insert to (userWithSheet.timesheetBreakInMinutes == userWithSheet.copy.break)
+            //2. insert from and to (+userWithSheet.copy.break == 0 && +userWithSheet.timesheetBreakInMinutes == this.toolsService.DEFAULT_BREAK)
             timesheet.break = "0";
         } else {
             timesheet.break = userWithSheet.timesheetBreakInMinutes;
@@ -407,24 +411,4 @@ export class TimesheetsComponent implements OnInit {
     }
 }
 
-
-// export class UserWithSheet extends User {
-//     rowid: number;
-
-//     copy: Timesheet;
-
-//     timesheetUsedTime: number; //flat property for p-dataTable used for sort
-//     timesheetWorkDate: string;
-//     timesheetFrom: string;
-//     timesheetTo: string;
-//     timesheetBreakInMinutes: string;
-//     timesheetTrainingInGMM: string;
-//     isLeave: string;
-
-//     isManagerOrOperator: string; //Y, N
-
-//     color: string;
-//     status: string;
-
-// }
 

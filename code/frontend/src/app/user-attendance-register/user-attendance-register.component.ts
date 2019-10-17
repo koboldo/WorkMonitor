@@ -12,7 +12,7 @@ export class UserAttendanceRegisterComponent implements OnInit {
     @Input() user:User;
 
     public displayBreakDialog: boolean;
-    public totalBreakInMinutes: number = 15;
+    public totalBreakInMinutes: number;
 
     private _timesheet: Timesheet;
     get timesheet(): Timesheet {
@@ -28,6 +28,7 @@ export class UserAttendanceRegisterComponent implements OnInit {
     constructor(private timesheetService:TimesheetService,
                 private toolsService: ToolsService,
                 private alertService: AlertService) {
+        this.totalBreakInMinutes = this.toolsService.DEFAULT_BREAK;
     }
 
     ngOnInit() {
@@ -81,7 +82,7 @@ export class UserAttendanceRegisterComponent implements OnInit {
             if (timesheet.personId === this.user.id) {
                 if (timesheet.from && timesheet.from.startsWith(sToday)) {
                     this._timesheet = timesheet;
-                    this.totalBreakInMinutes = timesheet.break ? +timesheet.break : 15;
+                    this.totalBreakInMinutes = timesheet.break ? +timesheet.break : this.toolsService.DEFAULT_BREAK;
                 } else if (this.checkExitNotRegistered(timesheet)) {
                     this._unregisteredExits.push(timesheet.from.substring(0, 10));
                 }
