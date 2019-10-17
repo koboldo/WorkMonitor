@@ -87,7 +87,7 @@ export class TimesheetsComponent implements OnInit {
             //cleaning BRAK values
             event.data.timesheetFrom = '';
             event.data.timesheetTo = '';
-            event.data.timesheetBreakInMinutes = this.toolsService.FOUR_HOURS;
+            event.data.timesheetBreakInMinutes = this.toolsService.DEFAULT_BREAK;
             event.data.timesheetTrainingInGMM = '';
             event.data.color = '#2399e5';
         }        
