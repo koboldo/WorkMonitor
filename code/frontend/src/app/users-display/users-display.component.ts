@@ -28,7 +28,7 @@ export class UsersDisplayComponent implements OnInit {
     cols: any;
 
 
-    displayUserHistoryDialog: boolean;
+    displayUserHistoryDialog = false;
     employedOnlyFilter: string = 'EMPLOYED_ONLY';
 
     constructor(protected router:Router,
@@ -70,14 +70,15 @@ export class UsersDisplayComponent implements OnInit {
     public showUserHistory(event, user: User): void {
         console.log('showUserHistory... '+JSON.stringify(user));
         this.selectedUser = user;
-        this.displayUserHistoryDialog=true;
+        this.displayUserHistoryDialog = true;
     }
 
     public add():void {
         this.router.navigate(['/addPerson']);
     }
 
-    onRowDblclick(event) {
+    onRowDblclick(selected: User) {
+        this.selectedUser = selected;
         this.change();
     }
 
