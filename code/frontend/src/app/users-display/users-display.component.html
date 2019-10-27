@@ -48,12 +48,12 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns">
-      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData" (dblclick)="onRowDblclick($event,rowData)" >
+      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData" (dblclick)="onRowDblclick(rowData)" >
         <td *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class" exportable="col.exportable">
-
+ 
           <span *ngIf="operator.roleCode.indexOf('PR') >= 0 && col.history">
             <button type="button" pButton (click)="showUserHistory($event, rowData)" icon="fa fa-history"></button>
-          </span>
+          </span> 
           <span *ngIf="col.user">
             <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}}
               {{rowData.lastName}}</span>
@@ -121,8 +121,8 @@
       Brak pracowników...
     </ng-template>
   </p-table>
-  <p-contextMenu #cm [model]="items"></p-contextMenu>
-  <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+  <p-contextMenu  #cm [model]="items"></p-contextMenu>
+  <p-dialog *ngIf="operator.roleCode.indexOf('PR') >= 0" [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
       <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
     </p-dialog>
 </div>
