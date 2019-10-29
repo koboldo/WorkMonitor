@@ -31,7 +31,7 @@
     "sqlite3": "^4.0.4"
   },
   "devDependencies": {
-    "csv-parse": "^2.0.0",
+    "csv-parse": "^4.6.5",
     "xml2js": "^0.4.19"
   }
 }
