@@ -15,6 +15,6 @@ https://medium.com/@_oleksii_/grafana-alerting-and-slack-notifications-3affe9d5f
 Grafana dashboards (monitoring/*.dashboard.json) 
 
 [Docker compose]
-All monitoring componets are running as docker containters
+All monitoring componets are running as docker containers on separate user botmonitoring
 Remember to edit docker-compose.yml and change GF_SECURITY_ADMIN_PASSWORD
 The trick is to change it BEFORE grafana container creation!
