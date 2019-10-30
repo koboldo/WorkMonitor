@@ -18,6 +18,7 @@ var auth = require('./api/auth');
 var validator = require('./api/validator');
 var payrollScheduler = require('./schedulers/payroll');
 var prometheusMetrics = require('./monitoring/prometheus');
+var restMetricsInterceptor = require('./monitoring/rest');
 
 var ctx = cls.createNamespace('ctx');
 var app = express();
@@ -38,6 +39,7 @@ app.use(function(req, res, next) {
     });
 });
 
+restMetricsInterceptor.registerRestInterceptor(app);
 app.post('/login', auth.authenticate);
 app.post('/pwdreset', auth.sendHash);
 app.put('/pwdreset', auth.validateHash);
