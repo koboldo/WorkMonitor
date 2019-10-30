@@ -9,11 +9,15 @@ const moment = require('moment');
 const logger = require('../api/logger').logger;
 const addCtx = require('../api/logger').addCtx;
 const payroll_db = require('../api/db/payroll_db');
+const prometheus = require('../monitoring/prometheus');
 
 var rule = new schedule.RecurrenceRule();
 rule.minute = 19;
 rule.hour = [new schedule.Range(6, 23)];
 rule.dayOfWeek = [new schedule.Range(1, 5)];
+
+const promClient = prometheus.getPromClient();
+const counter = new promClient.Counter({ name: 'botapp_payroll_scheduler', help: 'botapp_payroll_scheduler', labelNames: ['result'] });
 
 var scheduler = {
   schedulePayrollRecalculation: function() {
@@ -32,10 +36,17 @@ var scheduler = {
       payroll_db.update(params, addCtx(function(err, result){
         if(err) {
           logger().error(`Cannot recalculate payroll due to ${err}`);
+          counter.inc({ result: 'ERROR'}, 0);
           return;
         }
-        if(result > 0) logger().info(`Updated payroll ${result} records`);
-        else logger().error(`Updated payroll ${result} records`);
+
+        if(result > 0) {
+          counter.inc({ result: 'OK'}, result);
+          logger().info(`Updated payroll ${result} records`);
+        } else {
+          counter.inc({ result: 'ERROR'}, result);
+          logger().error(`Updated payroll ${result} records`);
+        }
 
       }));
 

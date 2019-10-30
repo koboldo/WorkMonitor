@@ -1,0 +1,44 @@
+version: "2"
+
+services:
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.0.0
+    user: "${UID}:${GID}"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/etc/prometheus/tsdb"
+    expose:
+      - "9090"
+    depends_on:
+      - node-exporter
+      - nginx-exporter
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    expose:
+      - "9100"
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.4.2
+    environment:
+      - SCRAPE_URI=https://jdmiddleware.pl:443/stub_status
+      - SSL_VERIFY=false
+    expose:
+      - "9113"
+
+  grafana:
+    image: grafana/grafana
+    user: "${UID}:${GID}"
+    volumes:
+      - ./grafana:/var/lib/grafana
+#      - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=testpassword
+#      - GF_SERVER_PROTOCOL=https
+#      - GF_SERVER_CERT_FILE=/etc/letsencrypt/live/jdmiddleware.pl/fullchain.pem
+#      - GF_SERVER_CERT_KEY=/etc/letsencrypt/live/jdmiddleware.pl/privkey.pem
+    ports:
+      - "3002:3000"
+    depends_on:
+      - prometheus
+
