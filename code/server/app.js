@@ -26,6 +26,7 @@ var app = express();
 // app.use(express.static('public'));
 
 // app.use(morgan('dev')); //TODO: set relevant format & file for prod - combine with log4js
+restMetricsInterceptor.registerRestInterceptor(app);
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -39,7 +40,6 @@ app.use(function(req, res, next) {
     });
 });
 
-restMetricsInterceptor.registerRestInterceptor(app);
 app.post('/login', auth.authenticate);
 app.post('/pwdreset', auth.sendHash);
 app.put('/pwdreset', auth.validateHash);
