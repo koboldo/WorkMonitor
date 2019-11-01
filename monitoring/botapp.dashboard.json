@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1572610305186,
+  "iteration": 1572610652626,
   "links": [],
   "panels": [
     {
@@ -30,7 +30,7 @@
         "#FF9830",
         "#299c46"
       ],
-      "datasource": null,
+      "datasource": "Prometheus",
       "decimals": null,
       "description": "",
       "format": "none",
@@ -87,7 +87,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "nginx_up{instance=~\"$instance\"}",
+          "expr": "nginx_up{instance=\"nginx-exporter:9113\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -97,7 +97,7 @@
       "thresholds": "1,1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "NGINX Status for $instance",
+      "title": "BOT NGINX Status",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -438,7 +438,7 @@
           {
             "evaluator": {
               "params": [
-                15
+                5
               ],
               "type": "lt"
             },
@@ -448,7 +448,7 @@
             "query": {
               "params": [
                 "B",
-                "5m",
+                "1m",
                 "now"
               ]
             },
@@ -460,10 +460,10 @@
           }
         ],
         "executionErrorState": "alerting",
-        "for": "2m",
+        "for": "1m",
         "frequency": "1m",
         "handler": 1,
-        "message": "Possible prod node restart!",
+        "message": "Possible production bot node restart!",
         "name": "System CPU seconds alert",
         "noDataState": "no_data",
         "notifications": [
@@ -537,7 +537,7 @@
           "fill": true,
           "line": true,
           "op": "lt",
-          "value": 15
+          "value": 5
         }
       ],
       "timeFrom": null,
@@ -1780,9 +1780,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "prodbotapp",
-          "value": "prodbotapp"
+          "tags": [],
+          "text": "testbotapp",
+          "value": "testbotapp"
         },
         "hide": 0,
         "includeAll": false,
@@ -1828,5 +1828,5 @@
   "timezone": "",
   "title": "BOT app",
   "uid": "Esk0pT0Zk",
-  "version": 53
+  "version": 57
 }
