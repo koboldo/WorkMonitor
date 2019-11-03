@@ -6,6 +6,7 @@ import { AlertService, UserService, DictService, AuthenticationService, PayrollS
 import { CompletedOrderService } from '../_services/completedOrders.service';
 import { User, CodeValue, SearchUser, UserPayroll, Order } from '../_models/index';
 import { SelectItem, DataTable } from 'primeng/primeng'
+import {ToastModule} from 'primeng/toast';
 
 
 import { Observable }    from 'rxjs';
@@ -50,13 +51,15 @@ export class UsersPayrollComponent implements OnInit {
     historicalPayrollsFiltered: UserPayroll[];
     firsHistoricalPayroll: UserPayroll;
 
-    constructor(private router:Router,
-                private userService:UserService,
-                private payrollService:PayrollService,
-                private alertService:AlertService,
-                private dictService:DictService,
-                private toolsService:ToolsService,
-                private authService:AuthenticationService,
+    data: any;
+
+    constructor(protected router:Router,
+                protected userService:UserService,
+                protected payrollService:PayrollService,
+                protected alertService:AlertService,
+                protected dictService:DictService,
+                protected toolsService:ToolsService,
+                protected authService:AuthenticationService,
                 public completedOrderService: CompletedOrderService) {
     }
 
@@ -105,7 +108,44 @@ export class UsersPayrollComponent implements OnInit {
             { field: 'leaveDue', header: 'Urlop PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
             { field: 'totalDue', header: 'Suma PLN', sortable:true ,filter:true, class:"width-35 text-center",price:true},
           ]
-         
+    }
+
+    GenerateReports () {
+        this.data = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Stawka w puli',
+                    data: [],
+                    fill: false,
+                    borderColor: '#4bc0c0'
+                },
+                {
+                    label: 'Wypłaty',
+                    data: [],
+                    fill: false,
+                    borderColor: '#565656'
+                },
+                {
+                    label: 'Budżet puli',
+                    data: [],
+                    fill: false,
+                    borderColor: '#565656'
+                }
+            ]
+        }
+        this.periodForDropDown.forEach(element => {
+            this.data.labels.push(element.value);
+            let payrolForMont = this.historicalPayrolls.filter(item=> item.formattedPeriodDate === element.value)[0];
+            //this.data.datasets[0].data.push(payrolForMont.poolRate);
+            this.data.datasets[1].data.push(this.calculatePayrollCost(payrolForMont.periodDate));
+            //this.data.datasets[2].data.push(payrolForMont.budget);
+        });
+    }
+
+
+    selectData(event) {
+       // this.messageService.add({severity: 'info', summary: 'Data Selected', 'detail': this.data.datasets[event.element._datasetIndex].data[event.element._index]});
     }
 
     public exportCSV(text:string, table: DataTable)

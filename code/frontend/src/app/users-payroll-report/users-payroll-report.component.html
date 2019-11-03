@@ -1,0 +1,26 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="Zakres dat" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                <h3>Od</h3>
+                <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
+                <h3>Do</h3>
+                <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
+        </p-panel>
+    </div>
+</div>
+<div  class="ui-g">
+  <div class="ui-g-6">
+      <p-chart  type="line" [data]="budgetData"></p-chart>
+  </div>
+    <div class="ui-g-6">
+     <p-chart  type="line" [data]="poolRateData"></p-chart>
+    </div>
+</div>
+<div  class="ui-g">
+    <div class="ui-g-6">
+        <p-chart  type="line" [data]="payrollCostData"></p-chart>
+    </div>
+      <div class="ui-g-6">
+      
+      </div>
+  </div>
