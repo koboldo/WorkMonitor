@@ -42,12 +42,12 @@ const queries = {
     , TIME_PARAMS AS (
         SELECT TL.TIME_AFTER,
                TL.TIME_BEFORE,
-               ( ( (TL.TIME_BEFORE - TL.TIME_AFTER + 1) / 86400) - COUNT(1) ) * 86400 PERIOD_LENGTH
+               ( ( (TL.TIME_BEFORE - TL.TIME_AFTER + 1) / 86400) - COUNT(1) ) * 8 PERIOD_LENGTH
           FROM HOLIDAYS,
                (
         SELECT 
                  CAST(STRFTIME('%%s', PERIOD_DATE, 'start of month') AS INTEGER) TIME_AFTER,
-                 CAST(STRFTIME('%%s', PERIOD_DATE, 'start of month', '+1 month', '-1 day', '+86399 second') AS INTEGER) TIME_BEFORE
+                 CAST(STRFTIME('%%s', PERIOD_DATE, 'start of month', '+1 month', '-1 second') AS INTEGER) TIME_BEFORE
                    FROM QUERY_PARAMS
                ) TL
           WHERE HDATE BETWEEN TL.TIME_AFTER AND TL.TIME_BEFORE
@@ -172,7 +172,7 @@ const queries = {
                 , COALESCE(PT.TRAINING_TIME,0) TRAINING_TIME
                 , CASE WHEN P.IS_FROM_POOL = "Y" THEN ROUND(PT.WORK_TIME - COALESCE(PNPT.NONPOOL_TIME,0),2) ELSE 0 END POOL_WORK_TIME
                 , CASE WHEN P.IS_FROM_POOL = "Y" THEN COALESCE(PNPT.NONPOOL_TIME,0) ELSE COALESCE(PT.WORK_TIME,0) END NONPOOL_WORK_TIME
-                , (PT.WORK_TIME + PT.LEAVE_TIME + PT.TRAINING_TIME - TP.PERIOD_LENGTH) OVER_TIME
+                , ROUND(PT.WORK_TIME + PT.LEAVE_TIME + PT.TRAINING_TIME - TP.PERIOD_LENGTH,2) OVER_TIME
                 , P.IS_FROM_POOL
             FROM PERIOD_PERSON P 
                 LEFT JOIN PERSON_TIME PT ON P.ID = PT.PERSON_ID 

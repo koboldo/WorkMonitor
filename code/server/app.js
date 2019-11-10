@@ -17,6 +17,8 @@ var logger = require('./api/logger').logger;
 var auth = require('./api/auth');
 var validator = require('./api/validator');
 var payrollScheduler = require('./schedulers/payroll');
+var prometheusMetrics = require('./monitoring/prometheus');
+var restMetricsInterceptor = require('./monitoring/rest');
 
 var ctx = cls.createNamespace('ctx');
 var app = express();
@@ -24,6 +26,7 @@ var app = express();
 // app.use(express.static('public'));
 
 // app.use(morgan('dev')); //TODO: set relevant format & file for prod - combine with log4js
+restMetricsInterceptor.registerRestInterceptor(app);
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -45,6 +48,8 @@ app.all('/api/v1/*', auth.validateToken);
 app.all('/api/v1/*', validator.validateIncoming);
 
 app.use('/api', require('./api'));
+
+prometheusMetrics.startMetricsServer(app);
 
 app.use(function(req, res){
     res.status(404).json({
@@ -77,3 +82,6 @@ if(process.env.NODE_ENV == 'dev') {
     });
     logger().info('socket server started at %s', socket);
 }
+
+
+
