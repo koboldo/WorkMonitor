@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService, PayrollService, AlertService, DictService, ToolsService, AuthenticationService, CompletedOrderService } from 'app/_services';
 import { UserPayroll, User } from 'app/_models';
 import { stringify } from 'querystring';
+import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
 
 @Component({
   selector: 'app-users-payroll-report',
@@ -18,6 +19,8 @@ export class UsersPayrollReportComponent  implements OnInit {
   poolRateData: any;
   payrollCostData: any;
   data: any;
+  cols: any;
+  payrollReportData: DataForPayrollsReport [] = [];
 
   operator:User;
   users: Map<number, User>;
@@ -35,24 +38,53 @@ export class UsersPayrollReportComponent  implements OnInit {
                }
   ngOnInit() {
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
+    this.cols=[
+      { field: 'date', header:'Okres'},
+      { field: 'poolRate', header:'Stawka w puli '},
+      { field: 'budget', header:'Budżet'},
+      { field: 'payrollCost', header:'Koszt wypłat'}, 
+    ];
   }
 
   private getHistoricalPayrolls(payrolls:UserPayroll[]):void {
     this.historicalPayrolls = payrolls;
-    let dataForPoolRate: Map<string, string> = new Map<string, string>();
+    let dataForPoolRate: Map <string,string> = new Map<string, string>();
     for (let payroll of payrolls) {
         dataForPoolRate.set(payroll.periodDate, payroll.formattedPoolRate);
     }
-    this.generatePoolRateChar(dataForPoolRate);
-    // let dataForBudget: Map<string, number> = new Map<string, number>();
-    // for (let payroll of payrolls) {
-    //     dataForPoolRate.set(payroll.periodDate, payroll.budget);
-    // }
+    this.generatePoolRateChar(new Map(Array.from(dataForPoolRate).sort()));
+    
+    let dataForBudget: Map<string, string> = new Map<string, string>();
+    for (let payroll of payrolls) {
+      dataForBudget.set(payroll.periodDate, payroll.budget);
+    }
+    this.generatePyrollBudgetChar(new Map(Array.from(dataForBudget).sort()));
+
     let dataForPayrollCost: Map<string, number> = new Map<string, number>();
     for (let payroll of payrolls) {
       dataForPayrollCost.set(payroll.periodDate, this.calculatePayrollCost(payroll.periodDate));
     }
-    this.generatePayrollCostChar(dataForPayrollCost);
+    this.generatePayrollCostChar(new Map(Array.from(dataForPayrollCost).sort()));
+}
+private generatePyrollBudgetChar (payrolls: Map <string,string>) {
+  this.budgetData = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Budżet',
+            data: [],
+            fill: false,
+            borderColor: '#4bc0c0'
+        },
+    ]
+  }
+  payrolls.forEach((payrollBudget: string, payrollDate: string) => {
+    this.budgetData.labels.push(payrollDate);
+    this.budgetData.datasets[0].data.push(payrollBudget);
+    let dataToUpdate = this.payrollReportData.find(item=> item.date === payrollDate);
+    dataToUpdate.budget = payrollBudget;
+    //this.payrollReportData.push({budget: payrollBudget, date: payrollDate, poolRate: '', payrollCost: 0});
+  });
 }
 private generatePayrollCostChar (payrolls: Map<string, number> ) {
   this.payrollCostData = {
@@ -69,6 +101,9 @@ private generatePayrollCostChar (payrolls: Map<string, number> ) {
   payrolls.forEach((payrollCost: number, date: string) => {
     this.payrollCostData.labels.push(date);
     this.payrollCostData.datasets[0].data.push(payrollCost);
+    let dataToUpdate = this.payrollReportData.find(item=> item.date === date);
+    dataToUpdate.payrollCost = payrollCost;
+    //this.payrollReportData.push({budget: '', date: date, poolRate: '', payrollCost: payrollCost});
   });
 }
 private generatePoolRateChar (payrolls: Map<string,string>){
@@ -86,6 +121,7 @@ private generatePoolRateChar (payrolls: Map<string,string>){
  payrolls.forEach((pollRate: string, date: string) => {
    this.poolRateData.labels.push(date);
    this.poolRateData.datasets[0].data.push(pollRate);
+   this.payrollReportData.push({budget: '', date: date, poolRate: pollRate, payrollCost: 0});
  });
 }
 private getAllUsers(user:User):void {

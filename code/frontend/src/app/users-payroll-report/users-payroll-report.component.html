@@ -21,6 +21,52 @@
         <p-chart  type="line" [data]="payrollCostData"></p-chart>
     </div>
       <div class="ui-g-6">
-      
+        <p-table #current dataKey="date" [columns]="cols" [value]="payrollReportData" [resizableColumns]="true"
+        sortField="date" sortOrder="1" scrollable="true" scrollHeight="600px"
+        loadingIcon="fa fa-spinner" [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false"
+        rowGroupMode="rowspan" csvSeparator=";"
+        [exportFilename]="raport">
+        <ng-template pTemplate="caption">
+            <div>
+                <i class="fa fa-search"></i>
+                <input type="text" pInputText size="50" placeholder="Filtruj"
+                    (input)="current.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns let-rowData>
+            <tr>
+                <th *ngFor="let col of columns"  [pSortableColumn]="col.field"
+                     pResizableColumn >
+                    <span class="header">
+                        {{col.header}}
+                    </span>
+
+                </th>
+            </tr>
+            <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden">
+                    <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'"
+                        pInputText type="text"
+                        (input)="current.filter($event.target.value, col.field, col.filterMatchMode)"
+                      >
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
+                <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains"
+                    [ngClass]="col.class">
+                    <span >
+                        {{rowData[col.field]}}
+                    </span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            Brak danych...
+        </ng-template>
+    </p-table>
+
+
       </div>
   </div>
