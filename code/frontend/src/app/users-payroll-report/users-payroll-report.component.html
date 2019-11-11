@@ -5,6 +5,7 @@
                 <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
                 <h3>Do</h3>
                 <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
+                <button (click)="check()"></button>
         </p-panel>
     </div>
 </div>
@@ -21,16 +22,18 @@
         <p-chart  type="line" [data]="payrollCostData"></p-chart>
     </div>
       <div class="ui-g-6">
-        <p-table #current dataKey="date" [columns]="cols" [value]="payrollReportData" [resizableColumns]="true"
+        <p-table #tt dataKey="date" [columns]="cols" [value]="payrollReportData" [resizableColumns]="true"
         sortField="date" sortOrder="1" scrollable="true" scrollHeight="600px"
         loadingIcon="fa fa-spinner" [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false"
         rowGroupMode="rowspan" csvSeparator=";"
-        [exportFilename]="raport">
+        exportFilename="Raport">
         <ng-template pTemplate="caption">
-            <div>
-                <i class="fa fa-search"></i>
-                <input type="text" pInputText size="50" placeholder="Filtruj"
-                    (input)="current.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            <div class="ui-g">
+                <div class="ui-g-4"></div>
+                <div class="ui-g-4"> 
+                    <button (click)="tt.exportCSV()" type="button" pButton icon="fa fa-file-o" label="Eksport danych "></button>
+                </div>
+                <div class="ui-g-4"></div>
             </div>
         </ng-template>
         <ng-template pTemplate="header" let-columns let-rowData>
@@ -39,6 +42,7 @@
                      pResizableColumn >
                     <span class="header">
                         {{col.header}}
+                        <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
                     </span>
 
                 </th>
@@ -47,7 +51,7 @@
                 <th *ngFor="let col of columns" [hidden]="col.hidden">
                     <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'"
                         pInputText type="text"
-                        (input)="current.filter($event.target.value, col.field, col.filterMatchMode)"
+                        (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)"
                       >
                 </th>
             </tr>
@@ -56,8 +60,11 @@
             <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
                 <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains"
                     [ngClass]="col.class">
-                    <span >
+                    <span *ngIf="col.date">
                         {{rowData[col.field]}}
+                    </span>
+                    <span *ngIf="!col.date">
+                        {{rowData[col.field] | currency:'PLN'}}
                     </span>
                 </td>
             </tr>

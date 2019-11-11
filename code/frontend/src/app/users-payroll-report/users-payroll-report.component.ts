@@ -37,32 +37,40 @@ export class UsersPayrollReportComponent  implements OnInit {
 
                }
   ngOnInit() {
+    this.dateTo = new Date();
+    this.dateFrom = new Date(this.dateTo.getFullYear() -1, this.dateTo.getMonth());
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
     this.cols=[
-      { field: 'date', header:'Okres'},
-      { field: 'poolRate', header:'Stawka w puli '},
-      { field: 'budget', header:'Budżet'},
-      { field: 'payrollCost', header:'Koszt wypłat'}, 
+      { field: 'date', header:'Okres', date: true , sortable: true},
+      { field: 'poolRate', header:'Stawka w puli ', date: false, sortable: true},
+      { field: 'budget', header:'Budżet', date: false,sortable: true},
+      { field: 'payrollCost', header:'Koszt wypłat', date: false,sortable: true}, 
     ];
+  }
+
+  check () {
+    let test = this.dateFrom;
+    let test2 = this.dateTo;
   }
 
   private getHistoricalPayrolls(payrolls:UserPayroll[]):void {
     this.historicalPayrolls = payrolls;
+    
     let dataForPoolRate: Map <string,string> = new Map<string, string>();
     for (let payroll of payrolls) {
-        dataForPoolRate.set(payroll.periodDate, payroll.formattedPoolRate);
+        dataForPoolRate.set(payroll.formattedPeriodDate, payroll.formattedPoolRate);
     }
     this.generatePoolRateChar(new Map(Array.from(dataForPoolRate).sort()));
     
     let dataForBudget: Map<string, string> = new Map<string, string>();
     for (let payroll of payrolls) {
-      dataForBudget.set(payroll.periodDate, payroll.budget);
+      dataForBudget.set(payroll.formattedPeriodDate, payroll.budget);
     }
     this.generatePyrollBudgetChar(new Map(Array.from(dataForBudget).sort()));
 
     let dataForPayrollCost: Map<string, number> = new Map<string, number>();
     for (let payroll of payrolls) {
-      dataForPayrollCost.set(payroll.periodDate, this.calculatePayrollCost(payroll.periodDate));
+      dataForPayrollCost.set(payroll.formattedPeriodDate, this.calculatePayrollCost(payroll.periodDate));
     }
     this.generatePayrollCostChar(new Map(Array.from(dataForPayrollCost).sort()));
 }
@@ -83,7 +91,6 @@ private generatePyrollBudgetChar (payrolls: Map <string,string>) {
     this.budgetData.datasets[0].data.push(payrollBudget);
     let dataToUpdate = this.payrollReportData.find(item=> item.date === payrollDate);
     dataToUpdate.budget = payrollBudget;
-    //this.payrollReportData.push({budget: payrollBudget, date: payrollDate, poolRate: '', payrollCost: 0});
   });
 }
 private generatePayrollCostChar (payrolls: Map<string, number> ) {
@@ -103,7 +110,6 @@ private generatePayrollCostChar (payrolls: Map<string, number> ) {
     this.payrollCostData.datasets[0].data.push(payrollCost);
     let dataToUpdate = this.payrollReportData.find(item=> item.date === date);
     dataToUpdate.payrollCost = payrollCost;
-    //this.payrollReportData.push({budget: '', date: date, poolRate: '', payrollCost: payrollCost});
   });
 }
 private generatePoolRateChar (payrolls: Map<string,string>){
