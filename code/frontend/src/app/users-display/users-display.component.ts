@@ -64,7 +64,13 @@ export class UsersDisplayComponent implements OnInit {
             { field: 'email', header: 'Email', sortable:true , filter:true,class:"width-35 text-center"},
             { field: 'phone', header: 'Telefon', sortable:true , filter:true,class:"width-35 text-center"},
           ]
+          this.hideHistoryColumn();
+    }
 
+    hideHistoryColumn () {
+        if (this.operator.roleCode.indexOf('PR') < 0) {
+            this.cols.splice(0,1);
+        }
     }
 
     public showUserHistory(event, user: User): void {

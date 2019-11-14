@@ -29,7 +29,7 @@
             <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
           </span>
         </th>
-        <th header="Historia" [style]="{'width':'26px','text-align':'center'}">
+        <th *ngIf="operator.roleCode.indexOf('PR') >= 0" header="Historia" [style]="{'width':'26px','text-align':'center'}">
           <ng-template let-userRow="rowData" pTemplate="body">
           </ng-template>
         </th>
