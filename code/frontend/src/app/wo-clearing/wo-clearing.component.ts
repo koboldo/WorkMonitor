@@ -37,8 +37,6 @@ export class WoClearingComponent implements OnInit {
 
     cols: any;
     colsForProtocol: any;
-    priceTimeout: any;
-    priceFilter: number;
     summary: TableSummary;
 
     constructor(private woService:WOService,
@@ -61,7 +59,7 @@ export class WoClearingComponent implements OnInit {
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
-            { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-35 text-right", price:true}, 
+            { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
             { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
@@ -86,7 +84,7 @@ export class WoClearingComponent implements OnInit {
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},         
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
-            { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-35 text-right", price:true}, 
+            { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},           
             { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:false, sortable:true , filter:true, class:"width-50" },
@@ -113,15 +111,6 @@ export class WoClearingComponent implements OnInit {
 
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);
-    }
-
-    public onPriceChange(event, tt) {
-        if (this.priceTimeout) {
-            clearTimeout(this.priceTimeout);
-        }
-        this.priceTimeout = setTimeout(() => {
-            tt.filter(event.value, 'price', 'gt');
-        }, 250);
     }
 
     // filtr for protocol 

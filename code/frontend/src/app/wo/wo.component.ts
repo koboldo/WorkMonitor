@@ -77,12 +77,7 @@ export class WoComponent implements OnInit {
     displayChangeStatusDialog: boolean;
     displayAssignmentDialog: boolean;
     cols:any ;
-    priceTimeout: any;
-    priceFilter: number;
     summary: TableSummary;
-    priceSliderVisibility = true;
-    priceTextFilterVisibility = true;
-    priceTextFilterValue:string;
     
     constructor(protected woService:WOService,
                 protected userService:UserService,
@@ -126,7 +121,7 @@ export class WoComponent implements OnInit {
             { field: 'complexityCode', header: 'Zł.', sortable:true, filter:false,complexity:true, icon:true,class:"width-50 text-center" },
             { field: 'complexity', header: 'Wycena' , sortable:true, filter:false,class:"width-50 text-center"},
             { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-100" },
-            { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-80 text-right", price:true},
+            { field: 'price', header: 'Cena', sortable:true, filter:true,class:"width-80 text-right", price:true},
             { field: 'sComments', header: 'Komentarz', hidden:true, sortable:true , filter:true},
             { field: 'description', header: 'Opis', hidden:true, filter:true },
             { field: 'assignee', header: 'Wykonawca', sortable:true, filter:true, class:"width-100" },
@@ -147,23 +142,8 @@ export class WoComponent implements OnInit {
       
     }
 
-    public onPriceTextChange(){
-        this.priceTextFilterValue != "" ? this.priceSliderVisibility = false :  this.priceSliderVisibility = true;  
-    }
-
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);
-    }
-
-    public onPriceChange(event, tt) {
-        tt.filter(event.value, 'price', 'gt');
-        event.value > 0 ? this.priceTextFilterVisibility = false : this.priceTextFilterVisibility = true;
-    }
-
-    public clearPriceFilter (tt) {
-        this.priceFilter = 0;
-        tt.filter(null, 'price', 'gt')
-        this.priceTextFilterVisibility = true;
     }
 
     public showChangeStatusDialog() {

@@ -23,8 +23,6 @@ export class GroupStatusChangeComponent implements OnInit {
 
     newComment:string;
     cols: any;
-    priceTimeout: any;
-    priceFilter: any;
 
     constructor(private toolsService:ToolsService,
                 private woService:WOService,
@@ -44,7 +42,7 @@ export class GroupStatusChangeComponent implements OnInit {
             { field: 'complexityCode', header: 'Zł.', sortable:true, filter:false,complexity:true, icon:true,class:"width-50 text-center" },
             { field: 'complexity', header: 'Wycena' , sortable:true, filter:false,class:"width-50 text-center"},
             { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-100" },
-            { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-70 text-right", price:true },     
+            { field: 'price', header: 'Cena', sortable:true, filter:true,class:"width-70 text-right", price:true },     
             { field: 'assignee', header: 'Wykonawca', sortable:true, filter:true, class:"width-100" },
             { field: 'isFromPool', header: 'Pula' , sortable:true, filter:true, isFromPool:true, icon:true, class:"width-35 text-center"},
             { field: 'protocolNo', header: 'Protokół', sortable:true, filter:true, class:"width-70" },
@@ -87,14 +85,6 @@ export class GroupStatusChangeComponent implements OnInit {
         this.closeModalEvent.emit(false);
     }
 
-    public onPriceChange(event, tt) {
-        if (this.priceTimeout) {
-            clearTimeout(this.priceTimeout);
-        }
-        this.priceTimeout = setTimeout(() => {
-            tt.filter(event.value, 'price', 'gt');
-        }, 250);
-    }
 
     filter(event) {
         this.selectedOrders = [];

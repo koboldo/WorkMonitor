@@ -1,14 +1,9 @@
 <p-panel [header]="dictService.getWorkStatus(orderStatus)+' zlecenia'">
-
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-
-
-
     <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600"
       [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
       <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
     </p-dialog>
-    <!-- Turbo table  -->
     <p-table  [scrollable]="true" #tt dataKey="id" [columns]="cols" [value]="orders" [rows]="20" [paginator]="true" [resizableColumns]="true"
       sortOrder="-1" selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
       [metaKeySelection]="true" loadingIcon="fa fa-spinner" [contextMenu]="cm" contextMenuSelectionMode="joint"
@@ -34,13 +29,6 @@
           <th *ngFor="let col of columns" [hidden]="col.hidden">
             <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
               type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">
-            <div *ngIf="col.price">
-              Cena > {{priceFilter}}
-              <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)"
-                style="cursor:pointer"></i>
-              <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="priceFilter" [min]="0" [max]="9999"
-                (onChange)="onPriceChange($event, tt)" [animate]="true"></p-slider>
-            </div>
           </th>
         </tr>
       </ng-template>
@@ -101,8 +89,6 @@
     </p-table>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
-  <!-- end turbo table  -->
-  <!-- add comment -->
   <p-dialog [header]="'Dodawanie komentarza do zlecenia nr '+selectedOrder?.workNo" [(visible)]="displayAddComment"
     [responsive]="true" [minWidth]="900">
     <div class="ui-grid-row" style="max-width: 900px;">
@@ -233,6 +219,4 @@
       </div>
     </p-footer>
   </p-dialog>
-  <!--end add comment-->
-
 </p-panel>
