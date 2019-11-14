@@ -48,14 +48,20 @@ export class UsersPayrollReportComponent  implements OnInit {
     ];
   }
 
-  check () {
+  refresh () {
     let test = this.dateFrom;
     let test2 = this.dateTo;
+    this.payrollReportData = [];
+    this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
   }
 
-  private getHistoricalPayrolls(payrolls:UserPayroll[]):void {
+  private generateDataForCharts(payrolls:UserPayroll[]):void {
     this.historicalPayrolls = payrolls;
-    
+    payrolls = payrolls.filter((element)=> {
+      let date = new Date (element.formattedPeriodDate);
+      if (date <= this.dateTo && date >= this.dateFrom )   
+          return element; 
+    });
     let dataForPoolRate: Map <string,string> = new Map<string, string>();
     for (let payroll of payrolls) {
         dataForPoolRate.set(payroll.formattedPeriodDate, payroll.formattedPoolRate);
@@ -147,7 +153,7 @@ private MapUsersAndPayrolls(staff:User[]):void {
       this.users.set(user.id, user);
   }
   //this.searchPayrolls();
-  this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.getHistoricalPayrolls(userPayrolls));
+  this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.generateDataForCharts(userPayrolls));
 
 }
 public calculatePayrollCost(periodDate: string): number {

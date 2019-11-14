@@ -5,7 +5,7 @@
                 <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
                 <h3>Do</h3>
                 <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
-                <button (click)="check()"></button>
+                <button type="button" pButton (click)="refresh()" label="Generuj Raport"></button>
         </p-panel>
     </div>
 </div>
