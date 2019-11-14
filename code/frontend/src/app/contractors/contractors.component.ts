@@ -52,6 +52,13 @@ export class ContractorsComponent implements OnInit {
         { field: 'email', header: 'Email', sortable:true ,filter:true, class:"width-50 text-center"},
         { field: 'phone', header: 'Telefon', sortable:true ,filter:true, class:"width-50 text-center"},
       ]
+    this.hideHistoryColumn();
+  }
+
+  hideHistoryColumn () {
+      if (this.operator.roleCode.indexOf('PR') < 0) {
+          this.cols.splice(0,1);
+      }
   }
 
   public showUserHistory(event, user: User): void {
@@ -64,7 +71,8 @@ export class ContractorsComponent implements OnInit {
       this.router.navigate(['/addPerson']);
   }
 
-  onRowDblclick(event) {
+  onRowDblclick(selected: User) {
+    this.selectedUser = selected;
       this.change();
   }
 

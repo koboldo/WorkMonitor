@@ -36,8 +36,6 @@ export class WoStoppedListComponent implements OnInit {
     displayAddComment:boolean;
     commentOrder:Order;
     cols:any[] ;
-    priceTimeout: any;
-    priceFilter: number;
     summary: TableSummary;
 
 
@@ -59,7 +57,7 @@ export class WoStoppedListComponent implements OnInit {
             { field: 'status', header: 'Status' , filter:false,statusCode:true, class:"width-20 text-center", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-35" },
-            { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-35 text-right", price:true},
+            { field: 'price', header: 'Cena', sortable:true, filter:true,class:"width-35 text-right", price:true},
             { field: 'complexityCode', header: 'Zł.', hidden:true, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },
             { field: 'complexity', header: 'Wycena' , hidden:true, sortable:true, filter:false,class:"width-35 text-center"},                              
             { field: 'sComments', header: 'Komentarz',  sortable:true , filter:false,class:"width-250", icon:true},
@@ -93,15 +91,6 @@ export class WoStoppedListComponent implements OnInit {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
 
         this.search();
-    }
-
-    public onPriceChange(event, tt) {
-        if (this.priceTimeout) {
-            clearTimeout(this.priceTimeout);
-        }
-        this.priceTimeout = setTimeout(() => {
-            tt.filter(event.value, 'price', 'gt');
-        }, 250);
     }
 
     //add comment

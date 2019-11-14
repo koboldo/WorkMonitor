@@ -14,15 +14,15 @@
       <tr>
         <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
           pResizableColumn excludeGlobalFilter=col.exclude>
-          <span class="header">
+          <span class="header" >
             {{col.header}}
             <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
           </span>
         </th>
-        <th header="Historia" [style]="{'width':'26px','text-align':'center'}">
+        <!-- <th *ngIf="operator.roleCode.indexOf('PR') >= 0"  header="Historia" [style]="{'width':'26px','text-align':'center'}">
           <ng-template let-userRow="rowData" pTemplate="body">
           </ng-template>
-        </th>
+        </th> -->
       </tr>
       <tr>
         <th *ngFor="let col of columns" [hidden]="col.hidden">
@@ -32,7 +32,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns">
-      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData" (dblclick)="onRowDblclick($event,rowData)">
+      <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData" (dblclick)="onRowDblclick(rowData)">
         <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"
           exportable="col.exportable" >
           <div *ngIf="operator.roleCode.indexOf('PR') >= 0 && col.history">
@@ -89,7 +89,7 @@
     </ng-template>
   </p-table>
   <p-contextMenu #cm [model]="items"></p-contextMenu>
-  <p-dialog [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
+  <p-dialog *ngIf="operator.roleCode.indexOf('PR') >= 0" [(visible)]="displayUserHistoryDialog" [header]="'Historia '+selectedUser?.email" [minWidth]="900" [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '900px'}">
     <app-user-history [selectedUser]="selectedUser" [staff]="users"></app-user-history>
   </p-dialog>
 </div>

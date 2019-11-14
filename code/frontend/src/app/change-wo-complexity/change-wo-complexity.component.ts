@@ -40,8 +40,6 @@ export class ChangeWoComplexityComponent implements OnInit {
     newComment: string;
     pl:Calendar;
     cols: any;
-    priceTimeout: any;
-    priceFilter: number;
     summary: TableSummary;
     
     constructor(private woService:WOService,
@@ -75,7 +73,7 @@ export class ChangeWoComplexityComponent implements OnInit {
             { field: 'complexityCode', header: 'Zł.', hidden:false, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },
             { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
-            { field: 'price', header: 'Wartość', sortable:true, filter:false,class:"width-35 text-right", price:true}, 
+            { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
             { field: 'assignee', header: 'Wykonawca',hidden:false, sortable:true, filter:true, class:"width-100" },
             { field: 'lastModDate', header: 'Mod.' ,hidden:false, sortable:true, filter:true, class:"width-50"},
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
@@ -98,16 +96,7 @@ export class ChangeWoComplexityComponent implements OnInit {
     public getStatusIcon(statusCode: string): string {
     return this.toolsService.getStatusIcon(statusCode);
     }
-
-    public onPriceChange(event, tt) {
-        if (this.priceTimeout) {
-            clearTimeout(this.priceTimeout);
-        }
-        this.priceTimeout = setTimeout(() => {
-            tt.filter(event.value, 'price', 'gt');
-        }, 250);
-    }
-
+    
     search() {
         this.woService.getOrdersByDates(
             this.toolsService.formatDate(this.lastModAfter, 'yyyy-MM-dd'),
