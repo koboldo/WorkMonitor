@@ -54,7 +54,7 @@ export class WoClearingComponent implements OnInit {
         this.search();
         this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
         this.cols = [
-            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10", check: true},            
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-20 text-center", check: true},            
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
