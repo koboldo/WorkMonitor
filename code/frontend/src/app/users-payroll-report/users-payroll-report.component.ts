@@ -33,6 +33,7 @@ export class UsersPayrollReportComponent  implements OnInit {
               protected dictService:DictService,
               protected toolsService:ToolsService,
               protected authService:AuthenticationService,
+              protected toolService: ToolsService,
               public completedOrderService: CompletedOrderService){
 
                }
@@ -49,17 +50,17 @@ export class UsersPayrollReportComponent  implements OnInit {
   }
 
   refresh () {
-    let test = this.dateFrom;
-    let test2 = this.dateTo;
     this.payrollReportData = [];
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
   }
 
   private generateDataForCharts(payrolls:UserPayroll[]):void {
     this.historicalPayrolls = payrolls;
+    let to = this.toolsService.parseDate(this.dateTo.toString());
+    let from = this.toolsService.parseDate(this.dateFrom.toString());
     payrolls = payrolls.filter((element)=> {
-      let date = new Date (element.formattedPeriodDate);
-      if (date <= this.dateTo && date >= this.dateFrom )   
+      let date = this.toolsService.parseDate(element.formattedPeriodDate);
+      if (date <= to && date >= from )   
           return element; 
     });
     let dataForPoolRate: Map <string,string> = new Map<string, string>();
