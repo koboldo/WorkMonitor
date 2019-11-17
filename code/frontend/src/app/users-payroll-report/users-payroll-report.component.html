@@ -1,12 +1,37 @@
 <div class="ui-g">
     <div class="ui-g-12">
-        <p-panel header="Zakres dat" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
-                <h3>Od</h3>
-                <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
-                <h3>Do</h3>
-                <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
-                <button type="button" pButton (click)="refresh()" label="Generuj Raport"></button>
-        </p-panel>
+        <p-accordion>
+            <p-accordionTab header="Zakres dat" [selected]="false">
+                <p-panel [style]="{'margin-bottom':'20px'}">
+                    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                        <div class="ui-grid-row" style="margin-top: 20px;">
+                            <div class="ui-grid-col-1"></div>
+                            <div class="ui-grid-col-5">
+                                <label for="lastModAfter">Od</label>
+                                <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy"
+                                    [yearNavigator]="true" [(yearRange)]="yearRangeForDatePicker" [showIcon]="true">
+                                </p-calendar>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <label for="lastModBefore">do</label>
+                                <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true"
+                                    [(yearRange)]="yearRangeForDatePicker" [showIcon]="true"></p-calendar>
+                            </div>
+                            <div class="ui-grid-col-1"></div>
+                        </div>
+                        <div class="ui-grid-row" style="margin-top: 15px; margin-bottom: 65px;">
+                            <div class="ui-grid-col-4"></div>
+                            <div class="ui-grid-col-4">
+                                <button pButton type="button" (click)="refresh()" icon="fa fa-search"
+                                    label="Generuj Raport" style="margin-left: 0px; min-width: 140px;"></button>
+                            </div>
+                            <div class="ui-grid-col-4"></div>
+                        </div>
+                    </div>
+                </p-panel>
+
+            </p-accordionTab>
+        </p-accordion>
     </div>
 </div>
 <div  class="ui-g">

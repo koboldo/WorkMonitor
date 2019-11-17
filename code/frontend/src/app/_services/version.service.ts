@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.56', 'Dodanie raportów wynagrodzeń'),
             new CodeValue('1.5.55', 'Poprawienie zaznaczania checkBox w tabeli protokołów'),
             new CodeValue('1.5.54', 'Zmiana filtrowania w kolumnie cena w tabelach'),
             new CodeValue('1.5.53', 'Poprawienie działania doubleClick w tabeli kontrahenci'),

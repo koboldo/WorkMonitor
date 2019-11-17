@@ -21,6 +21,7 @@ export class UsersPayrollReportComponent  implements OnInit {
   data: any;
   cols: any;
   payrollReportData: DataForPayrollsReport [] = [];
+  yearRangeForDatePicker: string;
 
   operator:User;
   users: Map<number, User>;
@@ -40,6 +41,7 @@ export class UsersPayrollReportComponent  implements OnInit {
   ngOnInit() {
     this.dateTo = new Date();
     this.dateFrom = new Date(this.dateTo.getFullYear() -1, this.dateTo.getMonth());
+    this.yearRangeForDatePicker = (this.dateTo.getFullYear() - 3).toString() + ':' + (this.dateTo.getFullYear() + 3).toString();
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
     this.cols=[
       { field: 'date', header:'Okres', date: true , sortable: true},
