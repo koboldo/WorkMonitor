@@ -19,6 +19,9 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.55', 'Poprawienie zaznaczania checkBox w tabeli protokołów'),
+            new CodeValue('1.5.54', 'Zmiana filtrowania w kolumnie cena w tabelach'),
+            new CodeValue('1.5.53', 'Poprawienie działania doubleClick w tabeli kontrahenci'),
             new CodeValue('1.5.52', 'Poprawienie działania doubleClick w tabeli pracownicy i kontrahenci'),
             new CodeValue('1.5.51', 'Poprawienie działania doubleClick w tabeli zlecenia WO'),
             new CodeValue('1.5.50', 'Domyślnie brak przerwy przy pracy poniżej 4h.'),

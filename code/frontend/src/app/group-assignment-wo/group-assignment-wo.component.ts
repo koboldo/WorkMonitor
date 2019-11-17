@@ -18,8 +18,6 @@ export class GroupAssignmentWoComponent implements OnInit {
   ordersSuccessAssign: Order [] = [];
   ordersStatusNotChange: Order [] = [];
   cols: any;
-  priceTimeout: any;
-  priceFilter: any;
 
   /* autocompletion assignedEngineer */
   engineers: User[] = [];
@@ -46,7 +44,7 @@ export class GroupAssignmentWoComponent implements OnInit {
       { field: 'complexityCode', header: 'Zł.', sortable:true, filter:false,complexity:true, icon:true,class:"text-center" },
       { field: 'complexity', header: 'Wycena' , sortable:true, filter:false,class:"text-center-55"},
       { field: 'mdCapex', header: 'CAPEX', sortable:true, filter:true,class:"width-100" },
-      { field: 'price', header: 'Cena', sortable:true, filter:false,class:"width-70 text-right", price:true },     
+      { field: 'price', header: 'Cena', sortable:true, filter:true,class:"width-70 text-right", price:true },     
       { field: 'assignee', header: 'Wykonawca', sortable:true, filter:true, class:"width-100" },
       { field: 'isFromPool', header: 'Pula' , sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},
       { field: 'protocolNo', header: 'Protokół', sortable:true, filter:true, class:"width-70" },
@@ -85,14 +83,6 @@ export class GroupAssignmentWoComponent implements OnInit {
   @Output()
   closeModalEvent = new EventEmitter<boolean>();
 
-  public onPriceChange(event, tt) {
-    if (this.priceTimeout) {
-        clearTimeout(this.priceTimeout);
-    }
-    this.priceTimeout = setTimeout(() => {
-        tt.filter(event.value, 'price', 'gt');
-    }, 250);
-}
 
 public assignOrders(){ 
     if (!this.selectedOrders || this.selectedOrders.length < 1 ) {

@@ -60,16 +60,6 @@
                 <input 
                 [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'"
                  pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">  
-                 <div *ngIf="col.price">
-                  Cena > {{priceFilter}}
-                  <i class="fa fa-close" (click)="priceFilter=0;tt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"></i>
-                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" 
-                  [(ngModel)]="priceFilter"              
-                  [min]="0"
-                  [max]="9999"             
-                  (onChange)="onPriceChange($event, tt)"             
-                  [animate]="true"></p-slider>
-              </div>              
               </th>
             </tr>
         </ng-template>
