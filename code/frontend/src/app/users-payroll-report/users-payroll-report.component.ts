@@ -11,7 +11,7 @@ import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
   templateUrl: './users-payroll-report.component.html',
   styleUrls: ['./users-payroll-report.component.css']
 })
-export class UsersPayrollReportComponent  implements OnInit {
+export class UsersPayrollReportComponent extends UsersPayrollComponent implements OnInit {
 
   dateFrom: Date;
   dateTo: Date;
@@ -35,8 +35,8 @@ export class UsersPayrollReportComponent  implements OnInit {
               protected toolsService:ToolsService,
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
-              public completedOrderService: CompletedOrderService){
-
+              protected completedOrderService: CompletedOrderService){
+super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
                }
   ngOnInit() {
     this.dateTo = new Date();
@@ -79,7 +79,7 @@ export class UsersPayrollReportComponent  implements OnInit {
 
     let dataForPayrollCost: Map<string, number> = new Map<string, number>();
     for (let payroll of payrolls) {
-      dataForPayrollCost.set(payroll.formattedPeriodDate, this.calculatePayrollCost(payroll.periodDate));
+      dataForPayrollCost.set(payroll.formattedPeriodDate, super.calculatePayrollCost(payroll.periodDate));
     }
     this.generatePayrollCostChar(new Map(Array.from(dataForPayrollCost).sort()));
 }
@@ -159,25 +159,25 @@ private MapUsersAndPayrolls(staff:User[]):void {
   this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.generateDataForCharts(userPayrolls));
 
 }
-public calculatePayrollCost(periodDate: string): number {
+// public calculatePayrollCost(periodDate: string): number {
 
-  let payrolls: UserPayroll[] = this.historicalPayrolls;
-  if (payrolls) {
-    return this.calculatePayrollCostFromPayrolls(payrolls, periodDate);
-  } else {
-      return 0;
-  }
-}
+//   let payrolls: UserPayroll[] = this.historicalPayrolls;
+//   if (payrolls) {
+//     return super.calculatePayrollCostFromPayrolls(payrolls, periodDate);
+//   } else {
+//       return 0;
+//   }
+// }
 
-private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
-  let result: number = 0;
-  for (let payroll of payrolls) {
-      if (payroll.periodDate && payroll.periodDate === periodDate) {
-          result += payroll.totalDue;
-      }
-  }
+// private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
+//   let result: number = 0;
+//   for (let payroll of payrolls) {
+//       if (payroll.periodDate && payroll.periodDate === periodDate) {
+//           result += payroll.totalDue;
+//       }
+//   }
 
-  return result;
-}
+//   return result;
+// }
 
 }

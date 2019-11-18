@@ -60,7 +60,7 @@ export class UsersPayrollComponent implements OnInit {
                 protected dictService:DictService,
                 protected toolsService:ToolsService,
                 protected authService:AuthenticationService,
-                public completedOrderService: CompletedOrderService) {
+                protected completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit():void {
@@ -197,7 +197,7 @@ export class UsersPayrollComponent implements OnInit {
         }
     }
 
-    private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
+    protected calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
         let result: number = 0;
         for (let payroll of payrolls) {
             if (payroll.periodDate && payroll.periodDate === periodDate) {
