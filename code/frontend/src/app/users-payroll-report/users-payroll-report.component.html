@@ -9,13 +9,13 @@
                             <div class="ui-grid-col-5">
                                 <label for="lastModAfter">Od</label>
                                 <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy"
-                                    [yearNavigator]="true" [(yearRange)]="yearRangeForDatePicker" [showIcon]="true">
+                                    [yearNavigator]="true" [(yearRange)]="yearRangeForDatePicker" [showIcon]="true" [locale]="pl">
                                 </p-calendar>
                             </div>
                             <div class="ui-grid-col-5">
                                 <label for="lastModBefore">do</label>
                                 <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true"
-                                    [(yearRange)]="yearRangeForDatePicker" [showIcon]="true"></p-calendar>
+                                    [(yearRange)]="yearRangeForDatePicker" [showIcon]="true" [locale]="pl"></p-calendar>
                             </div>
                             <div class="ui-grid-col-1"></div>
                         </div>
@@ -36,15 +36,15 @@
 </div>
 <div  class="ui-g">
   <div class="ui-g-6">
-      <p-chart  type="line" [data]="budgetData"></p-chart>
+      <p-chart  type="line" [data]="budgetData" [options]="optionsForChart"></p-chart>
   </div>
     <div class="ui-g-6">
-     <p-chart  type="line" [data]="poolRateData"></p-chart>
+     <p-chart  type="line" [data]="poolRateData" [options]="optionsForChart"></p-chart>
     </div>
 </div>
 <div  class="ui-g">
     <div class="ui-g-6">
-        <p-chart  type="line" [data]="payrollCostData"></p-chart>
+        <p-chart  type="line" [data]="payrollCostData" [options]="optionsForChart"></p-chart>
     </div>
       <div class="ui-g-6">
         <p-table #tt dataKey="date" [columns]="cols" [value]="payrollReportData" [resizableColumns]="true"

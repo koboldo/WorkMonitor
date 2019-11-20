@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsersPayrollComponent } from 'app/users-payroll/users-payroll.component';
 import { Router } from '@angular/router';
 import { UserService, PayrollService, AlertService, DictService, ToolsService, AuthenticationService, CompletedOrderService } from 'app/_services';
-import { UserPayroll, User } from 'app/_models';
+import { UserPayroll, User, Calendar } from 'app/_models';
 import { stringify } from 'querystring';
 import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
 
@@ -26,6 +26,8 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
   operator:User;
   users: Map<number, User>;
   historicalPayrolls: UserPayroll[];
+  pl: Calendar;
+  optionsForChart :any;
 
   constructor(protected router:Router,
               protected userService:UserService,
@@ -36,7 +38,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
               protected completedOrderService: CompletedOrderService){
-super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
+              super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
                }
   ngOnInit() {
     this.dateTo = new Date();
@@ -49,6 +51,16 @@ super (router,userService,payrollService,alertService,dictService,toolService,au
       { field: 'budget', header:'Budżet', date: false,sortable: true},
       { field: 'payrollCost', header:'Koszt wypłat', date: false,sortable: true}, 
     ];
+    this.pl=new Calendar();
+    this.optionsForChart = {
+      tooltips: {
+        callbacks: {
+            label: function(tooltipItem) {
+                return " Wartość: " + Number(tooltipItem.yLabel).toFixed(2) + " zł";
+            }
+        }
+    },
+    };
   }
 
   refresh () {
@@ -56,7 +68,7 @@ super (router,userService,payrollService,alertService,dictService,toolService,au
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
   }
 
-  private generateDataForCharts(payrolls:UserPayroll[]):void {
+  public generateDataForCharts(payrolls:UserPayroll[]):void {
     this.historicalPayrolls = payrolls;
     let to = this.toolsService.parseDate(this.dateTo.toString());
     let from = this.toolsService.parseDate(this.dateFrom.toString());
@@ -142,42 +154,20 @@ private generatePoolRateChar (payrolls: Map<string,string>){
 private getAllUsers(user:User):void {
   if (user) {
       this.operator = user;
-      //FIXME - we dont check history if one was EN once and then was changed to CN we are in trouble
-      //this.userService.getAllStaff().subscribe(staff => this.usersToMapSearchPayrolls(staff));
-      this.userService.getAll().subscribe(staff => this.MapUsersAndPayrolls(staff));
+      if (user.roleCode.indexOf('PR') > -1) {
+          //FIXME - we dont check history if one was EN once and then was changed to CN we are in trouble
+          this.userService.getAll().subscribe(staff => this.MapUsersAndPayrolls(staff));
+      }
   } else {
       console.log("Cannot init, no data on logged user!");
   }
 }
 
 private MapUsersAndPayrolls(staff:User[]):void {
-  this.users = new Map<number, User>();
-  for (let user of staff) {
-      this.users.set(user.id, user);
-  }
-  //this.searchPayrolls();
-  this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.generateDataForCharts(userPayrolls));
-
-}
-// public calculatePayrollCost(periodDate: string): number {
-
-//   let payrolls: UserPayroll[] = this.historicalPayrolls;
-//   if (payrolls) {
-//     return super.calculatePayrollCostFromPayrolls(payrolls, periodDate);
-//   } else {
-//       return 0;
-//   }
-// }
-
-// private calculatePayrollCostFromPayrolls(payrolls: UserPayroll[], periodDate: string): number {
-//   let result: number = 0;
-//   for (let payroll of payrolls) {
-//       if (payroll.periodDate && payroll.periodDate === periodDate) {
-//           result += payroll.totalDue;
-//       }
-//   }
-
-//   return result;
-// }
-
+    this.users = new Map<number, User>();
+    for (let user of staff) {
+        this.users.set(user.id, user);
+    }
+    this.payrollService.getHistorical(this.users).subscribe(userPayrolls => this.generateDataForCharts(userPayrolls));
+  } 
 }
