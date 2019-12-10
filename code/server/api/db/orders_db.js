@@ -6,7 +6,6 @@ const dbUtil = require('./db_util');
 const async = require('async');
 const sprintf = require("sprintf-js").sprintf;
 const logErrAndCall = require('../local_util').logErrAndCall;
-// var logger = require('../logger').getLogger('monitor'); 
 const logger = require('../logger').logger; 
 const addCtx = require('../logger').addCtx;
 
@@ -33,13 +32,27 @@ const queries = {
         WHERE %(idList)s %(protocolNo)s
         GROUP BY WORK_NO
     )
-    SELECT COALESCE(WO.WORK_NO, "") AS WORK_NO
+    SELECT 
+		CASE P.OFFICE_CODE 
+			WHEN "KAT" THEN COALESCE(WO.MD_CAPEX, "")
+			ELSE COALESCE(WO.WORK_NO, "")
+		END AS WORK_ID
         ,COALESCE(WI.PRICE, 0) AS PRICE
         ,WO.LAST_MOD
         ,COALESCE(WO.DESCRIPTION, "") AS DESCRIPTION
-        ,WO.PROTOCOL_NO
+		,COALESCE(WO.COMMENT, "") AS COMMENT
+        ,COALESCE(WO.PROTOCOL_NO, "") AS PROTOCOL_NO
         ,SUBSTR(WO.TYPE_CODE, 0, INSTR(WO.TYPE_CODE, '.')) AS TYPE
         ,RI.ITEM_NO
+        ,P.OFFICE_CODE
+		, CASE P.OFFICE_CODE 
+			WHEN "WAW" THEN "Warszawa"
+			WHEN "POZ" THEN "Poznań"
+			WHEN "KAT" THEN "Katowice"
+			WHEN "GDA" THEN "Gdańsk"
+			WHEN "CEN" THEN "Centrala"
+			ELSE P.OFFICE_CODE 
+			END OFFICE		
         ,P.FIRST_NAME || " " || P.LAST_NAME AS VENTURE
         ,WO.VENTURE_ID
     FROM WORK_ORDER AS WO
@@ -47,6 +60,7 @@ const queries = {
     JOIN PERSON AS P ON WO.VENTURE_ID = P.ID
     JOIN WO_INIT WI
     WHERE WO.ID IN ( WI.ID )`,
+    getProtocolNOs: 'SELECT DISTINCT PROTOCOL_NO FROM WORK_ORDER WHERE PROTOCOL_NO IS NOT NULL AND PROTOCOL_NO <> ""',
     getOfficeCode: 'SELECT OFFICE_CODE FROM PERSON WHERE ID = ?',
     getIsFromPool: 'SELECT IS_FROM_POOL FROM WORK_TYPE WHERE TYPE_CODE = ? AND COMPLEXITY_CODE = ? AND OFFICE_CODE = ?',
     getOrderHistory: 'SELECT ID ,WORK_NO ,STATUS_CODE ,TYPE_CODE ,COMPLEXITY_CODE ,COMPLEXITY ,DESCRIPTION ,COMMENT ,MD_CAPEX ,PROTOCOL_NO ,PRICE ,DATETIME ( LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( CREATED ,"unixepoch", "localtime" ) AS CREATED ,DATETIME ( HIST_CREATED ,"unixepoch", "localtime" ) AS HIST_CREATED, MODIFIED_BY, ITEM_ID, VENTURE_ID, ASSIGNED_ID AS ASSIGNEE, IS_FROM_POOL FROM WORK_ORDER_HIST WHERE ID = ? ORDER BY HIST_CREATED DESC'
@@ -414,6 +428,21 @@ const orders_db = {
                 if(err) return logErrAndCall(err,cb);
                 cb(null,[protNo,result]);
             }));
+    },
+
+    listProtocols: function(cb) {
+        const db = dbUtil.getDatabase();
+        const getProtocolNOsStat = db.prepare(queries.getProtocolNOs);
+        getProtocolNOsStat.all(addCtx((err, rows) => {
+            getProtocolNOsStat.finalize();
+            db.close();
+
+            if(err) { 
+                logErrAndCall(err,cb);
+            } else {
+                cb(null,rows);
+            }
+        }));
     }
 };
 

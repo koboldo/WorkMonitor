@@ -84,7 +84,8 @@
 			"PRICE": "price",
 			"DESCRIPTION": "description",
 			"IS_FROM_POOL": "isFromPool",
-			"COLOR": "color"
+			"COLOR": "color",
+			"IS_SUMMABLE": "isSummable"
 		}
 	},
 	"timeSheet": {

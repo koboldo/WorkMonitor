@@ -139,46 +139,91 @@ const orders = {
     
     prepareProtocol: function(req, resp) {
 
-        let ids = null;
-        let protocolNo = null;
+        let protocolNo = req.query.protocolNo;
         
-        if(!req.query.ids && !req.query.protocolNo) {
-            resp.status(400).json({status: 'error', message: 'canot prepare report without ids'});
-            return;
-        } else {
-            if(req.query.ids) {
-                if(logger().isDebugEnabled()) logger().debug('checking ids');
-                
-                ids = req.query.ids.split(',');
-                for( let id in ids) {
-                    if(isNaN(parseInt(id))) {
-                        resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
-                        return;
-                    }
+        let ids = null;
+        if(req.query.ids) {
+            if(logger().isDebugEnabled()) logger().debug('checking ids');
+            
+            ids = req.query.ids.split(',');
+            for( let id in ids) {
+                if(isNaN(parseInt(id))) {
+                    resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
+                    return;
                 }
-                ids = ids.join(',');
             }
-            protocolNo = req.query.protocolNo;
+            ids = ids.join(',');
+        }
+        
+        if(!ids && !protocolNo) {
+            orders_db.listProtocols(addCtx(function(err,protocolRows){
+                if(err) {
+                    if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
+                    else return resp.status(500).json({status:'error', message: 'request processing failed'});
+                }
+
+                let protocols = mapper.mapList(mapper.order.mapToJson, protocolRows);                
+                resp.json(protocols);
+            }));
+        } else {
+            orders_db.prepareOrdersForProtocol(ids,protocolNo,addCtx(function(err, protocol){
+                if(err) {
+                    if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
+                    else return resp.status(500).json({status:'error', message: 'request processing failed'});
+                }
+                
+                const protocolNo = protocol[0];
+                const protocolRows = protocol[1];
+                if(protocolRows.length == 0) {
+                    return resp.status(404).json({status:'error', message: 'nie znaleziono zamówień'});
+                }
+                // prepareProtocol(protocolRows,resp);
+                let fileName = protocolNo.replace(/[\[\]\*\?\:\/\\]/g,'-').toUpperCase() +'.xlsx';
+                prepareProtocol(protocolRows,function(fileContent){
+                    resp.json({ file: fileContent, name: fileName});
+                });
+            }));
         }
 
-        orders_db.prepareOrdersForProtocol(ids,protocolNo,addCtx(function(err, protocol){
-            if(err) {
-                if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
-                else return resp.status(500).json({status:'error', message: 'request processing failed'});
-            }
+        // if(!req.query.ids && !req.query.protocolNo) {
             
-            const protocolNo = protocol[0];
-            const protocolRows = protocol[1];
-            if(protocolRows.length == 0) {
-                return resp.status(404).json({status:'error', message: 'nie znaleziono zamówień'});
-            }
-            // prepareProtocol(protocolRows,resp);
-            let fileName = protocolNo.replace(/[\[\]\*\?\:\/\\]/g,'-').toUpperCase() +'.xlsx';
-            prepareProtocol(protocolRows,function(fileContent){
-                resp.json({ file: fileContent, name: fileName});
-            });
-        }));
-    }
+            
+        //     resp.status(400).json({status: 'error', message: 'canot prepare report without ids'});
+        //     return;
+        // } else {
+        //     if(req.query.ids) {
+        //         if(logger().isDebugEnabled()) logger().debug('checking ids');
+                
+        //         ids = req.query.ids.split(',');
+        //         for( let id in ids) {
+        //             if(isNaN(parseInt(id))) {
+        //                 resp.status(400).json({status: 'error', message: 'id ' + id + ' list malformed'});
+        //                 return;
+        //             }
+        //         }
+        //         ids = ids.join(',');
+        //     }
+        //     protocolNo = req.query.protocolNo;
+        // }
+
+        // orders_db.prepareOrdersForProtocol(ids,protocolNo,addCtx(function(err, protocol){
+        //     if(err) {
+        //         if(err.type == 'custom') return resp.status(500).json({status:'error', message: err.message});
+        //         else return resp.status(500).json({status:'error', message: 'request processing failed'});
+        //     }
+            
+        //     const protocolNo = protocol[0];
+        //     const protocolRows = protocol[1];
+        //     if(protocolRows.length == 0) {
+        //         return resp.status(404).json({status:'error', message: 'nie znaleziono zamówień'});
+        //     }
+        //     // prepareProtocol(protocolRows,resp);
+        //     let fileName = protocolNo.replace(/[\[\]\*\?\:\/\\]/g,'-').toUpperCase() +'.xlsx';
+        //     prepareProtocol(protocolRows,function(fileContent){
+        //         resp.json({ file: fileContent, name: fileName});
+        //     });
+        // }));
+    },
 };
 
 function mapOrderItems(order) {
