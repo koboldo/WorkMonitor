@@ -17,25 +17,23 @@
     </div>
     <div class="ui-grid-col-6">
       <p-fieldset legend="Pobieranie protokołów">
-        <form #f="ngForm" (submit)="fetchProtocol()">
           <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad" style="margin-bottom: 40px;">
             <div class="ui-grid-row" style="margin-top: 20px;">
               <div class="ui-grid-col-2"></div>
               <div class="ui-grid-col-2" style="text-align: right;">
-                <label for="protocolNo">Nr protokołu:</label>
+                <label for="protocolNo">Wybierz protokół:</label>
               </div>
               <div class="ui-grid-col-3">
-                <input id="protocolNo" type="text" class="form-control" name="protocolNo" [(ngModel)]="protocolNo"
-                  #firstName="ngModel" required minlength="3" />
+                <p-autoComplete [(ngModel)]="filtr" [suggestions]="filteredProtocols" (completeMethod)="filterCountry($event)" (onSelect)="protocolSelected($event)" field="protocolNo" [size]="30"
+                placeholder="Protokoły" [minLength]="1" [dropdown]="true"></p-autoComplete>
               </div>
               <div class="ui-grid-col-3">
                 <button pButton type="button" (click)="fetchProtocol()" icon="fa fa-cog" label="Generuj ponownie"
-                  style="margin-left: 0px; min-width: 140px;" [disabled]="!f?.valid"></button>
+                  style="margin-left: 0px; min-width: 140px;" [disabled]="protocolIsSelected"></button>
               </div>
               <div class="ui-grid-col-2"></div>
             </div>
           </div>
-        </form>
       </p-fieldset>
     </div>
   </div>

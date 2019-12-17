@@ -20,24 +20,24 @@ export class WoClearingComponent implements OnInit {
     orders:Order[];
     selectedOrders:Order[];
     protocolNo: string;
-
     displayClearingDialog:boolean;
     //protocolNo: string;
-
     engineers:User[] = [];
     vrs:User[] = [];
-
-    //filt for protocol
     public ordersNotReady:Order[];
     public ordersReadyForProtocol:Order[];
     public displayOrderNotReadyDialog:boolean;
     public displayDetailsDialog:boolean;
     public selectedOrder: Order;
-    // end filt for protocol
 
     cols: any;
     colsForProtocol: any;
     summary: TableSummary;
+    protocols: any [] = [];
+    filteredProtocols: any [] = [];
+    filtr: any [] = [];
+    protocolIsSelected = true;
+    selected : any;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -53,6 +53,7 @@ export class WoClearingComponent implements OnInit {
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
         this.search();
         this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
+        this.woService.getProtocolCollection().subscribe(respons=> this.protocols = respons);
         this.cols = [
             { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-20 text-center", check: true},            
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
@@ -108,11 +109,29 @@ export class WoClearingComponent implements OnInit {
         ]
     
     }
+    protocolSelected (event) {
+        this.protocolIsSelected = false;
+        this.protocolNo = event.protocolNo;
+    }
 
+    // getProtocols (respones) {
+    //     this.protocols = respones;
+    // }
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);
     }
 
+    filterCountry(event) {
+       
+        let filtered : any[] = [];
+        for(let i = 0; i < this.protocols.length; i++) {
+            let protocol = this.protocols[i];
+            if(protocol.protocolNo.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+                filtered.push(protocol);
+            }
+        }
+        this.filteredProtocols = filtered;
+    }
     // filtr for protocol 
     private addToTable (ordersNotReady:Order[]) :void
     {

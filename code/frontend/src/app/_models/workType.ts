@@ -10,6 +10,7 @@ export class WorkType {
 	price: number;
 	isFromPool: string;
 	color: string;
+	isSummable: string;
 	
 	constructor(
 	){}

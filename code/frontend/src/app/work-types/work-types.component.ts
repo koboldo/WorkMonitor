@@ -55,6 +55,7 @@ export class WorkTypesComponent implements OnInit {
             { field: 'complexityCode', header: 'Złożoność', sortable:true, filter:true, class:"width-35 text-center", icon:true, complexityCode:true},
             { field: 'complexity', header: 'Pracochłonność [H]', sortable:true , filter:true, class:"width-35 text-center", complexity:true, icon:true},
             { field: 'price', header: 'Cena [PLN]' , sortable:true, filter:true, class:"width-50 text-center", price:true, icon:true},
+            { field: 'isSummable', header: 'Grupowalne w protokołach' , sortable:true, filter:true, class:"width-35 text-center", isSummable:true, icon:true},
           ]
     }
 
@@ -80,6 +81,7 @@ export class WorkTypesComponent implements OnInit {
         this.editedWorkType.color = '#000000';
         this.newWorkType = true;
         this.displayEditDialog = true;
+        this.editedWorkType.isSummable = 'Y';
     }
 
     save(): void {

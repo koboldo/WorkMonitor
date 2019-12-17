@@ -29,7 +29,7 @@
      </tr>
      <tr>
        <th *ngFor="let col of columns" [hidden]="col.hidden">
-         <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+         <input class="width-100" [attr.placeholder]="col.header === 'Pula' || col.isSummable  ? 'Y/N' : 'Filtruj'" pInputText
            type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">             
        </th>
      </tr>
@@ -45,6 +45,10 @@
              <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
              <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
          </span>
+         <span *ngIf="col.isSummable">
+          <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-cubes'"></i></span>
+          <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-cube'"></i></span>
+      </span>
          <span *ngIf="col.description">
           <span [style.color]="rowData['color']" class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i></span>
           <span style="padding: 3px">{{rowData.description}}</span>
@@ -68,7 +72,7 @@
        </td>
      </tr>
    </ng-template>
-   <ng-template pTemplate="footer" let-columns>
+   <!-- <ng-template pTemplate="footer" let-columns>
      <tr>
        <td *ngFor="let col of columns" [hidden]="col.hidden">
          <span *ngIf="col.isActive">Aktywnych <br />   </span>
@@ -88,7 +92,7 @@
          <div class="ui-grid-col-1"></div>
        </div>
      </div>
-   </ng-template>
+   </ng-template> -->
    <ng-template pTemplate="emptymessage">
     Brak typów zleceń...
   </ng-template>
@@ -151,6 +155,16 @@
                     </div>
                 </div>
             </div>
+            <div class="ui-grid-row" style="margin-top: 10px;">
+              <div class="ui-grid-col-4"><label for="isSummable">Grupowalne w protokołach*</label></div>
+              <div class="ui-grid-col-8">
+                  <div class="form-group">
+                      <p-radioButton name="summableGroup" value="Y" [(ngModel)]="editedWorkType.isSummable" label="Grupowalne w protokołach (TAK)"></p-radioButton>
+                      <span style="padding: 15px;"></span>
+                      <p-radioButton name="summableGroup" value="N" [(ngModel)]="editedWorkType.isSummable" label="Grupowalne w protokołach (NIE)"></p-radioButton>
+                  </div>
+              </div>
+          </div>
             <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
                 <div class="ui-grid-col-4"><label for="color">Kolor*</label></div>
                 <div class="ui-grid-col-8">
