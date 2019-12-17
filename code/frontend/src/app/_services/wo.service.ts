@@ -106,9 +106,21 @@ export class WOService {
             .pipe(map((response: Object) => this.getProtocol(response)))
     }
 
+    getProtocolCollection() : Observable<any> {
+        return  this.http.get('/api/v1/report/protocol')
+            .pipe(map((response: Object) => this.getProtocolsCollection(response)));
+    }
+
 
     // private helper methods
 
+    private getProtocolsCollection (json:any): any {
+        let protocols: any[] = [];
+        for (let protocol of json.list ) {
+                protocols.push(protocol);
+        }
+        return protocols;
+    }
     private getProtocol(json:any):any {
         console.log("protocol: "+JSON.stringify(json));
         return json;
