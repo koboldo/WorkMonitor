@@ -78,6 +78,9 @@ export class UserPayroll {
 
     recalculateButtonStyle: string;
 
+    // the temporary field only for the purposes of historical reports after the changes in the api payments will be removed
+    budget: any;
+
 }
 
 /*

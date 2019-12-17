@@ -63,6 +63,7 @@ import {TableModule} from 'primeng/table';
 import {ToolbarModule} from 'primeng/toolbar';
 import {SliderModule} from 'primeng/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {CheckboxModule} from 'primeng/checkbox';
 
 import { MyWoComponent } from './my-wo/my-wo.component';
 import { TimesheetsComponent } from './timesheets/timesheets.component';
@@ -94,6 +95,7 @@ import { ReportMonthlyEngineersComponent } from './report-monthly-engineers/repo
 import { AppVersionComponent } from './app-version/app-version.component';
 import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignment-wo.component';
 import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
+import { UsersPayrollReportComponent } from './users-payroll-report/users-payroll-report.component';
 
 
 
@@ -109,7 +111,8 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         TableModule,
         SliderModule,
         DataTableModule,
-        routing
+        routing,
+        CheckboxModule
     ],
     declarations: [
         AppComponent,
@@ -146,7 +149,9 @@ import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
         AppVersionComponent,
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
-		    WoTrashedComponent   ],
+        WoTrashedComponent,
+        UsersPayrollReportComponent
+    ],
 
     providers: [
         AlertService,
