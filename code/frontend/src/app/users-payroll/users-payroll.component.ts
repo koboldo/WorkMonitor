@@ -60,7 +60,7 @@ export class UsersPayrollComponent implements OnInit {
                 protected dictService:DictService,
                 protected toolsService:ToolsService,
                 protected authService:AuthenticationService,
-                protected completedOrderService: CompletedOrderService) {
+                public completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit():void {

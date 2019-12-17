@@ -37,7 +37,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
               protected toolsService:ToolsService,
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
-              protected completedOrderService: CompletedOrderService){
+              public completedOrderService: CompletedOrderService){
               super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
                }
   ngOnInit() {
