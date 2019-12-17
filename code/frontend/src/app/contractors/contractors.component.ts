@@ -42,6 +42,7 @@ export class ContractorsComponent implements OnInit {
   ngOnInit():void {
       this.dictService.init();
       this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
+      // If the order of elements is changed, the method hideHistoryColumn() should be corrected 
       this.cols = [
         { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, button:true , history:true,exportable:false},            
         { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-50 text-center"},

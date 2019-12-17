@@ -1,0 +1,104 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-accordion>
+            <p-accordionTab header="Zakres dat" [selected]="false">
+                <p-panel [style]="{'margin-bottom':'20px'}">
+                    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                        <div class="ui-grid-row" style="margin-top: 20px;">
+                            <div class="ui-grid-col-1"></div>
+                            <div class="ui-grid-col-5">
+                                <label for="lastModAfter">Od</label>
+                                <p-calendar [(ngModel)]="dateFrom" view="month" dateFormat="mm/yy"
+                                    [yearNavigator]="true" [(yearRange)]="yearRangeForDatePicker" [showIcon]="true" [locale]="pl">
+                                </p-calendar>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <label for="lastModBefore">do</label>
+                                <p-calendar [(ngModel)]="dateTo" view="month" dateFormat="mm/yy" [yearNavigator]="true"
+                                    [(yearRange)]="yearRangeForDatePicker" [showIcon]="true" [locale]="pl"></p-calendar>
+                            </div>
+                            <div class="ui-grid-col-1"></div>
+                        </div>
+                        <div class="ui-grid-row" style="margin-top: 15px; margin-bottom: 65px;">
+                            <div class="ui-grid-col-4"></div>
+                            <div class="ui-grid-col-4">
+                                <button pButton type="button" (click)="refresh()" icon="fa fa-cogs"
+                                    label="Generuj Raport" style="margin-left: 0px; min-width: 140px;"></button>
+                            </div>
+                            <div class="ui-grid-col-4"></div>
+                        </div>
+                    </div>
+                </p-panel>
+
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>
+<div  class="ui-g">
+  <div class="ui-g-6">
+      <p-chart  type="line" [data]="budgetData" [options]="optionsForChart"></p-chart>
+  </div>
+    <div class="ui-g-6">
+     <p-chart  type="line" [data]="poolRateData" [options]="optionsForChart"></p-chart>
+    </div>
+</div>
+<div  class="ui-g">
+    <div class="ui-g-6">
+        <p-chart  type="line" [data]="payrollCostData" [options]="optionsForChart"></p-chart>
+    </div>
+      <div class="ui-g-6">
+        <p-table #tt dataKey="date" [columns]="cols" [value]="payrollReportData" [resizableColumns]="true"
+        sortField="date" sortOrder="1" scrollable="true" scrollHeight="600px"
+        loadingIcon="fa fa-spinner" [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false"
+        rowGroupMode="rowspan" csvSeparator=";"
+        exportFilename="Raport">
+        <ng-template pTemplate="caption">
+            <div class="ui-g">
+                <div class="ui-g-4"></div>
+                <div class="ui-g-4"> 
+                    <button (click)="tt.exportCSV()" type="button" pButton icon="fa fa-file-o" label="Eksport danych "></button>
+                </div>
+                <div class="ui-g-4"></div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns let-rowData>
+            <tr>
+                <th *ngFor="let col of columns"  [pSortableColumn]="col.field"
+                     pResizableColumn >
+                    <span class="header">
+                        {{col.header}}
+                        <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+                    </span>
+
+                </th>
+            </tr>
+            <tr>
+                <th *ngFor="let col of columns" [hidden]="col.hidden">
+                    <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'"
+                        pInputText type="text"
+                        (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)"
+                      >
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" [pSelectableRowDblClick]="rowData">
+                <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains"
+                    [ngClass]="col.class">
+                    <span *ngIf="col.date">
+                        {{rowData[col.field]}}
+                    </span>
+                    <span *ngIf="!col.date">
+                        {{rowData[col.field] | currency:'PLN'}}
+                    </span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            Brak danych...
+        </ng-template>
+    </p-table>
+
+
+      </div>
+  </div>
