@@ -39,6 +39,7 @@ export class WoListComponent implements OnInit {
             { field: 'isFromPool', header: 'Pula' ,hidden:false, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center"},          
             { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-45 text-right", price:true}, 
             { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"}, 
+            { field: 'magicIsFromPool', header: 'Pula',sortable:true , filter:true, class:"width-20 text-center", isMagicFromPool:true, icon:true},
             { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},

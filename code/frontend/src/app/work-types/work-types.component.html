@@ -14,6 +14,8 @@
        <i class="fa fa-search"></i>
        <input type="text" pInputText size="50" placeholder="Filtruj"
          (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+         <button type="button" pButton icon="fa fa-plus"
+         style="float:left" (click)="add()" label="Dodaj"></button>     
      </div>
    </ng-template>
    <ng-template pTemplate="header" let-columns let-rowData>
@@ -30,7 +32,7 @@
      <tr>
        <th *ngFor="let col of columns" [hidden]="col.hidden">
          <input class="width-100" [attr.placeholder]="col.header === 'Pula' || col.isSummable  ? 'Y/N' : 'Filtruj'" pInputText
-           type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">             
+           type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">        
        </th>
      </tr>
    </ng-template>

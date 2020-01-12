@@ -53,6 +53,7 @@ export class CompletedOrderService {
                           if (magic.length > 3) {
                             let poolInclusionFactor: number = +magic[3];
                             order.poolRevenue = order.isFromPool == 'Y' ? order.price * poolInclusionFactor : 0;
+                            order.magicIsFromPool = magic[6] ;
                           }
                         }
 
