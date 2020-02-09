@@ -45,6 +45,8 @@ export class Order {
 
     frontProcessingDesc:string
 
+    magicIsFromPool: string;
+
     constructor(public workNo:string,
                 public statusCode:string,
                 public status:string,

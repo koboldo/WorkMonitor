@@ -19,6 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.60', 'Dodanie przycisku dodaj w tabeli parametryzacja zleceń'),
+            new CodeValue('1.5.59', 'Dodanie kolumny pula w tabeli zrealizowane zlecenia'),
             new CodeValue('1.5.58', 'Dodanie pola Grupowalne w protokołach do widoku parametryzacji zleceń'),
             new CodeValue('1.5.57', 'Dodanie listy protokołów'),
             new CodeValue('1.5.56', 'Dodanie raportów wynagrodzeń'),

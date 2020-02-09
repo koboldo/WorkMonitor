@@ -200,6 +200,9 @@ td {
 .color-blue {
     color: #286090;
 }
+.color-red {
+    color: red;
+}
 .width-1680 {
     width: 1680px;
 }

@@ -51,7 +51,7 @@
                 <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>       
                 <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"  class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i> </span>
                 <span *ngIf="col.complexity"  class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
-                <span *ngIf="col.isFromPool">
+                <span *ngIf="col.isMagicFromPool">
                   <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                   <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
                 </span>             
