@@ -60,8 +60,9 @@ app.use(function(req, res){
 
 app.disable('etag'); // TODO: investigate why
 
-payrollScheduler.schedulePayrollRecalculation();
-payrollScheduler.schedulePayrollApproval();
+payrollScheduler.scheduleCurrentMonthPayrollRecalculation();
+payrollScheduler.schedulePreviousMonthPayrollRecalculation();
+payrollScheduler.schedulePreviousMonthPayrollApproval();
 
 if(process.env.NODE_ENV == 'dev') {
     var server = app.listen(process.env.WM_PORT || '8080', function(){
