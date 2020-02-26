@@ -40,7 +40,7 @@ export class MyWoComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                private workTypeService:WorkTypeService,
+                public workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService,
@@ -60,7 +60,7 @@ export class MyWoComponent implements OnInit {
         this.cols = [
             { field: 'workNo', header: 'Zlecenie' , sortable: true,class:"width-50 text-center"},        
             { field: 'statusCode', header: 'Status', sortable: true,  class:"width-100 text-center", statusCode:true, icon:true},        
-            { field: 'typeCode', header: 'Typ', sortable:true, type:true, class:"width-135 text-center"},
+            { field: 'type', header: 'Typ', sortable:true, type:true, class:"width-135 text-center"},
             { field: 'complexityCode', header: 'Złożoność', sortable:true, complexity:true, icon:true,class:"width-50 text-center" },
             { field: 'mdCapex', header: 'CAPEX', sortable:true, class:"width-100 text-center" },
             { field: 'price', header: 'Cena', sortable:true, class:"width-80 text-right", price:true},
