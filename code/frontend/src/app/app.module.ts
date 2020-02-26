@@ -96,6 +96,7 @@ import { AppVersionComponent } from './app-version/app-version.component';
 import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignment-wo.component';
 import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
 import { UsersPayrollReportComponent } from './users-payroll-report/users-payroll-report.component';
+import { UsersLeaveCancellationComponent } from './users-leave-cancellation/users-leave-cancellation.component';
 
 
 
@@ -150,7 +151,8 @@ import { UsersPayrollReportComponent } from './users-payroll-report/users-payrol
         ReportMonthlyEngineersComponent,
         GroupAssignmentWoComponent,
         WoTrashedComponent,
-        UsersPayrollReportComponent
+        UsersPayrollReportComponent,
+        UsersLeaveCancellationComponent
     ],
 
     providers: [
