@@ -96,7 +96,11 @@ let local_util = {
                 ws.cell(2+cnt,5).string(order.VENTURE).style(styles.borderCell);
                 if(officeCode == 'POZ') {
                     ws.cell(2+cnt,6).string(order.DESCRIPTION);
-                    ws.cell(2+cnt,7).string(order.COMMENT);
+                    if(order.COMMENT != null) {
+                        let commentDecoded = Buffer.from(order.COMMENT.substring(2), 'base64');
+                        ws.cell(2+cnt,7).string(JSON.parse(decodeURIComponent(commentDecoded.toString()))[0].text);
+                    }
+                    // ws.cell(2+cnt,7).string(order.COMMENT);
                 } else {
                     ws.cell(2+cnt,6).string('');
                     ws.cell(2+cnt,7).string('');

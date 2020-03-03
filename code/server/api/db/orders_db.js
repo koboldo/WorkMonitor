@@ -26,17 +26,33 @@ const queries = {
     //                         FROM WORK_ORDER AS WO JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID JOIN PERSON AS P ON WO.VENTURE_ID = P.ID 
     //                         WHERE %(idList)s %(protocolNo)s`,
     getOrdersForProtocol: 
-    `WITH WO_INIT AS (
-        SELECT MIN(ID) ID, SUM(PRICE) PRICE
-        FROM WORK_ORDER AS WO
+    `WITH WO_PRESELECT AS (
+        SELECT WO.ID
+            ,WO.PRICE
+            ,CASE WO.OFFICE_CODE 
+                WHEN "KAT" THEN COALESCE(WO.MD_CAPEX, "")
+                ELSE COALESCE(WO.WORK_NO, "")
+            END AS WORK_ID
+            ,CASE WHEN INSTR(WO.TYPE_CODE, '.') > 0 THEN SUBSTR(WO.TYPE_CODE, 0, INSTR(WO.TYPE_CODE, '.')) 
+                ELSE WO.TYPE_CODE 
+            END AS TYPE
+            ,WT.IS_SUMMABLE
+        FROM WORK_ORDER AS WO JOIN WORK_TYPE AS WT 
+            ON WO.OFFICE_CODE = WT.OFFICE_CODE AND WO.COMPLEXITY_CODE = WT.COMPLEXITY_CODE AND WO.TYPE_CODE = WT.TYPE_CODE
         WHERE %(idList)s %(protocolNo)s
-        GROUP BY WORK_NO
+    ),
+    WO_INIT AS (
+        SELECT MIN(ID) ID, WORK_ID, SUM(PRICE) PRICE
+        FROM WO_PRESELECT
+        WHERE IS_SUMMABLE = 'Y'
+        GROUP BY WORK_ID, TYPE
+        UNION ALL
+        SELECT ID, WORK_ID, PRICE
+        FROM WO_PRESELECT
+        WHERE IS_SUMMABLE = 'N'
     )
     SELECT 
-		CASE P.OFFICE_CODE 
-			WHEN "KAT" THEN COALESCE(WO.MD_CAPEX, "")
-			ELSE COALESCE(WO.WORK_NO, "")
-		END AS WORK_ID
+        WI.WORK_ID
         ,COALESCE(WI.PRICE, 0) AS PRICE
         ,WO.LAST_MOD
         ,COALESCE(WO.DESCRIPTION, "") AS DESCRIPTION
