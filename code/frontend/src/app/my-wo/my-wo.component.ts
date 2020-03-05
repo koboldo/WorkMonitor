@@ -51,8 +51,9 @@ export class MyWoComponent implements OnInit {
     ngOnInit() {
         this.authSerice.userAsObs.subscribe(user => console.log(user));
         this.workTypeService.getWorkTypes().subscribe(workTypes => console.log("NOW:"+JSON.stringify(workTypes)));
-        this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
+        this.authSerice.userAsObs.subscribe(user => this.assignEngineer(user));
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+        this.search();
         this.items = [
             {label: 'Zakończ zlecenie', icon: 'fa fa-check', command: (event) => this.finishWork()},
             {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o',  command: (event) => this.addComment()},
@@ -141,7 +142,7 @@ public getCancelOrHoldComment(order: Order): string {
         this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
     }
 
-    private saveAndSearch(user:User):void {
+    private assignEngineer(user:User):void {
         if (user === null) {
             console.log("Probably logged out");
             return;
@@ -149,7 +150,6 @@ public getCancelOrHoldComment(order: Order): string {
 
         console.log("Logged as "+JSON.stringify(user));
         this.engineer = user;
-        this.search();
     }
 
     private finishWork():void {
