@@ -25,6 +25,11 @@ export class TimesheetService {
     .pipe(map((response: Object) => this.getTimesheets(response)));
   }
 
+  getIsLeavByDates(workDateAfter: string, workDateBefore: string): Observable<Timesheet[]> {
+    return this.http.get('/api/v1/timesheets?workDateAfter=' + workDateAfter + '&workDateBefore=' + workDateBefore)
+    .pipe(map((response: Object) => this.getIsLeaveTimesheets(response)));
+  }
+
   getByIdAndDates(id: number, workDateAfter: string, workDateBefore: string): Observable<Timesheet[]> {
     return this.http.get('/api/v1/timesheets?workDateAfter=' + workDateAfter + '&workDateBefore=' + workDateBefore + '&personId=' + id)
     .pipe(map((response: Object) => this.getTimesheets(response)))
@@ -85,6 +90,19 @@ export class TimesheetService {
       }
     }
 
+    console.log('Got ' + JSON.stringify(timesheets));
+    return timesheets;
+  }
+
+  private getIsLeaveTimesheets(response: any): any {
+    let timesheets: Timesheet[] = [];
+    if (response.list && response.list.length > 0) {
+      for (let timesheet of response.list) {
+        if (timesheet.isLeave === 'Y') {
+          timesheets.push(timesheet);
+        }        
+      }
+    }
     console.log('Got ' + JSON.stringify(timesheets));
     return timesheets;
   }

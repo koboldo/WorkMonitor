@@ -113,6 +113,10 @@ export class UserService {
         return this.http.get('/api/v1/persons').pipe(map((response: Object) => this.getAllByRole(response, ["MG", "EN", "OP"])));
     }
 
+    public getActiveStaff(): Observable<User[]> {
+        return this.http.get('/api/v1/persons').pipe(map((response: Object) => this.getAllByRole(response, ["MG", "EN", "OP"]).filter(x=>x.isActive === 'Y')));
+    }
+
     public getAllStaff(): Observable<User[]> {
         return this.http.get('/api/v1/persons').pipe(map((response: Object) => this.getAllByRole(response, ["MG", "EN", "OP", "PR", "AN", "CL", "PA"])));
     }
