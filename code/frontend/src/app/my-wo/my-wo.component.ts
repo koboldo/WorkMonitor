@@ -53,6 +53,7 @@ export class MyWoComponent implements OnInit {
         this.workTypeService.getWorkTypes().subscribe(workTypes => console.log("NOW:"+JSON.stringify(workTypes)));
         this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
+        this.search();
         this.items = [
             {label: 'Zakończ zlecenie', icon: 'fa fa-check', command: (event) => this.finishWork()},
             {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o',  command: (event) => this.addComment()},
