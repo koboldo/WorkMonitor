@@ -40,11 +40,11 @@ export class MyWoComponent implements OnInit {
 
     constructor(private woService:WOService,
                 private userService:UserService,
-                public workTypeService:WorkTypeService,
+                protected workTypeService:WorkTypeService,
                 private dictService:DictService,
                 private alertService:AlertService,
                 private authSerice:AuthenticationService,
-                private toolsService: ToolsService
+                protected toolsService: ToolsService
     ) {
     }
 

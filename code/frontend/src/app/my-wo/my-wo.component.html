@@ -40,7 +40,7 @@
               <i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i>
               <span style="padding: 3px">{{rowData.status}}</span>
           </span>   
-          <span *ngIf="col.type" [style.color]="workTypeService.getWorkTypeColor(rowData)"
+          <span *ngIf="col.type" 
             class="ui-inputgroup-addon"><i [class]="'fa fa-square'"></i>   </span>
           <span *ngIf="col.complexity" class="ui-inputgroup-addon"><i
               [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>
