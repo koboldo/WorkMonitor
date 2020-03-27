@@ -7,6 +7,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 import { MenuItem } from 'primeng/primeng';
 //add comment
 import { Comments, commentAsSimpleString, commentAsString, commentAdd,DisplayTextCommentAsString } from '../_models/comment';
+import {forkJoin} from "rxjs/index";
 //end add comment
 
 @Component({
@@ -49,11 +50,16 @@ export class MyWoComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.authSerice.userAsObs.subscribe(user => console.log(user));
-        this.workTypeService.getWorkTypes().subscribe(workTypes => console.log("NOW:"+JSON.stringify(workTypes)));
         this.authSerice.userAsObs.subscribe(user => this.saveAndSearch(user));
-        this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
-        this.search();
+
+        forkJoin([this.workTypeService.getWorkTypes(), this.userService.getEngineers()]).subscribe(responseList => {
+                console.log(`Fork Join ${responseList.length}...`);
+                console.log("WorkTypes :"+JSON.stringify(responseList[0]));
+                this.engineers = responseList[1];
+                this.search();
+              }
+          );
+
         this.items = [
             {label: 'Zakończ zlecenie', icon: 'fa fa-check', command: (event) => this.finishWork()},
             {label: 'Dodaj komentarz', icon: 'fa fa-pencil-square-o',  command: (event) => this.addComment()},
