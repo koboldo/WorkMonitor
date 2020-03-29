@@ -7,7 +7,7 @@ const collectDefaultMetrics = prom.collectDefaultMetrics;
 collectDefaultMetrics({ timeout: 10000, prefix: 'botapp_' });
 
 function getMetricsBindIp() {
-  return process.env.WM_METRICS_BIND_IP || '172.17.0.1';
+  return process.env.WM_METRICS_BIND_IP || 'localhost';
 }
 
 function getMetricsPort() {

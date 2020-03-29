@@ -1,11 +1,7 @@
-
 <p-panel header="Wyniki zespołu">
-
     <div class="ui-grid-row">
         <div class="ui-grid-col-12">
-
                 <form #f="ngForm" (submit)="search()">
-
                     <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
                         <div class="ui-grid-row"  style="margin-top: 20px;">
                             <div class="ui-grid-col-1"></div>
@@ -25,7 +21,6 @@
                             <div class="ui-grid-col-2">
                                 <button pButton type="button" (click)="search()" icon="fa fa-search" label="Szukaj Laros" style="margin-left: 0px; min-width: 140px; max-width: 200px;" [disabled]="!f?.valid"></button>
                             </div>
-                            <div class="ui-grid-col-5"></div>
                         </div>
                     </div>
 
@@ -33,24 +28,24 @@
         </div>
     </div>
 </p-panel>
-
-
-
 <div style="margin-top: 5px" *ngIf="reports" class="ui-g">
-
-    <!-- turbotable -->
     <p-table #tt dataKey="id" [columns]="cols" [value]="reports" [rows]="20" [paginator]="true"
       [resizableColumns]="true"  sortField="timeUtilizationPercentage" sortOrder="-1" selectionMode="multiple" [(selection)]="selectedReports"
       loadingIcon="fa fa-spinner" [globalFilterFields]="cols"
       [responsive]="false"
      (onRowSelect)="filterReports($event)" (onHeaderCheckboxToggle)="filterReports($event)"
       [metaKeySelection]="true"
+      csvSeparator=";" exportFilename="Wydajność zespołu"
       >
       <ng-template pTemplate="caption">
-        <div>
-          <i class="fa fa-search"></i>
-          <input type="text" pInputText size="50" placeholder="Filtruj"
-            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        <div class="ui-g">
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-8"> 
+            <i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj"
+              (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+          <div class="ui-grid-col-2"> <button type="button"  pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button></div>
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
@@ -74,7 +69,8 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-        <tr [pSelectableRow]="rowData"  [pSelectableRowDblClick]="rowData" [pSelectableRowIndex]="rowIndex" [pContextMenuRow]="rowData" (dblclick)="onRowDblclick(rowData)">
+        <tr [pSelectableRow]="rowData"  [pSelectableRowDblClick]="rowData" [pSelectableRowIndex]="rowIndex" 
+        [pContextMenuRow]="rowData" (dblclick)="onRowDblclick(rowData)" exportable="col.exportable">
           <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
 
             <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>

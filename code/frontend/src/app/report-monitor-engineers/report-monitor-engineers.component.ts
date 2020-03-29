@@ -87,9 +87,9 @@ export class ReportMonitorEngineersComponent implements OnInit {
         this.search();
 
         this.cols = [
-            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true},            
-            { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true},
-            { field: 'none', header: 'Ocena' ,excludeGlobalFilter: true,  class:"width-10 text-center", icon: true},
+            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true,exportable:false},            
+            { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true,exportable:false},
+            { field: 'none', header: 'Ocena' ,excludeGlobalFilter: true,  class:"width-10 text-center", icon: true,exportable:false},
             { field: 'timeUtilizationPercentage', header: 'Wydajność', sortable:true, filter:true, class:"width-50 text-center", utilization:true, icon:true},
             { field: 'firstName', header: 'Imię',sortable:true, filter:true,class:"width-35 text-center"},
             { field: 'lastName', header: 'Nazwisko', sortable:true, filter:true, class:"width-35 text-center" },
@@ -100,7 +100,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
             { field: 'expectedTime', header: 'Czas zakładany', sortable:true , class:"width-35 text-center",expectedTime:true, icon:true},  
             { field: 'noOrdersDone', header: 'Ukończonych WO', sortable:true , class:"width-35 text-center"},  
             { field: 'earnedMoney', header: 'Wypracowany obrót', sortable:true , class:"width-35 text-center",earnedMoney:true, icon:true},
-            { field: 'none', header: 'Zlecenia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, orders:true},  
+            { field: 'none', header: 'Zlecenia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, orders:true,exportable:false},  
           ]
         this.colsForOrdersTable = [                    
             { field: 'workNo', header: 'Zlecenie' ,filter:true, sortable:true, class:"width-35"},
