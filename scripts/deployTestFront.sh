@@ -12,7 +12,7 @@ echo
 
 npm run-script build &&
 tar zcvf /tmp/testbotdist_${TS?}.tar.gz bot &&
-scp /tmp/testbotdist_${TS?}.tar.gz testbot@bot:WorkMonitorFrontend/ &&
+scp /tmp/testbotdist_${TS?}.tar.gz testbot@jdmiddleware.pl:WorkMonitorFrontend/ &&
 
 echo ==================
 echo Working at testbot@jdmiddleware.pl...

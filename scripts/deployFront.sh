@@ -13,7 +13,7 @@ echo
 #angular 4 ng build --base-href . -prod &&
 ng build --base-href . --prod --configuration=production &&
 tar zcvf /tmp/botdist_${TS?}.tar.gz bot &&
-scp /tmp/botdist_${TS?}.tar.gz botconsole@bot:/tmp &&
+scp /tmp/botdist_${TS?}.tar.gz botconsole@jdmiddleware.pl:/tmp &&
 
 echo ==================
 echo Working at botconsole@jdmiddleware.pl...
