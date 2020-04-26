@@ -5,6 +5,7 @@ const moment = require('moment');
 const mapper = require('./mapper');
 const payroll_db = require('./db/payroll_db');
 const addCtx = require('./logger').addCtx;
+const logger = require('./logger').logger; 
 
 const payrolls = {
 
@@ -22,8 +23,6 @@ const payrolls = {
             return;
         }
 
-        // if(req.query.periodDate && isBoss) params.periodDate = req.query.periodDate;
-        // else params.periodDate = moment().format('YYYY-MM-DD');
         if(req.query.periodDate) params.periodDate = req.query.periodDate;
         else params.periodDate = moment().format('YYYY-MM-DD');
 
@@ -33,12 +32,13 @@ const payrolls = {
         } else params.history = "N";
 
         if(['Y','N'].indexOf(params.history) < 0) {
+            logger().error('wrong history parameter ' + params.periodDate);
             resp.status(400).json({status:'error', message: 'zły parametr historii'});
             return;
         }
 
         if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(params.periodDate)) {
-            console.log(params.periodDate);
+            logger().error('wrong period date ' + params.periodDate);
             
             resp.status(400).json({status:'error', message: 'zła data okresu'});
             return;

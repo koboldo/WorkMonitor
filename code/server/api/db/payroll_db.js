@@ -72,6 +72,7 @@ const queries = {
                 ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
               END LAST_MOD
         FROM PERSON_HIST
+        WHERE IS_DELETED = 'N'
         ) WHERE ROLE_CODE LIKE '%%EN%%' OR ROLE_CODE LIKE '%%MG%%' OR ROLE_CODE LIKE '%%OP%%'
     )
     , PERIOD_PERSON AS (

@@ -29,8 +29,8 @@
     "prom-client": "^11.5.3",
     "response-time": "^2.3.2",
     "sha1": "^1.1.1",
-    "sprintf-js": "^1.1.1",
-    "sqlite3": "^4.0.4"
+    "sprintf-js": "^1.1.2",
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
     "csv-parse": "^2.0.0",
