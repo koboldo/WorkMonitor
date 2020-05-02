@@ -1,40 +1,51 @@
 /* jshint node: true, esversion: 6 */
 'use strict';
 
-var sqlite3 = require('sqlite3').verbose();
-var path = require('path');
-var async = require('async');
-var sprintf = require("sprintf-js").sprintf;
-// var logger = require('../logger').getLogger('monitor'); 
-var logger = require('../logger').logger;
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const async = require('async');
+const sprintf = require("sprintf-js").sprintf;
+const logger = require('../logger').logger;
 const addCtx = require('../logger').addCtx;
-var logErrAndCall = require('../local_util').logErrAndCall;
+const logErrAndCall = require('../local_util').logErrAndCall;
 
 var insertSeq = 'INSERT INTO SEQUENCER (SEQ_NAME,SEQ_VAL) VALUES ( $NAME , ( SELECT COALESCE(MAX(SEQ_VAL),0) + 1 FROM SEQUENCER WHERE SEQ_NAME = $NAME ))';
 var querySeq = 'SELECT SEQ_VAL FROM SEQUENCER WHERE ROWID = ?';
 
-var columnsToSkip = ['ID','LAST_MOD','CREATED'];
-var columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK','TRAINING'];
+const columnsToSkip = ['ID','LAST_MOD','CREATED'];
+const columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK','TRAINING'];
 
-var db_util = {
+const db_util = {
     
     getDatabase: function() {
-        var dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db');
+        let dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db');
 
-        if(logger().isDebugEnabled()) logger().debug('connecting to db in location ' + dbPath);
-        var db = new sqlite3.Database(dbPath);
+        let db = new sqlite3.Database(dbPath,sqlite3.OPEN_READWRITE,addCtx(function(err) {
+                if(err) {
+                    logger().err('error while connecting to db ' + err.name + ' ' + err.message);
+                } else {
+                    if(logger().isDebugEnabled()) logger().debug('connected successfully to db in location ' + dbPath);
+                }
+        }));
+
+        db.on('profile', addCtx(function(sql,tm){
+            logger().debug('sql ' + sql);
+            logger().debug('time ' + tm);
+        }));
+
         db.serialize(function() {
-            db.run( 'PRAGMA journal_mode = DELETE;' );
-            db.run( 'PRAGMA busy_timeout = 10000;' );
-            db.run( 'PRAGMA foreign_keys = ON;' );
+            db.exec( 'PRAGMA journal_mode = WAL;' )
+                .exec( 'PRAGMA busy_timeout = 10000;' )
+                .exec( 'PRAGMA foreign_keys = ON;' )
+                .exec( 'PRAGMA temp_store = 2;' );
         });
         return db;
     },
     
     performInsert: function(object, tableName, maxIdQuery, cb, db) {
-        var myDB = (db == null) ? db_util.getDatabase() : db;
-        var insertStr = db_util.prepareInsert(object, tableName);
-        var insertStat = myDB.prepare(insertStr);      
+        let myDB = (db == null) ? db_util.getDatabase() : db;
+        let insertStr = db_util.prepareInsert(object, tableName);
+        let insertStat = myDB.prepare(insertStr);      
         insertStat.run(addCtx(function(err, result){
             insertStat.finalize();
             if(db == null) myDB.close();
@@ -48,9 +59,9 @@ var db_util = {
     },
     
     performUpdate: function(idObj, object, tableName, cb, db) {
-        var myDB = (db == null) ? db_util.getDatabase() : db;
-        var updateStr = db_util.prepareUpdate(idObj, object, tableName);
-        var updateStat = myDB.prepare(updateStr);   
+        let myDB = (db == null) ? db_util.getDatabase() : db;
+        let updateStr = db_util.prepareUpdate(idObj, object, tableName);
+        let updateStat = myDB.prepare(updateStr);   
         updateStat.run(addCtx(function(err,result) {
             updateStat.finalize();
             if(db == null) myDB.close();
@@ -64,9 +75,9 @@ var db_util = {
     },
 
     performDelete: function(idObj, tableName, cb, db) {
-        var myDB = (db == null) ? db_util.getDatabase() : db;
-        var deleteStr = db_util.prepareDelete(idObj,'PERSON_WO');
-        var deleteStat = myDB.prepare(deleteStr);
+        let myDB = (db == null) ? db_util.getDatabase() : db;
+        let deleteStr = db_util.prepareDelete(idObj,'PERSON_WO');
+        let deleteStat = myDB.prepare(deleteStr);
         deleteStat.run(addCtx(function(err, result){
             deleteStat.finalize();
             if(db == null) myDB.close();
@@ -80,7 +91,7 @@ var db_util = {
     },
     
     startTx: function(db,cb) {
-        db.run('BEGIN',addCtx((err, result)=>{
+        db.exec('BEGIN',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
@@ -91,7 +102,7 @@ var db_util = {
     },
 
     commitTx: function(db,cb) {
-        db.run('COMMIT',addCtx((err, result)=>{
+        db.exec('COMMIT',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
@@ -102,7 +113,7 @@ var db_util = {
     },
 
     rollbackTx: function(db,cb) {
-        db.run('ROLLBACK',addCtx((err, result)=>{
+        db.exec('ROLLBACK',addCtx((err, result)=>{
             if(err) {
                 logErrAndCall(err,cb);
             } else {
@@ -113,9 +124,9 @@ var db_util = {
     },
 
     prepareInsert: function(object, tableName) {
-        var sqlCols = '';
-        var sqlVals = '';
-        for(var col in object) {
+        let sqlCols = '';
+        let sqlVals = '';
+        for(let col in object) {
             if(columnsToSkip.indexOf(col) > -1 ) continue;
 
             if(sqlCols.length > 0) sqlCols += ', ';
@@ -129,15 +140,15 @@ var db_util = {
             else sqlVals += '"' + object[col] + '"';
         }
 
-        var insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+        let insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
         if(logger().isDebugEnabled()) logger().debug('db insert: ' + insertStr);
         return insertStr;
     },
 
     // BEWARE UPDATING WORK_ORDER_HIST TABLE ...
     prepareUpdate: function(idObj, object, tableName) {
-        var updateStr = '';
-        for(var col in object) {
+        let updateStr = '';
+        for(let col in object) {
             if(columnsToSkip.indexOf(col) > -1 ) continue;
             
             if(updateStr.length > 0) {
@@ -151,8 +162,8 @@ var db_util = {
             else updateStr += '"' + val + '"';
         }
 
-        var idStr = '';
-        for(var idKey in idObj) {
+        let idStr = '';
+        for(let idKey in idObj) {
             if(idStr.length > 0) idStr += ' AND ';
             idStr += idKey + ' = ' + idObj[idKey];
         }        
@@ -164,8 +175,8 @@ var db_util = {
     
     prepareDelete: function(idObj, tableName) {
 
-        var deleteStr = '';
-        for(var idKey in idObj) {
+        let deleteStr = '';
+        for(let idKey in idObj) {
             if(deleteStr.length > 0) deleteStr += ' AND ';
             deleteStr += idKey + ' = ' + idObj[idKey];
         }
@@ -180,12 +191,12 @@ var db_util = {
             return "";
         }
         
-        var filterText = " WHERE ";
-        for(var filter in queryFilters) {
+        let filterText = " WHERE ";
+        for(let filter in queryFilters) {
             if(params[filter]) {
                 if(filterText.length > 7) filterText += " AND ";
                 
-                var obj = {};
+                let obj = {};
                 obj[filter] = params[filter];
                 filterText += sprintf(queryFilters[filter], obj);
             }    
@@ -194,12 +205,16 @@ var db_util = {
     },
     
     prepareFiltersByInsertion: function(query,params,queryFilters) {
-        var filterInserts = {};
-        for(var filter in queryFilters) {
+        let filterInserts = {};
+        for(let filter in queryFilters) {
             logger().debug('filter ' + filter );
-            var filterVal = '';
+            let filterVal = '';
             if(params[filter]) {
-                var obj = {};
+                if(typeof params[filter] === 'string' && params[filter].indexOf(';') >= 0) {
+                    logger().warn('skipping suspicious parameter ' + params[filter]);
+                    continue;
+                }
+                let obj = {};
                 obj[filter] = params[filter];
                 filterVal = sprintf(queryFilters[filter], obj);
                 logger().debug('filter val ' + filterVal );
@@ -208,7 +223,7 @@ var db_util = {
         }
 
         if(logger().isDebugEnabled()) logger().debug('filterInserts: ' + JSON.stringify(filterInserts));
-        var rv = sprintf(query,filterInserts);
+        let rv = sprintf(query,filterInserts);
         return rv;
     },
 
@@ -221,13 +236,13 @@ var db_util = {
     
     getNextSeq: function(seqName, cb) {
     
-        var db = db_util.getDatabase();
-        var insertStat = db.prepare(insertSeq);
-        var seqQueryStat = db.prepare(querySeq);
+        let db = db_util.getDatabase();
+        let insertStat = db.prepare(insertSeq);
+        let seqQueryStat = db.prepare(querySeq);
         
-        var rowid;
+        let rowid;
     
-        var calls = [];
+        let calls = [];
         calls.push(function(_cb) {
             insertStat.run({$NAME: seqName}, function(err,result){
                 insertStat.finalize();
@@ -262,7 +277,7 @@ var db_util = {
 
     getRowsIds: function(statement, rowId, cb) {
 		statement.bind(rowId).all(function(err,rows){
-			var ids = [];
+			let ids = [];
 			rows.forEach(function(row){
 				ids.push(row.ID);
 			});

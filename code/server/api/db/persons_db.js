@@ -11,7 +11,7 @@ const addCtx = require('../logger').addCtx;
 const queries = {
 	getPersons: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON ORDER BY LAST_NAME, FIRST_NAME, MODIFIED_BY ASC',
 	getPerson: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON WHERE ID = ?',
-	getPersonHistory: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, DATETIME(HIST_CREATED ,"unixepoch", "localtime") AS HIST_CREATED, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, MODIFIED_BY FROM PERSON_HIST WHERE ID = ?',
+	getPersonHistory: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, DATETIME(HIST_CREATED ,"unixepoch", "localtime") AS HIST_CREATED, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, MODIFIED_BY, IS_DELETED FROM PERSON_HIST WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
 	getPersonOrderIds: 'SELECT WO.ID FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = ? AND PW.WO_ID = WO.ID AND WO.STATUS_CODE = "AS"',
 	getPersonOrderStats:
@@ -57,15 +57,89 @@ const queries = {
 	  FROM WORK_ORDER AS WO JOIN PERSON_WO AS PWO ON WO.ID = PWO.WO_ID
 			JOIN PARAMS PA JOIN PERSON AS P ON PWO.PERSON_ID = P.ID 
 			JOIN SELECTED_WO SW ON SW.ID = PWO.WO_ID`,
-	getIsFromPool: 'SELECT CASE WHEN ( P.IS_FROM_POOL == "Y" OR ( "DETACHED" <> ? AND ( SELECT CASE WHEN COUNT(1) > 0 THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P1 ,PERSON_WO PW1 WHERE P1.ID = PW1.PERSON_ID AND PW1.WO_ID = WO.ID AND P1.IS_FROM_POOL = "Y" ) == "Y" ) ) AND WT.IS_FROM_POOL == "Y" THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P ,WORK_TYPE WT ,WORK_ORDER WO WHERE WO.ID = ? AND P.ID = ? AND WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE'
+	getIsFromPool: 'SELECT CASE WHEN ( P.IS_FROM_POOL == "Y" OR ( "DETACHED" <> ? AND ( SELECT CASE WHEN COUNT(1) > 0 THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P1 ,PERSON_WO PW1 WHERE P1.ID = PW1.PERSON_ID AND PW1.WO_ID = WO.ID AND P1.IS_FROM_POOL = "Y" ) == "Y" ) ) AND WT.IS_FROM_POOL == "Y" THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P ,WORK_TYPE WT ,WORK_ORDER WO WHERE WO.ID = ? AND P.ID = ? AND WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE',
+	savePersonIsFromPoolToTemp: 'CREATE TEMP TABLE PERSON_TMP AS SELECT ID, IS_FROM_POOL FROM PERSON WHERE ID = %(personId)s',
+	updatePersonOrders:
+	`WITH WO_SET AS (
+		SELECT WO.ID, P.IS_FROM_POOL
+		FROM
+			PERSON P 
+			JOIN PERSON_TMP PT ON P.ID = PT.ID
+			JOIN PERSON_WO PW ON PW.PERSON_ID = P.ID
+			JOIN WORK_ORDER WO ON WO.ID = PW.WO_ID 				 
+			JOIN WORK_TYPE WT ON WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE
+			LEFT JOIN  WORK_ORDER_HIST WOH ON WOH.ID = WO.ID
+		WHERE P.IS_FROM_POOL <> PT.IS_FROM_POOL
+		AND WT.IS_FROM_POOL = "Y"
+		AND WO.IS_FROM_POOL <> P.IS_FROM_POOL
+		AND (WO.STATUS_CODE IN ('OP','AS') OR (WO.STATUS_CODE = 'CO' AND WO.LAST_MOD > P.LAST_MOD) OR (WOH.STATUS_CODE IN ('CO') AND WOH.LAST_MOD > P.LAST_MOD))
+		AND NOT EXISTS (
+			SELECT 1
+			FROM PERSON_WO PW1 JOIN PERSON P1 ON PW1.PERSON_ID = P1.ID
+			WHERE PW1.WO_ID = WO.ID
+				AND PW1.PERSON_ID <> P.ID
+				AND PW1.PERSON_ID = P1.ID
+				AND P1.IS_FROM_POOL = "Y"
+		)
+	)
+	UPDATE WORK_ORDER
+	SET IS_FROM_POOL = ( SELECT IS_FROM_POOL FROM WO_SET WHERE WO_SET.ID = WORK_ORDER.ID )
+	WHERE ID IN ( SELECT ID FROM WO_SET )`,
+	updatePersonOrderIsFromPool:
+	// `WITH CALCULATION AS (
+	// 	SELECT WO.ID, CASE WHEN ( P.IS_FROM_POOL == "Y" OR ( "DETACHED" <> "%(detachMode)s" AND ( SELECT CASE WHEN COUNT(1) > 0 THEN "Y" ELSE "N" END IS_FROM_POOL FROM PERSON P1 ,PERSON_WO PW1 WHERE P1.ID = PW1.PERSON_ID AND PW1.WO_ID = WO.ID AND P1.IS_FROM_POOL = "Y" ) == "Y" ) ) AND WT.IS_FROM_POOL == "Y" THEN "Y" ELSE "N" END IS_FROM_POOL
+	// 	FROM PERSON P, WORK_TYPE WT, WORK_ORDER WO 
+	// 	WHERE WO.ID = %(workOrderId)s 
+	// 	AND P.ID = %(personId)s 
+	// 	AND WT.OFFICE_CODE = WO.OFFICE_CODE
+	// 	AND WT.TYPE_CODE = WO.TYPE_CODE
+	// 	AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE
+	// )
+	// UPDATE WORK_ORDER
+	// SET IS_FROM_POOL = ( SELECT IS_FROM_POOL FROM CALCULATION )
+	// WHERE ID IN ( SELECT ID FROM CALCULATION )`,
+	`WITH INIT AS (
+		SELECT WO.ID WO_ID, COUNT(P.ID) ALL_PERSONS, SUM(CASE P.IS_FROM_POOL WHEN "Y" THEN 1 ELSE 0 END) POOL_PERSONS 
+		FROM WORK_ORDER WO LEFT JOIN PERSON_WO PW ON WO.ID = PW.WO_ID
+		LEFT JOIN PERSON P ON P.ID = PW.PERSON_ID WHERE WO.ID = %(workOrderId)s
+	),
+	CALCULATION AS (
+		SELECT WO.ID, 
+		CASE WHEN WT.IS_FROM_POOL == "N" THEN "N"
+			WHEN I.POOL_PERSONS > 0 THEN "Y"
+			WHEN I.ALL_PERSONS > 0 THEN "N"
+			ELSE "Y" 
+		END IS_FROM_POOL
+		FROM WORK_ORDER WO 
+		JOIN WORK_TYPE WT ON WT.OFFICE_CODE = WO.OFFICE_CODE AND WT.TYPE_CODE = WO.TYPE_CODE AND WT.COMPLEXITY_CODE = WO.COMPLEXITY_CODE
+		JOIN INIT I
+		WHERE WO.ID = I.WO_ID    
+	)
+	UPDATE WORK_ORDER
+	SET IS_FROM_POOL = ( SELECT IS_FROM_POOL FROM CALCULATION )
+	WHERE ID IN ( SELECT ID FROM CALCULATION )`,
+	updatePersonLastModAndHistory:
+	`UPDATE PERSON SET LAST_MOD = %(effectiveDate)s WHERE ID = %(personId)s;
+	UPDATE PERSON_HIST SET IS_DELETED = "Y" WHERE ID = %(personId)s AND LAST_MOD > %(effectiveDate)s`
 };
 
-// ??
 const filters = {
     getPersonOrdersReport: {
         dateAfter: '%(dateAfter)s',
         dateBefore: '%(dateBefore)s'
-    }
+	},
+	savePersonIsFromPoolToTemp:{
+		personId: '%(personId)s'
+	},
+	updatePersonOrderIsFromPool: {
+		// detachMode: '%(detachMode)s',
+		// personId: '%(personId)s',
+		workOrderId: '%(workOrderId)s'
+	},
+	updatePersonLastModAndHistory: {
+		personId: '%(personId)s',
+		effectiveDate: 'STRFTIME("%%s", "%(effectiveDate)s", "start of month")'
+	}
 };
 
 const persons_db = {
@@ -147,30 +221,36 @@ const persons_db = {
 				row.WORK_ORDERS = ids;
 				cb(null,row);
 			}));
-			// dbUtil.getRowsIds(getPersonOrderIdsStat, row.ID, function(ids){
-			// 	row.WORK_ORDERS = ids;
-            //     getPersonOrderIdsStat.finalize();
-            //     getPersonStat.finalize();
-            //     db.close();
-			// 	cb(null,row);
-			// });
 		}));
 	},
 	
-	update: function(personId, person, cb) {
-        const idObj = {};
-        // idObj.name = 'ID';
-		// idObj.value = personId;
-		idObj.ID = personId;
+	update: function(personId, person, effectiveDate, cb) {
+
+		const db = dbUtil.getDatabase();
+
+		const sqls = [];
+
+		sqls.push(dbUtil.prepareFiltersByInsertion(queries.savePersonIsFromPoolToTemp,{ personId: personId },filters.savePersonIsFromPoolToTemp));
+		sqls.push(dbUtil.prepareUpdate({ ID: personId },person,'PERSON'));
+
+		if(effectiveDate) {
+			const params = {
+				personId: personId,
+				effectiveDate: effectiveDate
+			}
+			sqls.push(dbUtil.prepareFiltersByInsertion(queries.updatePersonLastModAndHistory,params,filters.updatePersonLastModAndHistory));
+		}
 		
-		if(person.ROLE_CODE) person.ROLE_CODE = [].concat(person.ROLE_CODE).join(',');
-        
-        if(logger().isDebugEnabled()) logger().debug('update person of id ' + personId + ' with object: ' + util.inspect(person));
-        
-        dbUtil.performUpdate(idObj, person, 'PERSON', addCtx(function(err,result) {
-            if(err) return logErrAndCall(err,cb);
-            cb(null,result);
-        }));
+		sqls.push(queries.updatePersonOrders);
+
+		logger().info('SQL\n' + sqls.join(';'));
+
+		db.exec(sqls.join(';'),function(err){
+			db.close();
+
+			if(err)  logErrAndCall(err,cb);
+			else cb(null,1);
+		});
 	},
 	
 	create: function(person, cb) {
@@ -187,93 +267,57 @@ const persons_db = {
 
 	addOrder: function(orderRelation, detachExistingRelation, cb) {
 		if(logger().isDebugEnabled()) logger().debug('insert relation : ' +  util.inspect(orderRelation));
-		
-		const mydb = dbUtil.getDatabase();
-
-		let newRelationId;
-		let isFromPool;
-
-		async.series([
-			addCtx(function(_cb){
-				const getIsFromPoolStat = mydb.prepare(queries.getIsFromPool);
-				const bindings = [(detachExistingRelation) ? "DETACHED": "NOT_DETACHED" ,orderRelation.WO_ID, orderRelation.PERSON_ID];
-				// console.log('bindings ' + JSON.stringify(bindings));
-				getIsFromPoolStat.bind(bindings);
-				getIsFromPoolStat.get(addCtx(function(err,result){
-					getIsFromPoolStat.finalize();
 	
-					if(err) _cb(err);
-					else {
-						isFromPool = result.IS_FROM_POOL;
-						_cb(null);
-					}
-				}));
-			}),
+		const db = dbUtil.getDatabase();
 
-			addCtx(function(_cb) {
-				dbUtil.startTx(mydb,addCtx(function(err, result){
-					if(err) _cb(err);
-					else _cb(null,result);
-				}));
-			}),
+		const sqls = [];
 
-			addCtx(function(_cb) {
-				if(detachExistingRelation == true) {
-					const obj = {};
-					obj.WO_ID = orderRelation.WO_ID;
-					dbUtil.performDelete(obj,'PERSON_WO',addCtx(function(err,result){
-						if(err) _cb(err);
-						_cb(null,result);						
-					}), mydb);
-				} else {
-					_cb(null,true);
-				}
-			}),
+		// sqls.push('BEGIN');
+		if(detachExistingRelation == true) {
+			const obj = {};
+			obj.WO_ID = orderRelation.WO_ID;
+			sqls.push(dbUtil.prepareDelete(obj,'PERSON_WO'));
+		}
+		sqls.push(dbUtil.prepareInsert(orderRelation,'PERSON_WO'));
 
-			addCtx(function(_cb) {
-				dbUtil.performInsert(orderRelation,'PERSON_WO',null,addCtx(function(err,newId){
-					if(err) _cb(err);
-					else {
-						newRelationId = newId;
-						_cb(null,newId);
-					}
-				}), mydb);				
-			}),
-		
-			addCtx(function(_cb){
-				const idObj = {};
-				idObj.ID = orderRelation.WO_ID;
+		const params = {
+			// detachMode:  (detachExistingRelation) ? 'DETACHED': 'NOT_DETACHED',
+			// personId: orderRelation.PERSON_ID,
+			workOrderId: orderRelation.WO_ID
+		};
 
-				const wo = {};
-				wo.IS_FROM_POOL = isFromPool;
+		sqls.push(dbUtil.prepareFiltersByInsertion(queries.updatePersonOrderIsFromPool,params,filters.updatePersonOrderIsFromPool));
+		// sqls.push('COMMIT');
 
-				if(logger().isDebugEnabled()) logger().debug('update workOrder of id ' + idObj.ID  + ' with object: ' + util.inspect(wo));
-        
-				dbUtil.performUpdate(idObj, wo, 'WORK_ORDER', addCtx(function(err,result) {
-					if(err) _cb(err);
-					else _cb(null,result);
-				}), mydb);
-			})],
+		db.exec(sqls.join(';'),function(err){
+			if(err)  logErrAndCall(err,cb);
+			else cb(null,1);
 
-			function(err, results) {
-				if(err) {
-					dbUtil.rollbackTx(mydb);
-					logErrAndCall(err,cb);
-				} else {
-					dbUtil.commitTx(mydb);
-					cb(null,newRelationId);
-				}
-				mydb.close();
+			db.close();
 		});
 	},
 	
 	deleteOrder: function(orderRelation, cb) {
 		if(logger().isDebugEnabled()) logger().debug('delete relation : ' +  util.inspect(orderRelation));
 
-		dbUtil.performDelete(orderRelation,'PERSON_WO',addCtx(function(err,newId){
-			if(err) return logErrAndCall(err,cb);
-            cb(null,newId);
-		}));
+		const db = dbUtil.getDatabase();
+
+		const sqls = [];
+		sqls.push(dbUtil.prepareDelete(orderRelation,'PERSON_WO'));
+		sqls.push(dbUtil.prepareFiltersByInsertion(queries.updatePersonOrderIsFromPool,{workOrderId: orderRelation.WO_ID},filters.updatePersonOrderIsFromPool));
+		logger().debug(sqls.join(';'));
+
+		db.exec(sqls.join(';'),function(err){
+			if(err)  logErrAndCall(err,cb);
+			else cb(null,1);
+
+			db.close();
+		});
+
+		// dbUtil.performDelete(orderRelation,'PERSON_WO',addCtx(function(err,newId){
+		// 	if(err) return logErrAndCall(err,cb);
+        //     cb(null,newId);
+		// }));
 	},
 	
 	readHistory: function(personId, cb) {

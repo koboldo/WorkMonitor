@@ -72,7 +72,17 @@ const persons = {
         pe.modifiedBy = req.context.id;
         const personSql = mapper.person.mapToSql(pe);
 
-        persons_db.update(personId, personSql,addCtx(function(err, result){
+
+        let effectiveDate = null;
+        if(req.query.effectiveDate) {
+            if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(req.query.effectiveDate)) {            
+                res.status(400).json({status:'error', message: 'zła data wejścia w życie'});
+                return;
+            }
+            effectiveDate = req.query.effectiveDate;
+        }
+
+        persons_db.update(personId, personSql, effectiveDate, addCtx(function(err, result){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
