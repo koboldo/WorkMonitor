@@ -4,4 +4,5 @@ export class SearchUser {
     constructor(public displayName:string,
                 public user:User) {
     }
+    effectiveDate: Date;
 }

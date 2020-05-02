@@ -55,6 +55,15 @@ export class ToolsService {
         return date;
     }
 
+    public getMonthsFromDateRange (dateStart: Date, dateEnd: Date): Date[] {
+        let months = [];
+        while (dateStart <= dateEnd) {
+            months.push(new Date(dateStart));
+            dateStart= new Date(dateStart.getFullYear(), dateStart.getMonth()+1);
+        }
+        return months;
+    }
+
     public findSelectedOrderIndex(order:Order, orders:Order[]):number {
         let index:number = 0;
         for (let tabOrder of orders) {
