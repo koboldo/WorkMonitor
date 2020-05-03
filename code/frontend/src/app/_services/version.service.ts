@@ -19,7 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
-            new CodeValue('1.5.63', 'Eksport wydajność zespołu'),
+            new CodeValue('1.5.65', 'Dodanie daty obowiązywania modyfikacji danych osoby'),
+            new CodeValue('1.5.64', 'Eksport wydajność zespołu'),
             new CodeValue('1.5.63', 'Dodanie typu zlecenia w widoku inżyniera - poprawka'),
             new CodeValue('1.5.62', 'Dodanie typu zlecenia w widoku inżyniera'),
             new CodeValue('1.5.61', 'Dodanie usuwania urlopu'),

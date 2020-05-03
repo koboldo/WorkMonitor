@@ -124,7 +124,7 @@ export class UserChangeComponent implements OnInit {
         this.selectedUser.user.addressPost="usunięto";;
         this.selectedUser.user.addressStreet="usunięto";
         this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
-        this.userService.update(this.selectedUser.user)
+        this.userService.update(this.selectedUser.user, this.selectedDate)
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
@@ -205,7 +205,7 @@ export class UserChangeComponent implements OnInit {
             this.selectedUser.user.company = this.company;
         }
 
-        this.userService.update(this.selectedUser.user)
+        this.userService.update(this.selectedUser.user, this.selectedUser.effectiveDate)
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
