@@ -46,6 +46,7 @@ export class UserChangeComponent implements OnInit {
     displayDismissDialog:boolean;
     //
     show:boolean=true;
+    showExcelId = false;
 
     rateControl = new FormControl("", [Validators.min(0)]);
 
@@ -75,12 +76,13 @@ export class UserChangeComponent implements OnInit {
 
     }
 
-    checkSelect() {
+    checkRoleSelectedUserAndSetSettingsForView() {
         if (this.selectedUser.user.roleCode.indexOf('CN') > -1) {
             if (this.selectedUser.user.roleCode.length>1) {
                 this.removeRole("CN");
             }
             this.show=false;
+            this.showExcelId = false;
             this.selectedUser.user.isActive = 'N';
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';                  
@@ -90,12 +92,15 @@ export class UserChangeComponent implements OnInit {
                 this.removeRole("VE");
             }
             this.show=false;
+            this.showExcelId = true;
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';
             this.selectedUser.user.isActive = 'N';
         }
+        // If user is emplyee
         else {
             this.show=true;
+            this.showExcelId = false;
             this.selectedUser.user.isActive = 'Y';
             this.selectedUser.user.isEmployed= 'Y';
         }
@@ -138,7 +143,7 @@ export class UserChangeComponent implements OnInit {
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
         }
-        this.checkSelect();
+        this.checkRoleSelectedUserAndSetSettingsForView();
     }
 
     suggestUser(event) {
