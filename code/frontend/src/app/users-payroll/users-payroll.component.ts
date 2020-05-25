@@ -334,9 +334,9 @@ export class UsersPayrollComponent implements OnInit {
         let diffMs: number = now.getTime() - theDate.getTime();
 
         //console.log('diffMs: '+diffMs+', theDate:'+this.toolsService.formatDate(theDate, 'yyyy-MM-dd'));
-        if (diffMs > 3*this.AVG_MONTH_MS) {
+        if (diffMs > 5*this.AVG_MONTH_MS) {
             return 'ui-button-danger';
-        } else if (diffMs > 2*this.AVG_MONTH_MS) {
+        } else if (diffMs > 3*this.AVG_MONTH_MS) {
             return 'ui-button-warning';
         }
         return 'ui-button-success';
