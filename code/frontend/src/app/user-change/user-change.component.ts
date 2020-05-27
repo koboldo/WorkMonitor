@@ -82,7 +82,7 @@ export class UserChangeComponent implements OnInit {
                 this.removeRole("CN");
             }
             this.show=false;
-            this.showExcelId = false;
+            this.showExcelId = true;
             this.selectedUser.user.isActive = 'N';
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';                  
