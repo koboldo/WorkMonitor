@@ -227,12 +227,12 @@ export class UserChangeComponent implements OnInit {
         let date = new Date();
         this.maxDate = new Date(date.getFullYear(),date.getMonth());
         this.minDate = new Date(date.getFullYear() - 1,date.getMonth());
-        let dateCollection = this.toolsService.getMonthsFromDateRange(this.minDate, this.maxDate);
+        let dateCollection = this.toolsService.getMonthsFromDateRange(this.minDate, this.maxDate, true);
         dateCollection.forEach(element => {
             let month = element.getMonth()+1;
             let label = month.toString()+ '/' +element.getFullYear().toString();
             this.dateForComboBox.push({label: label, value:element});
-        });       
+        });      
     }
 
     private mapToRoles(pairs:CodeValue[]):void {

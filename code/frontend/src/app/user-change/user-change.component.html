@@ -55,19 +55,7 @@
             <br/>            
         </p-fieldset>
         <br/>
-        <p-fieldset legend="Zakończyć współpracę ?">
-          <div class="form-group" >
-            <label class="labelFor" for="effectiveDate" >Wybierz datę od kiedy obowiązuje zmiana</label>
-            <p-dropdown id="effectiveDate" name="effectiveDate" required #effectiveDate="ngModel"
-                [options]="dateForComboBox" 
-                [(ngModel)]="selectedDate" placeholder="Wybierz datę" optionLabel="label" ></p-dropdown>           
-                <div *ngIf="!selectedDate" class="ui-grid-row" style="margin-top: 5px;">
-                  <div class="ui-grid-col-2"></div>
-                  <div class="ui-grid-col-10">
-                    <p-message severity="warn" text="Wybranie daty obowiązywania zamiany jest wymagane!"></p-message>
-                  </div>
-                </div>
-          </div>         
+        <p-fieldset legend="Zakończyć współpracę ?">      
           <div class="ui-grid-row" align="center">
               <div class="ui-grid-col-12" align="center">
                 <p >Zakończenie współpracy spowoduje usunięcie wszystkich danych pracownika czy jesteś pewien że chcesz zakończyć współpracę? </p>
@@ -76,7 +64,7 @@
           <br/>
           <div class="ui-grid-row">
             <div class="ui-grid-col-4" align="center">
-              <button type="button" [disabled]="!selectedDate" pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
+              <button type="button"  pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
             </div>
             <div class="ui-grid-col-8" align="center">
               <button type="button" pButton (click)="displayDismissDialog=false" icon="fa fa-window-close" label="Anuluj" class="ui-button-info"></button>
@@ -278,17 +266,17 @@
         </div>
       </div>
 </div>
-    <div class="form-group" *ngIf="show">
-      <label class="labelFor" for="effectiveDate" >Wybierz datę od kiedy obowiązuje zmiana</label>
-      <p-dropdown id="effectiveDate" name="effectiveDate" required #effectiveDate="ngModel"
+    <div class="form-group" *ngIf="show && operator.roleCode.indexOf('PR') !== -1">
+      <p-panel header="Data obowiązywania modyfikacji" [toggleable]="false" [style]="{'margin-bottom':'20px'}">
+       Jeżeli wprowadzone modyfikacje mają mieć wpływ na przyszłe rozliczenia należy wybrać miesiąc, od którego będą obowiązywać.
+        <p-footer>
+          <label class="labelFor" for="effectiveDate" >Data obowiązywania</label>
+          <p-dropdown id="effectiveDate" name="effectiveDate" #effectiveDate="ngModel"
           [options]="dateForComboBox" 
-          [(ngModel)]="selectedUser.effectiveDate" placeholder="Wybierz datę" optionLabel="label" ></p-dropdown>           
-          <div *ngIf="!selectedUser.effectiveDate" class="ui-grid-row" style="margin-top: 5px;">
-            <div class="ui-grid-col-2"></div>
-            <div class="ui-grid-col-10">
-              <p-message severity="warn" text="Wybranie daty obowiązywania zamiany jest wymagane!"></p-message>
-            </div>
-          </div>
+          [(ngModel)]="selectedUser.effectiveDate" placeholder="Wybierz datę" optionLabel="label" 
+          [showClear]= "true"></p-dropdown>           
+      </p-footer>
+    </p-panel>
     </div>
 
       <div class="form-group">

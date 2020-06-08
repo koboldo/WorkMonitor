@@ -30,7 +30,7 @@ export class UserService {
         //let strippedUser: User = JSON.parse(JSON.stringify(user, this.toolsService.censorUser));
         let strippedUser: User = JSON.parse(JSON.stringify(user));
         strippedUser.workOrders = undefined;
-        if (effectiveDate === undefined)
+        if (effectiveDate === undefined || effectiveDate === null)
             return this.http.put('/api/v1/persons/' + strippedUser.id , strippedUser).pipe(map((response: Object) => response));
         return this.http.put('/api/v1/persons/' + strippedUser.id + 
             '?effectiveDate='+this.toolsService.formatDate(effectiveDate.value,'yyyy-MM-dd'), strippedUser).pipe(map((response: Object) => response));
