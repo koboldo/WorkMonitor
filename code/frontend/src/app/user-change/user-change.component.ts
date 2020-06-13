@@ -225,12 +225,12 @@ export class UserChangeComponent implements OnInit {
 
     private createDataForComboBox () {
         let date = new Date();
-        this.maxDate = new Date(date.getFullYear(),date.getMonth());
+        this.maxDate = new Date(date.getFullYear(),date.getMonth()-1);
         this.minDate = new Date(date.getFullYear() - 1,date.getMonth());
         let dateCollection = this.toolsService.getMonthsFromDateRange(this.minDate, this.maxDate, true);
         dateCollection.forEach(element => {
             let month = element.getMonth()+1;
-            let label = month.toString()+ '/' +element.getFullYear().toString();
+            let label = month < 10 ?"0"+ month.toString()+ '/' +element.getFullYear().toString() : month.toString()+ '/' +element.getFullYear().toString() ;
             this.dateForComboBox.push({label: label, value:element});
         });      
     }

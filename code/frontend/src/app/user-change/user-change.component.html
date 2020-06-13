@@ -268,7 +268,7 @@
 </div>
     <div class="form-group" *ngIf="show && operator.roleCode.indexOf('PR') !== -1">
       <p-panel header="Data obowiązywania modyfikacji" [toggleable]="false" [style]="{'margin-bottom':'20px'}">
-       Jeżeli wprowadzone modyfikacje mają mieć wpływ na przyszłe rozliczenia należy wybrać miesiąc, od którego będą obowiązywać.
+       Jeżeli wprowadzone modyfikacje mają mieć wpływ na przeszłe rozliczenia należy wybrać miesiąc, od którego będą obowiązywać.
         <p-footer>
           <label class="labelFor" for="effectiveDate" >Data obowiązywania</label>
           <p-dropdown id="effectiveDate" name="effectiveDate" #effectiveDate="ngModel"
