@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.69', 'Dodanie walidacji pola dla puli podczas dodawania i edycji typów zleceń'),
             new CodeValue('1.5.68', 'Poprawki daty obowiązywania modyfikacji danych osoby, poprawka opisu, poprawka wyświetlania i i zakresu dat'),
 			new CodeValue('1.5.67', 'Dodanie daty obowiązywania modyfikacji danych osoby'),
             new CodeValue('1.5.66', 'Edycja excelId dla zleceniobiorców'),
