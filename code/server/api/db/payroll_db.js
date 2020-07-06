@@ -41,8 +41,9 @@ const queries = {
     , PERSON_INIT AS (
       SELECT ID, IS_FROM_POOL, IS_EMPLOYED, RANK_CODE, ROLE_CODE, PROJECT_FACTOR, SALARY, SALARY_RATE, LEAVE_RATE, LAST_MOD
       FROM (
-      SELECT ID,
-          IS_FROM_POOL
+      SELECT ID
+            , ROWID
+            , IS_FROM_POOL
             , IS_EMPLOYED
             , RANK_CODE
             , ROLE_CODE
@@ -57,8 +58,9 @@ const queries = {
               END LAST_MOD
         FROM PERSON
         UNION ALL     
-        SELECT ID,
-          IS_FROM_POOL
+        SELECT ID
+            , ROWID
+            , IS_FROM_POOL
             , IS_EMPLOYED
             , RANK_CODE
             , ROLE_CODE
@@ -78,11 +80,11 @@ const queries = {
     , PERIOD_PERSON AS (
         SELECT PI.* FROM PERSON_INIT PI
         JOIN (
-            SELECT ID, MAX(LAST_MOD) MAX_LAST_MOD
+            SELECT ID, MAX(ROWID) MAX_ROWID
             FROM PERSON_INIT, TIME_PARAMS TP
             WHERE LAST_MOD < TP.TIME_BEFORE
             GROUP BY ID
-        ) FL ON PI.ID = FL.ID AND PI.LAST_MOD = FL.MAX_LAST_MOD
+        ) FL ON PI.ID = FL.ID AND PI.ROWID = FL.MAX_ROWID
     )
     , PERIOD_WO AS (
         SELECT Q.ID, Q.WORK_NO, Q.TYPE_CODE, Q.PRICE, Q.COMPLEXITY, Q.IS_FROM_POOL, G.POOL_INCLUSION_FACTOR PIF
