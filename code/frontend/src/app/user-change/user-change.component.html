@@ -55,7 +55,7 @@
             <br/>            
         </p-fieldset>
         <br/>
-        <p-fieldset legend="Zakończyć współpracę ?">         
+        <p-fieldset legend="Zakończyć współpracę ?">      
           <div class="ui-grid-row" align="center">
               <div class="ui-grid-col-12" align="center">
                 <p >Zakończenie współpracy spowoduje usunięcie wszystkich danych pracownika czy jesteś pewien że chcesz zakończyć współpracę? </p>
@@ -64,7 +64,7 @@
           <br/>
           <div class="ui-grid-row">
             <div class="ui-grid-col-4" align="center">
-              <button type="button" pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
+              <button type="button"  pButton (click)="dissmisWorker()" icon="fa fa-user-times" label="Zakończ współprace" class="ui-button-danger"></button>
             </div>
             <div class="ui-grid-col-8" align="center">
               <button type="button" pButton (click)="displayDismissDialog=false" icon="fa fa-window-close" label="Anuluj" class="ui-button-info"></button>
@@ -94,6 +94,13 @@
       </div>
 
 
+      <div *ngIf="showExcelId"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
+        <label for="excelId">Identyfikator excel</label>
+        <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" min="0"/>
+        <div *ngIf="f.submitted && !excelId?.valid" class="help-block">Identyfikator w excel jest wymagany</div>
+      </div>
+
+      
       <div *ngIf="show"  class="form-group" [ngClass]="{ 'has-error': f.submitted && !excelId?.valid }">
         <label for="excelId">Identyfikator excel</label>
         <input id="excelId" type="number" class="form-control" name="excelId" [(ngModel)]="selectedUser.user.excelId" #excelId="ngModel" required min="0"/>
@@ -107,13 +114,13 @@
       </div>
       
       <div class="form-group" *ngIf="showRoles" [ngClass]="{ 'has-error': f.submitted && !(selectedUser?.user?.roleCode?.length > 0) }">
-        <label for="roleCode">Funkcja w systemie</label>
+        <label class="labelFor" for="roleCode">Funkcja w systemie</label>
         <p-selectButton [disabled]="operator.roleCode.indexOf('PR') == -1" name="roleCode" multiple="multiple" [options]="roles" [(ngModel)]="selectedUser.user.roleCode" (onChange)="checkSelect()" required roles></p-selectButton>
         <div *ngIf="f.submitted && !(selectedUser?.user?.roleCode?.length > 0)" class="help-block">Rola jest wymagana</div>
       </div>
 
       <div class="form-group" *ngIf="showOffices" [ngClass]="{ 'has-error': f.submitted && !officeCode?.valid }">
-        <label for="officeCode">Biuro macierzyste</label>
+        <label class="labelFor" for="officeCode">Biuro macierzyste</label>
         <p-selectButton id="officeCode" name="officeCode" [options]="offices" [(ngModel)]="selectedUser.user.officeCode" required #officeCode="ngModel"></p-selectButton>
         <!--<p-dropdown name="officeCode" [options]="offices | async" [(ngModel)]="user.officeCode" required autoWidth="false" ></p-dropdown>-->
         <div *ngIf="f.submitted && !officeCode?.valid" class="help-block">Biuro jest wymagane</div>
@@ -212,7 +219,7 @@
           </div>
 
           <div class="form-group" *ngIf="showRanks" [ngClass]="{ 'has-error': f.submitted && !rankCode?.valid }">
-            <label for="rankCode">Stopień (powiązane ze sposobem wynagradzania)</label>
+            <label class="labelFor" for="rankCode">Stopień (powiązane ze sposobem wynagradzania)</label>
             <p-selectButton id="rankCode" name="rankCode" [options]="ranks" [(ngModel)]="selectedUser.user.rankCode" required #rankCode="ngModel"></p-selectButton>
             <!--<p-dropdown name="rankCode" [options]="ranks | async" [(ngModel)]="selectedUser.user.rankCode" required autoWidth="false" ></p-dropdown>-->
             <div *ngIf="f.submitted && !rankCode?.valid" class="help-block">Stopień jest wymagany</div>
@@ -259,6 +266,19 @@
         </div>
       </div>
 </div>
+    <div class="form-group" *ngIf="show && operator.roleCode.indexOf('PR') !== -1">
+      <p-panel header="Data obowiązywania modyfikacji" [toggleable]="false" [style]="{'margin-bottom':'20px'}">
+       Jeżeli wprowadzone modyfikacje mają mieć wpływ na przeszłe rozliczenia należy wybrać miesiąc, od którego będą obowiązywać.
+        <p-footer>
+          <label class="labelFor" for="effectiveDate" >Data obowiązywania</label>
+          <p-dropdown id="effectiveDate" name="effectiveDate" #effectiveDate="ngModel"
+          [options]="dateForComboBox" 
+          [(ngModel)]="selectedUser.effectiveDate" placeholder="Wybierz datę" optionLabel="label" 
+          [showClear]= "true"></p-dropdown>           
+      </p-footer>
+    </p-panel>
+    </div>
+
       <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">Modyfikuj</button>
         <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />

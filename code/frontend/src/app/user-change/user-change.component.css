@@ -1,3 +1,6 @@
 .ui-button.orange-button {
     background-color: orange;
 }
+.labelFor {
+    margin-right: 7px;
+}

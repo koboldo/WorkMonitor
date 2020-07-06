@@ -5,9 +5,7 @@ import { AlertService, UserService, DictService, WorkTypeService, Authentication
 import { User, CodeValue, SearchUser } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
 
-import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
-import { Observable }    from 'rxjs';
-import { FormsModule, FormBuilder, FormGroup, FormControl, EmailValidator, Validators, NG_VALIDATORS, Validator }     from '@angular/forms';
+import {  FormControl, Validators, }     from '@angular/forms';
 
 @Component({
     selector: 'app-user-change',
@@ -46,8 +44,15 @@ export class UserChangeComponent implements OnInit {
     displayDismissDialog:boolean;
     //
     show:boolean=true;
+    showExcelId = false;
 
     rateControl = new FormControl("", [Validators.min(0)]);
+
+    maxDate: Date;
+    minDate: Date;
+
+    dateForComboBox: SelectItem[] = [];
+    selectedDate:SelectItem;
 
     constructor(private router:Router,
                 private route: ActivatedRoute,
@@ -61,7 +66,7 @@ export class UserChangeComponent implements OnInit {
     }
 
     ngOnInit():void {
-
+        
         let id: string = this.route.snapshot.paramMap.get('id'); //can be null
 
         this.dictService.init();
@@ -72,15 +77,16 @@ export class UserChangeComponent implements OnInit {
 
         this.mapToRanks(this.dictService.getRanks());
         this.mapToAgreements(this.dictService.getAgreements());
-
+        this.createDataForComboBox();     
     }
-
-    checkSelect() {
+    
+    checkRoleSelectedUserAndSetSettingsForView() {
         if (this.selectedUser.user.roleCode.indexOf('CN') > -1) {
             if (this.selectedUser.user.roleCode.length>1) {
                 this.removeRole("CN");
             }
             this.show=false;
+            this.showExcelId = true;
             this.selectedUser.user.isActive = 'N';
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';                  
@@ -90,12 +96,15 @@ export class UserChangeComponent implements OnInit {
                 this.removeRole("VE");
             }
             this.show=false;
+            this.showExcelId = true;
             this.selectedUser.user.isEmployed= 'N';
             this.selectedUser.user.isFromPool= 'N';
             this.selectedUser.user.isActive = 'N';
         }
+        // If user is emplyee
         else {
             this.show=true;
+            this.showExcelId = false;
             this.selectedUser.user.isActive = 'Y';
             this.selectedUser.user.isEmployed= 'Y';
         }
@@ -120,7 +129,7 @@ export class UserChangeComponent implements OnInit {
         this.selectedUser.user.addressPost="usunięto";;
         this.selectedUser.user.addressStreet="usunięto";
         this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
-        this.userService.update(this.selectedUser.user)
+        this.userService.update(this.selectedUser.user, this.selectedDate)
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
@@ -138,7 +147,7 @@ export class UserChangeComponent implements OnInit {
         if (value && value.user && value.user.company) {
             this.company = value.user.company;
         }
-        this.checkSelect();
+        this.checkRoleSelectedUserAndSetSettingsForView();
     }
 
     suggestUser(event) {
@@ -201,7 +210,7 @@ export class UserChangeComponent implements OnInit {
             this.selectedUser.user.company = this.company;
         }
 
-        this.userService.update(this.selectedUser.user)
+        this.userService.update(this.selectedUser.user, this.selectedUser.effectiveDate)
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
@@ -212,6 +221,18 @@ export class UserChangeComponent implements OnInit {
                 this.alertService.error('Nie udalo się zmienić użytkownika' + error);
                 this.loading = false;
             });
+    }
+
+    private createDataForComboBox () {
+        let date = new Date();
+        this.maxDate = new Date(date.getFullYear(),date.getMonth()-1);
+        this.minDate = new Date(date.getFullYear() - 1,date.getMonth());
+        let dateCollection = this.toolsService.getMonthsFromDateRange(this.minDate, this.maxDate, true);
+        dateCollection.forEach(element => {
+            let month = element.getMonth()+1;
+            let label = month < 10 ?"0"+ month.toString()+ '/' +element.getFullYear().toString() : month.toString()+ '/' +element.getFullYear().toString() ;
+            this.dateForComboBox.push({label: label, value:element});
+        });      
     }
 
     private mapToRoles(pairs:CodeValue[]):void {

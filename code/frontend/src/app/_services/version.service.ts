@@ -19,7 +19,12 @@ export class VersionService {
 
     constructor() {
         this._history = [
-            new CodeValue('1.5.63', 'Eksport wydajność zespołu'),
+            new CodeValue('1.5.69', 'Dodanie walidacji pola dla puli podczas dodawania i edycji typów zleceń'),
+            new CodeValue('1.5.68', 'Poprawki daty obowiązywania modyfikacji danych osoby, poprawka opisu, poprawka wyświetlania i i zakresu dat'),
+			new CodeValue('1.5.67', 'Dodanie daty obowiązywania modyfikacji danych osoby'),
+            new CodeValue('1.5.66', 'Edycja excelId dla zleceniobiorców'),
+            new CodeValue('1.5.65', 'Edycja excelId dla zleceniodawców'),
+			new CodeValue('1.5.64', 'Eksport wydajność zespołu'),
             new CodeValue('1.5.63', 'Dodanie typu zlecenia w widoku inżyniera - poprawka'),
             new CodeValue('1.5.62', 'Dodanie typu zlecenia w widoku inżyniera'),
             new CodeValue('1.5.61', 'Dodanie usuwania urlopu'),
@@ -37,7 +42,7 @@ export class VersionService {
             new CodeValue('1.5.49', 'Dodanie zaznaczania wszystkich rekordów w grupowym przypisywaniu zleceń'),
             new CodeValue('1.5.48', 'Dodanie zaznaczania wszystkich rekordów w tabelach podsumowanie czasu pracy oraz raportach, poprawienie podsumowania dla tabeli z pracownikami'),
             new CodeValue('1.5.47', 'Poprawienie wielkości textArea w wycenie pracochłonności'),
-			      new CodeValue('1.5.46', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
+            new CodeValue('1.5.46', 'Dodanie filtorwania ceny zlecenia za pomocą pola tekstowego'),
             new CodeValue('1.5.45', 'Poprawki użytkownik, modyfikacja czasu, ostrzeżenie o braku czasu tylko dla zatrudnionych pracowaników'),
             new CodeValue('1.5.44', 'Poprawki na zakładkach wynagrodzenia/czas pracy'),
             new CodeValue('1.5.43', 'Zmiana tabel na turbo table'),

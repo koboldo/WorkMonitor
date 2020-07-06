@@ -150,7 +150,7 @@
             <div class="ui-grid-row" style="margin-top: 10px;">
                 <div class="ui-grid-col-4"><label for="isFromPool">Kategoria*</label></div>
                 <div class="ui-grid-col-8">
-                    <div class="form-group">
+                    <div class="form-group" required> 
                         <p-radioButton name="poolgroup" value="Y" [(ngModel)]="editedWorkType.isFromPool" label="Pula (TAK)"></p-radioButton>
                         <span style="padding: 15px;"></span>
                         <p-radioButton name="poolgroup" value="N" [(ngModel)]="editedWorkType.isFromPool" label="Pula (NIE)"></p-radioButton>
@@ -183,7 +183,13 @@
                 <div class="ui-grid-col-8"></div>
                 <div class="ui-grid-col-4">
                     <button (click)="save()"
-                            [disabled]="!(editedWorkType?.description?.length > 0 && editedWorkType?.typeCode?.length > 0 && editedWorkType?.officeCode?.length > 0 && editedWorkType?.complexity >= 0 && editedWorkType?.price >= 0)"
+                            [disabled]="!(editedWorkType?.description?.length > 0 
+                              && editedWorkType?.typeCode?.length > 0 
+                              && editedWorkType?.officeCode?.length > 0 
+                              && editedWorkType?.complexity >= 0 
+                              && editedWorkType?.price >= 0
+                              && editedWorkType?.isFromPool != null
+                             )"
                             pButton
                             type="button" label="Zapisz" icon="fa fa-check  " width="200px" style="width: 200px;"></button>
                 </div>
