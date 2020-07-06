@@ -108,7 +108,7 @@ const queries = {
       SELECT ID, ROWID, IS_FROM_POOL, IS_EMPLOYED, RANK_CODE, ROLE_CODE, PROJECT_FACTOR, SALARY, SALARY_RATE, LEAVE_RATE, LAST_MOD
       FROM (
       SELECT ID
-            , ROWID
+            , (ROWID + 1000000) AS ROWID
             , IS_FROM_POOL
             , IS_EMPLOYED
             , RANK_CODE
