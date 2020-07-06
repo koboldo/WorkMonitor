@@ -119,7 +119,7 @@ const queries = {
 	WHERE ID IN ( SELECT ID FROM CALCULATION )`,
 	updatePersonLastModAndHistory:
 	`UPDATE PERSON SET LAST_MOD = %(effectiveDate)s WHERE ID = %(personId)s;
-	UPDATE PERSON_HIST SET IS_DELETED = "Y" WHERE ID = %(personId)s AND LAST_MOD > %(effectiveDate)s`
+	UPDATE PERSON_HIST SET IS_DELETED = "Y" WHERE ID = %(personId)s AND LAST_MOD >= %(effectiveDate)s`
 };
 
 const filters = {
