@@ -129,7 +129,7 @@ export class UserChangeComponent implements OnInit {
         this.selectedUser.user.addressPost="usunięto";;
         this.selectedUser.user.addressStreet="usunięto";
         this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
-        this.userService.update(this.selectedUser.user, this.selectedDate)
+        this.userService.update(this.selectedUser.user, this.selectedDate, this.isOperatorPresident())
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
@@ -210,7 +210,7 @@ export class UserChangeComponent implements OnInit {
             this.selectedUser.user.company = this.company;
         }
 
-        this.userService.update(this.selectedUser.user, this.selectedUser.effectiveDate)
+        this.userService.update(this.selectedUser.user, this.selectedUser.effectiveDate, this.isOperatorPresident())
             .subscribe(
                 data => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
@@ -223,14 +223,14 @@ export class UserChangeComponent implements OnInit {
             });
     }
 
-    private createDataForComboBox () {
+    private createDataForComboBox() {
         let date = new Date();
-        this.maxDate = new Date(date.getFullYear(),date.getMonth()-1);
-        this.minDate = new Date(date.getFullYear() - 1,date.getMonth());
+        this.maxDate = new Date(date.getFullYear(), date.getMonth());
+        this.minDate = new Date(date.getFullYear() - 5, date.getMonth());
         let dateCollection = this.toolsService.getMonthsFromDateRange(this.minDate, this.maxDate, true);
         dateCollection.forEach(element => {
             let month = element.getMonth()+1;
-            let label = month < 10 ?"0"+ month.toString()+ '/' +element.getFullYear().toString() : month.toString()+ '/' +element.getFullYear().toString() ;
+            let label = month < 10 ? "0" + month.toString()+ '/' +element.getFullYear().toString() : month.toString() + '/' + element.getFullYear().toString() ;
             this.dateForComboBox.push({label: label, value:element});
         });      
     }
@@ -251,14 +251,16 @@ export class UserChangeComponent implements OnInit {
         this.showAgreements = this.toolsService.mapToSelectItem(pairs, this.agreements);
     }
 
-
+    private isOperatorPresident(): boolean {
+        return this.operator.roleCode.indexOf('PR') !== -1;
+    }
 
     private removeRolesAndGetManagedUsers(user:User, id: string):void {
         if (user) {
             this.operator = user;
             console.log("Operator " + JSON.stringify(this.operator));
             //console.log("Operator " + JSON.stringify(this.operator, this.toolsService.censorUser));
-            if (this.operator.roleCode.indexOf('PR') == -1) {
+            if (!this.isOperatorPresident()) {
                 let roles:CodeValue[] = this.dictService.getRoles();
                 let allowedRoles:CodeValue[] = [];
                 for (let role of roles) {

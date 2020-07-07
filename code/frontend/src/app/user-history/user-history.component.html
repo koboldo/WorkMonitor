@@ -29,7 +29,9 @@
               <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
             </a>
             <span *ngIf="col.user">
-              <span [style.font-weight]="'bolder'" class="ui-inputgroup-addon color-green">{{rowData.firstName}}
+              <span *ngIf="rowData['isDeleted']!='Y'" [style.font-weight]="'bolder'" class="ui-inputgroup-addon color-green">{{rowData.firstName}}
+                {{rowData.lastName}}</span>
+              <span *ngIf="rowData['isDeleted']=='Y'" [style.text-decoration]="'line-through'" [style.color]="'grey'" class="ui-inputgroup-addon color-grey">{{rowData.firstName}}
                 {{rowData.lastName}}</span>
             </span>
             <span *ngIf="col.isFromPool">
@@ -38,6 +40,14 @@
               <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
                   [class]="'fa fa-street-view'"></i></span>
             </span>
+
+            <span *ngIf="col.lastModDate && rowData['histCreationDate']==CURRENT_EOF" [style.color]="'green'">
+              <span class="ui-inputgroup-addon">{{rowData[col.field]}}</span>
+            </span>
+            <span *ngIf="col.lastModDate && rowData['histCreationDate']!=CURRENT_EOF">
+              <span class="ui-inputgroup-addon">{{rowData[col.field]}}</span>
+            </span>
+
             <span *ngIf="col.histCreationDate">
               <span *ngIf="rowData[col.field]==CURRENT_EOF" [style.color]="'green'"
                 class="ui-inputgroup-addon">Bieżący</span>
@@ -53,19 +63,33 @@
         <tr>
           <td [attr.colspan]="columns.length + 1">
             <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
+
+              <div *ngIf="user?.modifiedBy" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Rekord modyfikowany przez: <span style="font-weight: bold">{{user?.modifiedByUser?.email}}</span>
+              </div>
+
+              <!-- Samę for all
+              <div *ngIf="user?.creationDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Utworzony dnia: <span style="font-weight: bold">{{user?.creationDate}}</span>
+              </div>
+              -->
+
               <div *ngIf="user?.histCreationDate == CURRENT_EOF" class="ui-grid-row"
                 style="text-align:left; font-size: smaller;">
                 Rekord bieżący
               </div>
-              <div *ngIf="user?.modifiedBy" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-                Rekord modyfikowany przez: <span style="font-weight: bold">{{user?.modifiedByUser?.email}}</span>
+              <div *ngIf="user?.histCreationDate && user?.histCreationDate != CURRENT_EOF" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Zarchiwizowany dnia: <span style="font-weight: bold">{{user?.histCreationDate}}</span>
               </div>
-              <div *ngIf="user?.lastModDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-                Rekord aktywny od: <span style="font-weight: bold">{{user?.lastModDate}}</span>
+
+              <div *ngIf="user?.lastModDate && user?.isDeleted=='Y'" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                W przeszłości obowiązywał od: <span style="font-weight: bold">{{user?.lastModDate}}</span>
               </div>
-              <div *ngIf="user?.histCreationDate" class="ui-grid-row" style="text-align:left; font-size: smaller;">
-                Rekord aktywny do: <span style="font-weight: bold">{{user?.histCreationDate}}</span>
+              <div *ngIf="user?.lastModDate && user?.isDeleted!='Y'" class="ui-grid-row" style="text-align:left; font-size: smaller;">
+                Oobowiązujący od: <span style="font-weight: bold">{{user?.lastModDate}}</span>
               </div>
+
+
               <hr>
               <div class="ui-grid-row">
                 <div *ngIf="user?.email" class="ui-grid-col-12" style="text-align:left; font-size: smaller;">
