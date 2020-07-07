@@ -19,12 +19,13 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.70', 'Wyświetlanie historii pracownika i dat modyfikacji. effectiveDate zawsze dla roli PR.'),
             new CodeValue('1.5.69', 'Dodanie walidacji pola dla puli podczas dodawania i edycji typów zleceń'),
             new CodeValue('1.5.68', 'Poprawki daty obowiązywania modyfikacji danych osoby, poprawka opisu, poprawka wyświetlania i i zakresu dat'),
-			new CodeValue('1.5.67', 'Dodanie daty obowiązywania modyfikacji danych osoby'),
+			      new CodeValue('1.5.67', 'Dodanie daty obowiązywania modyfikacji danych osoby'),
             new CodeValue('1.5.66', 'Edycja excelId dla zleceniobiorców'),
             new CodeValue('1.5.65', 'Edycja excelId dla zleceniodawców'),
-			new CodeValue('1.5.64', 'Eksport wydajność zespołu'),
+			      new CodeValue('1.5.64', 'Eksport wydajność zespołu'),
             new CodeValue('1.5.63', 'Dodanie typu zlecenia w widoku inżyniera - poprawka'),
             new CodeValue('1.5.62', 'Dodanie typu zlecenia w widoku inżyniera'),
             new CodeValue('1.5.61', 'Dodanie usuwania urlopu'),

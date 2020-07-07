@@ -26,19 +26,21 @@ export class UserHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.cols = [
-      { field: 'none',  excludeGlobalFilter: true,class:"width-10 col-icon text-center", icon:true, button:true},            
-      { field: 'id', header: 'Id bazy' ,hidden:true,  class:"width-20 text-center"},
+      { field: 'none', excludeGlobalFilter: true, class:"width-10 col-icon text-center", icon:true, button:true},
+      { field: 'id', header: 'Id bazy' ,hidden:true, class:"width-20 text-center"},
       { field: 'excelId', header: 'Id excel',hidden:true, sortable:true, class:"width-50 text-center"},          
-      { field: 'lastName', header: 'Osoba' ,filter: true,  class:"width-50 text-center", user:true, icon:true},
-      { field: 'office', header: 'Biuro', sortable:true,  class:"width-35 text-center"},
-      { field: 'role', header: 'Rola', sortable:true ,class:"width-35 text-center"},
-      { field: 'rank', header: 'Stopień', sortable:true ,class:"width-35 text-center"},
+      { field: 'lastName', header: 'Osoba' ,filter: true, class:"width-50 text-center", user:true, icon:true},
+      { field: 'office', header: 'Biuro', sortable:true, class:"width-35 text-center"},
+      { field: 'role', header: 'Rola', sortable:true, class:"width-35 text-center"},
+      { field: 'rank', header: 'Stopień', sortable:true, class:"width-35 text-center"},
       { field: 'isFromPool', header: 'Pula', sortable:true ,filter:true, class:"width-35 text-center", isFromPool:true, icon:true},
-      { field: 'projectFactor', header: 'Współczynnik', sortable:true , class:"width-35 text-center"},
-      { field: 'salary', header: 'Wynagrodzenie', sortable:true , class:"width-35 text-center"},
-      { field: 'salaryRate', header: 'St. gwarantowana', sortable:true , class:"width-35 text-center"},
-      { field: 'leaveRate', header: 'St. za urlop', sortable:true , class:"width-35 text-center"},
-      { field: 'histCreationDate', header: 'Do', sortable:true , class:"width-35 text-center",histCreationDate:true, icon:true},
+      { field: 'projectFactor', header: 'Współczynnik', sortable:true, class:"width-35 text-center"},
+      { field: 'salary', header: 'Wynagrodzenie', sortable:true, class:"width-35 text-center"},
+      { field: 'salaryRate', header: 'St. gwarantowana', sortable:true, class:"width-35 text-center"},
+      { field: 'leaveRate', header: 'St. za urlop', sortable:true, class:"width-35 text-center"},
+
+      { field: 'histCreationDate', header: 'Zarchiwizowany', sortable:true, class:"width-50 text-center", histCreationDate:true, icon:true},
+      { field: 'lastModDate', header: 'Obowiązujący od', sortable:true, class:"width-50 text-center", lastModDate:true, icon:true},
     ]
   }
 

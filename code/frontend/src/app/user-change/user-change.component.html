@@ -273,8 +273,8 @@
           <label class="labelFor" for="effectiveDate" >Data obowiązywania</label>
           <p-dropdown id="effectiveDate" name="effectiveDate" #effectiveDate="ngModel"
           [options]="dateForComboBox" 
-          [(ngModel)]="selectedUser.effectiveDate" placeholder="Wybierz datę" optionLabel="label" 
-          [showClear]= "true"></p-dropdown>           
+          [(ngModel)]="selectedUser.effectiveDate" optionLabel="label"
+          [showClear]= "false"></p-dropdown>
       </p-footer>
     </p-panel>
     </div>
