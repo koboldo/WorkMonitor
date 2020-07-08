@@ -19,6 +19,8 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.72', 'Poprawa nazwy pliku csv listy orderów.'),
+            new CodeValue('1.5.71', 'Wyświetlanie revenue dla puli.'),
             new CodeValue('1.5.70', 'Wyświetlanie historii pracownika i dat modyfikacji. effectiveDate zawsze dla roli PR.'),
             new CodeValue('1.5.69', 'Dodanie walidacji pola dla puli podczas dodawania i edycji typów zleceń'),
             new CodeValue('1.5.68', 'Poprawki daty obowiązywania modyfikacji danych osoby, poprawka opisu, poprawka wyświetlania i i zakresu dat'),
