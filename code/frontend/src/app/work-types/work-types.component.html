@@ -127,19 +127,44 @@
                   <p-dropdown placeholder="Wybierz biuro obsługujące..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="officeCode" name="officeCode" [options]="offices" [(ngModel)]="editedWorkType.officeCode" required autoWidth="false" ></p-dropdown>
               </div>
             </div>
-            <div *ngIf="showComplexities" class="ui-grid-row" style="margin-top: 10px;">
-              <div class="ui-grid-col-4"><label for="complexityCode">Złożoność*</label></div>
-              <div class="ui-grid-col-8">
-                  <p-dropdown placeholder="Wybierz złożoność..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="complexityCode" name="complexityCode" [options]="complexities" [(ngModel)]="editedWorkType.complexityCode" required autoWidth="false" ></p-dropdown>
+              <div *ngIf="addMode">
+                <div *ngIf="showComplexities" class="ui-grid-row" style="margin-top: 10px;">
+                  <div class="ui-grid-col-4"><label for="complexityCode">Pracochłonność [H] standardowa*</label></div>
+                  <div class="ui-grid-col-8">
+                    <input type="number" pInputText id="complexitySTD" class="form-control" name="complexitySTD" [(ngModel)]="complexitySTD" 
+                      placeholder="Pracochłonność w godzinach" />
+                    <!-- <div *ngIf="f.submitted && !complexity?.valid" class="help-block">Pracochłonność jest wymagana</div> -->
+                      <!-- <p-dropdown placeholder="Wybierz złożoność..." 
+                        [style]="{'width': '100%'}" [disabled]="!newWorkType" id="complexityCode" name="complexityCode" 
+                        [options]="complexities" [(ngModel)]="editedWorkType.complexityCode" required autoWidth="false" ></p-dropdown> -->
+                  </div>
+                </div>
+                <div *ngIf="showComplexities" class="ui-grid-row" style="margin-top: 10px;">
+                  <div class="ui-grid-col-4"><label for="complexityCode">Pracochłonność [H] złożona*</label></div>
+                  <div class="ui-grid-col-8">
+                    <input type="number" pInputText id="complexityHRD" class="form-control" name="complexityHRD" [(ngModel)]="complexityHRD" 
+                      placeholder="Pracochłonność w godzinach" />
+                    <!-- <div *ngIf="f.submitted && !complexity?.valid" class="help-block">Pracochłonność jest wymagana</div> -->
+                      <!-- <p-dropdown placeholder="Wybierz złożoność..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="complexityCode" name="complexityCode" [options]="complexities" [(ngModel)]="editedWorkType.complexityCode" required autoWidth="false" ></p-dropdown> -->
+                  </div>
+                </div>
+              </div>
+            <div *ngIf="!addMode">
+              <div *ngIf="showComplexities" class="ui-grid-row" style="margin-top: 10px;">
+                <div class="ui-grid-col-4"><label for="complexityCode">Złożoność*</label></div>
+                <div class="ui-grid-col-8">
+                    <p-dropdown placeholder="Wybierz złożoność..." [style]="{'width': '100%'}" [disabled]="!newWorkType" id="complexityCode" name="complexityCode" [options]="complexities" [(ngModel)]="editedWorkType.complexityCode" required autoWidth="false" ></p-dropdown>
+                </div>
+              </div>
+              <div class="ui-grid-row" style="margin-top: 10px;">
+                <div class="ui-grid-col-4"><label for="complexity">Pracochłonność [H]*</label></div>
+                <div class="ui-grid-col-8">
+                    <input type="number" pInputText id="complexity" class="form-control" name="complexity" [(ngModel)]="editedWorkType.complexity" placeholder="Pracochłonność w godzinach" required/>
+                    <div *ngIf="f.submitted && !complexity?.valid" class="help-block">Pracochłonność jest wymagana</div>
+                </div>
               </div>
             </div>
-            <div class="ui-grid-row" style="margin-top: 10px;">
-              <div class="ui-grid-col-4"><label for="complexity">Pracochłonność [H]*</label></div>
-              <div class="ui-grid-col-8">
-                  <input type="number" pInputText id="complexity" class="form-control" name="complexity" [(ngModel)]="editedWorkType.complexity" placeholder="Pracochłonność w godzinach" required/>
-                  <div *ngIf="f.submitted && !complexity?.valid" class="help-block">Pracochłonność jest wymagana</div>
-              </div>
-            </div>
+
             <div class="ui-grid-row" style="margin-top: 10px;">
               <div class="ui-grid-col-4"><label for="price">Cena*</label></div>
               <div class="ui-grid-col-8">
@@ -186,9 +211,9 @@
                             [disabled]="!(editedWorkType?.description?.length > 0 
                               && editedWorkType?.typeCode?.length > 0 
                               && editedWorkType?.officeCode?.length > 0 
-                              && editedWorkType?.complexity >= 0 
                               && editedWorkType?.price >= 0
                               && editedWorkType?.isFromPool != null
+                              && addMode ? complexityHRD > 0 && complexitySTD > 0 : editedWorkType?.complexity >= 0 
                              )"
                             pButton
                             type="button" label="Zapisz" icon="fa fa-check  " width="200px" style="width: 200px;"></button>
