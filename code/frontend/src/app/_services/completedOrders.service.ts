@@ -37,6 +37,7 @@ export class CompletedOrderService {
 
     public showOrdersByIds(periodDate: string, orderId2Magic: Map<number, string>) {
         console.log('orderId2Magic: '+orderId2Magic.size);
+        //magic format - "17228:420::0.5:::Y"
 
         if (orderId2Magic && orderId2Magic.size > 0) {
 
@@ -51,6 +52,7 @@ export class CompletedOrderService {
                         if (orderId2Magic.get(order.id) && orderId2Magic.get(order.id).indexOf(':') != -1) {
                           let magic: string[] = orderId2Magic.get(order.id).split(':');
                           if (magic.length > 3) {
+                            order.price = +magic[1];
                             let poolInclusionFactor: number = +magic[3];
                             order.poolRevenue = order.isFromPool == 'Y' ? order.price * poolInclusionFactor : 0;
                             order.magicIsFromPool = magic[6] ;
