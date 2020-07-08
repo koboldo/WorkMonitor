@@ -195,5 +195,5 @@
 <p-dialog [(visible)]="completedOrderService.displayCompletedOrdersDialog"
   [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800"
   [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
-  <app-wo-list [ListToDisplay]="completedOrderService.completedOrders"></app-wo-list>
+  <app-wo-list [listToDisplay]="completedOrderService.completedOrders" [exportFileName]="'Moje zlecenia'"></app-wo-list>
 </p-dialog>

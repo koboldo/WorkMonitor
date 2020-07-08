@@ -11,7 +11,7 @@
     [metaKeySelection]="true"
     loadingIcon="fa fa-spinner" 
     csvSeparator=";"  
-    exportFilename="Zlecenia nie gotowe do protokolu" 
+    [exportFilename]="_exportFileName"
     [globalFilterFields]="cols" 
     [responsive]="false">
     <ng-template pTemplate="caption">
@@ -54,12 +54,12 @@
                 <span *ngIf="col.isMagicFromPool">
                   <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
                   <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-                </span>             
+                </span>
                 <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>            
-                <span *ngIf="!col.icon && !col.price">
+                <span *ngIf="!col.icon && !col.price && !col.poolRevenue">
                   {{rowData[col.field]}}
                 </span>
-                <span *ngIf="col.price">
+                <span *ngIf="col.price || col.poolRevenue">
                   {{rowData[col.field] | currency:'PLN'}}
                 </span>
                 <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>            

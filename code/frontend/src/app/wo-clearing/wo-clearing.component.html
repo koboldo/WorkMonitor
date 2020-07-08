@@ -11,7 +11,7 @@
         <button type="button" pButton (click)="showWoDetails()" label="Zlecenia nie gotowe"></button>
         <p-dialog [(visible)]="displayDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600"
           [responsive]="true" [blockScroll]="false" [contentStyle]="{'height': '800px'}">
-          <app-wo-list [ListToDisplay]="ordersNotReady"></app-wo-list>
+          <app-wo-list [listToDisplay]="ordersNotReady" [exportFileName]="'Zlecenia nie gotowe do protokołu'"></app-wo-list>
         </p-dialog>
       </p-fieldset>
     </div>
