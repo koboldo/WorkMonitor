@@ -112,15 +112,13 @@ export class WorkTypesComponent implements OnInit {
             .subscribe(result => this.processResult(result));
     }
 
-    private insert(workType: WorkType) {
+    private async insert(workType: WorkType) {
         workType.complexityCode="STD";
         workType.complexity = this.complexitySTD;
-        this.workService.addWorkType(workType)
-            .subscribe(result => this.processResult(result));
+        this.processResult(await this.workService.addWorkType(workType).toPromise());
         workType.complexityCode ="HRD";
         workType.complexity = this.complexityHRD;
-        this.workService.addWorkType(workType)
-            .subscribe(result => this.processResult(result));
+        this.processResult(await this.workService.addWorkType(workType).toPromise());
     }
 
     private processResult(result:any):any {
