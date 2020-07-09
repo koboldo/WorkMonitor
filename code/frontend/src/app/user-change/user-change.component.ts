@@ -5,7 +5,7 @@ import { AlertService, UserService, DictService, WorkTypeService, Authentication
 import { User, CodeValue, SearchUser } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
 
-import {  FormControl, Validators, }     from '@angular/forms';
+import {  FormControl, Validators, FormGroup, }     from '@angular/forms';
 
 @Component({
     selector: 'app-user-change',
@@ -46,7 +46,10 @@ export class UserChangeComponent implements OnInit {
     show:boolean=true;
     showExcelId = false;
 
+    form: FormGroup;
     rateControl = new FormControl("", [Validators.min(0)]);
+
+   
 
     maxDate: Date;
     minDate: Date;
@@ -67,6 +70,11 @@ export class UserChangeComponent implements OnInit {
 
     ngOnInit():void {
         
+        this.form = new FormGroup({
+            projectFactor : new FormControl("", [Validators.max(1.5), Validators.min(0), Validators.required]),
+            leaveRate : new FormControl("", Validators.max(200)),
+            salaryRate : new FormControl("", Validators.max(200)),
+        });
         let id: string = this.route.snapshot.paramMap.get('id'); //can be null
 
         this.dictService.init();
