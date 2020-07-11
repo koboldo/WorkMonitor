@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
@@ -113,12 +113,14 @@ export class WorkTypesComponent implements OnInit {
     }
 
     private async insert(workType: WorkType) {
-        workType.complexityCode="STD";
-        workType.complexity = this.complexitySTD;
-        this.processResult(await this.workService.addWorkType(workType).toPromise());
-        workType.complexityCode ="HRD";
-        workType.complexity = this.complexityHRD;
-        this.processResult(await this.workService.addWorkType(workType).toPromise());
+        let woSTD = Object.assign({},workType);
+        let woHRD = Object.assign({},workType);
+        woSTD.complexityCode="STD";
+        woSTD.complexity = this.complexitySTD;
+        woHRD.complexityCode ="HRD";
+        woHRD.complexity = this.complexityHRD;
+        this.processResult(await this.workService.addWorkType(woSTD).toPromise());
+        this.processResult(await this.workService.addWorkType(woHRD).toPromise());
     }
 
     private processResult(result:any):any {
