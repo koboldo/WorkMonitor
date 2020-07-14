@@ -76,7 +76,7 @@
       </p-dialog> 
         
 <!-- Modal dismiss-->
-    <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm" [formGroup]="form">
+    <form name="f" novalidate (ngSubmit)="f.form?.valid && changeUser()" #f="ngForm" >
       <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName?.valid }">
         <label for="firstName">Imie</label>
         <input id="firstName" type="text" class="form-control" name="firstName" [(ngModel)]="selectedUser.user.firstName" #firstName="ngModel" required minlength="3" />
@@ -234,13 +234,14 @@
           <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !salaryRate?.valid }">
             <label for="salaryRate">Stawka gwarantowana w PLN</label>
             <input id="salaryRate" type="number" class="form-control" name="salaryRate" [(ngModel)]="selectedUser.user.salaryRate" 
-              #salaryRate="ngModel" required salaryRate pattern="^[0-9]\d*(\.\d+)?$" />
-            <div *ngIf="f.submitted && !salaryRate?.valid" class="help-block">wymagana jest stawka gwarantowana (liczba > 0)</div>
+            rateValidator #salaryRate="ngModel" salaryRate required  pattern="^[0-9]\d*(\.\d+)?$" />
+            <div *ngIf="f.submitted && !salaryRate?.valid" class="help-block">wymagana jest stawka gwarantowana (liczba > 0 i mniejsza niż 200)</div>
           </div>
           <div *ngIf="operator.roleCode.indexOf('PR') !== -1 && selectedUser?.user?.rankCode !== 'SEN'" class="form-group" [ngClass]="{ 'has-error': f.submitted && !leaveRate?.valid }">
             <label for="leaveRate">Stała stawka za urlop PLN</label>
-            <input id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="selectedUser.user.leaveRate" #leaveRate="ngModel" required leaveRate pattern="^[0-9]\d*(\.\d+)?$" max="200"/>
-            <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0)</div>
+            <input id="leaveRate" type="number" class="form-control" name="leaveRate" [(ngModel)]="selectedUser.user.leaveRate" 
+            rateValidator #leaveRate="ngModel" required leaveRate pattern="^[0-9]\d*(\.\d+)?$" max="200"/>
+            <div *ngIf="f.submitted && !leaveRate?.valid" class="help-block">wymagana jest stawka za urlop (liczba > 0 i mniejsza niż 200)</div>
           </div>
 
 
@@ -261,8 +262,8 @@
           <div *ngIf="showProjectFactor()" class="form-group" [ngClass]="{ 'has-error': f.submitted && !projectFactor?.valid }">
             <label for="projectFactor">Współczynnik puli (np. 1.2)</label>
             <input id="projectFactor" type="number" class="form-control" name="projectFactor" [(ngModel)]="selectedUser.user.projectFactor" 
-              (ngModelChange)="changeSalaryAndLeaveRate($event)" #projectFactor="ngModel"  projectFactor />
-            <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik</div>
+              (ngModelChange)="changeSalaryAndLeaveRate($event)" #projectFactor="ngModel"  projectFactor projectFactorValidator />
+            <div *ngIf="f.submitted && !projectFactor?.valid" class="help-block">wymagany jest poprawny współczynnik (min 0.5 max 1.5)</div>
           </div>
 
         </div>
