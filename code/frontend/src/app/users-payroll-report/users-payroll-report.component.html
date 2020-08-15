@@ -51,12 +51,12 @@
         sortField="date" sortOrder="1" scrollable="true" scrollHeight="600px"
         loadingIcon="fa fa-spinner" [globalFilterFields]="cols" [responsive]="false" [metaKeySelection]="false"
         rowGroupMode="rowspan" csvSeparator=";"
-        exportFilename="Raport">
+        exportFilename="Raport" >
         <ng-template pTemplate="caption">
             <div class="ui-g">
                 <div class="ui-g-4"></div>
                 <div class="ui-g-4"> 
-                    <button (click)="tt.exportCSV()" type="button" pButton icon="fa fa-file-o" label="Eksport danych "></button>
+                    <button (click)="testExportCSV(tt)" type="button" pButton icon="fa fa-file-o" label="Eksport danych "></button>
                 </div>
                 <div class="ui-g-4"></div>
             </div>

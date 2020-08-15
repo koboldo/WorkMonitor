@@ -5,6 +5,8 @@ import { UserService, PayrollService, AlertService, DictService, ToolsService, A
 import { UserPayroll, User, Calendar } from 'app/_models';
 import { stringify } from 'querystring';
 import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
+import { DataTable } from 'primeng/primeng';
+
 
 @Component({
   selector: 'app-users-payroll-report',
@@ -29,6 +31,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
   pl: Calendar;
   optionsForChart :any;
 
+
   constructor(protected router:Router,
               protected userService:UserService,
               protected payrollService:PayrollService,
@@ -47,7 +50,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
     this.cols=[
       { field: 'date', header:'Okres', date: true , sortable: true},
-      { field: 'poolRate', header:'Stawka w puli ', date: false, sortable: true},
+      { field: 'poolRate', header:'Stawka w puli ', date: false, sortable: true, isNumber: true},
       { field: 'budget', header:'Budżet', date: false,sortable: true},
       { field: 'payrollCost', header:'Koszt wypłat', date: false,sortable: true}, 
     ];
@@ -63,6 +66,34 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     };
   }
 
+  public  testExportCSV(table: DataTable) {
+    let tt= [];
+    table.columns.forEach(column=> {
+      if(column.field === 'poolRate') 
+      {
+        
+        let s = column.field.toString().replace('.',',');
+        tt.push({field: column.field , col: column});
+        column.field= "1234";
+       
+      }
+    });
+    // table.columns.forEach(function (record, i)  {
+    //   console.log(table.resolveFieldData(record,record.header));
+    //   console.log(table.resolveFieldData(record,record.field));
+    // });
+    table.exportCSV();
+    tt.forEach((t)=> {
+      t.col.field = t.field;
+    });
+    
+    this.payrollReportData.forEach(element => {
+     console.log(element.poolRate.toString());
+     console.log(element.poolRate.toString().replace('.',','));
+    });
+    // table.selection = tt;
+    // table.exportCSV({selectionOnly:true})
+  }
   refresh () {
     this.payrollReportData = [];
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
