@@ -28,6 +28,9 @@ export class WorkTypesComponent implements OnInit {
     complexities:SelectItem[] = [];
     cols: any;
 
+    complexitySTD: number;
+    complexityHRD: number;
+    addMode: boolean;
     constructor(private workService:WorkTypeService,
                 private dictService:DictService,
                 private toolsService:ToolsService,
@@ -69,12 +72,14 @@ export class WorkTypesComponent implements OnInit {
     }
 
     private change():void {
+        this.addMode = false;
         this.editedWorkType = this.selectedWorkType;
         this.newWorkType = false;
         this.displayEditDialog = true;
     }
 
     private add():void {
+        this.addMode = true;
         //this.editedWorkType = JSON.parse(JSON.stringify(this.selectedWorkType));
         this.editedWorkType = new WorkType;
         this.editedWorkType.isFromPool = 'N';
@@ -108,6 +113,12 @@ export class WorkTypesComponent implements OnInit {
     }
 
     private insert(workType: WorkType) {
+        workType.complexityCode="STD";
+        workType.complexity = this.complexitySTD;
+        this.workService.addWorkType(workType)
+            .subscribe(result => this.processResult(result));
+        workType.complexityCode ="HRD";
+        workType.complexity = this.complexityHRD;
         this.workService.addWorkType(workType)
             .subscribe(result => this.processResult(result));
     }
