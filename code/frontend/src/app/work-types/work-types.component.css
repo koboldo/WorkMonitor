@@ -1,0 +1,3 @@
+:host::ng-deep .ui-colorpicker-panel {
+    opacity: 1 !important;
+}

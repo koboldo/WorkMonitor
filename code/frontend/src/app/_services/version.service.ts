@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.75', 'Poprawienie wybierania koloru w parametryzacji zleceń'),
             new CodeValue('1.5.74', 'Dodanie walidacji stawki gwarnatowanej, stawki za urlop oraz współczynnika puli'),
             new CodeValue('1.5.73', 'Parametryzacja zleceń dodawanie dwóch złożoności do nowych typów'),
             new CodeValue('1.5.72', 'Poprawa nazwy pliku csv listy orderów.'),
