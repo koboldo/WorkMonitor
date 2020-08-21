@@ -97,6 +97,8 @@ import { GroupAssignmentWoComponent } from './group-assignment-wo/group-assignme
 import { WoTrashedComponent } from './wo-trashed/wo-trashed.component';
 import { UsersPayrollReportComponent } from './users-payroll-report/users-payroll-report.component';
 import { UsersLeaveCancellationComponent } from './users-leave-cancellation/users-leave-cancellation.component';
+import { RateValidatorDirective } from './_directives/rateValidator';
+import { ProjectFactorValidatorDirective } from './_directives/projectFactorValidator';
 
 
 
@@ -152,7 +154,9 @@ import { UsersLeaveCancellationComponent } from './users-leave-cancellation/user
         GroupAssignmentWoComponent,
         WoTrashedComponent,
         UsersPayrollReportComponent,
-        UsersLeaveCancellationComponent
+        UsersLeaveCancellationComponent,
+        RateValidatorDirective,
+        ProjectFactorValidatorDirective
     ],
 
     providers: [
