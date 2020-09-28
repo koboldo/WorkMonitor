@@ -405,7 +405,7 @@
     </p-panel>
 </p-dialog>
 <p-dialog [(visible)]="completedOrderService.displayCompletedOrdersDialog"
-    [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800"
-    [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800" 
+    [responsive]="true" [blockScroll]="false" [resizable]= "true">
     <app-wo-list [listToDisplay]="completedOrderService.completedOrders" [exportFileName]="'Zlecenia zrealizowane'"></app-wo-list>
 </p-dialog>
