@@ -100,6 +100,7 @@ import { UsersLeaveCancellationComponent } from './users-leave-cancellation/user
 import { RateValidatorDirective } from './_directives/rateValidator';
 import { ProjectFactorValidatorDirective } from './_directives/projectFactorValidator';
 import { NumberFormatPipe } from './_pipe/NumberFormatPipe';
+import { ExportService } from './_services/export.service';
 
 
 
@@ -194,7 +195,8 @@ import { NumberFormatPipe } from './_pipe/NumberFormatPipe';
             useClass: HttpProgressInterceptor,
             multi: true,
         },
-        NumberFormatPipe
+        NumberFormatPipe,
+        ExportService
     ],
     bootstrap: [AppComponent]
 })

@@ -6,6 +6,8 @@ import { UserPayroll, User, Calendar } from 'app/_models';
 import { stringify } from 'querystring';
 import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
 import { DataTable } from 'primeng/primeng';
+import { ExportService } from 'app/_services/export.service';
+import { Table } from 'primeng/table';
 
 
 @Component({
@@ -40,7 +42,8 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
               protected toolsService:ToolsService,
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
-              public completedOrderService: CompletedOrderService){
+              public completedOrderService: CompletedOrderService,
+              protected exportService: ExportService){
               super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
                }
   ngOnInit() {
@@ -66,18 +69,10 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     };
   }
 
-  public  testExportCSV(table: DataTable) {
-    table.value.forEach(value=> {
-      if (value.poolRate) {
-        value.poolRate = value.poolRate.toString().replace('.',',');
-      }      
-    });
-    table.exportCSV();    
-    table.value.forEach(value=> {
-      if (value.poolRate) {
-        value.poolRate = Number(value.poolRate.toString().replace(',','.'));
-      }       
-    });
+  public  customExportCSV(table: DataTable) {
+    let columnsToPipeFormat =  [];
+    columnsToPipeFormat.push('poolRate');
+    this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
   }
   refresh () {
     this.payrollReportData = [];

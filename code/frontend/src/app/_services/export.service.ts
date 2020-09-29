@@ -10,11 +10,11 @@ export class ExportService {
 constructor(public formatPipe: NumberFormatPipe) 
   { }
 
-  eksportCSVWithPipe (table: DataTable, columnToFormat: any) {
+  eksportCSVWithPipe (table: DataTable, columnsToFormat: string []) { 
     table.value.forEach(value=> {
-      if (value.columnToFormat) {
-        value.columnToFormat = this.formatPipe.transform(value.columnToFormat);
-      }      
+        columnsToFormat.forEach(col => {
+          value[col] = this.formatPipe.transform(value[col])
+        });     
     });
     table.exportCSV();  
   }
