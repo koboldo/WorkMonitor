@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NumberFormatPipe } from 'app/_pipe/NumberFormatPipe';
 import { DataTable } from 'primeng/primeng';
 
 @Injectable({
@@ -7,15 +6,20 @@ import { DataTable } from 'primeng/primeng';
 })
 export class ExportService {
 
-constructor(public formatPipe: NumberFormatPipe) 
+constructor() 
   { }
 
   eksportCSVWithPipe (table: DataTable, columnsToFormat: string []) { 
     table.value.forEach(value=> {
         columnsToFormat.forEach(col => {
-          value[col] = this.formatPipe.transform(value[col])
+          value[col] = value[col].toString().replace('.',',');
         });     
     });
-    table.exportCSV();  
+    table.exportCSV();
+    table.value.forEach(value=> {
+      columnsToFormat.forEach(col => {
+        value[col] = Number(value[col].toString().replace(',','.'));
+      });     
+  });
   }
 }

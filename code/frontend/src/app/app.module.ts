@@ -99,7 +99,6 @@ import { UsersPayrollReportComponent } from './users-payroll-report/users-payrol
 import { UsersLeaveCancellationComponent } from './users-leave-cancellation/users-leave-cancellation.component';
 import { RateValidatorDirective } from './_directives/rateValidator';
 import { ProjectFactorValidatorDirective } from './_directives/projectFactorValidator';
-import { NumberFormatPipe } from './_pipe/NumberFormatPipe';
 import { ExportService } from './_services/export.service';
 
 
@@ -195,7 +194,6 @@ import { ExportService } from './_services/export.service';
             useClass: HttpProgressInterceptor,
             multi: true,
         },
-        NumberFormatPipe,
         ExportService
     ],
     bootstrap: [AppComponent]

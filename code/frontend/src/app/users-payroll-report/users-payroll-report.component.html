@@ -89,7 +89,7 @@
                         {{rowData[col.field]}}
                     </span>
                     <span *ngIf="!col.date">
-                        {{rowData[col.field] | currency:'PLN'}}
+                        {{  rowData[col.field] === '-' ? 'Brak' : (rowData[col.field] | currency:'PLN')}}
                     </span>
                 </td>
             </tr>
