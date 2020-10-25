@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
 import { DataTable } from 'primeng/primeng';
 
 @Injectable({
@@ -9,17 +9,21 @@ export class ExportService {
 constructor() 
   { }
 
-  eksportCSVWithPipe (table: DataTable, columnsToFormat: string []) { 
-    table.value.forEach(value=> {
+    eksportCSVWithPipe (table: DataTable, columnsToFormat: string []) { 
+      table.value.forEach(record=> {
+          columnsToFormat.forEach(col => {
+            if (record[col] != null && record[col] != undefined){
+              record[col] = record[col].toString().replace('.',',');
+            }       
+          });     
+      });
+      table.exportCSV();
+      table.value.forEach(record=> {
         columnsToFormat.forEach(col => {
-          value[col] = value[col].toString().replace('.',',');
+          if (record[col] != null && record[col] != undefined){
+            record[col] = Number(record[col].toString().replace(',','.'));
+          }
         });     
     });
-    table.exportCSV();
-    table.value.forEach(value=> {
-      columnsToFormat.forEach(col => {
-        value[col] = Number(value[col].toString().replace(',','.'));
-      });     
-  });
   }
 }

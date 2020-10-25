@@ -53,7 +53,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
     this.cols=[
       { field: 'date', header:'Okres', date: true , sortable: true},
-      { field: 'poolRate', header:'Stawka w puli ', date: false, sortable: true, isNumber: true},
+      { field: 'poolRate', header:'Stawka w puli ', date: false, sortable: true},
       { field: 'budget', header:'Budżet', date: false,sortable: true},
       { field: 'payrollCost', header:'Koszt wypłat', date: false,sortable: true}, 
     ];
