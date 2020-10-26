@@ -8,9 +8,10 @@ import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_m
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
-import { MenuItem } from 'primeng/primeng';
+import { DataTable, MenuItem } from 'primeng/primeng';
 import { Calendar } from '../_models/calendar';
 import { TableSummary } from 'app/_models/tableSummary';
+import { ExportService } from 'app/_services/export.service';
 
 @Component({
     selector: 'app-wo',
@@ -86,7 +87,8 @@ export class WoComponent implements OnInit {
                 protected dictService:DictService,
                 protected alertService:AlertService,
                 protected authSerice:AuthenticationService,
-                protected toolsService: ToolsService) {
+                protected toolsService: ToolsService,
+                protected exportService: ExportService) {
         this.lastModAfter = toolsService.getCurrentDateDayOperation(-45);
         this.lastModBefore = toolsService.getCurrentDateDayOperation(0);
         this.items = [
@@ -113,7 +115,7 @@ export class WoComponent implements OnInit {
         this.search();
        
         this.cols = [
-            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center"},
+            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center", parametr: true},
             { field: 'id', header: 'id', hidden: true, sortable: true, filter:true, exportable:false},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-100"},
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-135"},
@@ -141,6 +143,11 @@ export class WoComponent implements OnInit {
         ]
       
     }
+    public customExportCSV (table:DataTable) {
+        let columnsToPipeFormat = [
+            'complexity','price'];
+        this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+    } 
 
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);

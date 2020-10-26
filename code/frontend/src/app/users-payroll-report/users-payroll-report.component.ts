@@ -43,8 +43,8 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
               public completedOrderService: CompletedOrderService,
-              protected exportService: ExportService){
-              super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
+              protected exportService: ExportService,){
+              super (router,userService,payrollService,alertService,dictService,toolService,authService,exportService,completedOrderService)
                }
   ngOnInit() {
     this.dateTo = new Date();
@@ -71,7 +71,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
 
   public  customExportCSV(table: DataTable) {
     let columnsToPipeFormat =  [];
-    columnsToPipeFormat.push('poolRate');
+    columnsToPipeFormat.push('poolRate','budget','payrollCost');
     this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
   }
   refresh () {

@@ -9,21 +9,24 @@ export class ExportService {
 constructor() 
   { }
 
-    eksportCSVWithPipe (table: DataTable, columnsToFormat: string []) { 
-      table.value.forEach(record=> {
+    eksportCSVWithPipe (table: DataTable, columnsToFormat: string [], options?:any) { 
+      if (table.value && columnsToFormat){
+        table.value.forEach(record=> {
           columnsToFormat.forEach(col => {
-            if (record[col] != null && record[col] != undefined){
-              record[col] = record[col].toString().replace('.',',');
-            }       
+            record[col] = record[col].toString().replace('.',',');             
           });     
       });
-      table.exportCSV();
-      table.value.forEach(record=> {
-        columnsToFormat.forEach(col => {
-          if (record[col] != null && record[col] != undefined){
-            record[col] = Number(record[col].toString().replace(',','.'));
-          }
+      if (options) {
+        table.exportCSV(options);
+      } else {
+        table.exportCSV();
+      } 
+        table.value.forEach(record=> {
+        columnsToFormat.forEach(col => {        
+          record[col] = Number(record[col].toString().replace(',','.'));       
         });     
     });
+      }
+
   }
 }
