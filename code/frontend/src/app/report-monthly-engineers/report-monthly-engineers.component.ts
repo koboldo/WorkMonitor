@@ -8,7 +8,8 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, MonthlyUserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet, DateRange, UserReport } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
-import { SelectItem } from 'primeng/primeng';
+import { DataTable, SelectItem } from 'primeng/primeng';
+import { ExportService } from 'app/_services/export.service';
 
 declare var jquery:any;
 declare var $ :any;
@@ -57,7 +58,8 @@ export class ReportMonthlyEngineersComponent implements OnInit {
               private dictService:DictService,
               private alertService:AlertService,
               private toolsService:ToolsService,
-              private timesheetService: TimesheetService) {
+              private timesheetService: TimesheetService,
+              private exportService: ExportService) {
 
     this.dictService.init();
     this.workTypeService.init();
@@ -144,7 +146,11 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       { field: 'earnedMoney', header: 'Wypracowany obrót', sortable:true , class:"width-35 text-center",earnedMoney:true, icon:true},
     ]
   }
-
+  public customExportCSV (table:DataTable) {
+    let columnsToPipeFormat = [
+        "declaredTime","expectedTime","earnedMoney"];
+    this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+}
   public filterReports(event): void {
     console.log(event);
     console.log(this.reports);

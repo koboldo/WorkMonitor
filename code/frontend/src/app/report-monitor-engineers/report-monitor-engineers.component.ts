@@ -9,6 +9,8 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, UserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
+import { DataTable } from 'primeng/primeng';
+import { ExportService } from 'app/_services/export.service';
 
 declare var jquery:any;
 declare var $ :any;
@@ -56,7 +58,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 private dictService:DictService,
                 private alertService:AlertService,
                 public toolsService:ToolsService,
-                private timesheetService: TimesheetService) {
+                private timesheetService: TimesheetService,
+                private exportServie: ExportService) {
 
         this.dictService.init();
         this.workTypeService.init();
@@ -116,7 +119,16 @@ export class ReportMonitorEngineersComponent implements OnInit {
         ]
     }
 
-
+    public customExportCSV (table:DataTable) {
+        let columnsToPipeFormat = [
+            "declaredTime","expectedTime","earnedMoney"];
+        this.exportServie.eksportCSVWithPipe(table,columnsToPipeFormat);
+    }
+    public customExportCSVForOrders (table:DataTable) {
+        let columnsToPipeFormat = [
+            "complexity","price","sharedPrice"];
+        this.exportServie.eksportCSVWithPipe(table,columnsToPipeFormat);
+    }
 
     onRowDblclick(event) {
         console.log(event);
