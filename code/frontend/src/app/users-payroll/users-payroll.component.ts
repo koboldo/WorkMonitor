@@ -112,12 +112,12 @@ export class UsersPayrollComponent implements OnInit {
           ]
     }
 
-    public customExportCSV (table:DataTable) {
+    public customExportCsv (table:DataTable) {
         let columnsToPipeFormat = [
             "workTime","poolWorkTime","nonpoolWorkTime",
             "trainingTime","leaveTime","overTime",
             "workDue","trainingDue","overDue","leaveDue","totalDue"];
-        this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     } 
     public generateReports () {
         this.data = {
@@ -170,7 +170,7 @@ export class UsersPayrollComponent implements OnInit {
             "workTime","poolWorkTime","nonpoolWorkTime",
             "trainingTime","leaveTime","overTime",
             "workDue","trainingDue","overDue","leaveDue","totalDue"];
-        this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat,{selectionOnly:true} );
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat,{selectionOnly:true} );
     }
 
     public onTabOpen(event):void {

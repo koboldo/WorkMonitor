@@ -9,7 +9,7 @@ export class ExportService {
 constructor() 
   { }
 
-    eksportCSVWithPipe (table: DataTable, columnsToFormat: string [], options?:any) { 
+    exportCsvWithPipe (table: DataTable, columnsToFormat: string [], options?:any) { 
       if (table.value && columnsToFormat){
         table.value.forEach(record=> {
           columnsToFormat.forEach(col => {

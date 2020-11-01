@@ -45,7 +45,7 @@
             <input type="text" pInputText size="50" placeholder="Filtruj"
               (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
           </div>
-          <div class="ui-grid-col-2"> <button type="button"  pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customExportCSV(tt)"></button></div>
+          <div class="ui-grid-col-2"> <button type="button"  pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customExportCsv(tt)"></button></div>
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
@@ -275,7 +275,7 @@
                 <div class="ui-grid-row"  style="margin-top: 15px;">
                   <div class="ui-grid-col-1"></div>
                   <div class="ui-grid-col-2"> </div>
-                  <div class="ui-grid-col-6">  <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customExportCSVForOrders(ordersTable)"></button></div>
+                  <div class="ui-grid-col-6">  <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customCSVExportForOrders(ordersTable)"></button></div>
                   <div class="ui-grid-col-2">
                   </div>
                   <div class="ui-grid-col-1"></div>

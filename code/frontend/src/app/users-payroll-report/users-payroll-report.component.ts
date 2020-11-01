@@ -69,10 +69,10 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     };
   }
 
-  public  customExportCSV(table: DataTable) {
+  public  customExportCsv(table: DataTable) {
     let columnsToPipeFormat =  [];
     columnsToPipeFormat.push('poolRate','budget','payrollCost');
-    this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+    this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
   }
   refresh () {
     this.payrollReportData = [];

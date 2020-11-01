@@ -88,9 +88,9 @@ export class WoListComponent implements OnInit {
         return this.list;
     }
 
-    public customExportCSV (table:DataTable) {
+    public customExportCsv (table:DataTable) {
         let columnsToPipeFormat = ["price","poolRevenue","complexity"];
-        this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }
     public showWoDetails(event, order) {
         this.selectedOrder=order;

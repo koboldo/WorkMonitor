@@ -59,7 +59,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 private alertService:AlertService,
                 public toolsService:ToolsService,
                 private timesheetService: TimesheetService,
-                private exportServie: ExportService) {
+                private exportService: ExportService) {
 
         this.dictService.init();
         this.workTypeService.init();
@@ -119,15 +119,15 @@ export class ReportMonitorEngineersComponent implements OnInit {
         ]
     }
 
-    public customExportCSV (table:DataTable) {
+    public customExportCsv (table:DataTable) {
         let columnsToPipeFormat = [
             "declaredTime","expectedTime","earnedMoney"];
-        this.exportServie.eksportCSVWithPipe(table,columnsToPipeFormat);
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }
-    public customExportCSVForOrders (table:DataTable) {
+    public customCSVExportForOrders (table:DataTable) {
         let columnsToPipeFormat = [
             "complexity","price","sharedPrice"];
-        this.exportServie.eksportCSVWithPipe(table,columnsToPipeFormat);
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }
 
     onRowDblclick(event) {

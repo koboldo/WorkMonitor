@@ -146,10 +146,10 @@ export class ReportMonthlyEngineersComponent implements OnInit {
       { field: 'earnedMoney', header: 'Wypracowany obrót', sortable:true , class:"width-35 text-center",earnedMoney:true, icon:true},
     ]
   }
-  public customExportCSV (table:DataTable) {
+  public customExportCsv (table:DataTable) {
     let columnsToPipeFormat = [
         "declaredTime","expectedTime","earnedMoney"];
-    this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+    this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
 }
   public filterReports(event): void {
     console.log(event);

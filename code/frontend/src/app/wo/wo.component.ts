@@ -115,7 +115,7 @@ export class WoComponent implements OnInit {
         this.search();
        
         this.cols = [
-            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center", parametr: true},
+            { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"width-50 text-center"},
             { field: 'id', header: 'id', hidden: true, sortable: true, filter:true, exportable:false},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-100"},
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-135"},
@@ -143,10 +143,10 @@ export class WoComponent implements OnInit {
         ]
       
     }
-    public customExportCSV (table:DataTable) {
+    public customExportCsv (table:DataTable) {
         let columnsToPipeFormat = [
             'complexity','price'];
-        this.exportService.eksportCSVWithPipe(table,columnsToPipeFormat);
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     } 
 
     public getStatusIcon(statusCode: string): string {
