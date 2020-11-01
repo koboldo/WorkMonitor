@@ -98,7 +98,8 @@ let local_util = {
                     ws.cell(2+cnt,6).string(order.DESCRIPTION);
                     if(order.COMMENT != null) {
                         let commentDecoded = Buffer.from(order.COMMENT.substring(2), 'base64');
-                        ws.cell(2+cnt,7).string(JSON.parse(decodeURIComponent(commentDecoded.toString()))[0].text);
+                        let commentArray = JSON.parse(decodeURIComponent(commentDecoded.toString()));
+                        ws.cell(2+cnt,7).string(commentArray.length ? commentArray[0].text : "");
                     }
                     // ws.cell(2+cnt,7).string(order.COMMENT);
                 } else {
