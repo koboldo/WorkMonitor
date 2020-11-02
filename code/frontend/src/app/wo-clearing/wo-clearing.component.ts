@@ -61,7 +61,7 @@ export class WoClearingComponent implements OnInit {
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
             { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
-            { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
+            // { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
             { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-50"},
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
