@@ -8,8 +8,8 @@
           "Generuj ponownie". Ta funkcja pozwala zmodyfikować protokół (usunąć z niego wybrane zlecenia) jeśli przed
           powtórną generacją w zakładce "Zlecenia" cofnięto status WO zawartego w protokole na "Wydane"</p>
         <p>3. Aby wyświetlić zlecenia nie gotowe do protokołu należy klinkąć przycisk "Zlecenia nie gotowe"</p>
-        <button type="button" pButton (click)="showWoDetails()" label="Zlecenia nie gotowe"></button>
-        <p-dialog [(visible)]="displayDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600"
+        <button type="button" pButton (click)="showNotReadyWoDetails()" label="Zlecenia nie gotowe"></button>
+        <p-dialog [(visible)]="displayNotReadyForProtocolDetailsDialog" header="Zlecenia nie gotowe do protokołu" [minWidth]="600"
           [responsive]="true" [blockScroll]="false" [contentStyle]="{'height': '800px'}">
           <app-wo-list [listToDisplay]="ordersNotReady" [exportFileName]="'Zlecenia nie gotowe do protokołu'"></app-wo-list>
         </p-dialog>
@@ -89,6 +89,8 @@
             <span *ngIf="!col.icon && !col.price">
               {{rowData[col.field]}}
             </span>
+            <p-button *ngIf="col.details" type="button" style="width:25px" (click)="showWoDetails(rowData)"
+            icon="fa fa-search"></p-button>
             <span *ngIf="col.price">
               {{rowData[col.field] | currency:'PLN'}}
             </span>
@@ -122,6 +124,10 @@
       </ng-template>
     </p-table>
   </div>
+  <p-dialog [(visible)]="displayDetailsDialog" [header]="'Zamówienie '+selectedOrder?.workNo" [minWidth]="600"
+  [responsive]="true" [blockScroll]="false" [contentStyle]="{'height': '800px'}" [positionTop]="20">
+  <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
+</p-dialog>
   <p-dialog header="Modyfikacja zleceń" [(visible)]="displayClearingDialog" [responsive]="true" [minWidth]="500"
     [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
