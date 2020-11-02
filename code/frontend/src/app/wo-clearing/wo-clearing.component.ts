@@ -27,17 +27,17 @@ export class WoClearingComponent implements OnInit {
     public ordersNotReady:Order[];
     public ordersReadyForProtocol:Order[];
     public displayOrderNotReadyDialog:boolean;
-    public displayDetailsDialog:boolean;
+    public displayNotReadyForProtocolDetailsDialog:boolean;
     public selectedOrder: Order;
-
-    cols: any;
-    colsForProtocol: any;
-    summary: TableSummary;
-    protocols: any [] = [];
-    filteredProtocols: any [] = [];
-    filtr: any [] = [];
-    protocolIsSelected = true;
-    selected : any;
+    public displayDetailsDialog: boolean;
+    public cols: any;
+    public colsForProtocol: any;
+    public summary: TableSummary;
+    public protocols: any [] = [];
+    public filteredProtocols: any [] = [];
+    public filtr: any [] = [];
+    public protocolIsSelected = true;
+    public selected : any;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -62,6 +62,7 @@ export class WoClearingComponent implements OnInit {
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
             { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
             { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
+            { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-50"},
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
             { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true , filter:true, class:"width-135"},
@@ -79,7 +80,8 @@ export class WoClearingComponent implements OnInit {
             { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
             { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
             { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
-            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true},             
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true}, 
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"text-center-30",exportable:false},            
         ]
         this.colsForProtocol = [   
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},         
@@ -109,20 +111,22 @@ export class WoClearingComponent implements OnInit {
         ]
     
     }
-    protocolSelected (event) {
+
+    public showWoDetails(order) {
+        this.selectedOrder = order;
+        this.displayDetailsDialog = true;
+    }
+
+    public protocolSelected (event) {
         this.protocolIsSelected = false;
         this.protocolNo = event.protocolNo;
     }
 
-    // getProtocols (respones) {
-    //     this.protocols = respones;
-    // }
     public getStatusIcon(statusCode: string): string {
         return this.toolsService.getStatusIcon(statusCode);
     }
 
-    filterCountry(event) {
-       
+    public filterCountry(event) {
         let filtered : any[] = [];
         for(let i = 0; i < this.protocols.length; i++) {
             let protocol = this.protocols[i];
@@ -132,45 +136,53 @@ export class WoClearingComponent implements OnInit {
         }
         this.filteredProtocols = filtered;
     }
-    // filtr for protocol 
-    private addToTable (ordersNotReady:Order[]) :void
-    {
+
+    private addToTable (ordersNotReady:Order[]) :void {
         this.ordersNotReady=[];
         this.ordersReadyForProtocol=[];
-        for (let order of ordersNotReady )
-        {      
+        for (let order of ordersNotReady ){      
             if (!this.toolsService.isReadyForProtocol(order,true))
-            {
-                this.ordersNotReady.push(order)            
-            }
+                this.ordersNotReady.push(order)                       
             else
-            {
-                this.ordersReadyForProtocol.push(order);
-            }       
+                this.ordersReadyForProtocol.push(order);   
         }
         this.mapVentureRepresentative(this.ordersNotReady,this.vrs);
         this.mapVentureRepresentative(this.ordersReadyForProtocol,this.vrs);
     }
-    public showWoDetails() {
-        this.displayDetailsDialog=true;
-    }
-    // end filtr for protocol
 
-    fetchProtocol() {
-        if (!this.protocolNo) {
+    public showNotReadyWoDetails() {
+        this.displayNotReadyForProtocolDetailsDialog=true;
+    }
+
+    public fetchProtocol() {
+        if (!this.protocolNo) 
             this.alertService.warn("Nie można wygenerować bez numeru!");
-        } else {
+         else {
             this.woService.fetchProtocol(this.protocolNo).
                 subscribe(protocol => this.processProtocol(protocol, false));
         }
-
     }
 
-    search() {
+    public search() {
         this.woService.getOrdersByStatus('IS')
             .pipe(mergeMap(orders => this.callVentures(orders)))
             .subscribe(vrs => this.mapVentureRepresentative(this.orders, vrs));
+        this.selectedOrders = [];
+    }
 
+    public showDialog() {
+        this.displayClearingDialog = true;
+    }
+
+    public prepareProtocol() {
+        let ids: number[] = [];
+        for(let order of this.selectedOrders) {
+           ids.push(order.id);
+        }
+        console.log("Prepare protocol for ids="+JSON.stringify(ids));
+        this.woService.prepareProtocol(ids).
+            subscribe(protocol => this.processProtocol(protocol, true));
+        this.displayClearingDialog = false;
         this.selectedOrders = [];
     }
 
@@ -192,27 +204,6 @@ export class WoClearingComponent implements OnInit {
                 }
             }
         }
-    }
-
-    showDialog() {
-        this.displayClearingDialog = true;
-    }
-
-    prepareProtocol() {
-
-        let ids: number[] = [];
-
-        for(let order of this.selectedOrders) {
-           ids.push(order.id);
-        }
-
-        console.log("Prepare protocol for ids="+JSON.stringify(ids));
-
-        this.woService.prepareProtocol(ids).
-            subscribe(protocol => this.processProtocol(protocol, true));
-
-        this.displayClearingDialog = false;
-        this.selectedOrders = [];
     }
 
     private processProtocol(protocol:any, refresh: boolean):void {
