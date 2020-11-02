@@ -124,7 +124,7 @@ export class ReportMonitorEngineersComponent implements OnInit {
             "declaredTime","expectedTime","earnedMoney"];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }
-    public customCSVExportForOrders (table:DataTable) {
+    public customCsvExportForOrders (table:DataTable) {
         let columnsToPipeFormat = [
             "complexity","price","sharedPrice"];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
