@@ -14,6 +14,7 @@ import { catchError, map, tap, delay, mergeMap, groupBy } from 'rxjs/operators';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
 import { MenuItem } from 'primeng/primeng';
 import { element } from '@angular/core/src/render3/instructions';
+import { ExportService } from 'app/_services/export.service';
 
 
 @Component({
@@ -60,6 +61,7 @@ export class UsersPayrollComponent implements OnInit {
                 protected dictService:DictService,
                 protected toolsService:ToolsService,
                 protected authService:AuthenticationService,
+                protected exportService: ExportService,
                 public completedOrderService: CompletedOrderService) {
     }
 
@@ -110,7 +112,14 @@ export class UsersPayrollComponent implements OnInit {
           ]
     }
 
-    GenerateReports () {
+    public customExportCsv (table:DataTable) {
+        let columnsToPipeFormat = [
+            "workTime","poolWorkTime","nonpoolWorkTime",
+            "trainingTime","leaveTime","overTime",
+            "workDue","trainingDue","overDue","leaveDue","totalDue"];
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
+    } 
+    public generateReports () {
         this.data = {
             labels: [],
             datasets: [
@@ -144,7 +153,7 @@ export class UsersPayrollComponent implements OnInit {
     }
 
 
-    selectData(event) {
+    public selectData(event) {
        // this.messageService.add({severity: 'info', summary: 'Data Selected', 'detail': this.data.datasets[event.element._datasetIndex].data[event.element._index]});
     }
 
@@ -152,12 +161,16 @@ export class UsersPayrollComponent implements OnInit {
     {
         this.selectedPayrolls=[];
         this.historicalPayrolls.forEach(element => {
-            if (element.periodDate==text) {
+            if (element.periodDate == text) {
                 this.selectedPayrolls.push(element)
             }
         });
-        table.selection=this.selectedPayrolls;
-        table.exportCSV({selectionOnly:true});
+        table.selection = this.selectedPayrolls;
+        let columnsToPipeFormat = [
+            "workTime","poolWorkTime","nonpoolWorkTime",
+            "trainingTime","leaveTime","overTime",
+            "workDue","trainingDue","overDue","leaveDue","totalDue"];
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat,{selectionOnly:true} );
     }
 
     public onTabOpen(event):void {

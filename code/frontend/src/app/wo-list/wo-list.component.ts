@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { TableSummary } from 'app/_models/tableSummary';
+import { ExportService } from 'app/_services/export.service';
+import { DataTable } from 'primeng/primeng';
 
 @Component({
     selector: 'app-wo-list',
@@ -26,7 +28,8 @@ export class WoListComponent implements OnInit {
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
                 private userService:UserService,
-                private workTypeService:WorkTypeService) {
+                private workTypeService:WorkTypeService,
+                private exportService: ExportService) {
     }
 
     ngOnInit() {
@@ -85,6 +88,10 @@ export class WoListComponent implements OnInit {
         return this.list;
     }
 
+    public customExportCsv (table:DataTable) {
+        let columnsToPipeFormat = ["price","poolRevenue","complexity"];
+        this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
+    }
     public showWoDetails(event, order) {
         this.selectedOrder=order;
         this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);

@@ -36,7 +36,7 @@
                 <div class="ui-grid-col-1">
                     <div style="margin-top: 0px; margin-bottom: 10px;">
                         <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Bieżące CSV"
-                            (click)="current.exportCSV()"></button>
+                            (click)="customExportCsv(current)"></button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                 <div class="ui-grid-col-12">
                     <span>Pobierz całą historię: </span>
                     <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Historia CSV"
-                        (click)="allHistorical.exportCSV()"></button>
+                        (click)="customExportCsv(allHistorical)"></button>
                 </div>
             </div>
             <div class="ui-grid-row" style="margin-top: 10px;">
@@ -329,7 +329,7 @@
             <div class="ui-grid-col-1">
                 <div style="margin-top: 0px; margin-bottom: 10px;">
                     <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV"
-                        (click)="approvedPayrollTable.exportCSV()"></button>
+                        (click)="customExportCsv(approvedPayrollTable)"></button>
                 </div>
             </div>
         </div>
@@ -405,7 +405,7 @@
     </p-panel>
 </p-dialog>
 <p-dialog [(visible)]="completedOrderService.displayCompletedOrdersDialog"
-    [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800"
-    [responsive]="true" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+    [header]="'Zlecenia zrealizowane ('+completedOrderService.completedOrders.length+')'" [minWidth]="800" 
+    [responsive]="true" [blockScroll]="false" [resizable]= "true">
     <app-wo-list [listToDisplay]="completedOrderService.completedOrders" [exportFileName]="'Zlecenia zrealizowane'"></app-wo-list>
 </p-dialog>

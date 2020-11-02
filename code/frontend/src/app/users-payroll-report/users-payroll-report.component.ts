@@ -5,6 +5,10 @@ import { UserService, PayrollService, AlertService, DictService, ToolsService, A
 import { UserPayroll, User, Calendar } from 'app/_models';
 import { stringify } from 'querystring';
 import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
+import { DataTable } from 'primeng/primeng';
+import { ExportService } from 'app/_services/export.service';
+import { Table } from 'primeng/table';
+
 
 @Component({
   selector: 'app-users-payroll-report',
@@ -29,6 +33,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
   pl: Calendar;
   optionsForChart :any;
 
+
   constructor(protected router:Router,
               protected userService:UserService,
               protected payrollService:PayrollService,
@@ -37,8 +42,9 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
               protected toolsService:ToolsService,
               protected authService:AuthenticationService,
               protected toolService: ToolsService,
-              public completedOrderService: CompletedOrderService){
-              super (router,userService,payrollService,alertService,dictService,toolService,authService,completedOrderService)
+              public completedOrderService: CompletedOrderService,
+              protected exportService: ExportService,){
+              super (router,userService,payrollService,alertService,dictService,toolService,authService,exportService,completedOrderService)
                }
   ngOnInit() {
     this.dateTo = new Date();
@@ -63,6 +69,11 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     };
   }
 
+  public  customExportCsv(table: DataTable) {
+    let columnsToPipeFormat =  [];
+    columnsToPipeFormat.push('poolRate','budget','payrollCost');
+    this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
+  }
   refresh () {
     this.payrollReportData = [];
     this.authService.userAsObs.subscribe(user => this.getAllUsers(user));
