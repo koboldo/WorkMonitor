@@ -35,6 +35,7 @@
             </div>
           </div>
       </p-fieldset>
+     
     </div>
   </div>
 
@@ -44,10 +45,20 @@
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
       [responsive]="false">
       <ng-template pTemplate="caption">
-        <div>
-          <i class="fa fa-search"></i>
-          <input type="text" pInputText size="50" placeholder="Filtruj"
-            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        <div class="ui-grid-row">
+          <div class="ui-grid-col-6 filter-input"><i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj"
+              (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto"></div>
+          <div class="ui-grid-col-6">
+            <div class="ui-grid-row">
+              <div class="ui-grid-col-4"><label class="label-for-office-code" for="officeCode">Wybierz biuro obsługujące :</label></div>
+              <div class="ui-grid-col-8">
+                  <p-dropdown class="office-drop-down" id="officeCode" 
+                    name="officeCode" [options]="offices" [(ngModel)]="selectedOfficeCode"  autoWidth="false" 
+                    (onChange)="officeSelected()"></p-dropdown>
+              </div>
+            </div>
+          </div>
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>

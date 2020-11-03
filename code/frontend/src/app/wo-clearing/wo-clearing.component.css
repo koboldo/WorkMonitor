@@ -1,0 +1,11 @@
+.office-drop-down {
+    width: 50%;
+    margin-right: 100%;
+}
+.label-for-office-code {
+    margin-left: 30%;
+    margin-top: 5px;
+}
+.filter-input {
+    padding-left: 25%;
+}

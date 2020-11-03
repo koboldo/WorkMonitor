@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.5.81', 'Filtorwanie zleceń wg biura - zakładka Protokół'),
             new CodeValue('1.5.80', 'Data modyfikacji zlecenia - zakładka Protokół'),
             new CodeValue('1.5.79', 'Szczegóły zlecenia - zakładka Protokół'),
             new CodeValue('1.5.78', 'Eksport do CSV - zakładka Raporty'),

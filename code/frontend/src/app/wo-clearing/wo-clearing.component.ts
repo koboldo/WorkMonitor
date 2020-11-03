@@ -6,7 +6,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng/primeng';
 import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
@@ -38,6 +38,8 @@ export class WoClearingComponent implements OnInit {
     public filtr: any [] = [];
     public protocolIsSelected = true;
     public selected : any;
+    public offices:SelectItem[] = [];
+    public selectedOfficeCode: string;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -54,6 +56,7 @@ export class WoClearingComponent implements OnInit {
         this.search();
         this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
         this.woService.getProtocolCollection().subscribe(respons=> this.protocols = respons);
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
         this.cols = [
             { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-20 text-center", check: true},            
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
@@ -137,6 +140,19 @@ export class WoClearingComponent implements OnInit {
         this.filteredProtocols = filtered;
     }
 
+    public officeSelected (){
+        this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
+    }
+
+    private filtrOrderByOfficeCode (officeCode: string) {
+        this.ordersReadyForProtocol = this.ordersReadyForProtocol.filter(order=> order.officeCode === officeCode);
+    }
+
+    private mapToOffices(pairs:CodeValue[]):void {
+        this.toolsService.mapToSelectItem(pairs, this.offices);
+        this.selectedOfficeCode = 'WAW';       
+    }
+
     private addToTable (ordersNotReady:Order[]) :void {
         this.ordersNotReady=[];
         this.ordersReadyForProtocol=[];
@@ -148,6 +164,7 @@ export class WoClearingComponent implements OnInit {
         }
         this.mapVentureRepresentative(this.ordersNotReady,this.vrs);
         this.mapVentureRepresentative(this.ordersReadyForProtocol,this.vrs);
+        this.filtrOrderByOfficeCode(this.selectedOfficeCode);
     }
 
     public showNotReadyWoDetails() {
