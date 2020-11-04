@@ -24,8 +24,8 @@
                 <label for="protocolNo">Wybierz protokół:</label>
               </div>
               <div class="ui-grid-col-3">
-                <p-autoComplete [(ngModel)]="filtr" [suggestions]="filteredProtocols" (completeMethod)="filterCountry($event)" (onSelect)="protocolSelected($event)" field="protocolNo" [size]="30"
-                placeholder="Protokoły" [minLength]="1" [dropdown]="true"></p-autoComplete>
+                <p-autoComplete [(ngModel)]="filter" [suggestions]="filteredProtocols" (completeMethod)="filterCountry($event)" (onSelect)="protocolSelected($event)" field="protocolNo" [size]="30"
+                                placeholder="Protokoły" [minLength]="1" [dropdown]="true"></p-autoComplete>
               </div>
               <div class="ui-grid-col-3">
                 <button pButton type="button" (click)="fetchProtocol()" icon="fa fa-cog" label="Generuj ponownie"
@@ -41,24 +41,29 @@
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-table #tt dataKey="id" [columns]="cols" [value]="ordersReadyForProtocol" [rows]="20" [paginator]="true"
-      [resizableColumns]="true" sortOrder="-1" [(selection)]="selectedOrders" [metaKeySelection]="true"
+      [resizableColumns]="true" sortOrder="-1" [(selection)]="selectedOrders" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowSelect($event)" (onHeaderCheckboxToggle)="onRowSelect($event)" [metaKeySelection]="true"
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="Zlecenia" [globalFilterFields]="cols"
       [responsive]="false">
       <ng-template pTemplate="caption">
         <div class="ui-grid-row">
-          <div class="ui-grid-col-6 filter-input"><i class="fa fa-search"></i>
-            <input type="text" pInputText size="50" placeholder="Filtruj"
-              (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto"></div>
-          <div class="ui-grid-col-6">
-            <div class="ui-grid-row">
-              <div class="ui-grid-col-4"><label class="label-for-office-code" for="officeCode">Wybierz biuro obsługujące :</label></div>
-              <div class="ui-grid-col-8">
-                  <p-dropdown class="office-drop-down" id="officeCode" 
-                    name="officeCode" [options]="offices" [(ngModel)]="selectedOfficeCode"  autoWidth="false" 
-                    (onChange)="officeSelected()"></p-dropdown>
+
+          <div class="ui-grid-col-4 filter-input">
+              <div class="ui-grid-col-12" style="text-align: left;"><label class="label-for-office-code" for="officeCode">Wybierz biuro obsługujące:</label>
+
+                <p-dropdown class="office-drop-down" id="officeCode"
+                            name="officeCode" [options]="offices" [(ngModel)]="selectedOfficeCode" [autoWidth]="false" styleClass="office-drop-down"
+                            (onChange)="officeSelected()"></p-dropdown>
               </div>
-            </div>
           </div>
+
+          <div class="ui-grid-col-4 filter-input"><i class="fa fa-search"></i>
+            <input type="text" pInputText size="50" placeholder="Filtruj"
+              (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+
+          <div class="ui-grid-col-4">
+          </div>
+
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
@@ -111,8 +116,11 @@
       <ng-template pTemplate="footer" let-columns>
         <tr>
           <td *ngFor="let col of columns" [hidden]="col.hidden">
-            <span *ngIf="col.header === 'Zlecenie'">Suma zleceń <br /> {{orders?.length}} </span>
-            <span *ngIf="col.price">Suma <br /> {{summary.summaryPrice | currency:'PLN'}}</span>
+            <span *ngIf="col.field === 'none' && col.check">Zaznaczono<br /> {{summarySelected.summaryPrice | currency:'PLN'}}</span>
+            <span *ngIf="col.header === 'Zlecenie'">Ilość wszyskich<br /> {{orders?.length}} </span>
+            <span *ngIf="col.header === 'Status'">Wszyskich<br /> {{summary.summaryPrice | currency:'PLN'}}</span>
+            <span *ngIf="col.header === 'CAPEX'">Ilość dla {{selectedOfficeCode}} <br /> {{ordersReadyForProtocol?.length}} </span>
+            <span *ngIf="col.price">Dla {{selectedOfficeCode}}<br /> {{summaryForOffice.summaryPrice | currency:'PLN'}}</span>
           </td>
         </tr>
       </ng-template>
@@ -131,7 +139,7 @@
         </div>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        Brak zleceń w zakresie dat...
+        Brak zleceń dla gotowych na protokół dla {{selectedOfficeCode}}...
       </ng-template>
     </p-table>
   </div>
@@ -139,9 +147,15 @@
   [responsive]="true" [blockScroll]="false" [contentStyle]="{'height': '800px'}" [positionTop]="20">
   <app-wo-details [selectedOrder]="selectedOrder"></app-wo-details>
 </p-dialog>
-  <p-dialog header="Modyfikacja zleceń" [(visible)]="displayClearingDialog" [responsive]="true" [minWidth]="500"
+  <p-dialog header="Protokół dla zleceń" [(visible)]="displayClearingDialog" [responsive]="true" [minWidth]="500"
     [width]="800">
     <div class="ui-grid ui-grid-responsive ui-fluid">
+      <div class="ui-grid-row" style="margin-top: 10px;">
+        <span>Ilość zleceń: {{selectedOrders?.length}}</span>
+      </div>
+      <div class="ui-grid-row" style="margin-top: 2px;">
+        <span>Łączna kwota zleceń: {{summarySelected?.summaryPrice | currency:'PLN'}}</span>
+      </div>
       <hr>
       <div class="ui-grid-row" style="margin-top: 10px;">
         <div class="ui-grid-col-12">
@@ -201,7 +215,7 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-              Brak zleceń w zakresie dat...
+              Brak zleceń do protokołu...
             </ng-template>
           </p-table>
         </div>
