@@ -44,8 +44,9 @@ export class ContractorsComponent implements OnInit {
       this.authService.userAsObs.subscribe(user => this.removeRolesAndGetManagedUsers(user));
       // If the order of elements is changed, the method hideHistoryColumn() should be corrected 
       this.cols = [
-        { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, button:true , history:true,exportable:false}, 
-        { field: 'excelId', header: 'Id excel',hidden:false, sortable: true, filter:true, class:"width-35 text-center" },           
+        { field: 'none', header:'Historia', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-35 col-icon text-center", icon:true, button:true , history:true,exportable:false},
+        { field: 'id', header: 'Id bazy',hidden:false, sortable: true, filter:true, class:"width-35 text-center" },
+        { field: 'excelId', header: 'Id excel',hidden:false, sortable: true, filter:true, class:"width-35 text-center" },
         { field: 'officeCode', header: 'Biuro' ,filter:true,sortable:true,  class:"width-50 text-center"},
         { field: 'lastName', header: 'Osoba', sortable:true, filter:true, class:"width-70 text-center", user:true, icon:true},
         { field: 'firstName', header: 'Osoba', hidden:true, user:true, icon:true},
