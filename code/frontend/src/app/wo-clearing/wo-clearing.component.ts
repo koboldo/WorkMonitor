@@ -6,7 +6,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng/primeng';
 import { TableSummary } from 'app/_models/tableSummary';
 
 @Component({
@@ -33,11 +33,15 @@ export class WoClearingComponent implements OnInit {
     public cols: any;
     public colsForProtocol: any;
     public summary: TableSummary;
+    public summaryForOffice: TableSummary;
+    public summarySelected: TableSummary;
     public protocols: any [] = [];
     public filteredProtocols: any [] = [];
-    public filtr: any [] = [];
+    public filter: any [] = [];
     public protocolIsSelected = true;
     public selected : any;
+    public offices:SelectItem[] = [];
+    public selectedOfficeCode: string;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -54,14 +58,15 @@ export class WoClearingComponent implements OnInit {
         this.search();
         this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
         this.woService.getProtocolCollection().subscribe(respons=> this.protocols = respons);
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
         this.cols = [
-            { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-20 text-center", check: true},            
+            { field: 'none', excludeGlobalFilter: true, sortable: false, filter:false,class:"width-35 text-center", check: true},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
             { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
-            { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
+            // { field: 'protocolNo', header: 'Protokół',hidden:false, sortable:true, filter:true, class:"width-100" },
             { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-50"},
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
@@ -81,7 +86,7 @@ export class WoClearingComponent implements OnInit {
             { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true },
             { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true },
             { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true}, 
-            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"text-center-30",exportable:false},            
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"text-center-30", exportable:false},
         ]
         this.colsForProtocol = [   
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},         
@@ -137,17 +142,38 @@ export class WoClearingComponent implements OnInit {
         this.filteredProtocols = filtered;
     }
 
+    public onRowSelect(event) {
+      this.summarySelected = this.toolsService.createSummaryForOrdersTable(this.selectedOrders);
+    }
+
+    public officeSelected (){
+        this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
+    }
+
+    private filterOrderByOfficeCode (officeCode: string) {
+        this.ordersReadyForProtocol = this.ordersReadyForProtocol.filter(order => order.officeCode === officeCode);
+        this.summaryForOffice = this.toolsService.createSummaryForOrdersTable(this.ordersReadyForProtocol);
+        this.summarySelected = new TableSummary();
+    }
+
+    private mapToOffices(pairs:CodeValue[]):void {
+        this.toolsService.mapToSelectItem(pairs, this.offices);
+        this.selectedOfficeCode = 'WAW';       
+    }
+
     private addToTable (ordersNotReady:Order[]) :void {
         this.ordersNotReady=[];
         this.ordersReadyForProtocol=[];
         for (let order of ordersNotReady ){      
-            if (!this.toolsService.isReadyForProtocol(order,true))
-                this.ordersNotReady.push(order)                       
-            else
-                this.ordersReadyForProtocol.push(order);   
+            if (!this.toolsService.isReadyForProtocol(order,true)) {
+              this.ordersNotReady.push(order)
+            } else {
+              this.ordersReadyForProtocol.push(order);
+            }
         }
         this.mapVentureRepresentative(this.ordersNotReady,this.vrs);
         this.mapVentureRepresentative(this.ordersReadyForProtocol,this.vrs);
+        this.filterOrderByOfficeCode(this.selectedOfficeCode);
     }
 
     public showNotReadyWoDetails() {
@@ -155,9 +181,9 @@ export class WoClearingComponent implements OnInit {
     }
 
     public fetchProtocol() {
-        if (!this.protocolNo) 
-            this.alertService.warn("Nie można wygenerować bez numeru!");
-         else {
+        if (!this.protocolNo) {
+          this.alertService.warn("Nie można wygenerować bez numeru!");
+        } else {
             this.woService.fetchProtocol(this.protocolNo).
                 subscribe(protocol => this.processProtocol(protocol, false));
         }
@@ -179,7 +205,7 @@ export class WoClearingComponent implements OnInit {
         for(let order of this.selectedOrders) {
            ids.push(order.id);
         }
-        console.log("Prepare protocol for ids="+JSON.stringify(ids));
+        console.log("Prepare protocol for ids=" + JSON.stringify(ids));
         this.woService.prepareProtocol(ids).
             subscribe(protocol => this.processProtocol(protocol, true));
         this.displayClearingDialog = false;
@@ -226,7 +252,7 @@ export class WoClearingComponent implements OnInit {
         return "protokol.xslx";
     }
 
-    /* mored to backed
+    /* moved to backed
     saveOrders() {
         this.displayClearingDialog = false;
         for(let order of this.selectedOrders) {

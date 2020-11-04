@@ -1,0 +1,16 @@
+.label-for-office-code {
+    text-align: left;
+    margin-top: 5px;
+    margin-left: 20px;
+    margin-right: 10px;
+    color: #761c19;
+}
+.office-drop-down {
+    width: 300px;
+    text-align: left;
+    min-width: 100px;
+}
+
+.filter-input {
+    padding-left: 20px;
+}

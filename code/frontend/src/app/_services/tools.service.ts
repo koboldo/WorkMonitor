@@ -337,15 +337,17 @@ export class ToolsService {
 
     public createSummaryForOrdersTable (orders : Order []) : TableSummary {
         let summary = new TableSummary();
-        orders.forEach(element => {
-          if (element.statusCode === 'OP') {summary.openOrders ++ ;}
-          if (element.statusCode === 'AS') {summary.assignedOrders ++ ;}
-          if (element.statusCode === 'CO') {summary.complitedOrders ++;}
-          if (element.statusCode === 'IS') {summary.issuedOrders ++;}
-          if (element.statusCode === 'CL') {summary.closeOrders ++;}
-        });
-        summary.summaryPrice = this.countSummaryPrice(orders);
-        summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
+        if (orders) {
+            orders.forEach(element => {
+                if (element.statusCode === 'OP') {summary.openOrders ++ ;}
+                if (element.statusCode === 'AS') {summary.assignedOrders ++ ;}
+                if (element.statusCode === 'CO') {summary.complitedOrders ++;}
+                if (element.statusCode === 'IS') {summary.issuedOrders ++;}
+                if (element.statusCode === 'CL') {summary.closeOrders ++;}
+              });
+              summary.summaryPrice = this.countSummaryPrice(orders);
+              summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
+        }      
         return summary;
       }
 
