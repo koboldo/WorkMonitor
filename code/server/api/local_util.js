@@ -66,7 +66,7 @@ let local_util = {
             ws.cell(1,10).string(protocol).style(styles.headerStyle);
            
             ws.cell(1,2).string('').style(styles.borderCell);
-            ws.cell(2,2).string('Data wykonania').style(styles.verticalHeaderStyle).style(styles.borderCell);
+            ws.cell(2,2).string('Data wydania').style(styles.verticalHeaderStyle).style(styles.borderCell);
             ws.cell(2,3).string('Nr zamówienia').style(styles.verticalHeaderStyle).style(styles.borderCell);
             ws.cell(2,4).string('Nr kandytata').style(styles.verticalHeaderStyle).style(styles.borderCell);
             ws.cell(2,5).string('Zlecający').style(styles.verticalHeaderStyle).style(styles.borderCell);
@@ -116,7 +116,7 @@ let local_util = {
             cnt++;
             ws.row(1+cnt).setHeight(5);
             ws.cell(2+cnt,1).string('FV').style(styles.headerStyle);
-            ws.cell(2+cnt,9).formula('SUM(H3:' + XLSX.getExcelCellRef((cnt+1), 8) +')').style(styles.headerStyle).style(styles.alignRight);
+            ws.cell(2+cnt,9).formula('SUM(I3:' + XLSX.getExcelCellRef((cnt+1), 9) +')').style(styles.headerStyle).style(styles.alignRight);
             ws.cell(2+cnt,10).string('biuro ' + allProtocols[protocol].OFFICE).style(styles.alignRight);
             ws.cell(2+cnt,1,2+cnt,10).style(styles.borderHeaderTop);
             cnt++;

@@ -28,10 +28,10 @@ const db_util = {
                 }
         }));
 
-        db.on('profile', addCtx(function(sql,tm){
-            logger().debug('sql ' + sql);
-            logger().debug('time ' + tm);
-        }));
+        // db.on('profile', addCtx(function(sql,tm){
+        //     logger().debug('sql ' + sql);
+        //     logger().debug('time ' + tm);
+        // }));
 
         db.serialize(function() {
             db.exec( 'PRAGMA journal_mode = WAL;' )

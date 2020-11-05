@@ -50,11 +50,26 @@ const queries = {
         SELECT ID, WORK_ID, PRICE
         FROM WO_PRESELECT
         WHERE IS_SUMMABLE = 'N'
+    ),
+    WO_DATE AS (
+        SELECT ID, MIN(LAST_MOD) LAST_MOD
+        FROM (
+            SELECT WO.ID, WO.LAST_MOD
+            FROM WORK_ORDER WO
+            WHERE WO.STATUS_CODE = 'IS'
+                AND WO.ID IN (SELECT ID FROM WO_INIT)
+            UNION ALL
+            SELECT WOH.ID, WOH.LAST_MOD
+            FROM WORK_ORDER_HIST WOH
+            WHERE STATUS_CODE = 'IS'
+                AND WOH.ID IN (SELECT ID FROM WO_INIT)
+        )
+        GROUP BY ID
     )
     SELECT 
         WI.WORK_ID
         ,COALESCE(WI.PRICE, 0) AS PRICE
-        ,WO.LAST_MOD
+        ,WDA.LAST_MOD
         ,COALESCE(WO.DESCRIPTION, "") AS DESCRIPTION
 		,COALESCE(WO.COMMENT, "") AS COMMENT
         ,COALESCE(WO.PROTOCOL_NO, "") AS PROTOCOL_NO
@@ -71,11 +86,11 @@ const queries = {
 			END OFFICE		
         ,P.FIRST_NAME || " " || P.LAST_NAME AS VENTURE
         ,WO.VENTURE_ID
-    FROM WORK_ORDER AS WO
+    FROM WO_INIT AS WI
+    JOIN WO_DATE AS WDA ON WDA.ID = WI.ID
+    JOIN WORK_ORDER AS WO ON WO.ID = WI.ID
     JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID
-    JOIN PERSON AS P ON WO.VENTURE_ID = P.ID
-    JOIN WO_INIT WI
-    WHERE WO.ID IN ( WI.ID )`,
+    JOIN PERSON AS P ON WO.VENTURE_ID = P.ID`,
     getProtocolNOs: 'SELECT DISTINCT PROTOCOL_NO FROM WORK_ORDER WHERE PROTOCOL_NO IS NOT NULL AND PROTOCOL_NO <> ""',
     getOfficeCode: 'SELECT OFFICE_CODE FROM PERSON WHERE ID = ?',
     getIsFromPool: 'SELECT IS_FROM_POOL FROM WORK_TYPE WHERE TYPE_CODE = ? AND COMPLEXITY_CODE = ? AND OFFICE_CODE = ?',
@@ -400,9 +415,9 @@ const orders_db = {
                 
                 protNo = 
                 'A' + new Date().getFullYear().toString().substr(-2) + '/'
-                      + ((new Date().getMonth() < 10) ? '0' : '') + new Date().getMonth().toString()
+                      + (1 + new Date().getMonth()).toString().padStart(2,0)
                       + '/' + seqVal;
-                if(logger().isDebugEnabled()) logger().debug('protocol nuber ' + protNo);
+                if(logger().isDebugEnabled()) logger().debug('protocol number ' + protNo);
                 
                 const db = dbUtil.getDatabase();
                 const params =  {
