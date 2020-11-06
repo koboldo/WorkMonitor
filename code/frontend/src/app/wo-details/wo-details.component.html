@@ -202,7 +202,7 @@
                                 [ngClass]="col.class">
 
                                 <span *ngIf="col.modifiedBy">
-                                    {{rowData['modifiedByFull'].email }}
+                                    {{rowData['modifiedByFull']?.email }}
                                 </span>
 
                                 <span *ngIf="col.assigneeFull">
