@@ -229,6 +229,8 @@ const orders = {
 function mapOrderItems(order) {
     const mappedItems = [];
     order.relatedItems.forEach((relatedItem) => {
+        //if(logger().isDebugEnabled()) logger().debug('JD TMP RI: '+JSON.stringify(relatedItem));
+        //{"ID":16692,"ITEM_NO":"BIA3314","DESCRIPTION":null,"ADDRESS":null,"MD_BUILDING_TYPE":null,"MD_CONSTRUCTION_CATEGORY":null,"CREATED":null}
         const mappedItem = mapper.relatedItem.mapToJson(relatedItem);
         mappedItems.push(mappedItem);
     });
