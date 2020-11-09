@@ -52,7 +52,7 @@ const queries = {
         WHERE IS_SUMMABLE = 'N'
     ),
     WO_DATE AS (
-        SELECT ID, MIN(LAST_MOD) LAST_MOD
+        SELECT ID, MAX(LAST_MOD) LAST_MOD
         FROM (
             SELECT WO.ID, WO.LAST_MOD
             FROM WORK_ORDER WO
