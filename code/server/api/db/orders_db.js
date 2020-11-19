@@ -437,7 +437,6 @@ const orders_db = {
 module.exports = orders_db;
 
 function processOrderRow(row) {
-    if(logger().isDebugEnabled()) logger().debug('JDTMP Updating row...: ');
     if (row.ASSIGNEE) {
         row.ASSIGNEE = row.ASSIGNEE.split('|');
     }
