@@ -345,7 +345,7 @@ export class ToolsService {
                 if (element.statusCode === 'IS') {summary.issuedOrders ++;}
                 if (element.statusCode === 'CL') {summary.closeOrders ++;}
               });
-              summary.summaryPrice = this.countSummaryPrice(orders);
+              summary.summaryPrice = this.countSummaryPriceForOrders(orders);
               summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
         }      
         return summary;
@@ -405,7 +405,7 @@ export class ToolsService {
         return emplyedUser;
     }
 
-    private countSummaryPrice (orders: Order []) : number {
+    public countSummaryPriceForOrders (orders: Order []) : number {
         let summaryPrice = 0;
         orders.forEach(element => {
             if (element.price != undefined) {

@@ -38,6 +38,78 @@
      
     </div>
   </div>
+  <div class="ui-grid-row" *ngIf="operator?.roleCode?.indexOf('PR') != -1">
+    <div class="ui-grid-col-6">
+      <p-table #summaryOrdersReady dataKey="id" [columns]="colsForProtocolSummary" [value]="summaryForOrdersReadyForProtocol" [rows]="20" 
+        [resizableColumns]="true" sortOrder="-1" [metaKeySelection]="true"
+        loadingIcon="fa fa-spinner" [responsive]="false">
+      <ng-template pTemplate="caption">
+        <div class="ui-grid-row">
+          <span>Zlecenia gotowe do protokołu</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class" pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">        
+            <span *ngIf="col.price">
+              {{rowData[col.field] | currency:'PLN'}}
+            </span>
+            <span *ngIf="!col.price">
+              {{rowData[col.field] }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak danych 
+      </ng-template>
+    </p-table>
+    </div>
+    <div class="ui-grid-col-6">
+      <p-table #summaryOrdersReady dataKey="id" [columns]="colsForProtocolSummary" [value]="summaryForOrdersNotReadyForProtocol" [rows]="20"
+        [resizableColumns]="true" sortOrder="-1" [metaKeySelection]="true"
+        loadingIcon="fa fa-spinner" [responsive]="false">
+      <ng-template pTemplate="caption">
+        <div class="ui-grid-row">
+          <span>Zlecenia nie gotowe do protokołu</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class" pResizableColumn excludeGlobalFilter=col.exclude>
+            <span class="header">
+              {{col.header}}
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+          <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">        
+            <span *ngIf="col.price">
+              {{rowData[col.field] | currency:'PLN'}}
+            </span>
+            <span *ngIf="!col.price">
+              {{rowData[col.field] }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        Brak danych 
+      </ng-template>
+    </p-table>
+    </div>
+  </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
     <p-table #tt dataKey="id" [columns]="cols" [value]="ordersReadyForProtocol" [rows]="20" [paginator]="true"
