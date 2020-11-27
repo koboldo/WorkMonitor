@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 
@@ -47,6 +47,12 @@ export class WoClearingComponent implements OnInit {
     public summaryForOrdersNotReadyForProtocol: ProtocolOrdersSummary [] = [];
     public colsForProtocolSummary: any;
     public operator: User;
+    public displayOrderFromProtocolVisibility: boolean;
+    public colsForOrderFromProtocol: any;
+    public ordersFromProtocolExportFileName: string;
+    public ordersFromProtocol: Order [] = [];
+    public ordersFromProtocolColumnsUsePipe: string [] = [];
+    public ordersFromProtocolTableSummary: TableSummary;
 
     constructor(private woService:WOService,
                 private userService:UserService,
@@ -127,6 +133,49 @@ export class WoClearingComponent implements OnInit {
             { field: 'ordersValue', header: 'Wartość zleceń',class:"width-50 text-center", price: true},                     
         ]
     
+    }
+
+    public showOrdersFromProtocol () {
+        this.ordersFromProtocolExportFileName = 'Zlecenia z protokołu nr '+ this.protocolNo;
+        forkJoin([this.woService.getOrdersFromProtocol(this.protocolNo), this.userService.getVentureRepresentatives()]).subscribe(responseList => {
+            console.log(`Fork Join ${responseList.length}...`);
+            this.ordersFromProtocol = responseList[0];
+            this.mapVentureRepresentative(this.ordersFromProtocol, responseList[1]);
+            this.ordersFromProtocolTableSummary = this.toolsService.createSummaryForOrdersTable(this.ordersFromProtocol);
+          }
+        );
+        this.selectedOrders = [];
+        this.colsForOrderFromProtocol = 
+        [
+            { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
+            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
+            { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-100"},
+            { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true,class:"width-35" },
+            { field: 'price', header: 'Wartość', sortable:true, filter:true,class:"width-35 text-right", price:true}, 
+            { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-50"},
+            { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true , filter:true, class:"width-50"},
+            { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50"},
+            { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true , filter:true, class:"width-50"},
+            { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:false, sortable:true , filter:true, class:"width-135" },
+            // hidden columns 
+            { field: 'complexityCode', header: 'Zł.', hidden:true, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center", exportable:false },
+            { field: 'complexity', header: 'Wycena [H]' , hidden:true, sortable:true, filter:false,class:"width-50 text-center", exportable:false},      
+            { field: 'assignee', header: 'Wykonawca',hidden:true, sortable:true, filter:true, class:"width-100", exportable:false },
+            { field: 'lastModDate', header: 'Mod.' ,hidden:true, sortable:true, filter:true, class:"width-50", exportable:false},           
+            { field: 'id', header: 'id', hidden: true, sortable: true, filter:true, exportable:false},
+            { field: 'officeCode', header: 'Biuro' ,hidden:true, sortable: true, filter:true,class:"text-center-30", exportable:false},
+            { field: 'sComments', header: 'Komentarz',hidden:true,  sortable:true , filter:true,class:"width-250", icon:true, exportable:false},
+            { field: 'description', header: 'Opis',hidden:true,  filter:true ,class:"width-250", exportable:false},      
+            { field: 'isFromPool', header: 'Pula' ,hidden:true, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center", exportable:false},      
+            { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true , exportable:false},
+            { field: 'itemConstructionCategory', header: 'Konstrukcja', hidden:true, sortable:true, filter:true , exportable:false},
+            { field: 'itemAddress', header: 'Adres', hidden:true, sortable:true, filter:true, exportable:false},
+            { field: 'itemDescription', header: 'Opis obiektu', hidden:true, sortable:true , filter:true, exportable:false},
+            { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35 text-center",exportable:false}, 
+        ]
+        this.ordersFromProtocolColumnsUsePipe = ['price'];
+      
+        this.displayOrderFromProtocolVisibility = true;
     }
   
     public showWoDetails(order) {
