@@ -237,7 +237,7 @@ export class WoClearingComponent implements OnInit {
                 let summaryItem :ProtocolOrdersSummary = { 
                     officeCode: selectedItem.label, 
                     count: ordersFromOffice.length ,
-                    ordersValue: this.toolsService.countSummaryPriceForOrders(ordersFromOffice)
+                    summaryPrice: this.toolsService.countSummaryPriceForOrders(ordersFromOffice)
                 };
                 summaryTable.push(summaryItem);
             });
