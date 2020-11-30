@@ -68,8 +68,8 @@ export class WoClearingComponent implements OnInit {
         this.userService.getEngineers().subscribe(engineers => this.engineers = engineers);
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
         this.search();
-        this.woService.getOrdersByStatus('IS').subscribe(Order=>this.addToTable(Order));
-        this.woService.getProtocolCollection().subscribe(respons=> this.protocols = respons);
+        this.woService.getOrdersByStatus('IS').subscribe(order => this.addToTable(order));
+        this.woService.getProtocolCollection().subscribe(response => this.protocols = response);
         this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.mapToOffices(offices));
         this.authSerice.userAsObs.subscribe(user => this.assignOperator(user));
         this.cols = [
@@ -192,7 +192,7 @@ export class WoClearingComponent implements OnInit {
         return this.toolsService.getStatusIcon(statusCode);
     }
 
-    public filterCountry(event) {
+    public filterProtocols(event) {
         let filtered : any[] = [];
         for(let i = 0; i < this.protocols.length; i++) {
             let protocol = this.protocols[i];

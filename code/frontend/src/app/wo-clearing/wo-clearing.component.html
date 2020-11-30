@@ -23,7 +23,7 @@
                 <label for="protocolNo">Wybierz protokół:</label>
               </div>
               <div class="ui-grid-col-3">
-                <p-autoComplete [(ngModel)]="filter" [suggestions]="filteredProtocols" (completeMethod)="filterCountry($event)" (onSelect)="protocolSelected($event)" field="protocolNo" [size]="30"
+                <p-autoComplete [(ngModel)]="filter" [suggestions]="filteredProtocols" (completeMethod)="filterProtocols($event)" (onSelect)="protocolSelected($event)" field="protocolNo" [size]="30"
                                 placeholder="Protokoły" [minLength]="1" [dropdown]="true"></p-autoComplete>
               </div>
               <div class="ui-grid-col-3">
