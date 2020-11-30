@@ -130,7 +130,7 @@ export class WoClearingComponent implements OnInit {
         this.colsForProtocolSummary = [
             { field: 'officeCode', header: 'Biuro', class:"width-50 text-center"},
             { field: 'count', header: 'Ilość zleceń', class:"width-50 text-center"},
-            { field: 'ordersValue', header: 'Wartość zleceń',class:"width-50 text-center", price: true},                     
+            { field: 'summaryPrice', header: 'Wartość zleceń',class:"width-50 text-center", price: true},                     
         ]
     
     }
