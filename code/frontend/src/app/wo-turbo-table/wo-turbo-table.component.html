@@ -38,7 +38,7 @@
     </div>
 
   </div>
-  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">
+  <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" [style]="{'margin-left':'80px', 'margin-right':'80px'}" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true" (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>
   <p-dialog [(visible)]="displayAssignmentDialog" header="Przypisywanie zleceń" [minWidth]="800" [width]="1200" [responsive]="true" [blockScroll]="true">

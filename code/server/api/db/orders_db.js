@@ -10,11 +10,11 @@ const logger = require('../logger').logger;
 const addCtx = require('../logger').addCtx;
 
 const queries = {
-	getOrders: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID %s ORDER BY WO.LAST_MOD DESC',
-	getOrder: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WO.ID = ?',
-	getOrdersByIds: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE %(idList)s ORDER BY WO.ID',
-	getOrderByExtId: ' SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE,WO.ITEM_ID ,( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WORK_NO = ?',
-    getOrderItems:   'SELECT RI.ID, RI.ITEM_NO, RI.DESCRIPTION, RI.ADDRESS, RI.MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch", "localtime") AS CREATED FROM RELATED_ITEM AS RI WHERE RI.ID = ?',
+	getOrders: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE, WO.ITEM_ID, RI.ITEM_NO AS RI_ITEM_NO, RI.DESCRIPTION AS RI_DESCRIPTION, RI.ADDRESS AS RI_ADDRESS, RI.MD_BUILDING_TYPE AS RI_MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY AS RI_MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch", "localtime") AS RI_CREATED, ( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID %s ORDER BY WO.LAST_MOD DESC',
+	getOrder: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE, WO.ITEM_ID, RI.ITEM_NO AS RI_ITEM_NO, RI.DESCRIPTION AS RI_DESCRIPTION, RI.ADDRESS AS RI_ADDRESS, RI.MD_BUILDING_TYPE AS RI_MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY AS RI_MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch", "localtime") AS RI_CREATED, ( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WO.ID = ?',
+	getOrdersByIds: 'SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE, WO.ITEM_ID, RI.ITEM_NO AS RI_ITEM_NO, RI.DESCRIPTION AS RI_DESCRIPTION, RI.ADDRESS AS RI_ADDRESS, RI.MD_BUILDING_TYPE AS RI_MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY AS RI_MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch", "localtime") AS RI_CREATED, ( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE %(idList)s ORDER BY WO.ID',
+	getOrderByExtId: ' SELECT WO.ID ,WO.WORK_NO ,WO.STATUS_CODE ,WO.TYPE_CODE ,WO.COMPLEXITY_CODE ,WO.COMPLEXITY ,WO.DESCRIPTION ,WO.COMMENT ,WO.MD_CAPEX ,WO.PROTOCOL_NO ,WO.PRICE ,DATETIME ( WO.LAST_MOD ,"unixepoch", "localtime" ) AS LAST_MOD ,DATETIME ( WO.CREATED ,"unixepoch", "localtime" ) AS CREATED ,(P.FIRST_NAME || " " || P.LAST_NAME) MODIFIED_BY,WO.IS_FROM_POOL ,WO.OFFICE_CODE, WO.ITEM_ID, RI.ITEM_NO AS RI_ITEM_NO, RI.DESCRIPTION AS RI_DESCRIPTION, RI.ADDRESS AS RI_ADDRESS, RI.MD_BUILDING_TYPE AS RI_MD_BUILDING_TYPE, RI.MD_CONSTRUCTION_CATEGORY AS RI_MD_CONSTRUCTION_CATEGORY, DATETIME(RI.CREATED,"unixepoch", "localtime") AS RI_CREATED, ( SELECT GROUP_CONCAT(P.EMAIL, "|") FROM PERSON AS P ,PERSON_WO AS PWO WHERE P.ID = PWO.PERSON_ID AND PWO.WO_ID = WO.ID ) AS ASSIGNEE ,WO.VENTURE_ID FROM WORK_ORDER AS WO LEFT JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID LEFT JOIN PERSON P ON WO.MODIFIED_BY = P.ID WHERE WORK_NO = ?',
+
     calculateTotalPriceStat: `WITH PARAMS AS ( SELECT STRFTIME('%%s', '%(dateAfter)s', 'utc') AS AFTER_DATE ,STRFTIME('%%s', '%(dateBefore)s', 'utc') + 86400 AS BEFORE_DATE ) 
                                 SELECT SUM(PRICE) AS TOTAL_PRICE, COUNT(WORK_NO) AS WO_COUNT FROM 
                                 ( SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER WHERE ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) )  
@@ -53,7 +53,7 @@ const queries = {
         WHERE IS_SUMMABLE = 'N'
     ),
     WO_DATE AS (
-        SELECT ID, MIN(LAST_MOD) LAST_MOD
+        SELECT ID, MAX(LAST_MOD) LAST_MOD
         FROM (
             SELECT WO.ID, WO.LAST_MOD
             FROM WORK_ORDER WO
@@ -144,33 +144,15 @@ const orders_db = {
             
             var getOrdersStat = db.prepare(query);
             getOrdersStat.all(addCtx(function(err,rows) {
+              getOrdersStat.finalize();
+              db.close();
+                  if (err) {
+                    logErrAndCall(err,cb);
+                  } else {
+                    rows.forEach(row => processOrderRow(row));
+                    cb(null,rows);
+                  }
 
-                var calls = [];
-                rows.forEach(row => {
-                    if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
-                    calls.push((async_cb)=>{
-                        var getOrderItemsStat = db.prepare(queries.getOrderItems);
-                        getOrderItemsStat.bind(row.ITEM_ID).all(addCtx((err, rows) => {
-                            getOrderItemsStat.finalize();
-                            if(err) { 
-                                async_cb(err); 
-                            } else {
-                                row.RELATED_ITEMS = rows;
-                                async_cb();
-                            }
-                        }));
-                    });
-                });
-
-    			async.parallelLimit(calls, 5, addCtx(function(err, result) {
-                    getOrdersStat.finalize();
-                    db.close();
-                    if (err) {
-                        logErrAndCall(err,cb);
-                    } else {
-                        cb(null,rows);
-                    }
-                }));
             }));
                 
         }
@@ -188,32 +170,15 @@ const orders_db = {
         const getOrdersStat = db.prepare(query);
         getOrdersStat.all(addCtx(function(err,rows) {
 
-            var calls = [];
-            rows.forEach(row => {
-                if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
-                calls.push((async_cb)=>{
-                    var getOrderItemsStat = db.prepare(queries.getOrderItems);
-                    getOrderItemsStat.bind(row.ITEM_ID).all(addCtx((err, rows) => {
-                        getOrderItemsStat.finalize();
-                        if(err) { 
-                            async_cb(err); 
-                        } else {
-                            row.RELATED_ITEMS = rows;
-                            async_cb();
-                        }
-                    }));
-                });
-            });
+          getOrdersStat.finalize();
+          db.close();
+          if (err) {
+            logErrAndCall(err,cb);
+          } else {
+            rows.forEach(row => processOrderRow(row));
+            cb(null,rows);
+          }
 
-			async.parallelLimit(calls, 5, addCtx(function(err, result) {
-                getOrdersStat.finalize();
-                db.close();
-                if (err) {
-                    logErrAndCall(err,cb);
-                } else {
-                    cb(null,rows);
-                }
-            }));
         }));
     },
     
@@ -230,29 +195,20 @@ const orders_db = {
             getOrderStat.bind(orderExtId);            
         }
         
-		getOrderStat.get(addCtx(function(err, row) {
+        getOrderStat.get(addCtx(function(err, row) {
             getOrderStat.finalize();
             db.close();
-			if(err) return logErrAndCall(err,cb);
-            
-			if(row == null) {
-				cb(null,null);
-				return;
-			}
+            if(err) return logErrAndCall(err,cb);
 
-            if(row.ASSIGNEE) row.ASSIGNEE = row.ASSIGNEE.split('|');
-            
-            const getOrderItemsStat = db.prepare(queries.getOrderItems);
-            getOrderItemsStat.bind(row.ITEM_ID).all(addCtx((err, rows) => {
-                getOrderItemsStat.finalize();
-                if(err) { 
-                    logErrAndCall(err,cb);
-                } else {
-                    row.RELATED_ITEMS = rows;
-                    cb(null,row);
-                }
-            }));
-		}));
+            if(row == null) {
+                cb(null,null);
+                return;
+            }
+
+            processOrderRow(row);
+            cb(null,row);
+
+        }));
     },
     
     readHistory: function(orderId, cb){
@@ -480,3 +436,11 @@ const orders_db = {
 };
 
 module.exports = orders_db;
+
+function processOrderRow(row) {
+    if (row.ASSIGNEE) {
+        row.ASSIGNEE = row.ASSIGNEE.split('|');
+    }
+    row.RELATED_ITEMS = [{ 'ID': row.ITEM_ID, 'ITEM_NO': row.RI_ITEM_NO, 'DESCRIPTION': row.RI_DESCRIPTION, 'ADDRESS': row.RI_ADDRESS, 'MD_BUILDING_TYPE': row.RI_MD_BUILDING_TYPE, 'MD_CONSTRUCTION_CATEGORY': row.RI_MD_CONSTRUCTION_CATEGORY, 'CREATED': row.RI_CREATED }];
+}
+

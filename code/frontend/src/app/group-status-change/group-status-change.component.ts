@@ -73,8 +73,8 @@ export class GroupStatusChangeComponent implements OnInit {
 
     @Input()
     set listToDisplay(orders:Order[]) {
-        this.ordersToChange = orders;
-        this.copyOrdersToChange = orders;
+        this.ordersToChange = orders.filter(order => order.statusCode !== 'CL');
+        this.copyOrdersToChange = this.ordersToChange;
     }
 
     @Output()

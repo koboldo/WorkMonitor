@@ -27,6 +27,11 @@ export class WOService {
     }
     */
 
+    getOrdersFromProtocol(protocolNo: string): Observable<Order[]> {
+        return this.http.get('/api/v1/orders?protocolNo='+ protocolNo)
+            .pipe(map((response: Object) => this.getWorkOrders(response)))
+    }
+
     getOrdersByStatus(status: string):Observable<Order[]> {
 
         return this.http.get('/api/v1/orders?status='+status)

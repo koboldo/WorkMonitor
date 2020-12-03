@@ -193,12 +193,12 @@ export class ToolsService {
         return 'fa question';
     }
 
-    public isStatusAllowed(order: Order, statusCode: string): boolean {
-        if (statusCode === 'IS' && this.isReadyForProtocol(order,false)) {
+    public isStatusAllowed(order: Order, targetStatusCode: string): boolean {
+        if (targetStatusCode === 'IS' && this.isReadyForProtocol(order,false)) {
             return true;
         } else if (order.assignee && order.assignee.length > 0) {
             return true;
-        } else if (statusCode === 'OP' || statusCode === 'CA' || statusCode === 'SU') {
+        } else if (targetStatusCode === 'OP' || targetStatusCode === 'CA' || targetStatusCode === 'SU') {
             return true;
         }
         return false;
@@ -345,7 +345,7 @@ export class ToolsService {
                 if (element.statusCode === 'IS') {summary.issuedOrders ++;}
                 if (element.statusCode === 'CL') {summary.closeOrders ++;}
               });
-              summary.summaryPrice = this.countSummaryPrice(orders);
+              summary.summaryPrice = this.countSummaryPriceForOrders(orders);
               summary.summaryIsFromPool = this.countSummaryIsFromPool(orders);
         }      
         return summary;
@@ -405,7 +405,7 @@ export class ToolsService {
         return emplyedUser;
     }
 
-    private countSummaryPrice (orders: Order []) : number {
+    public countSummaryPriceForOrders (orders: Order []) : number {
         let summaryPrice = 0;
         orders.forEach(element => {
             if (element.price != undefined) {

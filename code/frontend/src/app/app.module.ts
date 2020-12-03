@@ -100,6 +100,7 @@ import { UsersLeaveCancellationComponent } from './users-leave-cancellation/user
 import { RateValidatorDirective } from './_directives/rateValidator';
 import { ProjectFactorValidatorDirective } from './_directives/projectFactorValidator';
 import { ExportService } from './_services/export.service';
+import { WoGenericListComponent } from './wo-generic-list/wo-generic-list.component';
 
 
 
@@ -118,7 +119,7 @@ import { ExportService } from './_services/export.service';
         routing,
         CheckboxModule
     ],
-    declarations: [
+    declarations: [	
         AppComponent,
         AlertComponent,
         HomeComponent,
@@ -157,8 +158,9 @@ import { ExportService } from './_services/export.service';
         UsersPayrollReportComponent,
         UsersLeaveCancellationComponent,
         RateValidatorDirective,
-        ProjectFactorValidatorDirective
-    ],
+        ProjectFactorValidatorDirective,
+      WoGenericListComponent
+   ],
 
     providers: [
         AlertService,
