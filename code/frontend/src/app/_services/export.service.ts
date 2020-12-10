@@ -13,7 +13,9 @@ constructor()
       if (table.value && columnsToFormat){
         table.value.forEach(record=> {
           columnsToFormat.forEach(col => {
-            record[col] = record[col].toString().replace('.',',');             
+            if (record[col] ) {
+              record[col] = record[col].toString().replace('.',',');
+            }            
           });     
       });
       if (options) {
@@ -22,11 +24,13 @@ constructor()
         table.exportCSV();
       } 
         table.value.forEach(record=> {
-        columnsToFormat.forEach(col => {        
-          record[col] = Number(record[col].toString().replace(',','.'));       
-        });     
-    });
-      }
+          columnsToFormat.forEach(col => {
+            if (record[col]) {
+              record[col] = Number(record[col].toString().replace(',','.'));
+            }               
+          });     
+      });
+    }
 
   }
 }
