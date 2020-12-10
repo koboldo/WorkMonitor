@@ -21,7 +21,8 @@ const queries = {
                                 UNION  SELECT ID ,WORK_NO ,PRICE FROM WORK_ORDER_HIST WHERE 
                                     ( STATUS_CODE = 'CO' AND LAST_MOD BETWEEN ( SELECT AFTER_DATE FROM PARAMS ) AND ( SELECT BEFORE_DATE FROM PARAMS ) ) ) `,
     checkOrdersForProtocol: 'SELECT WORK_NO FROM WORK_ORDER WHERE ID IN (%(idList)s) AND ( PROTOCOL_NO IS NOT NULL OR STATUS_CODE != "IS" )',
-    updateOrdersForProtocol: 'UPDATE WORK_ORDER SET PROTOCOL_NO = "%(protocolNo)s", STATUS_CODE = "CL" WHERE ID IN (%(idList)s)',
+    // updateOrdersForProtocol: 'UPDATE WORK_ORDER SET PROTOCOL_NO = "%(protocolNo)s", STATUS_CODE = "CL" WHERE ID IN (%(idList)s)',
+    updateOrdersForProtocol: 'WITH SETPROTNO AS ( SELECT SUBSTR(OFFICE_CODE,1,1) || "/" || "%(protocolNo)s" AS PROTNO FROM WORK_ORDER WHERE ID IN (%(idList)s) LIMIT 1 ) UPDATE WORK_ORDER SET PROTOCOL_NO = (SELECT PROTNO FROM SETPROTNO), STATUS_CODE = "CL" WHERE ID IN (%(idList)s)',
     // getOrdersForProtocol: `SELECT COALESCE(WO.WORK_NO,"") AS WORK_NO, COALESCE(WO.PRICE,0) AS PRICE, WO.LAST_MOD, COALESCE(WO.DESCRIPTION,"") AS DESCRIPTION, WO.PROTOCOL_NO, SUBSTR(WO.TYPE_CODE,0,INSTR(WO.TYPE_CODE,'.')) AS TYPE, RI.ITEM_NO, COALESCE(P.INITIALS,"") AS INITIALS, WO.VENTURE_ID 
     //                         FROM WORK_ORDER AS WO JOIN RELATED_ITEM AS RI ON WO.ITEM_ID = RI.ID JOIN PERSON AS P ON WO.VENTURE_ID = P.ID 
     //                         WHERE %(idList)s %(protocolNo)s`,
@@ -371,7 +372,7 @@ const orders_db = {
             calls.push(addCtx(function(seqVal,_cb){
                 
                 protNo = 
-                'A' + new Date().getFullYear().toString().substr(-2) + '/'
+                 new Date().getFullYear().toString().substr(-2) + '/'
                       + (1 + new Date().getMonth()).toString().padStart(2,0)
                       + '/' + seqVal;
                 if(logger().isDebugEnabled()) logger().debug('protocol number ' + protNo);

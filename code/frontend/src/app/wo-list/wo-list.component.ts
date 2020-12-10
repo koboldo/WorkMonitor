@@ -6,7 +6,7 @@ import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { TableSummary } from 'app/_models/tableSummary';
 import { ExportService } from 'app/_services/export.service';
-import { DataTable } from 'primeng/primeng';
+import { DataTable, SelectItem } from 'primeng/primeng';
 
 @Component({
     selector: 'app-wo-list',
@@ -24,22 +24,27 @@ export class WoListComponent implements OnInit {
     cols: any;
     summary: TableSummary;
     _exportFileName: string;
+    offices:SelectItem[] = [];
+    selectedOfficeCode: string;
     
     constructor(private toolsService: ToolsService,
                 private woService: WOService,
                 private userService:UserService,
                 private workTypeService:WorkTypeService,
-                private exportService: ExportService) {
+                private exportService: ExportService,
+                private dictService:DictService) {
     }
 
     ngOnInit() {
         this.userService.getVentureRepresentatives().subscribe(vrs => this.vrs = vrs);
         this.userService.getEngineersAndContractors().subscribe(engineers => this.engineers = engineers);
+        this.dictService.getOfficesObs().subscribe((offices:CodeValue[]) => this.getOffice(offices));
         this.cols = [          
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35" },
             { field: 'mdCapex', header: 'CAPEX',hidden:false, sortable:true, filter:true, class:"width-35" },
             { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true },
-            { field: 'type', header: 'Typ', sortable:true, filter:false, type:true, class:"width-50" },
+            { field: 'type', header: 'Typ', sortable:true, filter:false, type:true, class:"width-100" },
+            { field: 'officeCode', header: 'Biuro' ,hidden:false, sortable: true, filter:false, class:"width-50 text-center", offices:true },
             { field: 'isFromPool', header: 'Pula' ,hidden:false, sortable:true, filter:true, isFromPool:true, icon:true, class:"text-center" },
             { field: 'magicIsFromPool', header: 'Pula',sortable:true, filter:true, class:"width-20 text-center", isMagicFromPool:true, icon:true },
             { field: 'price', header: 'Wartość', sortable:true, filter:true, class:"width-45 text-right", price:true },
@@ -49,16 +54,16 @@ export class WoListComponent implements OnInit {
             { field: 'lastModDate', header: 'Mod.' , sortable:true, filter:true, class:"width-50"},
             { field: 'creationDate', header: 'Utw.',hidden:false, sortable:true, filter:true, class:"width-50" },
             { field: 'itemNo', header: 'Numer obiektu' , sortable:true, filter:true, class:"width-50" },
-            { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true, filter:true, class:"width-135" },
+            { field: 'ventureCompany', header: 'Inwestor',hidden:false, sortable:true, filter:true, class:"width-50" },
             { field: 'ventureDisplay', header: 'Zleceniodawca',hidden:false, sortable:true, filter:true, class:"width-135" },
-            { field: 'frontProcessingDesc', header: 'Powód',hidden:false, sortable:true, filter:false, class:"width-135" },
+            { field: 'frontProcessingDesc', header: 'Powód',hidden:false, sortable:true, filter:false, class:"width-135" },          
             { field: 'none',excludeGlobalFilter: true , button: true, details:true, icone:true, class:"width-35 text-center" },
             // hidden columns 
             { field: 'complexityCode', header: 'Zł.', hidden:true, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },              
             { field: 'assignee', header: 'Wykonawca',hidden:true, sortable:true, filter:true, class:"width-100" },
             { field: 'lastModDate', header: 'Mod.' ,hidden:true, sortable:true, filter:true, class:"width-50" },           
             { field: 'id', header: 'id', hidden: true, sortable: true, filter:true },
-            { field: 'officeCode', header: 'Biuro' ,hidden:true, sortable: true, filter:true, class:"text-center-30" },
+            
             { field: 'sComments', header: 'Komentarz',hidden:true,  sortable:true, filter:true, class:"width-250", icon:true },
             { field: 'description', header: 'Opis',hidden:true,  filter:true ,class:"width-250" },              
             { field: 'itemBuildingType', header: 'Typ obiektu', hidden:true, sortable:true, filter:true },
@@ -97,6 +102,11 @@ export class WoListComponent implements OnInit {
         this.selectedOrder=order;
         this.selectedOrder.assigneeFull = this.toolsService.getEngineers(this.selectedOrder.assignee, this.engineers);
         this.displayDetailsDialog=true;
+    }
+
+    private getOffice (pairs:CodeValue[]):void {
+        this.toolsService.mapToSelectItem(pairs, this.offices);  
+        this.offices.push({label: 'Wszystkie', value: ''});
     }
 
     private mapVentureRepresentative(orders:Order[], vrs:User[]):void {

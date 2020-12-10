@@ -31,13 +31,19 @@
             <span class="header">
                 {{col.header}}
                 <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
-            </span>         
+            </span> 
+            
           </th>
         </tr>
         <tr>
-          <th *ngFor="let col of columns"  [hidden]="col.hidden" >
+          <th class="drop-down-header" *ngFor="let col of columns"  [hidden]="col.hidden" >
             <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" 
             pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter"> 
+            <div>
+              <p-dropdown *ngIf="col.offices" [options]="offices" [style]="{'width':'100%'}"
+              placeholder="Biuro"
+               (onChange)="tt.filter($event.value, col.field, col.filterMatchMode)"></p-dropdown>       
+            </div>
           </th>
         </tr>
     </ng-template>
