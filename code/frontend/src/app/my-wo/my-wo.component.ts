@@ -71,6 +71,7 @@ export class MyWoComponent implements OnInit {
             { field: 'complexityCode', header: 'Złożoność', sortable:true, complexity:true, icon:true,class:"width-50 text-center" },
             { field: 'mdCapex', header: 'CAPEX', sortable:true, class:"width-100 text-center" },
             { field: 'price', header: 'Cena', sortable:true, class:"width-80 text-right", price:true},
+            { field: 'isFromPool', header: 'Pula' , sortable:true, filter:true, isFromPool:true, icon:true, class:"width-50 text-center"},
             { field: 'sComments', header: 'Komentarz', sortable:true ,  class:"width-100 ", comment:true,icon:true},
             { field: 'description', header: 'Opis', sortable:true, class:"width-100 text-center" },
             { field: 'lastModDate', header: 'Modyfikacja.' , sortable:true,  class:"width-100 text-center" },

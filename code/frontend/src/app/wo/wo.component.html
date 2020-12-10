@@ -35,7 +35,7 @@
     </div>
   </div>
   <p-dialog [(visible)]="displayChangeStatusDialog" header="Zlecenia do zmany statusu" [minWidth]="800" 
-    [style]="{'margin-left':'30px', 'margin-right':'30px'}" [responsive]="true" [blockScroll]="true">
+    [style]="{'margin-left':'10px', 'margin-right':'10px'}" [responsive]="true" [blockScroll]="true">
     <app-group-status-change [parent]="this" [listToDisplay]="orders" [operator]="operator" [operatorMode]="true"
       (closeModalEvent)="onClose($event)"></app-group-status-change>
   </p-dialog>

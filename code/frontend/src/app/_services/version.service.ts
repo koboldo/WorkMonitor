@@ -20,6 +20,7 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.88', 'Usuniecie kolumn z grupowej zmiany statusów.'),
             new CodeValue('1.5.87', 'Poprawka eksportu do csv.'),
             new CodeValue('1.5.86', 'Usunięcie zleceń w stanie zamknięte z grupowej zmiany statusów.'),
             new CodeValue('1.5.85', 'Podgląd zleceń z protokołu - zakładka Protokół'),
