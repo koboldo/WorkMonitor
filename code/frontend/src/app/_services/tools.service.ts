@@ -208,16 +208,15 @@ export class ToolsService {
         return statusCode === 'OP' || statusCode === 'AS' || statusCode === 'CO' || statusCode === 'IS' || statusCode === 'AC';
     }
 
-
-    private logReason(order:Order){
+    private logNotReadyForProtocolReason(order:Order) {
         let reason: string [] = [];
-        if(order.officeCode!='KAT'&& order.workNo===this.NO_WO){
+        if(order.officeCode!='KAT' && order.workNo===this.NO_WO){
             reason.push(' Brak numeru zlecenia ');
         }
-        if (order.officeCode==='KAT'&& order.mdCapex===this.NO_CAPEX){
+        if (order.officeCode==='KAT' && order.mdCapex===this.NO_CAPEX){
             reason.push(' Brak numeru CAPEX ');
         }
-        if (order.officeCode==='KAT'&& order.workNo===this.NO_WO){
+        if (order.officeCode==='KAT' && order.workNo===this.NO_WO){
             reason.push(' Brak numeru zlecenia ');
         }
         if (!order.assignee){
@@ -226,56 +225,39 @@ export class ToolsService {
         if (order.itemId===undefined){
             reason.push(' Brak przypisanego obiektu ');
         }
-        if (order.typeCode!='OT'&& order.price===undefined){
+        if (order.typeCode!='OT' && order.price===undefined){
             reason.push(' Brak ceny zlecenia ');
         }
-        if (order.typeCode!='OT'&& order.price===0){
+        if (order.typeCode!='OT' && order.price===0){
             reason.push(' Brak ceny zlecenia ');
+        }
+        if (order.protocolNo){
+            reason.push(' Znajduje się już w protokole ' + order.protocolNo + ' ');
         }
         
         return reason.toString();
     }
-    public isReadyForProtocol(order:Order, isForProtocol:boolean):boolean {
-       if (isForProtocol)
-       {  
-           if  (order.typeCode === 'OT'){
-               if (order.officeCode==='KAT'){
-                   if(order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.mdCapex !== this.NO_CAPEX)
-                   return true;
-               }
-               else if (order.workNo != this.NO_WO && order.assignee && order.itemId != undefined){
-                   return true;
-               }
-               else {
-                    order.frontProcessingDesc=this.logReason(order);
-                    return false;
-               }             
-           }
-           else if (order.officeCode==='KAT'){
-                if (order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.mdCapex !== this.NO_CAPEX && order.price!=undefined && order.price!=0){
-                    return true;
-                 }
-                 else {
-                     order.frontProcessingDesc=this.logReason(order);
-                     return false;
-                 }  
-                }             
-           else {
-               if (order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.price!=undefined && order.price!=0) {
-                   return true;
-               }
-            else {
-                order.frontProcessingDesc=this.logReason(order);
-                return false;
-            }
-           } 
-        }
-        if (order.officeCode === 'KAT') {
-            return order.workNo != this.NO_WO && order.assignee && order.itemId != undefined && order.mdCapex !== this.NO_CAPEX;
-        }
-        return order.workNo != this.NO_WO && order.assignee && order.itemId != undefined;
+
+    private isReadyForProtocolStatus(order:Order):boolean {
+        return order.workNo != this.NO_WO 
+            && order.assignee 
+            && order.itemId != undefined 
+            && (order.officeCode !== 'KAT' || order.mdCapex !== this.NO_CAPEX);
     }
 
+    public isReadyForProtocol(order: Order, isForProtocol: boolean): boolean {
+        if (!isForProtocol) {
+            return this.isReadyForProtocolStatus(order);
+        }
+        
+        if (!order.protocolNo && this.isReadyForProtocolStatus(order) && (order.typeCode === 'OT' || (order.price != undefined && order.price != 0))) {
+            return true;
+        } else {
+            order.frontProcessingDesc = this.logNotReadyForProtocolReason(order);
+            return false;
+        }
+
+    }
 
     public downloadXLSFile(fileName: string, contentBase64: string) {
 
