@@ -20,6 +20,7 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.90', 'Wyświetlanie informacji o błędach.'),
             new CodeValue('1.5.89', 'Usuniecie zleceń będących w innym protokole z listy zleceń do protokołu.'),
             new CodeValue('1.5.88', 'Usuniecie kolumn z grupowej zmiany statusów.'),
             new CodeValue('1.5.87', 'Poprawka eksportu do csv.'),

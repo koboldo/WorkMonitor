@@ -139,12 +139,12 @@ export class UserChangeComponent implements OnInit {
         this.selectedUser.user.excelId=+((new Date()).getFullYear()+'000'+this.selectedUser.user.excelId);
         this.userService.update(this.selectedUser.user, this.selectedDate, this.isOperatorPresident())
             .subscribe(
-                data => {
+                () => {
                 this.alertService.success('Pomyślnie zakończono współpracę z ' + this.selectedUser.user.firstName+" "+this.selectedUser.user.lastName, true);
                 this.router.navigate(['employees']);
             },
-                error => {
-                this.alertService.error('Nie udalo się zakończyć współpracy' + error);
+                () => {
+                this.alertService.error('Nie udalo się zakończyć współpracy ');
                 this.loading = false;
             });
     }
@@ -220,13 +220,13 @@ export class UserChangeComponent implements OnInit {
 
         this.userService.update(this.selectedUser.user, this.selectedUser.effectiveDate, this.isOperatorPresident())
             .subscribe(
-                data => {
+               () => {
                 this.alertService.success('Pomyślnie zmieniono użytkownika ' + this.selectedUser.user.email, true);
                 this.selectedUser.user.roleCode.indexOf('VE') === -1 ? this.router.navigate(['employees']) : this.router.navigate(['contractors']);
                 //this.router.navigate(['']); //navigate home
             },
-                error => {
-                this.alertService.error('Nie udalo się zmienić użytkownika' + error);
+                () => {
+                this.alertService.error('Nie udalo się zmienić użytkownika');
                 this.loading = false;
             });
     }

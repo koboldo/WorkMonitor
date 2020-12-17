@@ -44,7 +44,9 @@ export class HttpProgressInterceptor implements HttpInterceptor {
                     }
                     this.router.navigate(['logme']); //navigate home
                 } else {
-                    this.alertService.error("Wewnętrzny bląd zasobu: ("+errBody['statusText']+'), '+ (errBody !== undefined && errBody.url ? errBody.url : "?"));
+                    let simpleError = "Wewnętrzny bląd zasobu: ("+errBody['statusText']+'), '+ (errBody !== undefined && errBody.url ? errBody.url : "?");
+                    let messageToDisplay = errBody.error.message ? errBody.error.message : simpleError;
+                    this.alertService.error(messageToDisplay);
                 }
 
             }
