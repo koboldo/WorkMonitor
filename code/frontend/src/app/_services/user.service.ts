@@ -22,7 +22,7 @@ export class UserService {
   }
 
   create(user: User) {
-    return this.http.post('/api/v1/', user).pipe(map((response: Object) => response));
+    return this.http.post('/api/v1/persons/', user).pipe(map((response: Object) => response));
   }
 
   update(user: User, effectiveDateItem: SelectItem, isAlwaysFromStartOfCurrentMonth) {
@@ -36,7 +36,7 @@ export class UserService {
       return this.http.put('/api/v1/persons/' + strippedUser.id, strippedUser).pipe(map((response: Object) => response));
     } else {
       return this.http.put('/api/v1/persons/' + strippedUser.id +
-          '?effectiveDate=' + this.toolsService.formatDate(effectiveDate, 'MM-dd'), strippedUser).pipe(map((response: Object) => response));
+          '?effectiveDate=' + this.toolsService.formatDate(effectiveDate, 'yyyy-MM-dd'), strippedUser).pipe(map((response: Object) => response));
     }
   }
 
