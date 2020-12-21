@@ -47,8 +47,10 @@ export class AlertComponent implements OnDestroy {
                 },
                 10000);
         }
-        else
-        this.lastMessage = [];
+        else {
+            this.lastMessage = [];
+        }
+ 
     }
 
     private removeGrowl(message:Message):void {
