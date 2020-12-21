@@ -114,7 +114,7 @@ export class GroupStatusChangeComponent implements OnInit {
             if (!order.comments) {
                 order.comments = new Comments(null);
             }
-            let reason:string = (this.status.code === 'SU' || this.status.code === 'CA') ? 'Anulowanie' : 'Edycja';
+            let reason:string = this.getReason(this.status.code);
             commentAdd(order.comments, reason, this.operator, this.newComment);
         }
         console.log(order.comments);
@@ -181,6 +181,25 @@ export class GroupStatusChangeComponent implements OnInit {
 
         }
 
+    }
+
+    private getReason (statusCode: string): string {
+        let reson: string;
+        switch (statusCode) {
+            case 'SU':
+                reson = 'Zawieszone';
+                break;
+            case 'CA':
+                reson = 'Anulowane';
+                break;
+            case 'TR':
+                 reson = 'Przeniesione do kosza';
+                 break;
+            default:
+                reson = 'Edycja'
+                break;
+        }
+        return reson;
     }
 
     private getStatus(statusCode: string): CodeValue {
