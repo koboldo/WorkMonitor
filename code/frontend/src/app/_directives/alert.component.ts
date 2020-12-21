@@ -15,8 +15,7 @@ export class AlertComponent implements OnDestroy {
     private subLogin: Subscription;
 
     growlMsgs: Message[] = [];
-    lastMessage: Message[];
-
+    lastMessage: Message[] = [];
     constructor(private alertService: AlertService, private authService: AuthenticationService) {
         // subscribe to alert messages
         this.subscription = alertService.getMessage().subscribe(message => this.handleMessage(message));
@@ -39,8 +38,7 @@ export class AlertComponent implements OnDestroy {
         if (message !== undefined) {
 
             console.log("growl: "+JSON.stringify(message)  );
-            this.growlMsgs.push(message);
-            this.lastMessage = [];
+            this.growlMsgs.push(message);           
             this.lastMessage.push(message);
 
             setTimeout(() =>
@@ -49,6 +47,10 @@ export class AlertComponent implements OnDestroy {
                 },
                 10000);
         }
+        else {
+            this.lastMessage = [];
+        }
+ 
     }
 
     private removeGrowl(message:Message):void {

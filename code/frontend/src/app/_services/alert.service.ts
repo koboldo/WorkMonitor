@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import {Message} from 'primeng/primeng';
 
 @Injectable()
 export class AlertService {
@@ -23,14 +22,14 @@ export class AlertService {
         });
     }
 
-
-
     success(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ severity: 'success', detail: message, summary: 'Sukces!' });
 
     }
-
+    /**
+   * @description If the error comes from backend, the error message will already be displayed in pop -up
+   */
     error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ severity: 'error', detail: message, summary: 'Błąd!' });

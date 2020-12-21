@@ -22,7 +22,7 @@ export class UserService {
   }
 
   create(user: User) {
-    return this.http.post('/api/v1/persons', user).pipe(map((response: Object) => response));
+    return this.http.post('/api/v1/persons/', user).pipe(map((response: Object) => response));
   }
 
   update(user: User, effectiveDateItem: SelectItem, isAlwaysFromStartOfCurrentMonth) {

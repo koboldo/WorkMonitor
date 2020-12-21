@@ -110,12 +110,12 @@ export class UserRegisterComponent implements OnInit {
 
         this.userService.create(this.user)
             .subscribe(
-                data => {
+                () => {
                     this.alertService.success('Pomyślnie dodano nowego użytkownika '+this.user.email, true);
                     this.router.navigate(['']); //navigate home
                 },
-                error => {
-                    this.alertService.error('Nie udalo się dodać użytkownika' +error);
+                () => {
+                    this.alertService.error('Nie udało się dodać użytkownika');
                     this.loading = false;
                 });
     }
