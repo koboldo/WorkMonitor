@@ -101,6 +101,7 @@ import { RateValidatorDirective } from './_directives/rateValidator';
 import { ProjectFactorValidatorDirective } from './_directives/projectFactorValidator';
 import { ExportService } from './_services/export.service';
 import { WoGenericListComponent } from './wo-generic-list/wo-generic-list.component';
+import { ReportService } from './_services/report.service';
 
 
 
@@ -196,7 +197,8 @@ import { WoGenericListComponent } from './wo-generic-list/wo-generic-list.compon
             useClass: HttpProgressInterceptor,
             multi: true,
         },
-        ExportService
+        ExportService,
+        ReportService
     ],
     bootstrap: [AppComponent]
 })

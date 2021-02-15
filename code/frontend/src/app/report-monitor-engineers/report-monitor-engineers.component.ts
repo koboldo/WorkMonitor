@@ -11,6 +11,7 @@ import { WOService, RelatedItemService, UserService, DictService, AlertService, 
 import { Calendar } from '../_models/calendar';
 import { DataTable } from 'primeng/primeng';
 import { ExportService } from 'app/_services/export.service';
+import { ReportService } from 'app/_services/report.service';
 
 declare var jquery:any;
 declare var $ :any;
@@ -59,7 +60,8 @@ export class ReportMonitorEngineersComponent implements OnInit {
                 private alertService:AlertService,
                 public toolsService:ToolsService,
                 private timesheetService: TimesheetService,
-                private exportService: ExportService) {
+                private exportService: ExportService,
+                private reportService: ReportService) {
 
         this.dictService.init();
         this.workTypeService.init();
@@ -77,18 +79,13 @@ export class ReportMonitorEngineersComponent implements OnInit {
     ngOnInit() {
 
         this.userService.getAllStaff().subscribe(users => this.users = users);
-
         this.workTypeService.getAllWorkTypes().subscribe(workTypes => this.workTypes = workTypes);
-
         this.schedulerHeader = {
             left: 'prev,next today',
             center: 'title',
             right: 'month,agendaWeek,agendaDay'
         };
-
-
         this.search();
-
         this.cols = [
             { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true,exportable:false},            
             { field: 'id', header: 'Id',hidden:true, sortable: true, filter:true,exportable:false},
@@ -374,21 +371,23 @@ export class ReportMonitorEngineersComponent implements OnInit {
 
 
     private setMark(userData: UserReport, utilization: number): void {
-        if (utilization > 100) {
-            this.setIcon(userData, "fa fa-trophy", "green");
-        } else if (utilization >= 80) {
-            this.setIcon(userData, "fa fa-thumbs-up", "green");
-        } else if (utilization > 40 && utilization < 80) {
-            this.setIcon(userData, "fa fa-bell", "orange");
-        } else if (utilization > 0) {
-            this.setIcon(userData, "fa fa-thumbs-down", "red");
-        } else if (utilization == 0) {
-            this.setIcon(userData, "fa fa-exclamation", "#902828");
-        } else if (utilization == this.holidays) {
-            this.setIcon(userData, "fa fa-hotel", "grey");
-        } else if (utilization == this.noTimesheets) {
-            this.setIcon(userData, "fa fa-question-circle", "darkgrey");
-        }
+        // if (utilization > 100) {
+        //     this.setIcon(userData, "fa fa-trophy", "green");
+        // } else if (utilization >= 80) {
+        //     this.setIcon(userData, "fa fa-thumbs-up", "green");
+        // } else if (utilization > 40 && utilization < 80) {
+        //     this.setIcon(userData, "fa fa-bell", "orange");
+        // } else if (utilization > 0) {
+        //     this.setIcon(userData, "fa fa-thumbs-down", "red");
+        // } else if (utilization == 0) {
+        //     this.setIcon(userData, "fa fa-exclamation", "#902828");
+        // } else if (utilization == this.holidays) {
+        //     this.setIcon(userData, "fa fa-hotel", "grey");
+        // } else if (utilization == this.noTimesheets) {
+        //     this.setIcon(userData, "fa fa-question-circle", "darkgrey");
+        // }
+        let iconAndColor = this.reportService.GetIconAndColorForUserUtilization(utilization,this.holidays,this.noTimesheets);
+        this.setIcon(userData,iconAndColor.icon,iconAndColor.color);
 
         if (!this.selectedReports || this.selectedReports.length < 1 || this.isReportSelected(userData.id, this.selectedReports)) {
             if (utilization != this.holidays && utilization != this.noTimesheets) {
