@@ -1,7 +1,7 @@
 export class UserUtilizationIconAndColor {
 
     /**
-     * @description Class 
+     * @description Klasa zaokreślajaca ikonę i jej kolor w rapotorach wydaności. 
      */
     constructor(icon: string, color: string) {
         this.icon = icon;

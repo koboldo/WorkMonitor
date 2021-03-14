@@ -150,9 +150,18 @@ body .ui-button.ui-state-default.ui-button-danger:enabled:active, body .ui-butto
 .width-20 {
     width: 20%;
 }
+.text-center-25 {
+    text-align:center;
+    width :25%;
+}
 .text-center-30 {
     text-align:center;
     width :30%;
+}
+.text-left-30 {
+    text-align:left;
+    width :30%;
+    padding: 5;
 }
 .width-35 {
     width: 35%;
@@ -243,3 +252,7 @@ td {
         width: 250px;
     }
 } 
+    /*Style for icons*/
+    .turbo-table-filtr-icon {
+        margin-right: 10px;
+    }
