@@ -220,7 +220,7 @@ const timeSheets_db = {
         // const db = dbUtil.getDatabase();
         const myDB = (db == null) ? dbUtil.getDatabase() : db;
         const query = dbUtil.prepareFiltersByInsertion(queries.getTimesheets,params,filters.getTimesheets);
-        const getTimesheetsStat = db.prepare(query);
+        const getTimesheetsStat = myDB.prepare(query);
 		getTimesheetsStat.all(addCtx(function(err, rows) {
             getTimesheetsStat.finalize();
             // db.close();
