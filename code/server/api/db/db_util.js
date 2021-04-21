@@ -4,6 +4,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const async = require('async');
+const nanoid = require('nanoid');
 const sprintf = require("sprintf-js").sprintf;
 const logger = require('../logger').logger;
 const addCtx = require('../logger').addCtx;
@@ -15,23 +16,48 @@ var querySeq = 'SELECT SEQ_VAL FROM SEQUENCER WHERE ROWID = ?';
 const columnsToSkip = ['ID','LAST_MOD','CREATED'];
 const columnsWithoutQuote = ['WORK_DATE', 'FROM_DATE', 'TO_DATE','BREAK','TRAINING'];
 
+const proxyHandler = {
+    get(target, propKey, receiver) {
+		var propValue = target[propKey];
+		if (typeof propValue != "function"){
+			return propValue;
+		}
+		else{
+			return addCtx(function() {
+				if(propKey == 'close') logger().debug("proxy call to " + propKey + " of " + receiver.proxyId);
+                let retVal = propValue.apply(target, arguments);
+                
+                //return retVal;
+
+                if(retVal.hasOwnProperty('proxyId')) return retVal;
+                
+                let proxyRetVal = new Proxy(retVal,proxyHandler);
+                proxyRetVal.proxyId = nanoid(16);
+                return proxyRetVal;
+			});
+		}
+    }
+};
+
 const db_util = {
     
     getDatabase: function() {
+        // logger().error(new Error("my stack for getting db handler").stack);
         let dbPath = path.join(process.env.WM_CONF_DIR, 'work-monitor.db');
 
         let db = new sqlite3.Database(dbPath,sqlite3.OPEN_READWRITE,addCtx(function(err) {
                 if(err) {
                     logger().err('error while connecting to db ' + err.name + ' ' + err.message);
                 } else {
-                    if(logger().isDebugEnabled()) logger().debug('connected successfully to db in location ' + dbPath);
+                    if(logger().isDebugEnabled()) logger()
+                                    .debug('connected successfully to db in location ' + dbPath + ' of ' + proxyDb.proxyId);
                 }
         }));
 
-        // db.on('profile', addCtx(function(sql,tm){
-        //     logger().debug('sql ' + sql);
-        //     logger().debug('time ' + tm);
-        // }));
+        db.on('profile', addCtx(function(sql,tm){
+            logger().debug('sql ' + sql);
+            logger().debug('time ' + tm);
+        }));
 
         db.serialize(function() {
             db.exec( 'PRAGMA journal_mode = WAL;' )
@@ -39,7 +65,13 @@ const db_util = {
                 .exec( 'PRAGMA foreign_keys = ON;' )
                 .exec( 'PRAGMA temp_store = 2;' );
         });
-        return db;
+
+        const proxyDb = new Proxy(db, proxyHandler);
+        proxyDb.proxyId = nanoid(16);
+        logger().debug('getting db handler ' + proxyDb.proxyId);
+        return proxyDb;
+
+        // return db;
     },
     
     performInsert: function(object, tableName, maxIdQuery, cb, db) {

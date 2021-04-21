@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.5.0",
+    "async": "^3.2.0",
     "body-parser": "^1.17.2",
     "continuation-local-storage": "^3.2.1",
     "excel4node": "^1.7.2",
@@ -34,7 +34,7 @@
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "csv-parse": "^2.0.0",
+    "csv-parse": "^4.15.4",
     "xml2js": "^0.4.19"
   }
 }
