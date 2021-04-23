@@ -209,6 +209,8 @@ const persons_db = {
 			if(err) return logErrAndCall(err,cb);
 			
 			rows.forEach(function(row){
+				if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
+				
 				const ids = [];
 				if(row.WORK_ORDERS)	row.WORK_ORDERS.split("|").forEach((item) => ids.push(parseInt(item,10)));
 				row.WORK_ORDERS = ids;
