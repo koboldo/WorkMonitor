@@ -9,7 +9,7 @@ const logErrAndCall = require('../local_util').logErrAndCall;
 const addCtx = require('../logger').addCtx;
 
 const queries = {
-	getPersons: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON ORDER BY LAST_NAME, FIRST_NAME, MODIFIED_BY ASC',
+	getPersons: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, (SELECT GROUP_CONCAT(WO.ID, "|") FROM WORK_ORDER WO, PERSON_WO PW WHERE PW.PERSON_ID = P1.ID AND PW.WO_ID = WO.ID AND WO.STATUS_CODE = "AS") AS WORK_ORDERS FROM PERSON P1 ORDER BY LAST_NAME, FIRST_NAME, MODIFIED_BY ASC',
 	getPerson: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, MODIFIED_BY, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD FROM PERSON WHERE ID = ?',
 	getPersonHistory: 'SELECT ID, EXCEL_ID, EMAIL, LAST_NAME, FIRST_NAME, OFFICE_CODE, ROLE_CODE, RANK_CODE, IS_ACTIVE, IS_EMPLOYED, PROJECT_FACTOR, IS_FROM_POOL, COMPANY, AGREEMENT_CODE, ACCOUNT, PHONE, POSITION, ADDRESS_STREET, ADDRESS_POST, SALARY, SALARY_RATE, LEAVE_RATE, DATETIME(HIST_CREATED ,"unixepoch", "localtime") AS HIST_CREATED, DATETIME(CREATED ,"unixepoch", "localtime") AS CREATED, DATETIME(LAST_MOD ,"unixepoch", "localtime") AS LAST_MOD, MODIFIED_BY, IS_DELETED FROM PERSON_HIST WHERE ID = ?',
 	getMaxPersonId: 'SELECT MAX(ID) AS MAX_ID FROM PERSON',
@@ -203,9 +203,21 @@ const persons_db = {
 		const db = dbUtil.getDatabase();
 		const getPersonsStat = db.prepare(queries.getPersons);
 		getPersonsStat.all(addCtx(function(err, rows) {
-			
+			getPersonsStat.finalize();
+			db.close();
+
 			if(err) return logErrAndCall(err,cb);
 			
+			rows.forEach(function(row){
+				if(row.ROLE_CODE) row.ROLE_CODE = row.ROLE_CODE.split(',');
+				
+				const ids = [];
+				if(row.WORK_ORDERS)	row.WORK_ORDERS.split("|").forEach((item) => ids.push(parseInt(item,10)));
+				row.WORK_ORDERS = ids;
+			});
+			
+			cb(null,rows);
+			/**
 			// we need to group async funcs in order to deal in the same thread
 			const calls = [];
 			
@@ -236,6 +248,7 @@ const persons_db = {
 						cb(null,rows);
 					}
 				}));
+				*/
 		}));
 	},
 

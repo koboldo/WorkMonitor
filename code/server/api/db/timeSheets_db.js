@@ -216,14 +216,15 @@ const filters = {
 
 const timeSheets_db = {
         
-	readAll: function(params, cb) {
-        const db = dbUtil.getDatabase();
-        
+	readAll: function(params, cb, db) {
+        // const db = dbUtil.getDatabase();
+        const myDB = (db == null) ? dbUtil.getDatabase() : db;
         const query = dbUtil.prepareFiltersByInsertion(queries.getTimesheets,params,filters.getTimesheets);
-        const getTimesheetsStat = db.prepare(query);
+        const getTimesheetsStat = myDB.prepare(query);
 		getTimesheetsStat.all(addCtx(function(err, rows) {
             getTimesheetsStat.finalize();
-            db.close();
+            // db.close();
+            if(db == null) myDB.close();
 			if(err) return logErrAndCall(err,cb);
 			
 			if(rows == null) {
@@ -234,13 +235,15 @@ const timeSheets_db = {
 		}));        
     },
 
-    read: function(params, cb) {
-        const db = dbUtil.getDatabase();
+    read: function(params, cb, db) {
+        // const db = dbUtil.getDatabase();
+        const myDB = (db == null) ? dbUtil.getDatabase() : db;
         const query = dbUtil.prepareFiltersByInsertion(queries.getTimesheet,params,filters.getTimesheet);
-        const getTimesheetStat = db.prepare(query);
+        const getTimesheetStat = myDB.prepare(query);
         getTimesheetStat.get(addCtx((err,row)=>{
             getTimesheetStat.finalize();
-            db.close();
+            // db.close();
+            if(db == null) myDB.close();
 
             if(err) return logErrAndCall(err,cb);
             cb(null, row);
@@ -261,17 +264,25 @@ const timeSheets_db = {
         
         const mydb = dbUtil.getDatabase();
 
+        //newId denotes if insert was successful - if not update is needed (there already was such record)
         dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, addCtx((err, newId) => {
             let updating = false;
             if(err) {  
+                mydb.close();
                 logErrAndCall(err,cb);  
             } else if(newId) {
                 this.read(
-                    {personId: timeSheet.PERSON_ID, workDate: workDateCopy},
+                    { 
+                        personId: timeSheet.PERSON_ID, 
+                        workDate: workDateCopy  
+                    },
                     addCtx((err,row)=>{
-                                  cb(null, 0, row);
-                            })); 
-                        
+                                mydb.close();
+                                if(err) logErrAndCall(err,cb); 
+                                else cb(null, 0, row);
+                            }), 
+                    mydb
+                ); 
             } else {
                 updating = true;
                 const idObj = {};
@@ -280,19 +291,30 @@ const timeSheets_db = {
                 delete timeSheet.CREATED_BY;
 
                 dbUtil.performUpdate(idObj, timeSheet, 'TIME_SHEET', addCtx((err,result) => {
-                    if(err)  logErrAndCall(err,cb);  
+                    if(err) {
+                        mydb.close();
+                        logErrAndCall(err,cb);
+                    }   
                     else if(result) { 
                         this.read(
-                            {personId: timeSheet.PERSON_ID, workDate: workDateCopy},
+                            {
+                                personId: timeSheet.PERSON_ID, 
+                                workDate: workDateCopy
+                            },
                             (err,row)=>{
+                                mydb.close();
+                                if(err) logErrAndCall(err,cb);
                                 cb(null, 1, row);
-                                });
+                            },
+                            mydb
+                        );
+                    } else {
+                        mydb.close();
                     }
-                    mydb.close();
                 }, mydb));    
             }
-            if(!updating) mydb.close();
-        }, mydb));
+            // if(!updating) mydb.close();
+        }), mydb);
     },
 
     createLeave: function(leaveSheet, cb) {
@@ -303,9 +325,9 @@ const timeSheets_db = {
         const leaveSheetStat = db.prepare(query);
         leaveSheetStat.run(addCtx((err,result)=>{
             leaveSheetStat.finalize();
-            db.close();
             if(err)  {
                 logErrAndCall(err,cb);  
+                db.close();
             } else {
                 this.readAll(
                     {
@@ -316,7 +338,9 @@ const timeSheets_db = {
                     (err,rows)=>{
                         if(err)  logErrAndCall(err,cb);  
                         else cb(null,rows);
-                    }
+                        db.close();
+                    },
+                    db
                 );
             }
         }));
