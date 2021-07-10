@@ -30,7 +30,7 @@
     </div>
     <div *ngIf="user.roleCode.indexOf('OP') != -1" class="ui-grid-col-3">
       <p-fieldset legend="Urlopy">
-        <user-leave *ngIf="users?.length > 0" [users]="users"></user-leave>
+        <user-leave (refreshtTimesheetTable)="refreshTable($event)" *ngIf="users?.length > 0" [users]="users"></user-leave>
       </p-fieldset>
     </div>
     <div *ngIf="user.roleCode.indexOf('OP') != -1 || user.roleCode.indexOf('MG') != -1" class="ui-grid-col-2">
