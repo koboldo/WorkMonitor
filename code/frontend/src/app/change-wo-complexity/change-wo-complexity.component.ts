@@ -68,7 +68,7 @@ export class ChangeWoComplexityComponent implements OnInit {
             { field: 'officeCode', header: 'Biuro' , sortable: true, filter:true,class:"text-center-30"},
             { field: 'id', header: 'id', hidden: true, sortable: true, filter:true},
             { field: 'workNo', header: 'Zlecenie', sortable: true, filter:true, class:"width-35"},
-            { field: 'status', header: 'Status' , filter:true,statusCode:true, class:"width-35", icon:true},
+            { field: 'status', header: 'Status' ,sortable: true, filter:true,statusCode:true, class:"width-35", icon:true},
             { field: 'type', header: 'Typ', sortable:true, filter:true, type:true, class:"width-50"},
             { field: 'complexityCode', header: 'Zł.', hidden:false, sortable:true, filter:false,complexity:true, icon:true,class:"width-35 text-center" },
             { field: 'complexity', header: 'Wycena [H]' , hidden:false, sortable:true, filter:false,class:"width-50 text-center"},
