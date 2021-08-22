@@ -26,7 +26,7 @@ const queries = {
     `WITH MYL(N) AS (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9))
     , MY_FROM_DATE(T) AS (VALUES (%(FROM_DATE)s))
     , MY_TO_DATE(T) AS (VALUES (%(TO_DATE)s))
-    INSERT INTO TIME_SHEET(
+    REPLACE INTO TIME_SHEET(
         PERSON_ID, WORK_DATE, USED_TIME, FROM_DATE, TO_DATE, IS_LEAVE, CREATED_BY, BREAK )
     SELECT
         %(PERSON_ID)s, FD.T+86400*(M3.N*100+M2.N*10+M1.N), 8*60*60, FD.T+86400*(M3.N*100+M2.N*10+M1.N), FD.T+86400*(M3.N*100+M2.N*10+M1.N)+8*60*60, "Y", %(CREATED_BY)s, 0
@@ -250,7 +250,7 @@ const timeSheets_db = {
         }));
     },
 
-    create: function(timeSheet, cb) {
+    create2: function(timeSheet, cb) {
         
         let workDateCopy = timeSheet.WORK_DATE;
         timeSheet.WORK_DATE = `STRFTIME('%s','${timeSheet.WORK_DATE}','start of day')`;
@@ -314,6 +314,42 @@ const timeSheets_db = {
                 }, mydb));    
             }
             // if(!updating) mydb.close();
+        }), mydb);
+    },
+
+    create: function(timeSheet, cb) {
+        
+        let workDateCopy = timeSheet.WORK_DATE;
+        timeSheet.WORK_DATE = `STRFTIME('%s','${timeSheet.WORK_DATE}','start of day')`;
+
+        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = `STRFTIME('%s','${timeSheet.FROM_DATE}','utc')`; 
+        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = `STRFTIME('%s','${timeSheet.TO_DATE}','utc')`;       
+        if(timeSheet.BREAK)     timeSheet.BREAK = `${timeSheet.BREAK}*60`;
+        if(timeSheet.TRAINING)  timeSheet.TRAINING = `${timeSheet.TRAINING}*60`;
+        
+        logger().debug(`creating timesheet ${JSON.stringify(timeSheet)}`);
+        
+        const mydb = dbUtil.getDatabase();
+
+        dbUtil.performReplace(timeSheet, 'TIME_SHEET', null, addCtx((err, newId) => {
+
+            if(err) {  
+                mydb.close();
+                logErrAndCall(err,cb);  
+            } 
+            this.read(
+                { 
+                    personId: timeSheet.PERSON_ID, 
+                    workDate: workDateCopy  
+                },
+                addCtx((err,row)=>{
+                            mydb.close();
+                            if(err) logErrAndCall(err,cb); 
+                            else cb(null, 0, row);
+                        }), 
+                mydb
+            ); 
+            
         }), mydb);
     },
 

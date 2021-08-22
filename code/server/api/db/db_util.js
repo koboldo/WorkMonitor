@@ -90,6 +90,22 @@ const db_util = {
         }));
     },
     
+    performReplace: function(object, tableName, maxIdQuery, cb, db) {
+        let myDB = (db == null) ? db_util.getDatabase() : db;
+        let replaceStr = db_util.prepareReplace(object, tableName);
+        let replaceStat = myDB.prepare(replaceStr);      
+        replaceStat.run(addCtx(function(err, result){
+            replaceStat.finalize();
+            if(db == null) myDB.close();
+            if(err){
+                return logErrAndCall(err,cb);
+            } else {
+                if(logger().isDebugEnabled()) logger().debug('replaced row id: ' + this.lastID);
+                cb(null, this.lastID);
+            }
+        }));
+    },
+
     performUpdate: function(idObj, object, tableName, cb, db) {
         let myDB = (db == null) ? db_util.getDatabase() : db;
         let updateStr = db_util.prepareUpdate(idObj, object, tableName);
@@ -174,6 +190,28 @@ const db_util = {
 
         let insertStr = 'INSERT INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
         if(logger().isDebugEnabled()) logger().debug('db insert: ' + insertStr);
+        return insertStr;
+    },
+
+    prepareReplace: function(object, tableName) {
+        let sqlCols = '';
+        let sqlVals = '';
+        for(let col in object) {
+            if(columnsToSkip.indexOf(col) > -1 ) continue;
+
+            if(sqlCols.length > 0) sqlCols += ', ';
+            if(sqlVals.length > 0) sqlVals += ', ';
+            sqlCols +=  col;
+
+
+            // sqlVals += '"' + object[col] + '"';
+            // let val = db_util.changeEmptyToNull(object[col]);
+            if(columnsWithoutQuote.indexOf(col) > -1) sqlVals += object[col];
+            else sqlVals += '"' + object[col] + '"';
+        }
+
+        let insertStr = 'REPLACE INTO ' + tableName + ' (' + sqlCols + ') VALUES (' + sqlVals + ')';
+        if(logger().isDebugEnabled()) logger().debug('db replace: ' + insertStr);
         return insertStr;
     },
 
