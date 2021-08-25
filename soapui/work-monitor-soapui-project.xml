@@ -2833,15 +2833,15 @@
 						<con:params/>
 						<con:element xmlns:leav="http://localhost/api/v1/timesheets/leave">leav:Response</con:element>
 					</con:representation>
-					<con:request name="insert new leave - success" id="0b046dfe-0ab3-4a23-9a4b-e33bd4a1d7ef" mediaType="application/json" postQueryString="false">
+					<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="insert new leave - success" id="0b046dfe-0ab3-4a23-9a4b-e33bd4a1d7ef" mediaType="application/json" postQueryString="false">
 						<con:settings>
 							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 						</con:settings>
 						<con:endpoint>http://localhost:8080</con:endpoint>
 						<con:request>{
-	"personId": 14,
-	"from": "2019-09-27 08:00:00",
-	"to": "2019-09-27 17:30:00"
+	"personId": 108,
+	"from": "2021-08-01 08:00:00",
+	"to": "2021-08-06 17:30:00"
 }</con:request>
 						<con:originalUri>http://localhost/api/v1/timesheets/leave</con:originalUri>
 						<con:credentials>
@@ -2963,8 +2963,8 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-  <con:entry key="workDateAfter" value="2019-09-25"/>
-  <con:entry key="workDateBefore" value="2019-09-30"/>
+  <con:entry key="workDateAfter" value="2021-03-25"/>
+  <con:entry key="workDateBefore" value="2021-03-30"/>
 </con:parameters>
 					<con:parameterOrder><con:entry>workDateBefore</con:entry><con:entry>workDateAfter</con:entry><con:entry>personId</con:entry></con:parameterOrder>
 				</con:request>
@@ -3049,18 +3049,18 @@
 					<con:params/>
 					<con:element>data</con:element>
 				</con:representation>
-				<con:request name="upsert timesheet from to - success" id="7f84f27f-4e9b-4d66-b8f0-16c67cc2191c" mediaType="application/json" postQueryString="false">
+				<con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="upsert timesheet from to - success" id="7f84f27f-4e9b-4d66-b8f0-16c67cc2191c" mediaType="application/json" postQueryString="false">
 					<con:settings>
 						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting>
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-	"personId": 14,
-	"from": "2019-09-27 00:00:00",
-	"to": "2019-09-27 00:00:00",
+	"personId": 108,
+	"from": "2021-08-25 10:00:00",
+	"to": "2021-08-25 16:00:00",
 	"break": "0",
 	"training": "0",
-	"isLeave" : "N"
+	"isLeave" : "Y"
 }</con:request>
 					<con:originalUri>http://jdmiddleware.pl/api/v1/timesheets</con:originalUri>
 					<con:credentials>
@@ -3095,7 +3095,7 @@
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-	"personId": 5,
+	"personId": 100,
 	"from": "now"
 }</con:request>
 					<con:originalUri>http://jdmiddleware.pl/api/v1/timesheets</con:originalUri>
@@ -3113,7 +3113,7 @@
 					</con:settings>
 					<con:endpoint>http://localhost:8080</con:endpoint>
 					<con:request>{
-	"personId": 5,
+	"personId": 108,
 	"to": "now"
 }</con:request>
 					<con:originalUri>http://jdmiddleware.pl/api/v1/timesheets</con:originalUri>
@@ -3163,9 +3163,9 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-  <con:entry key="workDateAfter" value="2020-06-01"/>
-  <con:entry key="workDateBefore" value="2020-06-30"/>
-  <con:entry key="personId" value="305"/>
+  <con:entry key="workDateAfter" value="2021-08-01"/>
+  <con:entry key="workDateBefore" value="2021-08-30"/>
+  <con:entry key="personId" value="108"/>
 </con:parameters>
 					<con:parameterOrder><con:entry>workDateAfter</con:entry><con:entry>workDateBefore</con:entry><con:entry>personId</con:entry></con:parameterOrder>
 				</con:request>
@@ -3914,8 +3914,8 @@
 					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
 					<con:jmsPropertyConfig/>
 					<con:parameters>
-  <con:entry key="personId" value="92"/>
-  <con:entry key="periodDate" value="2020-06-01"/>
+  <con:entry key="personId" value="108"/>
+  <con:entry key="periodDate" value="2021-08-01"/>
 </con:parameters>
 					<con:parameterOrder><con:entry>periodDate</con:entry><con:entry>personId</con:entry></con:parameterOrder>
 				</con:request></con:method>
@@ -3967,6 +3967,63 @@ Before running test suite again test data has to be refreshed.
 				</con:config>
 			</con:testStep>
 			<con:testStep type="transfer" name="copyToken" id="c8b67489-f3b0-4e2e-89e0-cb9cea6488d1">
+				<con:settings/>
+				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
+						<con:name>token</con:name>
+						<con:sourceType>Response</con:sourceType>
+						<con:sourceStep>login</con:sourceStep>
+						<con:sourcePath>$.token</con:sourcePath>
+						<con:targetType>securityToken</con:targetType>
+						<con:targetStep>#Project#</con:targetStep>
+						<con:type>JSONPATH</con:type>
+						<con:upgraded>true</con:upgraded>
+					</con:transfers>
+				</con:config>
+			</con:testStep>
+			<con:properties/>
+		</con:testCase>
+		<con:testCase id="2e96d53b-e83f-42f6-833e-6ce3d9cad4d1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="test login as Dominik" searchProperties="true">
+			<con:settings/>
+			<con:testStep type="restrequest" name="login" id="a6539966-f8d7-44e3-a7cf-17d934b91a8d">
+				<con:settings/>
+				<con:config service="http://localhost:8080" resourcePath="/login" methodName="authenticate" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<con:restRequest name="login" id="7fe605ca-a9d1-4f87-9923-ad006684426e" mediaType="application/json" postQueryString="false">
+						<con:settings>
+							<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+						</con:settings>
+						<con:endpoint>http://localhost:8080</con:endpoint>
+						<con:request>{
+	"email": "dominik.wisniowski@botprojekt.com",
+	"password": "00crazydog00"
+}
+</con:request>
+						<con:originalUri>http://localhost/api/v1/login</con:originalUri>
+						<con:assertion type="Valid HTTP Status Codes" id="28a2bf24-b00f-48ae-bb70-a1f2087c2e54" name="Valid HTTP Status Codes">
+							<con:configuration>
+								<codes>200</codes>
+							</con:configuration>
+						</con:assertion>
+						<con:assertion type="JsonPath RegEx Match" id="ff2dec20-6878-44b7-8e0c-635275ef627b" name="JsonPath RegEx Match">
+							<con:configuration>
+								<path>$.token</path>
+								<content>true</content>
+								<allowWildcards>false</allowWildcards>
+								<ignoreNamspaceDifferences>false</ignoreNamspaceDifferences>
+								<ignoreComments>false</ignoreComments>
+								<regEx>(?!null).*</regEx>
+							</con:configuration>
+						</con:assertion>
+						<con:credentials>
+							<con:authType>No Authorization</con:authType>
+						</con:credentials>
+						<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+						<con:jmsPropertyConfig/>
+						<con:parameters/>
+					</con:restRequest>
+				</con:config>
+			</con:testStep>
+			<con:testStep type="transfer" name="copyToken" id="ce085518-89ec-4abe-ab21-fecb92387f42">
 				<con:settings/>
 				<con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false">
@@ -5403,8 +5460,7 @@ Before running test suite again test data has to be refreshed.
 				</con:config>
 			</con:testStep>
 			<con:properties/>
-		</con:testCase>
-		<con:testCase id="2f991c9a-c72b-46cb-bf7e-3f9be68b52d3" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="test payroll" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="get payroll - get all payroll for current month without approval - success" id="3bc3c3c7-eddb-427d-aaac-ae239c52c9cf"><con:settings/><con:config service="http://localhost:8080" resourcePath="/api/v1/payroll" methodName="get payroll (tu be run as PR)" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get payroll - get all payroll for current month without approval - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting><con:setting id="com.eviware.soapui.impl.support.AbstractHttpRequest@dump-file">${#TestCase#outputBase}/payroll_current_${#TestCase#outputPrefix}.json</con:setting><con:setting id="com.eviware.soapui.impl.support.AbstractHttpRequest@max-size">8888888888888888</con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+		</con:testCase><con:testCase id="2f991c9a-c72b-46cb-bf7e-3f9be68b52d3" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="test payroll" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="get payroll - get all payroll for current month without approval - success" id="3bc3c3c7-eddb-427d-aaac-ae239c52c9cf"><con:settings/><con:config service="http://localhost:8080" resourcePath="/api/v1/payroll" methodName="get payroll (tu be run as PR)" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get payroll - get all payroll for current month without approval - success" id="3294f8e6-6d86-423c-829a-fe97821bcf75" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting><con:setting id="com.eviware.soapui.impl.support.AbstractHttpRequest@dump-file">${#TestCase#outputBase}/payroll_current_${#TestCase#outputPrefix}.json</con:setting><con:setting id="com.eviware.soapui.impl.support.AbstractHttpRequest@max-size">8888888888888888</con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/report/payroll</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="overTimeFactor" value=""/>
   <con:entry key="approval" value=""/>
   <con:entry key="personId" value=""/>
@@ -5618,7 +5674,7 @@ workNo</script></con:config></con:testStep><con:testStep type="restrequest" name
 }</con:request><con:originalUri>http://localhost/api/v1/orders/31878</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="eb7f4503-e992-4818-ad81-20f7de66a9a6" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="assignOrder" id="de5449e8-93b0-45d1-96bb-3037ac2a82cf"><con:settings/><con:config service="http://localhost:8080" methodName="add relation person order with detach" resourcePath="/api/v1/persons/128/order/31434" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="assignOrder" id="655ac710-323e-46b6-82bb-c8a4799521ee" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/persons/120/order/31878</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="82a7f3ae-7f9a-466f-b2e7-b0f76211ae5b" name="Valid HTTP Status Codes"><con:configuration><codes>201</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="detach" value="true" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="readOrder" id="bb72d306-e4fb-425e-ba36-f91079889297"><con:settings/><con:config service="http://localhost:8080" methodName="read order" resourcePath="/api/v1/orders/32057" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="readOrder" id="d818d7dd-a760-4ebe-adcf-95aec4f86fed" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="x-access-token" value="${#Project#securityToken}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:originalUri>http://localhost/api/v1/orders/31878</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="7e6c928d-590d-4e64-bd55-f68063db6d96" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:loadTest id="4f396fad-09fe-4a06-b96c-67ec4fd6a085" name="LoadTest 1"><con:settings><con:setting id="HttpSettings@close-connections">false</con:setting></con:settings><con:threadCount>20</con:threadCount><con:startDelay>0</con:startDelay><con:sampleInterval>250</con:sampleInterval><con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed><con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange><con:historyLimit>-1</con:historyLimit><con:testLimit>60</con:testLimit><con:limitType>TIME</con:limitType><con:loadStrategy><con:type>Burst</con:type><con:config><burstDelay>5000</burstDelay><burstDuration>20000</burstDuration></con:config></con:loadStrategy><con:assertion type="Step Status" name="Step Status"/><con:maxAssertionErrors>100</con:maxAssertionErrors><con:cancelExcessiveThreads>true</con:cancelExcessiveThreads><con:strategyInterval>500</con:strategyInterval></con:loadTest><con:properties><con:property><con:name>workNo</con:name><con:value>20200410211052866</con:value></con:property></con:properties></con:testCase><con:properties/></con:testSuite><con:properties>
 		<con:property>
 			<con:name>securityToken</con:name>
-			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjEzNywicm9sZSI6WyJQUiIsIkFOIiwiT1AiLCJQQSIsIlRTIl0sImlhdCI6MTYwNzg5MjcxMiwiZXhwIjoxNjA3OTQ2NzEyfQ.m_yQoeXXHggbqSui0MYjyVxAFGWhgkF0LPxYTTGFIt8</con:value>
+			<con:value>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtvYm9sZG9AZ21haWwuY29tIiwiaWQiOjEzNywicm9sZSI6WyJQUiIsIkFOIiwiT1AiLCJQQSIsIlRTIl0sImlhdCI6MTYyOTg3MzkzMywiZXhwIjoxNjI5OTI3OTMzfQ.nixGdopFNYkhDy80fFHuHe5L8SFNS3rytLYq4txGVLg</con:value>
 		</con:property>
 	<con:property><con:name>mytxt</con:name><con:value>TEST</con:value></con:property></con:properties>
 	<con:wssContainer/>

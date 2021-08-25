@@ -250,6 +250,71 @@ const timeSheets_db = {
         }));
     },
 
+    create: function(timeSheet, cb) {
+        let workDateCopy = timeSheet.WORK_DATE;
+        timeSheet.WORK_DATE = `STRFTIME('%s','${timeSheet.WORK_DATE}','start of day')`;
+
+        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = `STRFTIME('%s','${timeSheet.FROM_DATE}','utc')`; 
+        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = `STRFTIME('%s','${timeSheet.TO_DATE}','utc')`;       
+        if(timeSheet.BREAK)     timeSheet.BREAK = `${timeSheet.BREAK}*60`;
+        if(timeSheet.TRAINING)  timeSheet.TRAINING = `${timeSheet.TRAINING}*60`;
+        
+        logger().debug(`creating timesheet ${JSON.stringify(timeSheet)}`);  
+        
+        const mydb = dbUtil.getDatabase();
+
+        //results denotes if update was successful - if not insert is needed
+        const idObj = {};
+        idObj.PERSON_ID = timeSheet.PERSON_ID;
+        idObj.WORK_DATE = `(SELECT ${timeSheet.WORK_DATE})`;
+
+        let timeSheetCopy = { ...timeSheet }
+        delete timeSheetCopy.CREATED_BY;
+
+        dbUtil.performUpdate(idObj, timeSheetCopy, 'TIME_SHEET', addCtx((err,result) => {
+            if(err) {
+                mydb.close();
+                logErrAndCall(err,cb);
+            }   
+            else if(result) { 
+                this.read(
+                    {
+                        personId: timeSheetCopy.PERSON_ID, 
+                        workDate: workDateCopy
+                    },
+                    (err,row)=>{
+                        mydb.close();
+                        if(err) logErrAndCall(err,cb);
+                        cb(null, 1, row);
+                    },
+                    mydb
+                );
+            } else {
+                dbUtil.performInsert(timeSheet, 'TIME_SHEET', null, addCtx((err, newId) => {
+                    if(err) {  
+                        mydb.close();
+                        logErrAndCall(err,cb);  
+                    } else if(newId) {
+                        this.read(
+                            { 
+                                personId: timeSheet.PERSON_ID, 
+                                workDate: workDateCopy  
+                            },
+                            addCtx((err,row)=>{
+                                        mydb.close();
+                                        if(err) logErrAndCall(err,cb); 
+                                        else cb(null, 0, row);
+                                    }), 
+                            mydb
+                        ); 
+                    } else {
+                        mydb.close();
+                    }
+                }, mydb));
+            }
+        }), mydb);
+    },
+
     create2: function(timeSheet, cb) {
         
         let workDateCopy = timeSheet.WORK_DATE;
@@ -314,42 +379,6 @@ const timeSheets_db = {
                 }, mydb));    
             }
             // if(!updating) mydb.close();
-        }), mydb);
-    },
-
-    create: function(timeSheet, cb) {
-        
-        let workDateCopy = timeSheet.WORK_DATE;
-        timeSheet.WORK_DATE = `STRFTIME('%s','${timeSheet.WORK_DATE}','start of day')`;
-
-        if(timeSheet.FROM_DATE) timeSheet.FROM_DATE = `STRFTIME('%s','${timeSheet.FROM_DATE}','utc')`; 
-        if(timeSheet.TO_DATE)   timeSheet.TO_DATE = `STRFTIME('%s','${timeSheet.TO_DATE}','utc')`;       
-        if(timeSheet.BREAK)     timeSheet.BREAK = `${timeSheet.BREAK}*60`;
-        if(timeSheet.TRAINING)  timeSheet.TRAINING = `${timeSheet.TRAINING}*60`;
-        
-        logger().debug(`creating timesheet ${JSON.stringify(timeSheet)}`);
-        
-        const mydb = dbUtil.getDatabase();
-
-        dbUtil.performReplace(timeSheet, 'TIME_SHEET', null, addCtx((err, newId) => {
-
-            if(err) {  
-                mydb.close();
-                logErrAndCall(err,cb);  
-            } 
-            this.read(
-                { 
-                    personId: timeSheet.PERSON_ID, 
-                    workDate: workDateCopy  
-                },
-                addCtx((err,row)=>{
-                            mydb.close();
-                            if(err) logErrAndCall(err,cb); 
-                            else cb(null, 0, row);
-                        }), 
-                mydb
-            ); 
-            
         }), mydb);
     },
 
