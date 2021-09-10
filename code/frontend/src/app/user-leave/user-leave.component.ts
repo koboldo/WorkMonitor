@@ -25,12 +25,18 @@ export class UserLeaveComponent implements OnInit {
                 private toolsService: ToolsService) {
     }
 
+    @Output()
+    refreshtTimesheetTable = new EventEmitter<boolean>();
+
     ngOnInit() {
         this.pl=new Calendar();
     }
 
     public showEdit(): void {
         this.displayEditDialog = true;
+        this.selectedUser = null;
+        this.beforeDate = null;
+        this.afterDate = null;
     }
 
     suggestUser(event) {
@@ -75,5 +81,6 @@ export class UserLeaveComponent implements OnInit {
         } else {
             this.alertService.error("Nie udało się zapisać urlopu dla "+this.selectedUser.displayName);
         }
+        this.refreshtTimesheetTable.emit(true);
     }
 }

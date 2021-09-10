@@ -39,13 +39,13 @@
       >
       <ng-template pTemplate="caption">
         <div class="ui-g">
-          <div class="ui-grid-col-2"></div>
-          <div class="ui-grid-col-8"> 
-            <i class="fa fa-search"></i>
+          <div class="ui-g-2"></div>
+          <div class="ui-g-8"> 
+            <i class="fa fa-search turbo-table-filtr-icon"></i>
             <input type="text" pInputText size="50" placeholder="Filtruj"
               (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
           </div>
-          <div class="ui-grid-col-2"> <button type="button"  pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customExportCsv(tt)"></button></div>
+          <div class="ui-g-2"> <button type="button"  pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="customExportCsv(tt)"></button></div>
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
@@ -54,25 +54,40 @@
             pResizableColumn excludeGlobalFilter=col.exclude>
             <span *ngIf="col.check">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </span>
-            <span class="header" *ngIf="!col.check">
+            </span>          
+            <span class="header" *ngIf="!col.check && !col.rating">
               {{col.header}}
-              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>             
             </span>
+            <span *ngIf="col.filter">
+              <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" >            
+            </span>
+            <div *ngIf="col.rating">
+              <div>
+                {{col.header}}
+              </div>
+              <!-- TODO Tu jest dropDown do filtrowania według wydajności, do zaimplementowania później  -->
+              <!-- <div>
+                <p-dropdown appendTo="body" [options]="ratingCollection" [(ngModel)]="selectedRating" [autoWidth]="true" (onChange)="ratingSelected($event)">
+                  <ng-template let-item pTemplate="selectedItem">
+                    <span [style.color]="item.styleClass"><i [class]="item.icon"></i></span>
+                    <span style="vertical-align:middle; margin-left: .5em">{{item.label}}</span>
+                  </ng-template>
+                  <ng-template let-rating pTemplate="item">
+                    <span [style.color]="rating.styleClass"><i [class]="rating.icon"></i></span>
+                    <span style="vertical-align:middle; margin-left: .5em">{{rating.label}}</span>
+                  </ng-template>
+                </p-dropdown>  
+              </div> -->        
+            </div>            
            </th>
-        </tr>
-        <tr>
-          <th *ngFor="let col of columns" [hidden]="col.hidden">
-            <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
-              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter">            
-          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
         <tr [pSelectableRow]="rowData"  [pSelectableRowDblClick]="rowData" [pSelectableRowIndex]="rowIndex" 
         [pContextMenuRow]="rowData" (dblclick)="onRowDblclick(rowData)" exportable="col.exportable">
           <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class">
-
             <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
             <span *ngIf="col.header === 'Ocena'" class="ui-inputgroup-addon" [style.color]="rowData.iconColor"><i [class]="rowData.icon"></i></span>
             <span *ngIf="col.utilization">          
@@ -198,7 +213,8 @@
         </div>
     </div>
 </p-dialog>
-<p-dialog [header]="selectedReport?.firstName +' '+ selectedReport?.lastName+' zlecenia od '+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+' do '+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')" [(visible)]="doneOrdersDialogDisplay" [responsive]="true" [minWidth]="870" [width]="900" [blockScroll]="true" [contentStyle]="{'height': '800px'}">
+<p-dialog [header]="selectedReport?.firstName +' '+ selectedReport?.lastName+' zlecenia od '+toolsService.formatDate(this.afterDate, 'yyyy-MM-dd')+' do '+toolsService.formatDate(this.beforeDate, 'yyyy-MM-dd')"
+ [(visible)]="doneOrdersDialogDisplay" [minWidth]="900" [style]="{'margin':'10px'}" [responsive]="true" [blockScroll]="true">
     <div *ngIf="selectedReport?.workOrders">
         <div class="ui-grid-row">
             <p-table #ordersTable dataKey="id" [columns]="colsForOrdersTable" [value]="selectedReport.workOrders" [rows]="20" [paginator]="true"

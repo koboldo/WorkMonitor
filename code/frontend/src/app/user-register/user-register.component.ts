@@ -5,10 +5,6 @@ import { AlertService, UserService, DictService, AuthenticationService } from '.
 import { User, CodeValue } from '../_models/index';
 import {SelectItem} from 'primeng/primeng'
 
-import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
-import { Observable }    from 'rxjs';
-import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
-
 @Component({
     templateUrl: 'user-register.component.html'
 })

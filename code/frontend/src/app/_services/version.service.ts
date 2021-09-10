@@ -20,6 +20,9 @@ export class VersionService {
     constructor() {
         this._history = [
 
+            new CodeValue('1.5.95', 'Poprawka w urlopach - Odświerzanie listy po dodaniu urlopu, czyszczenie danych w formularzu'),
+            new CodeValue('1.5.94', 'Zmiana stylowania nagłówków w tabelach - zakładka Zlecenia'),
+            new CodeValue('1.5.93', 'Raporty - Refactor kodu'),
             new CodeValue('1.5.92', 'Eksport csv - Podsumowanie czasu pracy'),
             new CodeValue('1.5.91', 'Grupowa zmiana statusów - Dodanie komentarza przy statusie Kosz.'),
             new CodeValue('1.5.90', 'Wyświetlanie informacji o błędach.'),

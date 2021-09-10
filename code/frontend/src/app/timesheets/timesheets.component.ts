@@ -78,20 +78,31 @@ export class TimesheetsComponent implements OnInit {
         ]
     }
 
+    refreshTable(refresh: boolean) {
+        if (refresh) {
+            console.log('Refresh timsheet table...');
+            this.search();
+        }
+
+    }
+
     onEditInit(event) {
         console.log('on edit init');
         console.log(event);
         console.log('about edit !' + JSON.stringify(event.data));
 
-        if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
-            event.data.timesheetFrom === this.sWeekendSheet && event.data.timesheetTo === this.sWeekendSheet) {
-            //cleaning BRAK values
-            event.data.timesheetFrom = '';
-            event.data.timesheetTo = '';
-            event.data.timesheetBreakInMinutes = this.toolsService.DEFAULT_BREAK;
-            event.data.timesheetTrainingInGMM = '';
-            event.data.color = '#2399e5';
-        }        
+        if (event.data){
+            if (event.data.timesheetFrom === this.sEmptySheet && event.data.timesheetTo === this.sEmptySheet ||
+                event.data.timesheetFrom === this.sWeekendSheet && event.data.timesheetTo === this.sWeekendSheet) {
+                //cleaning BRAK values
+                event.data.timesheetFrom = '';
+                event.data.timesheetTo = '';
+                event.data.timesheetBreakInMinutes = this.toolsService.DEFAULT_BREAK;
+                event.data.timesheetTrainingInGMM = '';
+                event.data.color = '#2399e5';
+            }        
+        }
+        
     }
 
     onEditCancel(event) {

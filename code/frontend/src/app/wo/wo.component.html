@@ -52,7 +52,7 @@
        [scrollable]="true">
       <ng-template pTemplate="caption">
         <div>
-          <i class="fa fa-search"></i>
+          <i class="fa fa-search turbo-table-filtr-icon"></i>
           <input type="text" pInputText size="50" placeholder="Filtruj"
             (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
           <button [disabled]="operator.roleCode.indexOf('OP') == -1" type="button" pButton icon="fa fa-plus"
@@ -63,16 +63,14 @@
         <tr>
           <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
             pResizableColumn excludeGlobalFilter=col.exclude>
-            <span class="header">
+            <span class="header" *ngIf="!col.check">
               {{col.header}}
-              <p-sortIcon *ngIf="!col.button" [field]="col.field"></p-sortIcon>
+              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>             
             </span>
-          </th>
-        </tr>
-        <tr>
-          <th *ngFor="let col of columns" [hidden]="col.hidden">
-            <input [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText type="text"
-              (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" *ngIf="col.filter" class="width-100-filtr">
+            <span *ngIf="col.filter">
+              <input class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
+              type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)" >            
+            </span>
           </th>
         </tr>
       </ng-template>
