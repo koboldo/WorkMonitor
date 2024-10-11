@@ -8,8 +8,6 @@ registerLocaleData(localePl, 'pl');
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { BaseRequestOptions } from '@angular/http';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent }  from './app.component';
@@ -111,7 +109,6 @@ import { ReportService } from './_services/report.service';
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
         AccordionModule, ProgressSpinnerModule, InplaceModule, ProgressBarModule, OverlayPanelModule, ChartModule, TooltipModule, ScheduleModule, GrowlModule, MessagesModule, MessageModule, InputTextModule, InputTextareaModule, InputMaskModule, PasswordModule, TabViewModule,TabMenuModule,PanelModule,DropdownModule,SelectButtonModule,FieldsetModule,ButtonModule,CalendarModule,RadioButtonModule,DialogModule,ContextMenuModule,AutoCompleteModule,MenubarModule,ColorPickerModule,ToolbarModule,
         BrowserAnimationsModule,
         TableModule,
@@ -169,7 +166,6 @@ import { ReportService } from './_services/report.service';
         AuthenticationService,
         AutoLogoutService,
         UserService,
-        BaseRequestOptions,
         WOService,
         DictService,
         RelatedItemService,
