@@ -167,7 +167,7 @@ const timeSheets = {
         }));
     },
 
-    readStats: function(req,res) {
+    readMonthStats: function(req,res) {
 
         if(!req.query.periodDate) {
             req.query.periodDate = moment().format("YYYY-MM-DD");
@@ -180,7 +180,7 @@ const timeSheets = {
             req.query.personId = "0";
         }
         
-        timeSheets_db.readStats(req.query, addCtx(function(err, timestatRows){
+        timeSheets_db.readMonthStats(req.query, addCtx(function(err, timestatRows){
             if(err) {
                 res.status(500).json({status:'error', message: 'request processing failed'});
                 return;
@@ -189,7 +189,31 @@ const timeSheets = {
             const timestats = mapper.mapList(mapper.timeStats.mapToJson,timestatRows);
             res.json(timestats);
         }));
-    }
+    },
+
+    readWeekStats: function(req,res) {
+
+            if(!req.query.periodDate) {
+                req.query.periodDate = moment().format("YYYY-MM-DD");
+            } else if(!moment(req.query.periodDate, 'YYYY-MM-DD', true).isValid()) {
+                res.status(400).json({status:'error', message: 'incorrect period date'});
+                return;
+            }
+
+            if(!req.query.personId || req.query.personId == '') {
+                req.query.personId = "0";
+            }
+
+            timeSheets_db.readWeekStats(req.query, addCtx(function(err, timestatRows){
+                if(err) {
+                    res.status(500).json({status:'error', message: 'request processing failed'});
+                    return;
+                }
+
+                const timestats = mapper.mapList(mapper.timeStats.mapToJson,timestatRows);
+                res.json(timestats);
+            }));
+        }
 
 };
 

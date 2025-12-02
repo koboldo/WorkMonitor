@@ -3,6 +3,17 @@
     <div class="ui-g-12"><p-radioButton name="group2" value="ALL" label="Pokaż wszystkich" [(ngModel)]="employedOnlyFilter" inputId="preopt1" (onClick)="filter('ALL')"></p-radioButton></div>
     <div class="ui-g-12"><p-radioButton name="group2" value="EMPLOYED_ONLY" label="Ukryjwaj byłych pracowników" [(ngModel)]="employedOnlyFilter" inputId="preopt2" (onClick)="filter('EMPLOYED_ONLY')"></p-radioButton></div>
   </div>
+  <div class="ui-g-12">
+    <div class="ui-grid-row" style="margin-top: 15px;">
+      <div class="ui-grid-col-1"></div>
+      <div class="ui-grid-col-2">
+        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+      </div>
+      <div class="ui-grid-col-6"></div>
+      <div class="ui-grid-col-2"></div>
+      <div class="ui-grid-col-1"></div>
+    </div>
+  </div>
   <p-table #tt dataKey="id" [columns]="colsTime" [value]="users" [rows]="50" [paginator]="true"
       [resizableColumns]="true"  sortField="excelId" sortOrder="1" [(selection)]="selectedUsers" [metaKeySelection]="true"
       loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="colsTime"
@@ -99,7 +110,8 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button [disabled]="!selectedDate" (click)="getTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport</button>
+        <button [disabled]="!selectedDate" (click)="getWeeklyTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport tygodniowy</button>
+        <button [disabled]="!selectedDate" (click)="getTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport miesięczny</button>
       </div>
     </p-footer>
 </p-dialog>

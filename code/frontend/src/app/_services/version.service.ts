@@ -19,7 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
-
+            new CodeValue('1.5.97', 'Dodanie tygodniowych obecności'),
             new CodeValue('1.5.96', 'Fix filtrowanie w tabelach'),
             new CodeValue('1.5.95', 'Poprawka w urlopach - Odświerzanie listy po dodaniu urlopu, czyszczenie danych w formularzu'),
             new CodeValue('1.5.94', 'Zmiana stylowania nagłówków w tabelach - zakładka Zlecenia'),

@@ -100,8 +100,8 @@ export class AuthenticationService {
                 label: 'Czas pracy',
                 icon: 'fa fa-clock-o',
                 items: [
-                    {label: 'Czas pracy', icon: 'fa fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
-                    {label: 'Podsumowanie czasu', icon: 'fa fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
+                    {label: 'Czas pracy - obecności dzienne', icon: 'fa fa-clock-o', routerLink: ['/addTimesheet'], "rolesRequired":["OP", "PR", "MG", "EN"]},
+                    {label: 'Podsumowanie czasu - tygodniowe, miesięczne', icon: 'fa fa-calendar', routerLink: ['/timeStats'], "rolesRequired":["MG", "PR", "OP"]}
                 ]
             },
             {
