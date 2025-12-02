@@ -38,7 +38,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
 
     super(router, userService, alertService, dictService, authService);
 
-    this.initMounths();
+    this.initMonths();
     this.colsTime = [
       { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true,exportable:false },            
       { field: 'excelId', header: 'Id excel', sortable: true, filter:true, class:"width-35"},
@@ -76,7 +76,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
     this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
 } 
 
-  private initMounths() {
+  private initMonths() {
     let now = new Date();
     for (let i = 0; i < 12; i++) {
       let d = new Date(now.getFullYear(), now.getMonth(), 1, now.getHours(), now.getMinutes(), now.getSeconds(), 0);
@@ -105,6 +105,18 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
      
     });
   }
+
+  public getWeeklyTimestatReport() {
+      this.displayDateChooserDialog = false;
+      let ids: number[] = [];
+      for (let selectedUser of this.selectedUsers) {
+        ids.push(selectedUser.id);
+      }
+      this.userTimeStatsService.getWeeklyByDateAndUserIds(this.users, this.selectedDate, ids).subscribe(timestats => {
+        this.processTimestats(timestats);
+
+      });
+    }
 
   private processTimestats(timestats:Timestats[]):void {
     this.timestats = timestats;
