@@ -4,9 +4,8 @@ import {User, Order, Timesheet} from '../_models/index';
 import {HttpBotWrapper} from '../_services/httpBotWrapper.service';
 import {DictService} from '../_services/dict.service';
 
-import {Observable} from 'rxjs';
+import {Observable, EMPTY} from 'rxjs';
 import {catchError, map, tap, delay, mergeMap} from 'rxjs/operators';
-import {EMPTY} from 'rxjs';
 import {ClientDeviceService} from "./clientDevice.service";
 
 
