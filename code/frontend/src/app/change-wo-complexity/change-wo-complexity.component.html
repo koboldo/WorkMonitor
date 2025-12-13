@@ -80,7 +80,7 @@
 
             <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i
                 [class]="toolsService.getStatusIcon(rowData.statusCode)"></i> {{rowData.status}}</span>
-            <p-button *ngIf="col.details" type="button" style="width:25px"
+            <p-button *ngIf="col.details" type="button" [style]="{'width':'25px'}"
               (click)="selectedOrder=rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search">
             </p-button>
             <span *ngIf="!col.icon && !col.price">

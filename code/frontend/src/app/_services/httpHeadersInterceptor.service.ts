@@ -12,7 +12,7 @@ import { Md5 } from 'ts-md5/dist/md5';
 export class HttpHeadersInterceptor implements HttpInterceptor {
 
     constructor(private alertService: AlertService,
-                private authSerivce: AuthenticationService,
+                private authService: AuthenticationService,
                 private versionService: VersionService) {
     }
 
@@ -20,7 +20,7 @@ export class HttpHeadersInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        let headers: HttpHeaders = this.authSerivce.getHttpHeaders();
+        let headers: HttpHeaders = this.authService.getHttpHeaders();
 
         if (headers) {
             headers = headers.set('Front-Version', this.versionService.version)

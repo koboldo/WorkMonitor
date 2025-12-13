@@ -5,15 +5,15 @@ import { CurrencyPipe } from '@angular/common';
 import { AlertService, UserService, DictService, AuthenticationService, PayrollService, ToolsService, WOService } from '../_services/index';
 import { CompletedOrderService } from '../_services/completedOrders.service';
 import { User, CodeValue, SearchUser, UserPayroll, Order } from '../_models/index';
-import { SelectItem, DataTable } from 'primeng/primeng'
+import { SelectItem } from 'primeng/api'
+import { Table } from 'primeng/table';
 import {ToastModule} from 'primeng/toast';
 
 
 import { Observable }    from 'rxjs';
 import { catchError, map, tap, delay, mergeMap, groupBy } from 'rxjs/operators';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
-import { MenuItem } from 'primeng/primeng';
-import { element } from '@angular/core/src/render3/instructions';
+import { MenuItem } from 'primeng/api';
 import { ExportService } from 'app/_services/export.service';
 
 
@@ -112,7 +112,7 @@ export class UsersPayrollComponent implements OnInit {
           ]
     }
 
-    public customExportCsv (table:DataTable) {
+    public customExportCsv (table:Table) {
         let columnsToPipeFormat = [
             "workTime","poolWorkTime","nonpoolWorkTime",
             "trainingTime","leaveTime","overTime",
@@ -157,7 +157,7 @@ export class UsersPayrollComponent implements OnInit {
        // this.messageService.add({severity: 'info', summary: 'Data Selected', 'detail': this.data.datasets[event.element._datasetIndex].data[event.element._index]});
     }
 
-    public exportCSV(text:string, table: DataTable)
+    public exportCSV(text:string, table: Table)
     {
         this.selectedPayrolls=[];
         this.historicalPayrolls.forEach(element => {

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng/api';
 import { Calendar } from '../_models/calendar';
 import { TableSummary } from 'app/_models/tableSummary';
 

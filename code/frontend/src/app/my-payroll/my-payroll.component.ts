@@ -21,14 +21,15 @@ export class MyPayrollComponent implements OnInit {
     historicalPayrolls: UserPayroll[];
 
     cols: any;
+    rowGroupMetadata: any;
 
     constructor(private payrollService:PayrollService,
-                private authSerice:AuthenticationService,
+                private authService:AuthenticationService,
                 public completedOrderService: CompletedOrderService) {
     }
 
     ngOnInit() {
-        this.authSerice.userAsObs.subscribe(user => this.processUser(user));
+        this.authService.userAsObs.subscribe(user => this.processUser(user));
         this.cols = [
             { field: 'user.lastName', header: 'Osoba',class:"width-100 text-center", user:true, icon:true},
             { field: 'none',excludeGlobalFilter: true , button: true, completedOrders:true, icone:true, class:"width-35"},        
@@ -51,12 +52,27 @@ export class MyPayrollComponent implements OnInit {
 
     search() {
         this.payrollService.getCurrentPersonal(this.user).subscribe(payroll => this.currentPayroll = payroll);
-        this.payrollService.getHistoricalPersonal(this.user).subscribe(payroll => this.historicalPayrolls = payroll);
+        this.payrollService.getHistoricalPersonal(this.user).subscribe(payroll => {
+            this.historicalPayrolls = payroll;
+            this.updateRowGroupMetaData();
+        });
     }
 
     private processUser(user:User):void {
         this.user = user;
         this.search();
     }
+
+    updateRowGroupMetaData() {
+        this.rowGroupMetadata = {};
+        if (this.historicalPayrolls) {
+            for (let i = 0; i < this.historicalPayrolls.length; i++) {
+                let rowData = this.historicalPayrolls[i];
+                let periodDate = rowData.periodDate;
+                this.rowGroupMetadata[periodDate] = { index: i, size: 1 };
+            }
+        }
+    }
+
 
 }

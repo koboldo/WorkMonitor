@@ -5,22 +5,35 @@
   <div class="ui-grid ui-grid-responsive ui-fluid">
     <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 10px;">
 
-      <p-dataTable [value]="versionService.history" [rows]="20" [paginator]="true" [globalFilter]="gb" #dtChangeLog
-                   dataKey="code" resizableColumns="true">
-        <p-header>
-          <div>
-            <i class="fa fa-search"></i>
-            <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-          </div>
-        </p-header>
-        <p-column [sortable]="false" field="code" header="Numer" [style]="{'text-align':'center', 'width':'70px'}"></p-column>
-        <p-column [sortable]="false" field="paramChar" header="Opis"  [style]="{'text-align':'left', 'word-wrap': 'break-word'}">
-          <ng-template let-col let-version="rowData" pTemplate="body">
-            <textarea style="width: 100%; border: 0 none white; overflow: hidden; padding: 0; outline: none;"
-                      [(ngModel)]="version[col.field]" ></textarea>
+      <p-table [value]="versionService.history" [rows]="20" [paginator]="true"
+               [columns]="cols"
+               [globalFilterFields]="cols" #dtChangeLog
+               dataKey="code" resizableColumns="true">
+          <ng-template pTemplate="caption">
+              <div>
+                  <i class="fa fa-search turbo-table-filtr-icon"></i>
+                  <input type="text" pInputText size="50" placeholder="Filtruj"
+                         (input)="dtChangeLog.filterGlobal($event.target.value, 'contains')" style="width:auto">
+              </div>
           </ng-template>
-        </p-column>
-      </p-dataTable>
+          <ng-template pTemplate="header" let-columns>
+              <tr>
+                  <th *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class" pResizableColumn excludeGlobalFilter=col.exclude>
+                    <span class="header">{{col.header}}</span>
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                  <td *ngFor="let col of columns" [hidden]="col.hidden" [ngClass]="col.class">
+                      <span style="'word-wrap': 'break-word'">{{rowData[col.field]}}</span>
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+              Brak danych...
+          </ng-template>
+      </p-table>
 
     </div>
   </div>

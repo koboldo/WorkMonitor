@@ -6,7 +6,7 @@ import { Observable }       from 'rxjs';
 
 import { AlertService } from '../_services/alert.service';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
-import { SelectItem } from 'primeng/primeng'
+import { SelectItem } from 'primeng/api'
 import { TableSummary } from 'app/_models/tableSummary';
 import { UserTableSummary } from 'app/_models/userTableSummary';
 import { UserWithSheet } from 'app/_models/userWithSheet';

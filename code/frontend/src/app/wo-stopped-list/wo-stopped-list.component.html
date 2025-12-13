@@ -49,7 +49,7 @@
             <span *ngIf="col.header === 'Komentarz'">{{getCancelOrHoldComment(rowData)}}</span>
             <span *ngIf="col.header === 'Status'" class="ui-inputgroup-addon"><i
                 [class]="toolsService.getStatusIcon(rowData.statusCode)"></i></span>
-            <p-button *ngIf="col.details" type="button" style="width:25px" (click)="showWoDetails($event, rowData)"
+            <p-button *ngIf="col.details" type="button" [style]="{'width':'25px'}" (click)="showWoDetails($event, rowData)"
               icon="fa fa-search"></p-button>
             <span *ngIf="!col.icon && !col.price">
               {{rowData[col.field]}}

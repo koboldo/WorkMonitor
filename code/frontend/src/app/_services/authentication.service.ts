@@ -3,8 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
-import { TabMenuModule,MenuItem }  from 'primeng/primeng';
-import {Md5} from 'ts-md5/dist/md5';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { MenuItem } from 'primeng/api';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable()
 export class AuthenticationService {

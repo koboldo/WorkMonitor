@@ -6,7 +6,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
-import { MenuItem, SelectItem } from 'primeng/primeng';
+import { MenuItem, SelectItem } from 'primeng/api';
 import { TableSummary } from 'app/_models/tableSummary';
 import { ProtocolOrdersSummary } from 'app/_models/protocolOrdersSummary';
 

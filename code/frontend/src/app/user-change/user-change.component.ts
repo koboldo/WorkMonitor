@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { AlertService, UserService, DictService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { User, CodeValue, SearchUser } from '../_models/index';
-import {SelectItem} from 'primeng/primeng'
+import {SelectItem} from 'primeng/api'
 
 import {  FormControl, Validators, FormGroup, }     from '@angular/forms';
 

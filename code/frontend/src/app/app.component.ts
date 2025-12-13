@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs';
-import {TabMenuModule, MenuItem, MenubarModule} from 'primeng/primeng';
-
+import {TabMenuModule} from 'primeng/tabmenu';
+import {MenubarModule} from 'primeng/menubar';
+import {MenuItem} from 'primeng/api';
 import {AlertService, AuthenticationService, DictService, AutoLogoutService, WorkTypeService, ClientDeviceService} from './_services/index';
 import {User} from './_models/index';
 

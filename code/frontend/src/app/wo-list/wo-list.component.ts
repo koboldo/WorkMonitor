@@ -6,7 +6,8 @@ import { User, RelatedItem, Order, OrderHistory, WorkType, CodeValue } from '../
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 import { TableSummary } from 'app/_models/tableSummary';
 import { ExportService } from 'app/_services/export.service';
-import { DataTable, SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/api';
+import { Table } from 'primeng/table';
 
 @Component({
     selector: 'app-wo-list',
@@ -94,7 +95,7 @@ export class WoListComponent implements OnInit {
         return this.list;
     }
 
-    public customExportCsv (table:DataTable) {
+    public customExportCsv (table:Table) {
         let columnsToPipeFormat = ["price","poolRevenue","complexity"];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }

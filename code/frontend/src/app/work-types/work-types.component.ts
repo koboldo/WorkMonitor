@@ -4,8 +4,8 @@ import { Observable, forkJoin } from 'rxjs';
 
 import { User, RelatedItem, Order, WorkType, CodeValue } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
-import { MenuItem } from 'primeng/primeng';
-import { SelectItem } from 'primeng/primeng'
+
+import { MenuItem, SelectItem } from 'primeng/api'
 
 @Component({
     selector: 'app-work-types',

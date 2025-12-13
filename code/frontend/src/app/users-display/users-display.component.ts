@@ -8,7 +8,7 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 
 import { Observable }    from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup, EmailValidator, NG_VALIDATORS, Validator }     from '@angular/forms';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng/api';
 import { UserTableSummary } from 'app/_models/userTableSummary';
 
 @Component({

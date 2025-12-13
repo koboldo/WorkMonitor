@@ -68,7 +68,7 @@
                 <span *ngIf="col.price || col.poolRevenue">
                   {{rowData[col.field] | currency:'PLN'}}
                 </span>
-                <p-button *ngIf="col.details" type="button" style="width:25px"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>            
+                <p-button *ngIf="col.details" type="button" [style]="{'width':'25px'}"  (click)="showWoDetails($event, rowData)" icon="fa fa-search"></p-button>
             </td>
         </tr>
     </ng-template>
