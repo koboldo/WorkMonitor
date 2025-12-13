@@ -4,9 +4,8 @@ import { Router } from '@angular/router';
 import { UserService, PayrollService, AlertService, DictService, ToolsService, AuthenticationService, CompletedOrderService } from 'app/_services';
 import { UserPayroll, User, Calendar } from 'app/_models';
 import { DataForPayrollsReport } from 'app/_models/dataForPayrollsReport';
-import { DataTable } from 'primeng/primeng';
 import { ExportService } from 'app/_services/export.service';
-import { Table } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 
 
 @Component({
@@ -68,7 +67,7 @@ export class UsersPayrollReportComponent extends UsersPayrollComponent implement
     };
   }
 
-  public  customExportCsv(table: DataTable) {
+  public  customExportCsv(table: Table) {
     let columnsToPipeFormat =  [];
     columnsToPipeFormat.push('poolRate','budget','payrollCost');
     this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);

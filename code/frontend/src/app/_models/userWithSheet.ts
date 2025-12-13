@@ -5,7 +5,7 @@ export class UserWithSheet extends User {
 
     copy: Timesheet;
 
-    timesheetUsedTime: number; //flat property for p-dataTable used for sort
+    timesheetUsedTime: number; //flat property for p-table used for sort
     timesheetWorkDate: string;
     timesheetFrom: string;
     timesheetTo: string;

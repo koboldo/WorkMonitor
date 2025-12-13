@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { UsersDisplayComponent } from '../users-display/users-display.component';
 import { AlertService, UserService, DictService, AuthenticationService, ToolsService, UserTimeStatsService } from '../_services/index';
 import { User, CodeValue, SearchUser, Timestats } from '../_models/index';
-import { DataTable, SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { UserTableSummary } from 'app/_models/userTableSummary';
 import { ExportService } from 'app/_services/export.service';
 
@@ -71,7 +72,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
 
   }
 
-  public customExportCsv (table:DataTable) {
+  public customExportCsv (table:Table) {
     let columnsToPipeFormat = ['workTime','poolWorkTime','nonpoolWorkTime','trainingTime','leaveTime','overTime'];
     this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
 } 

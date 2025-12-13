@@ -8,7 +8,6 @@ registerLocaleData(localePl, 'pl');
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
-import { BaseRequestOptions } from '@angular/http';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent }  from './app.component';
@@ -23,7 +22,6 @@ import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserChangeComponent } from './user-change/user-change.component';
 import { WoComponent } from './wo/wo.component';
 
-
 import {AccordionModule} from 'primeng/accordion'
 import {AutoCompleteModule} from 'primeng/autocomplete'
 import {ButtonModule} from 'primeng/button'
@@ -32,7 +30,6 @@ import {ChartModule} from 'primeng/chart'
 import {ColorPickerModule} from 'primeng/colorpicker';
 import {ContextMenuModule} from 'primeng/contextmenu'
 import {DataGridModule} from 'primeng/datagrid'
-import {DataTableModule} from 'primeng/datatable'
 import {DialogModule} from 'primeng/dialog'
 import {DropdownModule} from 'primeng/dropdown'
 import {FieldsetModule} from 'primeng/fieldset'
@@ -114,7 +111,6 @@ import { ReportService } from './_services/report.service';
         BrowserAnimationsModule,
         TableModule,
         SliderModule,
-        DataTableModule,
         routing,
         CheckboxModule
     ],
@@ -167,7 +163,6 @@ import { ReportService } from './_services/report.service';
         AuthenticationService,
         AutoLogoutService,
         UserService,
-        BaseRequestOptions,
         WOService,
         DictService,
         RelatedItemService,

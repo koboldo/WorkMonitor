@@ -50,7 +50,7 @@
             <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i
                 [class]="'fa fa-street-view'"></i></span>
           </span>
-          <p-button *ngIf="col.details" type="button" style="width:25px" (click)="selectedOrder = rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></p-button>
+          <p-button *ngIf="col.details" type="button" [style]="{'width':'25px'}" (click)="selectedOrder = rowData; onRowSelect($event); displayDetailsDialog=true" icon="fa fa-search"></p-button>
           <span *ngIf="col.comment">{{getCancelOrHoldComment(rowData)}}</span>
           <span *ngIf="!col.icon && !col.price">
             {{rowData[col.field]}}

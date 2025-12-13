@@ -1,5 +1,5 @@
 import { Injectable, Output } from '@angular/core';
-import { DataTable } from 'primeng/primeng';
+import {Table} from 'primeng/table';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,8 @@ constructor()
    * @param options Paramet opcjonalny, określa dodakowe opcje eksportu do csv z obiektu @type DataTable
    * 
    */
-    exportCsvWithPipe (table: DataTable, columnsToFormat: string [], options?:any) { 
-      let isOptions = options ? true: false  ;
+    exportCsvWithPipe (table: Table, columnsToFormat: string [], options?:any) {
+      let isOptions = options ? true: false;
       if (table.value && columnsToFormat){
         table.value.forEach(record=> {
           columnsToFormat.forEach(col => {

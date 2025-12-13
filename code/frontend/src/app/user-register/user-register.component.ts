@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { AlertService, UserService, DictService, AuthenticationService } from '../_services/index';
 import { User, CodeValue } from '../_models/index';
-import {SelectItem} from 'primeng/primeng'
+import {SelectItem} from 'primeng/api'
 
 @Component({
     templateUrl: 'user-register.component.html'

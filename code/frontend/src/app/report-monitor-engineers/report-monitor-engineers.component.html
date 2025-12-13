@@ -109,8 +109,8 @@
                 <span>{{rowData[col.field] | currency: 'PLN'}}</span>
             </span>
             <div *ngIf="col.orders">
-                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px; margin-right: 10px;" (click)="showDoneOrders($event, rowData)" icon="fa fa-server"></p-button>
-                <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="prepareAndShowCalendar(rowData)" icon="fa fa-calendar"></p-button>
+                <p-button type="button" styleClass="btn btn-info btn-lg" [style]="{'width':'25px', 'margin-right': '10px'}" (click)="showDoneOrders($event, rowData)" icon="fa fa-server"></p-button>
+                <p-button type="button" styleClass="btn btn-info btn-lg" [style]="{'width':'25px'}" (click)="prepareAndShowCalendar(rowData)" icon="fa fa-calendar"></p-button>
             </div>
             <span *ngIf="!col.icon">
               {{rowData[col.field]}}
@@ -268,7 +268,7 @@
                     <span class="ui-inputgroup-addon"><i [class]="rowData[col.field]=='STD' ? 'fa fa-thumbs-o-up': 'fa fa-life-bouy'"></i></span>                         
                 </span>
                 <span *ngIf="col.order">
-                    <p-button type="button" styleClass="btn btn-info btn-lg" style="width:25px" (click)="getAndShowOrderDetails(rowData.id)" icon="fa fa-search"></p-button>
+                    <p-button type="button" styleClass="btn btn-info btn-lg" [style]="{'width':'25px'}" (click)="getAndShowOrderDetails(rowData.id)" icon="fa fa-search"></p-button>
                 </span>
                 <span *ngIf="!col.icon">
                     {{rowData[col.field]}}

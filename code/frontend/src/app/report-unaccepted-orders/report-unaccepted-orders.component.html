@@ -45,16 +45,18 @@
   </div>
 
   <div style="margin-top: 5px" *ngIf="orders" class="ui-g">
-    <p-dataTable [value]="orders" [rows]="20" [paginator]="true"  [globalFilter]="gb" #dt dataKey="id"
+    <p-table #dt [value]="orders" [rows]="20" [paginator]="true"
+                [columns]="cols" [globalFilterFields]="cols" dataKey="id"
                  csvSeparator=";" exportFilename="niezaakceptowane.csv"
                  selectionMode="single" [(selection)]="selectedOrder" (onRowSelect)="onRowSelect($event)"
                  resizableColumns="true" sortField="lastModDate" sortOrder="-1" [loading]="loading" loadingIcon="fa fa-spinner" [contextMenu]="cm">
-      <p-header>
-        <div>
-          <i class="fa fa-search"></i>
-          <input #gb type="text" pInputText size="50" placeholder="Filtruj">
-        </div>
-      </p-header>
+        <ng-template pTemplate="caption">
+            <div>
+                <i class="fa fa-search turbo-table-filtr-icon"></i>
+                <input type="text" pInputText size="50" placeholder="Filtruj"
+                       (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            </div>
+        </ng-template>
       <p-column [sortable]="true" field="workNo" header="Zlecenie" ></p-column>
       <p-column [sortable]="true" field="status" header="Status" ></p-column>
       <p-column [sortable]="true" field="type" header="Typ" ></p-column>
@@ -96,7 +98,7 @@
         </div>
       </p-footer>
 
-    </p-dataTable>
+    </p-table>
 
     <p-contextMenu #cm [model]="items"></p-contextMenu>
   </div>
