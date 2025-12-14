@@ -1,5 +1,7 @@
 #!/bin/bash
 
+nvm use 14
+
 TS=`date "+%Y%m%dT%H%M%S"`
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
@@ -10,7 +12,6 @@ echo "Working in $PWD"...
 echo ==================
 echo
 
-#angular 4 ng build --base-href . -prod &&
 ng build --base-href . --prod --configuration=production &&
 tar zcvf /tmp/botdist_${TS?}.tar.gz bot &&
 scp /tmp/botdist_${TS?}.tar.gz botconsole@jdmiddleware.pl:/tmp &&

@@ -12,7 +12,7 @@ constructor()
    * @description Zapisuje dane w csv , zamienia kropkę na przecinek
    * @param table Tabela do eksportu
    * @param columnsToFormat Kolumny jakie mają być zmienione 
-   * @param options Paramet opcjonalny, określa dodakowe opcje eksportu do csv z obiektu @type DataTable
+   * @param options Paramet opcjonalny, określa dodakowe opcje eksportu do csv z obiektu @type Table
    * 
    */
     exportCsvWithPipe (table: Table, columnsToFormat: string [], options?:any) {

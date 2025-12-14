@@ -1,5 +1,7 @@
 #!/bin/bash
 
+nvm use 14
+
 TS=`date "+%Y%m%dT%H%M%S"`
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
