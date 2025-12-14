@@ -179,7 +179,7 @@
             <span *ngIf="!col.icon && !col.price">
               {{rowData[col.field]}}
             </span>
-            <p-button *ngIf="col.details" type="button" style="width:25px" (click)="showWoDetails(rowData)"
+            <p-button *ngIf="col.details" type="button" [style]="{'width':'25px'}" (click)="showWoDetails(rowData)"
             icon="fa fa-search"></p-button>
             <span *ngIf="col.price">
               {{rowData[col.field] | currency:'PLN'}}

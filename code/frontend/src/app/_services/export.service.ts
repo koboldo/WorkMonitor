@@ -1,5 +1,5 @@
 import { Injectable, Output } from '@angular/core';
-import { DataTable } from 'primeng/primeng';
+import {Table} from 'primeng/table';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +12,11 @@ constructor()
    * @description Zapisuje dane w csv , zamienia kropkę na przecinek
    * @param table Tabela do eksportu
    * @param columnsToFormat Kolumny jakie mają być zmienione 
-   * @param options Paramet opcjonalny, określa dodakowe opcje eksportu do csv z obiektu @type DataTable
+   * @param options Paramet opcjonalny, określa dodakowe opcje eksportu do csv z obiektu @type Table
    * 
    */
-    exportCsvWithPipe (table: DataTable, columnsToFormat: string [], options?:any) { 
-      let isOptions = options ? true: false  ;
+    exportCsvWithPipe (table: Table, columnsToFormat: string [], options?:any) {
+      let isOptions = options ? true: false;
       if (table.value && columnsToFormat){
         table.value.forEach(record=> {
           columnsToFormat.forEach(col => {

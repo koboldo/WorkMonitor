@@ -9,7 +9,8 @@ import { catchError, map, tap, delay, mergeMap } from 'rxjs/operators';
 import { User, UserReport, RelatedItem, Order, WorkType, CodeValue, Timesheet } from '../_models/index';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService, TimesheetService } from '../_services/index';
 import { Calendar } from '../_models/calendar';
-import { DataTable, SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/api';
+import { TableModule, Table } from 'primeng/table';
 import { ExportService } from 'app/_services/export.service';
 import { ReportService } from 'app/_services/report.service';
 
@@ -123,12 +124,12 @@ export class ReportMonitorEngineersComponent implements OnInit {
     public ratingSelected(event) {
         console.log('Selected ' + event.value)
     }
-    public customExportCsv (table:DataTable) {
+    public customExportCsv (table:Table) {
         let columnsToPipeFormat = [
             "declaredTime","expectedTime","earnedMoney"];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);
     }
-    public customCsvExportForOrders (table:DataTable) {
+    public customCsvExportForOrders (table:Table) {
         let columnsToPipeFormat = [
             "complexity","price","sharedPrice"];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);

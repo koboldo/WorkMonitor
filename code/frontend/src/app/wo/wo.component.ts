@@ -8,7 +8,8 @@ import { User, RelatedItem, Order, WorkType, CodeValue, SearchUser } from '../_m
 import { Comments, commentAsSimpleString, commentAsString, commentAdd } from '../_models/comment';
 import { WOService, RelatedItemService, UserService, DictService, AlertService, WorkTypeService, AuthenticationService, ToolsService } from '../_services/index';
 
-import { DataTable, MenuItem } from 'primeng/primeng';
+import { TableModule, Table } from 'primeng/table';
+import { MenuItem } from 'primeng/api';
 import { Calendar } from '../_models/calendar';
 import { TableSummary } from 'app/_models/tableSummary';
 import { ExportService } from 'app/_services/export.service';
@@ -143,7 +144,7 @@ export class WoComponent implements OnInit {
         ]
       
     }
-    public customExportCsv (table:DataTable) {
+    public customExportCsv (table:Table) {
         let columnsToPipeFormat = [
             'complexity','price'];
         this.exportService.exportCsvWithPipe(table,columnsToPipeFormat);

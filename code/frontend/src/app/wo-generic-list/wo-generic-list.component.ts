@@ -3,7 +3,7 @@ import { Order } from 'app/_models';
 import { TableSummary } from 'app/_models/tableSummary';
 import { ToolsService, WorkTypeService } from 'app/_services';
 import { ExportService } from 'app/_services/export.service';
-import { DataTable } from 'primeng/primeng';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-wo-generic-list',
@@ -64,7 +64,7 @@ export class WoGenericListComponent implements OnInit {
     get summaryForTable() {
       return this.summary;
     }
-  public customExportCsv (table:DataTable) {
+  public customExportCsv (table:Table) {
     this.exportService.exportCsvWithPipe(table,this.columnsToPipeFormat);
   }
   public showWoDetails(order) {

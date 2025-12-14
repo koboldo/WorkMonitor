@@ -9,6 +9,7 @@ import { VersionService } from '../_services/index';
 export class AppVersionComponent implements OnInit {
 
   showHistory: boolean = false;
+  cols: any;
 
   showHistoryDialog(): void {
     this.showHistory = true;
@@ -17,6 +18,10 @@ export class AppVersionComponent implements OnInit {
   constructor(public versionService: VersionService) { }
 
   ngOnInit() {
+      this.cols = [
+                  { field: 'code', header: 'Numer', class:"width-50 text-center"},
+                  { field: 'paramChar', header: 'Opis', class:"width-135 text-left", breakword: true},
+              ]
   }
 
 

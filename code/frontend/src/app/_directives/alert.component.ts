@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Message } from 'primeng/primeng';
+import { Message } from 'primeng/api';
 
 import { AlertService, AuthenticationService } from '../_services/index';
 import { User } from '../_models/user';

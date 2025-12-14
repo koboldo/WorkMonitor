@@ -3,7 +3,7 @@ import { ToolsService, WOService, DictService, AlertService, UserService, Authen
 import { Order, CodeValue, commentAdd, Comments, User } from '../_models';
 import { WoComponent } from '../wo/wo.component';
 import { Router } from '@angular/router';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng/api';
 import { templateJitUrl } from '@angular/compiler';
 
 @Component({

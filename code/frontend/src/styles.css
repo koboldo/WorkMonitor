@@ -22,125 +22,10 @@ ul.ui-menu-child {
     margin-left: 5px;
 }
 
-/* since 6 primeng no longer supports omega theme, this was copied from new supported nova-light theme */
-body .ui-messages {
-    padding: 1em;
-    margin: 1em 0; }
-body .ui-messages.ui-messages-info {
-    background-color: #7fbcec;
-    border: 0 none;
-    color: #212121; }
-body .ui-messages.ui-messages-info .ui-messages-icon {
-    color: #212121; }
-body .ui-messages.ui-messages-info .ui-messages-close {
-    color: #212121; }
-body .ui-messages.ui-messages-success {
-    background-color: #b7d8b7;
-    border: 0 none;
-    color: #212121; }
-body .ui-messages.ui-messages-success .ui-messages-icon {
-    color: #212121; }
-body .ui-messages.ui-messages-success .ui-messages-close {
-    color: #212121; }
-body .ui-messages.ui-messages-warn {
-    background-color: #ffe399;
-    border: 0 none;
-    color: #212121; }
-body .ui-messages.ui-messages-warn .ui-messages-icon {
-    color: #212121; }
-body .ui-messages.ui-messages-warn .ui-messages-close {
-    color: #212121; }
-body .ui-messages.ui-messages-error {
-    background-color: #f8b7bd;
-    border: 0 none;
-    color: #212121; }
-body .ui-messages.ui-messages-error .ui-messages-icon {
-    color: #212121; }
-body .ui-messages.ui-messages-error .ui-messages-close {
-    color: #212121; }
-body .ui-messages .ui-messages-close {
-    top: .25em;
-    right: .5em;
-    font-size: 1.5em; }
-body .ui-messages .ui-messages-icon {
-    font-size: 2em; }
-body .ui-message {
-    padding: 0.429em;
-    margin: 0; }
-body .ui-message.ui-message-info {
-    background-color: #7fbcec;
-    border: 0 none;
-    color: #212121; }
-body .ui-message.ui-message-info .ui-message-icon {
-    color: #212121; }
-body .ui-message.ui-message-success {
-    background-color: #b7d8b7;
-    border: 0 none;
-    color: #212121; }
-body .ui-message.ui-message-success .ui-message-icon {
-    color: #212121; }
-body .ui-message.ui-message-warn {
-    background-color: #ffe399;
-    border: 0 none;
-    color: #212121; }
-body .ui-message.ui-message-warn .ui-message-icon {
-    color: #212121; }
-body .ui-message.ui-message-error {
-    background-color: #f8b7bd;
-    border: 0 none;
-    color: #212121; }
-body .ui-message.ui-message-error .ui-message-icon {
-    color: #212121; }
-body .ui-message .ui-message-icon {
-    font-size: 1.25em; }
-body .ui-message .ui-message-text {
-    font-size: 1em; }
-
-body .ui-button.ui-state-default.ui-button-success, body .ui-buttonset.ui-button-success > .ui-button.ui-state-default {
-    color: #ffffff;
-    background-color: #34A835;
-    border: 1px solid #34A835; }
-body .ui-button.ui-state-default.ui-button-success:enabled:hover, body .ui-buttonset.ui-button-success > .ui-button.ui-state-default:enabled:hover {
-    background-color: #107D11;
-    color: #ffffff;
-    border-color: #107D11; }
-body .ui-button.ui-state-default.ui-button-success:enabled:focus, body .ui-buttonset.ui-button-success > .ui-button.ui-state-default:enabled:focus {
-    background-color: #3abb3b; }
-body .ui-button.ui-state-default.ui-button-success:enabled:active, body .ui-buttonset.ui-button-success > .ui-button.ui-state-default:enabled:active {
-    background-color: #0C6B0D;
-    color: #ffffff;
-    border-color: #0C6B0D; }
-
-body .ui-button.ui-state-default.ui-button-warning, body .ui-buttonset.ui-button-warning > .ui-button.ui-state-default {
-    color: #333333;
-    background-color: #ffba01;
-    border: 1px solid #ffba01; }
-body .ui-button.ui-state-default.ui-button-warning:enabled:hover, body .ui-buttonset.ui-button-warning > .ui-button.ui-state-default:enabled:hover {
-    background-color: #ED990B;
-    color: #333333;
-    border-color: #ED990B; }
-body .ui-button.ui-state-default.ui-button-warning:enabled:focus, body .ui-buttonset.ui-button-warning > .ui-button.ui-state-default:enabled:focus {
-    background-color: #ffc834; }
-body .ui-button.ui-state-default.ui-button-warning:enabled:active, body .ui-buttonset.ui-button-warning > .ui-button.ui-state-default:enabled:active {
-    background-color: #D38B10;
-    color: #333333;
-    border-color: #D38B10; }
-
-body .ui-button.ui-state-default.ui-button-danger, body .ui-buttonset.ui-button-danger > .ui-button.ui-state-default {
-    color: #ffffff;
-    background-color: #e91224;
-    border: 1px solid #e91224; }
-body .ui-button.ui-state-default.ui-button-danger:enabled:hover, body .ui-buttonset.ui-button-danger > .ui-button.ui-state-default:enabled:hover {
-    background-color: #c01120;
-    color: #ffffff;
-    border-color: #c01120; }
-body .ui-button.ui-state-default.ui-button-danger:enabled:focus, body .ui-buttonset.ui-button-danger > .ui-button.ui-state-default:enabled:focus {
-    background-color: #f25663; }
-body .ui-button.ui-state-default.ui-button-danger:enabled:active, body .ui-buttonset.ui-button-danger > .ui-button.ui-state-default:enabled:active {
-    background-color: #a90000;
-    color: #ffffff;
-    border-color: #a90000; }
-
+/* primeng 8 override nova-light theme */
+body .ui-table .ui-table-tbody > tr > td {
+  padding: 0.271em 0.457em;
+}
 
 /*Style for turbo table*/
 
@@ -252,7 +137,8 @@ td {
         width: 250px;
     }
 } 
-    /*Style for icons*/
-    .turbo-table-filtr-icon {
-        margin-right: 10px;
-    }
+
+/*Style for icons*/
+.turbo-table-filtr-icon {
+    margin-right: 10px;
+}
