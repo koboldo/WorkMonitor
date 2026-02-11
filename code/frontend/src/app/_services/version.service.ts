@@ -19,6 +19,7 @@ export class VersionService {
 
     constructor() {
         this._history = [
+            new CodeValue('1.7.0',  'Manualne raporty tygodniowe'),
             new CodeValue('1.6.0',  'Raporty tygodniowe + NG v8'),
             new CodeValue('1.5.97', 'Dodanie tygodniowych obecności'),
             new CodeValue('1.5.96', 'Fix filtrowanie w tabelach'),
