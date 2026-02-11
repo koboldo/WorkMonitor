@@ -32,15 +32,28 @@ export class UserTimeStatsService {
     //  /api/v1/report/personWeekTimestats?periodDate=2018-03-03&personId=87,88,89
 
     getWeeklyByDateAndUserIds(users: User[], date: string, ids: number[]) : Observable<Timestats[]> {
-            let personIds: string = '';
-            for (let id of ids) {
-                personIds += ''+id+',';
-            }
-            personIds = personIds.substr(0, personIds.length-1);
-
-            return this.http.get('/api/v1/report/personWeekTimestats?periodDate='+date+'&personId='+personIds)
-                .pipe(map((response: Object) => this.getTimestats(response, users)));
+        let personIds: string = '';
+        for (let id of ids) {
+            personIds += ''+id+',';
         }
+        personIds = personIds.substr(0, personIds.length-1);
+
+        return this.http.get('/api/v1/report/personWeekTimestats?periodDate='+date+'&personId='+personIds)
+            .pipe(map((response: Object) => this.getTimestats(response, users)));
+    }
+
+    getWeeklyByWeekListAndUserIds(users: User[], weekList: string[], ids: number[]): Observable<Timestats[]> {
+        let personIds: string = '';
+        for (let id of ids) {
+            personIds += '' + id + ',';
+        }
+        personIds = personIds.substr(0, personIds.length - 1);
+
+        let weekListStr = weekList.join(',');
+
+        return this.http.get('/api/v1/report/personWeekTimestats?weekList=' + weekListStr + '&personId=' + personIds)
+            .pipe(map((response: Object) => this.getTimestats(response, users)));
+    }
 
     private getTimestats(response:any, users: User[]):any {
         let timestats: Timestats[] = [];

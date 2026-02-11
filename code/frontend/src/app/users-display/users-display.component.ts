@@ -106,7 +106,7 @@ export class UsersDisplayComponent implements OnInit {
         } else if (input === this.employedOnlyFilter) {
             this.users = [];
             for(let user of this.allUsers) {
-                if (user.isEmployed === 'Y') {
+                if (user.isEmployed === 'Y' && user.excelId < 500) {
                     this.users.push(user);
                 }
             }
@@ -125,7 +125,7 @@ export class UsersDisplayComponent implements OnInit {
         }
     }
 
-    private processUsers(engineers:User[]):void {
+    protected processUsers(engineers:User[]):void {
         this.allUsers = engineers;
         this.filter(this.employedOnlyFilter);       
     }

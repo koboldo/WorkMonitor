@@ -7,7 +7,7 @@
     <div class="ui-grid-row" style="margin-top: 15px;">
       <div class="ui-grid-col-1"></div>
       <div class="ui-grid-col-2">
-        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-calendar" iconPos="left" style="float:left" (click)="showDateChooser()" label="Generuj podsumowanie"></button>
       </div>
       <div class="ui-grid-col-6"></div>
       <div class="ui-grid-col-2"></div>
@@ -16,106 +16,117 @@
   </div>
   <p-table #tt dataKey="id" [columns]="colsTime" [value]="users" [rows]="50" [paginator]="true"
       [resizableColumns]="true"  sortField="excelId" sortOrder="1" [(selection)]="selectedUsers" [metaKeySelection]="true"
-      loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="colsTime"
-      [responsive]="false">
-      <ng-template pTemplate="caption">
-        <div>
-          <i class="fa fa-search"></i>
-          <input type="text" pInputText size="50" placeholder="Filtruj"
-            (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-        </div>
-      </ng-template>
-      <ng-template pTemplate="header" let-columns>
-        <tr>            
-          <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
-            pResizableColumn excludeGlobalFilter=col.exclude>
-            <span *ngIf="col.check">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </span>
-            <span class="header">
-              {{col.header}}
-              <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
-            </span>
-          </th>
-        </tr>
-        <tr>
-          <th *ngFor="let col of columns" [hidden]="col.hidden">
+    loadingIcon="fa fa-spinner" csvSeparator=";" exportFilename="pracownicy" [globalFilterFields]="colsTime"
+    [responsive]="false">
+    <ng-template pTemplate="caption">
+      <div>
+        <i class="fa fa-search"></i>
+        <input type="text" pInputText size="50" placeholder="Filtruj"
+          (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+          pResizableColumn excludeGlobalFilter=col.exclude>
+          <span *ngIf="col.check">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </span>
+          <span class="header">
+            {{col.header}}
+            <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+          </span>
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden">
             <input class="width-100" [attr.placeholder]="col.isFromPool || col.isEmployed || col.isActive ? 'Y/N' : 'Filtruj'" pInputText
-              type="text" (input)="tt.filter($event.target.value, col.field, 'contains')" *ngIf="col.filter">            
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData let-columns="columns">
-        <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
+            type="text" (input)="tt.filter($event.target.value, col.field, 'contains')" *ngIf="col.filter">
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr [pSelectableRow]="rowData" [pSelectableRowDblClick]="rowData" [pContextMenuRow]="rowData">
           <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class" exportable="col.exportable">
-            <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
+          <p-tableCheckbox [value]="rowData" *ngIf="col.check"></p-tableCheckbox>
             <span *ngIf="col.person" [style.font-weight]="'bolder'" class="ui-inputgroup-addon">{{rowData.firstName}} {{rowData.lastName}}</span>
-            <span *ngIf="col.isActive">
+          <span *ngIf="col.isActive">
               <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
               <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
-            </span>
-            <span *ngIf="col.isEmployed">
+          </span>
+          <span *ngIf="col.isEmployed">
               <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-check'"></i></span>
               <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'"  class="ui-inputgroup-addon"><i [class]="'fa fa-ban'"></i></span>
-            </span>
-            <span *ngIf="col.isFromPool">
+          </span>
+          <span *ngIf="col.isFromPool">
               <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
               <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-            </span>
-            <span *ngIf="!col.icon">
-              {{rowData[col.field]}}
-            </span>      
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="footer" let-columns>
-        <tr>
-          <td *ngFor="let col of columns" [hidden]="col.hidden" class="text-center">
+          </span>
+          <span *ngIf="!col.icon">
+            {{rowData[col.field]}}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer" let-columns>
+      <tr>
+        <td *ngFor="let col of columns" [hidden]="col.hidden" class="text-center">
             <span *ngIf="col.isActive">Aktywnych <br />  {{summary?.totalActiveUsers}} </span>
-            <span *ngIf="col.isEmployed">Pracujących <br />{{summary?.totalEmployees}}</span>
+          <span *ngIf="col.isEmployed">Pracujących <br />{{summary?.totalEmployees}}</span>
             <span *ngIf="col.rank"> <br /> Mł. projektant {{summary?.totalYOURank}}  St. projektant {{summary?.totalSENRank}} <br/>
               Projektant {{summary?.totalREGRank}} Brak wynagrodzenia {{summary?.totalNONERank}} <br/>
-              Dziekanat {{summary?.totalDZIRank}} </span>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="summary" let-columns="columns">
-        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            Dziekanat {{summary?.totalDZIRank}} </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
           <div class="ui-grid-row"  style="margin-top: 15px;">
-            <div class="ui-grid-col-1"></div>
-            <div class="ui-grid-col-2">
-              <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
-            </div>
-            <div class="ui-grid-col-6"></div>
-            <div class="ui-grid-col-2">
-              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>
-            </div>
-            <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-1"></div>
+          <div class="ui-grid-col-2">
+              <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-calendar" iconPos="left" style="float:left" (click)="showDateChooser()" label="Generuj podsumowanie"></button>
           </div>
+          <div class="ui-grid-col-6"></div>
+          <div class="ui-grid-col-2">
+              <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="CSV" (click)="tt.exportCSV()"></button>
+          </div>
+          <div class="ui-grid-col-1"></div>
         </div>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        Brak pracowników...
-      </ng-template>
-    </p-table>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      Brak pracowników...
+    </ng-template>
+  </p-table>
 </div>
 <p-dialog [header]="'Podsumowanie czasów (wybór okresu)'" [(visible)]="displayDateChooserDialog" [responsive]="true" [minWidth]="800">
-    <div>
-        <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 200px;">
-          <div class="ui-grid-col-4"><label for="reportDate">*</label></div>
-          <div class="ui-grid-col-8">
-            <p-dropdown placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
-          </div>
+  <div>
+    <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 200px;">
+      <div class="ui-grid-col-4"><label for="reportDate">*</label></div>
+      <div class="ui-grid-col-8">
+        <div style="margin-bottom: 10px;">
+          <p-checkbox binary="true" label="Wybór ręczny tygodni" [(ngModel)]="isManualWeekMode"></p-checkbox>
         </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button [disabled]="!selectedDate" (click)="getWeeklyTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport tygodniowy</button>
-        <button [disabled]="!selectedDate" (click)="getTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport miesięczny</button>
+        <p-dropdown *ngIf="!isManualWeekMode" placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}"
+          id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required
+          autoWidth="false"></p-dropdown>
+        <p-multiSelect *ngIf="isManualWeekMode" [options]="possibleWeeks" [(ngModel)]="selectedWeeks" [style]="{'width': '100%'}" defaultLabel="Wybierz tygodnie..." selectedItemsLabel="{0} wybranych">
+        </p-multiSelect>
       </div>
-    </p-footer>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button [disabled]="(!selectedDate && !isManualWeekMode) || (isManualWeekMode && (!selectedWeeks || selectedWeeks.length < 1))"
+        (click)="isManualWeekMode ? getManualWeeklyTimestatReport() : getWeeklyTimestatReport()"
+        style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport tygodniowy</button>
+      <button [disabled]="(!selectedDate || isManualWeekMode)" 
+        (click)="getTimestatReport()"
+        style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport miesięczny !</button>
+    </div>
+  </p-footer>
 </p-dialog>
-<p-dialog [header]="'Podsumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1000">
+<p-dialog [header]="'Podsumowanie czasów dla ' + (isManualWeekMode ? 'wybranych tygodni' : selectedDate)" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1200">
   <!-- WARN data manipulation - trainingTime added to workTime in userTimeStats.service !!!
       "leaveTime": 40,
       "workTime": 138.58,
@@ -126,31 +137,31 @@
       "isFromPool": "Y"
     -->
   <p-table #timeSummary dataKey="personId"
-  sortField="user.excelId" sortOrder="1" 
+  sortField="user.excelId" sortOrder="1"
   [columns]="colsForTimeSummary" [value]="timestats" [rows]="20" [paginator]="true"
-  [resizableColumns]="true"  
-  loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate" 
+  [resizableColumns]="true"
+  loadingIcon="fa fa-spinner" csvSeparator=";" [exportFilename]="'podsumowanie_czasow_'+selectedDate"
   [globalFilterFields]="['user.excelId','user.firstName','user.lastName','user.officeCode', 'isFromPool', 'periodBeginning','periodEnd','workTime','poolWorkTime','nonpoolWorkTime','trainingTime','leaveTime','overTime']"
   [responsive]="false" >
-  <ng-template pTemplate="caption">
-    <div>
-      <i class="fa fa-search"></i>
-      <input type="text" pInputText size="50" placeholder="Filtruj"
-        (input)="timeSummary.filterGlobal($event.target.value, 'contains')" style="width:auto">
-    </div>
-  </ng-template>
-  <ng-template pTemplate="header" let-columns let-rowData>
+    <ng-template pTemplate="caption">
+      <div>
+        <i class="fa fa-search"></i>
+        <input type="text" pInputText size="50" placeholder="Filtruj"
+          (input)="timeSummary.filterGlobal($event.target.value, 'contains')" style="width:auto">
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns let-rowData>
     <tr >
-      <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class" 
-        pResizableColumn excludeGlobalFilter=col.exclude exportable="col.export">
-        <span class="header">
-          {{col.header}}
-          <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
-        </span>
-      </th>
-    </tr>
-    <tr>
-      <th *ngFor="let col of columns" [hidden]="col.hidden">
+        <th *ngFor="let col of columns" [hidden]="col.hidden" [pSortableColumn]="col.field" [ngClass]="col.class"
+          pResizableColumn excludeGlobalFilter=col.exclude exportable="col.export">
+          <span class="header">
+            {{col.header}}
+            <p-sortIcon *ngIf="!col.button && col.sortable" [field]="col.field"></p-sortIcon>
+          </span>
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [hidden]="col.hidden">
         <input *ngIf="!col.user && col.filter" class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
           type="text" (input)="timeSummary.filter($event.target.value, col.field, 'contains')"/> 
           <input *ngIf="col.excelId && col.filter && col.user" class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
@@ -161,39 +172,39 @@
           type="text" (input)="timeSummary.filter($event.target.value, 'user.lastName', 'contains')"/> 
           <input *ngIf="col.officeCode && col.filter && col.user" class="width-100" [attr.placeholder]="col.header === 'Pula' ? 'Y/N' : 'Filtruj'" pInputText
           type="text" (input)="timeSummary.filter($event.target.value, 'user.officeCode', 'contains')"/> 
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowData let-columns="columns">
-    <tr>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr>
       <td *ngFor="let col of columns" [hidden]="col.hidden" filterMatchMode="col.contains" [ngClass]="col.class"  exportable="col.exportable">
-       <span *ngIf="col.excelId">{{rowData.user.excelId}}</span>
-       <span *ngIf="col.firstName">{{rowData.user.firstName}}</span>
-       <span *ngIf="col.lastName">{{rowData.user.lastName}}</span>
-       <span *ngIf="col.officeCode">{{rowData.user.officeCode}}</span>
-       <span *ngIf="col.isFromPool">
+          <span *ngIf="col.excelId">{{rowData.user.excelId}}</span>
+          <span *ngIf="col.firstName">{{rowData.user.firstName}}</span>
+          <span *ngIf="col.lastName">{{rowData.user.lastName}}</span>
+          <span *ngIf="col.officeCode">{{rowData.user.officeCode}}</span>
+          <span *ngIf="col.isFromPool">
         <span *ngIf="rowData[col.field]=='Y'" [style.color]="'green'" class="ui-inputgroup-addon"><i [class]="'fa fa-users'"></i></span>
         <span *ngIf="rowData[col.field]!='Y'" [style.color]="'grey'" class="ui-inputgroup-addon"><i [class]="'fa fa-street-view'"></i></span>
-       </span>
-        <span *ngIf="!col.details">
-          {{rowData[col.field]}}
-        </span>
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="summary" let-columns="columns">
-    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+          </span>
+          <span *ngIf="!col.details">
+            {{rowData[col.field]}}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-columns="columns">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
       <div class="ui-grid-row"  style="margin-top: 15px;">
-        <div class="ui-grid-col-2"></div>
-        <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"></div>
+          <div class="ui-grid-col-2"></div>
         <div class="ui-grid-col-4"> <button type="button" pButton icon="fa fa-file-o" style="float:left"label="CSV" (click)="customExportCsv(timeSummary)"></button> </div>
-        <div class="ui-grid-col-2"> </div>
-        <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-2"> </div>
+          <div class="ui-grid-col-2"> </div>
+        </div>
       </div>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="emptymessage">
-    Brak raportu podsumowania czasów...
-  </ng-template>
-</p-table>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      Brak raportu podsumowania czasów...
+    </ng-template>
+  </p-table>
 </p-dialog>
