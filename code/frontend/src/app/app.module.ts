@@ -58,6 +58,7 @@ import {TreeModule} from 'primeng/tree'
 import {TableModule} from 'primeng/table';
 import {ToolbarModule} from 'primeng/toolbar';
 import {SliderModule} from 'primeng/slider';
+import {MultiSelectModule} from 'primeng/multiselect';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {CheckboxModule} from 'primeng/checkbox';
 
@@ -111,6 +112,7 @@ import { ReportService } from './_services/report.service';
         BrowserAnimationsModule,
         TableModule,
         SliderModule,
+        MultiSelectModule,
         routing,
         CheckboxModule
     ],

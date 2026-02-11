@@ -7,7 +7,7 @@
     <div class="ui-grid-row" style="margin-top: 15px;">
       <div class="ui-grid-col-1"></div>
       <div class="ui-grid-col-2">
-        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+        <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-calendar" iconPos="left" style="float:left" (click)="showDateChooser()" label="Generuj podsumowanie"></button>
       </div>
       <div class="ui-grid-col-6"></div>
       <div class="ui-grid-col-2"></div>
@@ -84,7 +84,7 @@
           <div class="ui-grid-row"  style="margin-top: 15px;">
             <div class="ui-grid-col-1"></div>
             <div class="ui-grid-col-2">
-              <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-search" iconPos="left" style="float:left" (click)="showDateChooser()" label="Podsumowanie godzin"></button>
+              <button [disabled]="!selectedUsers || selectedUsers.length < 1" type="button" pButton icon="fa fa-calendar" iconPos="left" style="float:left" (click)="showDateChooser()" label="Generuj podsumowanie"></button>
             </div>
             <div class="ui-grid-col-6"></div>
             <div class="ui-grid-col-2">
@@ -104,18 +104,29 @@
         <div class="ui-grid-row" style="margin-top: 10px; margin-bottom: 200px;">
           <div class="ui-grid-col-4"><label for="reportDate">*</label></div>
           <div class="ui-grid-col-8">
-            <p-dropdown placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}" id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required autoWidth="false" ></p-dropdown>
+            <div style="margin-bottom: 10px;">
+          <p-checkbox binary="true" label="Wybór ręczny tygodni" [(ngModel)]="isManualWeekMode"></p-checkbox>
+        </div>
+        <p-dropdown *ngIf="!isManualWeekMode" placeholder="Wybierz miesiąc..." [style]="{'width': '100%'}"
+          id="reportDate" name="reportDate" [options]="possibleDates" [(ngModel)]="selectedDate" required
+          autoWidth="false"></p-dropdown>
+        <p-multiSelect *ngIf="isManualWeekMode" [options]="possibleWeeks" [(ngModel)]="selectedWeeks" [style]="{'width': '100%'}" defaultLabel="Wybierz tygodnie..." selectedItemsLabel="{0} wybranych">
+        </p-multiSelect>
           </div>
         </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button [disabled]="!selectedDate" (click)="getWeeklyTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport tygodniowy</button>
-        <button [disabled]="!selectedDate" (click)="getTimestatReport()" style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport miesięczny</button>
+              <button [disabled]="(!selectedDate && !isManualWeekMode) || (isManualWeekMode && (!selectedWeeks || selectedWeeks.length < 1))"
+        (click)="isManualWeekMode ? getManualWeeklyTimestatReport() : getWeeklyTimestatReport()"
+        style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport tygodniowy</button>
+      <button [disabled]="(!selectedDate || isManualWeekMode)" 
+        (click)="getTimestatReport()"
+        style="width: 200px; height: 30px;" width="200px" pButton class="btn btn-primary"><i [class]="'fa fa-check'"></i> Raport miesięczny</button>
       </div>
     </p-footer>
 </p-dialog>
-<p-dialog [header]="'Podsumowanie czasów dla '+selectedDate" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1000">
+<p-dialog [header]="'Podsumowanie czasów dla ' + (isManualWeekMode ? 'wybranych tygodni' : selectedDate)" [(visible)]="displayReportResultDialog" [responsive]="true" [width]="1200">
   <!-- WARN data manipulation - trainingTime added to workTime in userTimeStats.service !!!
       "leaveTime": 40,
       "workTime": 138.58,
