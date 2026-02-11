@@ -22,6 +22,9 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
 
   possibleDates: SelectItem[] = [];
   selectedDate: string;
+  possibleWeeks: SelectItem[] = [];
+  selectedWeeks: string[] = [];
+  isManualWeekMode: boolean = false;
 
   timestats: Timestats[];
   colsTime: any;
@@ -40,6 +43,7 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
     super(router, userService, alertService, dictService, authService);
 
     this.initMonths();
+    this.initWeeks();
     this.colsTime = [
       { field: 'none', excludeGlobalFilter: true,  sortable: false, filter:false,class:"width-10 col-icon", check:true,exportable:false },            
       { field: 'excelId', header: 'Id excel', sortable: true, filter:true, class:"width-35"},
@@ -89,6 +93,31 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
     }
   }
 
+  private initWeeks() {
+    let d = new Date();
+    // Go back to the closest Monday
+    while (d.getDay() !== 1) {
+      d.setDate(d.getDate() - 1);
+    }
+
+    for (let i = 0; i < 53; i++) { // Last 53 weeks (~1 year)
+      let label = 'Tydzień ' + this.getWeekNumber(d) + ' (' + this.toolsService.formatDate(d, 'yyyy-MM-dd') + ')';
+      let value = this.toolsService.formatDate(d, 'yyyy-MM-dd');
+      this.possibleWeeks.push({ label: label, value: value });
+
+      d.setDate(d.getDate() - 7);
+    }
+  }
+
+  // Helper to get ISO week number
+  private getWeekNumber(d: Date): number {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    var weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return weekNo;
+  }
+
   public showDateChooser() {
     this.displayReportResultDialog = false;
     this.displayDateChooserDialog = true;
@@ -108,22 +137,47 @@ export class UsersTimeStatsComponent extends UsersDisplayComponent{
   }
 
   public getWeeklyTimestatReport() {
-      this.displayDateChooserDialog = false;
-      let ids: number[] = [];
-      for (let selectedUser of this.selectedUsers) {
-        ids.push(selectedUser.id);
-      }
-      this.userTimeStatsService.getWeeklyByDateAndUserIds(this.users, this.selectedDate, ids).subscribe(timestats => {
-        this.processTimestats(timestats);
-
-      });
+    this.displayDateChooserDialog = false;
+    let ids: number[] = [];
+    for (let selectedUser of this.selectedUsers) {
+      ids.push(selectedUser.id);
     }
+    this.userTimeStatsService.getWeeklyByDateAndUserIds(this.users, this.selectedDate, ids).subscribe(timestats => {
+      this.processTimestats(timestats);
+
+    });
+  }
+
+  public getManualWeeklyTimestatReport() {
+    this.displayDateChooserDialog = false;
+    let ids: number[] = [];
+    for (let selectedUser of this.selectedUsers) {
+      ids.push(selectedUser.id);
+    }
+    this.userTimeStatsService.getWeeklyByWeekListAndUserIds(this.users, this.selectedWeeks, ids).subscribe(timestats => {
+      this.processTimestats(timestats);
+    });
+  }
 
   private processTimestats(timestats:Timestats[]):void {
     this.timestats = timestats;
     this.displayReportResultDialog = true;
    
   }
+
+  // Override parent method to preselect all users
+  protected processUsers(engineers:User[]):void {
+    super.processUsers(engineers);
+    // Preselect all filtered users
+    this.selectedUsers = [...this.users];
+  }
+
+  // Override filter to maintain selection after filtering
+  filter(input): void {
+    super.filter(input);
+    // Reselect all users after filtering
+    this.selectedUsers = [...this.users];
+  }  
 
   //   private creatSummary (users: User[]) : userTableSummary {
   //     let summary: userTableSummary;

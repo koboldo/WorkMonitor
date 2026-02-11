@@ -388,6 +388,198 @@ const queries = {
 
          SELECT PERSON_ID, PERIOD_BEGINNING, PERIOD_END, WORK_TIME, LEAVE_TIME, NONPOOL_WORK_TIME, POOL_WORK_TIME, OVER_TIME, TRAINING_TIME, IS_FROM_POOL
          FROM PERSON_STATS`
+         ,
+         getWeekTimestatsForWeekList:
+        `WITH RECURSIVE
+         QUERY_PARAMS AS (
+             SELECT "%(periodDate)s" PERIOD_DATE, "%(personId)s" PERSON_ID_LIST
+         )
+         -- Instead of deriving weeks from a month, we parse the provided comma-separated weekList
+         -- format expected in weekList param: "YYYY-MM-DD,YYYY-MM-DD,..." (Mondays)
+         , RAW_WEEKS(W_START, REST) AS (
+             SELECT '', "%(weekList)s" || ','
+             UNION ALL
+             SELECT 
+                 SUBSTR(REST, 0, INSTR(REST, ',')),
+                 SUBSTR(REST, INSTR(REST, ',') + 1)
+             FROM RAW_WEEKS
+             WHERE REST <> ''
+         )
+         , VALID_WEEKS AS (
+             SELECT 
+                 W_START AS WEEK_START,
+                 DATE(W_START, '+6 days') AS WEEK_END
+             FROM RAW_WEEKS
+             WHERE W_START <> ''
+         )
+
+         , TIME_PARAMS AS (
+             -- one row per valid week: epoch bounds and PERIOD_LENGTH (work days * 8 minus holidays)
+             SELECT
+                 CAST(STRFTIME('%%s', WEEK_START) AS INTEGER)                             AS TIME_AFTER,
+                 (CAST(STRFTIME('%%s', WEEK_END) AS INTEGER) + 86399)                     AS TIME_BEFORE, -- include full Sunday
+                 (
+                   (
+                     ( (CAST(STRFTIME('%%s', WEEK_END) AS INTEGER) + 86399)
+                       - CAST(STRFTIME('%%s', WEEK_START) AS INTEGER)
+                       + 1
+                     ) / 86400
+                   )
+                   -
+                   (
+                     -- count holidays that fall anywhere inside the week (compare as epoch ints)
+                     SELECT COUNT(1)
+                     FROM HOLIDAYS H
+                     WHERE H.HDATE BETWEEN CAST(STRFTIME('%%s', WEEK_START) AS INTEGER)
+                                      AND (CAST(STRFTIME('%%s', WEEK_END) AS INTEGER) + 86399)
+                   )
+                 ) * 8                                                                 AS PERIOD_LENGTH
+             FROM VALID_WEEKS
+         )
+
+         , SPLIT_PERSON_IDS (ID, REST) AS (
+             SELECT '' ID, PERSON_ID_LIST || ',' REST
+             FROM QUERY_PARAMS
+             UNION ALL
+             SELECT SUBSTR(REST, 0 , INSTR(REST, ',')),
+             SUBSTR(REST, INSTR(REST, ',') + 1)
+             FROM SPLIT_PERSON_IDS
+             WHERE REST <> ''
+         )
+         , PERSON_IDS (ID) AS (
+             SELECT ID FROM SPLIT_PERSON_IDS WHERE ID <> ''
+         )
+         -- include TP.TIME_AFTER so each WO belongs to a specific week
+         , PERIOD_WO AS (
+             SELECT Q.ID, Q.WORK_NO, Q.PRICE, Q.COMPLEXITY, Q.IS_FROM_POOL, TP.TIME_AFTER AS PERIOD_START
+             FROM TIME_PARAMS TP
+             JOIN (
+                 SELECT
+                     ID,
+                     MIN(LAST_MOD) AS MIN_LAST_MOD
+                 FROM (
+                     SELECT ID, LAST_MOD FROM WORK_ORDER     WHERE STATUS_CODE = 'CO'
+                     UNION ALL
+                     SELECT ID, LAST_MOD FROM WORK_ORDER_HIST WHERE STATUS_CODE = 'CO'
+                 )
+                 GROUP BY ID
+             ) X ON X.MIN_LAST_MOD BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
+             JOIN WORK_ORDER Q ON Q.ID = X.ID
+         )
+         , PERIOD_STATS AS (
+            SELECT CAST(COALESCE(
+                 (SELECT SUM(PRICE)
+                 FROM PERIOD_WO
+                 WHERE IS_FROM_POOL = "Y")
+                 ,0) * 415 AS DOUBLE) / 1000.0 BUDGET
+         )
+         -- aggregate timesheets per person *per week*
+         , PERSON_TIME AS (
+             SELECT
+                 TP.TIME_AFTER AS PERIOD_START,
+                 TS.PERSON_ID,
+                 ROUND(SUM(CASE WHEN TS.IS_LEAVE = 'N' THEN TS.USED_TIME - TS.TRAINING ELSE 0 END) / 3600.0, 2) AS WORK_TIME,
+                 ROUND(SUM(CASE WHEN TS.IS_LEAVE = 'Y' THEN TS.USED_TIME ELSE 0 END) / 3600.0, 2) AS LEAVE_TIME,
+                 ROUND(SUM(CASE WHEN TS.IS_LEAVE = 'N' THEN TS.TRAINING ELSE 0 END) / 3600.0, 2) AS TRAINING_TIME
+             FROM TIME_SHEET TS
+             JOIN TIME_PARAMS TP
+               ON TS.WORK_DATE BETWEEN TP.TIME_AFTER AND TP.TIME_BEFORE
+             GROUP BY TP.TIME_AFTER, TS.PERSON_ID
+         )
+         -- non-pool workload per person per week
+         , PERSON_NONPOOL_WO_TIME AS (
+             SELECT PRWO.PERIOD_START, PW.PERSON_ID, ROUND(SUM(PRWO.COMPLEXITY), 2) AS NONPOOL_TIME
+             FROM PERIOD_WO PRWO
+             JOIN PERSON_WO PW ON PW.WO_ID = PRWO.ID
+             WHERE PRWO.IS_FROM_POOL = 'N'
+             GROUP BY PRWO.PERIOD_START, PW.PERSON_ID
+         )
+         , PERSON_INIT AS (
+           SELECT ID, ROWID, IS_FROM_POOL, IS_EMPLOYED, RANK_CODE, ROLE_CODE, PROJECT_FACTOR, SALARY, SALARY_RATE, LEAVE_RATE, LAST_MOD
+           FROM (
+           SELECT ID
+                 , (ROWID + 1000000) AS ROWID
+                 , IS_FROM_POOL
+                 , IS_EMPLOYED
+                 , RANK_CODE
+                 , ROLE_CODE
+                 , PROJECT_FACTOR
+                 , COALESCE(SALARY,0) SALARY
+                 , COALESCE(SALARY_RATE,0) SALARY_RATE
+                 , COALESCE(LEAVE_RATE,0) LEAVE_RATE
+                 , CASE
+                     WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
+                     WHEN CREATED IS NOT NULL THEN CREATED
+                     ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
+                   END LAST_MOD
+             FROM PERSON
+             UNION ALL
+             SELECT ID
+                 , ROWID
+                 , IS_FROM_POOL
+                 , IS_EMPLOYED
+                 , RANK_CODE
+                 , ROLE_CODE
+                 , PROJECT_FACTOR
+                 , COALESCE(SALARY,0) SALARY
+                 , COALESCE(SALARY_RATE,0) SALARY_RATE
+                 , COALESCE(LEAVE_RATE,0) LEAVE_RATE
+                 , CASE
+                     WHEN LAST_MOD IS NOT NULL THEN LAST_MOD
+                     WHEN CREATED IS NOT NULL THEN CREATED
+                     ELSE CAST(STRFTIME('%%s','2000-01-01') AS INTEGER)
+                   END LAST_MOD
+             FROM PERSON_HIST
+             WHERE IS_DELETED = 'N'
+             ) WHERE ROLE_CODE LIKE '%%EN%%' OR ROLE_CODE LIKE '%%MG%%' OR ROLE_CODE LIKE '%%OP%%'
+         )
+         -- choose the correct person snapshot for each week (per TP)
+         , PERIOD_PERSON AS (
+             WITH SNAP AS (
+                 SELECT PI.*, TP.TIME_AFTER AS PERIOD_START
+                 FROM PERSON_INIT PI
+                 JOIN TIME_PARAMS TP
+                  ON PI.LAST_MOD < TP.TIME_BEFORE
+             ),
+             MAXROW AS (
+                 SELECT ID, PERIOD_START, MAX(ROWID) AS MAX_ROWID
+                 FROM SNAP
+                 GROUP BY ID, PERIOD_START
+             )
+             SELECT S.*
+             FROM SNAP S
+             JOIN MAXROW M
+               ON S.ID = M.ID
+               AND S.PERIOD_START = M.PERIOD_START
+               AND S.ROWID = M.MAX_ROWID
+         )
+         , PERSON_STATS AS (
+             SELECT
+                 P.ID AS PERSON_ID,
+                 DATE(TP.TIME_AFTER, 'unixepoch') AS PERIOD_BEGINNING,
+                 DATE(TP.TIME_BEFORE, 'unixepoch') AS PERIOD_END,
+                 COALESCE(PT.WORK_TIME, 0) AS WORK_TIME,
+                 COALESCE(PT.LEAVE_TIME, 0) AS LEAVE_TIME,
+                 COALESCE(PNPT.NONPOOL_TIME, 0) AS NONPOOL_WORK_TIME,
+                 CASE WHEN P.IS_FROM_POOL = "Y" THEN ROUND( COALESCE(PT.WORK_TIME,0) - COALESCE(PNPT.NONPOOL_TIME,0), 2) ELSE 0 END AS POOL_WORK_TIME,
+                 CASE WHEN (ROUND(COALESCE(PT.WORK_TIME,0) + COALESCE(PT.LEAVE_TIME,0) + COALESCE(PT.TRAINING_TIME,0) - TP.PERIOD_LENGTH,2)) > 0
+                      THEN ROUND(COALESCE(PT.WORK_TIME,0) + COALESCE(PT.LEAVE_TIME,0) + COALESCE(PT.TRAINING_TIME,0) - TP.PERIOD_LENGTH,2)
+                      ELSE 0 END AS OVER_TIME,
+                 COALESCE(PT.TRAINING_TIME,0) AS TRAINING_TIME,
+                 P.IS_FROM_POOL
+             FROM TIME_PARAMS TP
+             JOIN PERIOD_PERSON P ON P.PERIOD_START = TP.TIME_AFTER
+             LEFT JOIN PERSON_TIME PT ON PT.PERIOD_START = TP.TIME_AFTER AND PT.PERSON_ID = P.ID
+             LEFT JOIN PERSON_NONPOOL_WO_TIME PNPT ON PNPT.PERIOD_START = TP.TIME_AFTER AND PNPT.PERSON_ID = P.ID
+             JOIN QUERY_PARAMS QP
+                 WHERE P.RANK_CODE IS NOT NULL
+                     AND CASE WHEN QP.PERSON_ID_LIST = '0' THEN 1
+                     WHEN P.ID IN (SELECT ID FROM PERSON_IDS) THEN 1
+                     ELSE 0 END
+             )
+
+         SELECT PERSON_ID, PERIOD_BEGINNING, PERIOD_END, WORK_TIME, LEAVE_TIME, NONPOOL_WORK_TIME, POOL_WORK_TIME, OVER_TIME, TRAINING_TIME, IS_FROM_POOL
+         FROM PERSON_STATS`
 };
 
 const filters = {
@@ -408,6 +600,10 @@ const filters = {
     },
     getTimestats: {
         periodDate: '%(periodDate)s',
+        personId: '%(personId)s'
+    },
+    getTimestatsForWeekList: {
+        weekList: '%(weekList)s',
         personId: '%(personId)s'
     }
 };
@@ -647,7 +843,26 @@ const timeSheets_db = {
                 }
                 cb(null,rows);
     		}));
-        }
+        },
+
+    readManualWeekStats: function (params, cb) {
+        const db = dbUtil.getDatabase();
+        logger().debug('params ' + JSON.stringify(params));
+
+        const query = dbUtil.prepareFiltersByInsertion(queries.getWeekTimestatsForWeekList, params, filters.getTimestatsForWeekList);
+        const getTimestatsStat = db.prepare(query);
+        getTimestatsStat.all(addCtx(function (err, rows) {
+            getTimestatsStat.finalize();
+            db.close();
+            if (err) return logErrAndCall(err, cb);
+
+            if (rows == null) {
+                cb(null, null);
+                return;
+            }
+            cb(null, rows);
+        }));
+    },
 /**
     bulkCreate: function(timeSheets, cb) {
 
